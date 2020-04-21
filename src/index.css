@@ -11,3 +11,28 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+ul {
+  list-style-type: none;
+}
+
+.suggest-dropdown {
+  padding-left: 28%;
+}
+
+.search-bar {
+  justify-content: center;
+  margin-top: 5%;
+  padding-left: 5%;
+  padding-right: 5%;
+}
+
+.main-container {
+  padding-left: 5%;
+}
+
+.graph {
+  margin-top: 2%;
+  margin-right: 50%;
+  height: 40vh;
+}
