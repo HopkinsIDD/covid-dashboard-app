@@ -1,30 +1,35 @@
 import React, { Component } from 'react';
-import { SCENARIOS } from '../store/constants.js';
 
-class Scenarios extends Component {
+class Severity extends Component {
     constructor(props) {
         super(props);
         this.handleClick = this.handleClick.bind(this);
     }
     
     handleClick(i) {
-        this.props.onScenarioClick(i.name);
+        console.log('inside severity', i)
+        this.props.onSeverityClick(i.name);
     }
 
     render() {
+        const levels = [
+            {id: 1, name: '1% IFR, 10% hospitalization rate'}, 
+            {id: 2, name: '0.5% IFR, 5% hospitalization rate'},
+            {id: 3, name: '0.25% IFR, 2.5% hospitalization rate'},
+        ]
         return (          
-            SCENARIOS.map(scenario => {
+            levels.map(severity => {
                 return (
                     <div className="form-check">
                         <input
                             className="form-check-input"
-                            type="checkbox"
+                            type="radio"
                             value=""
                             id="defaultCheck1"
-                            onClick={() => this.handleClick(scenario)}
-                            key={scenario.id} />
+                            onClick={() => this.handleClick(severity)}
+                            key={severity.id} />
                         <label className="form-check-label filter-text" htmlFor="defaultCheck1">
-                            {scenario.name}
+                            {severity.name}
                         </label>
                     </div>
                 )
@@ -33,4 +38,4 @@ class Scenarios extends Component {
     }
 }
 
-export default Scenarios
+export default Severity

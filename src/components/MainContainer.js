@@ -2,22 +2,24 @@ import React, { Component } from 'react'
 import Buttons from './Buttons.js';
 import Graph from './Graph.js';
 import Scenarios from './Scenarios.js';
+import Severity from './Severity.js';
 
 class MainContainer extends Component {
     constructor(props) {
         super(props);
         this.handleButtonClick = this.handleButtonClick.bind(this);
         this.handleScenarioClick = this.handleScenarioClick.bind(this);
+        this.handleSeverityClick = this.handleSeverityClick.bind(this);
         this.state = {
             stat: 'Infections',
             geoid: '101',
             scenario: [],
+            severity: '1% IFR, 10% hospitalization rate',
         };
     }
 
     handleButtonClick(i) {
         this.setState({stat: i})
-        console.log(this.state.stat)
     }
 
     handleScenarioClick(item) {
@@ -39,6 +41,10 @@ class MainContainer extends Component {
         console.log(this.state.scenario)
     }
 
+    handleSeverityClick(i) {
+        this.setState({severity: i})
+    }
+
     render() {
         return (
             <div className="main-container">
@@ -54,12 +60,21 @@ class MainContainer extends Component {
                                 stat={this.state.stat}
                                 geoid={this.state.geoid}
                                 scenario={this.state.scenario}
+                                severity={this.state.severity}
                             />
                         </div>
                         <div className="col-3">
+                            <h5>Scenarios</h5>
                             <Scenarios 
                                 scenario={this.state.scenario}
                                 onScenarioClick={this.handleScenarioClick}
+                            />
+                            <p></p>
+                            <h5>Parameters</h5>
+                            <h6>Severity</h6>
+                            <Severity 
+                                severity={this.state.severity}
+                                onSeverityClick={this.handleSeverityClick}
                             />
                         </div>
                     </div>

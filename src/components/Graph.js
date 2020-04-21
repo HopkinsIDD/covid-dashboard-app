@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+// import *.csv from '../store/geo06085.csv'; as a test dataset
 
 class Graph extends Component {
     // TODO: state.scenario removal shouldn be reflected in Graph Component
@@ -9,6 +10,7 @@ class Graph extends Component {
                 <p>GeoID: {this.props.geoid}</p>
                 <p>Stat: {this.props.stat}</p>
                 <p>Scenario: {this.props.scenario}</p>
+                <p>Severity: {this.props.severity}</p>
             </div>
         )
     }
