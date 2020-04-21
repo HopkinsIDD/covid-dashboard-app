@@ -27,12 +27,21 @@ ul {
   padding-right: 5%;
 }
 
+.btn-stat {
+  border: 1px solid #ddd;
+  margin: 4px;
+}
+
 .main-container {
   padding-left: 5%;
 }
 
+.no-margin {
+  margin-left: 0px;
+  padding-left: 0px;
+}
+
 .graph {
   margin-top: 2%;
-  margin-right: 50%;
   height: 40vh;
 }
