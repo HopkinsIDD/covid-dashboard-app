@@ -10,12 +10,20 @@ export const SCENARIOS = [
 ];
 
 export const STATS = [
-    {'id': 0, 'name': 'Infections'},
-    {'id': 1, 'name': 'Hospitalizations'},
-    {'id': 2, 'name': 'ICU Cases'},
-    {'id': 3, 'name': 'Ventilator Usage'},
-    {'id': 4, 'name': 'Deaths'},
+    {'id': 0, 'name': 'Infections', 'key': 'incidI'},
+    {'id': 1, 'name': 'Hospitalizations', 'key': 'incidH'},
+    {'id': 2, 'name': 'ICU Cases', 'key': 'incidICU'},
+    {'id': 3, 'name': 'Ventilator Usage', 'key': 'incidVent'},
+    {'id': 4, 'name': 'Deaths', 'key': 'incidD'},
 ];
+
+export const STATOBJ = {
+    'Infections': 'incidI',
+    'Hospitalizations': 'incidH',
+    'ICU Cases': 'incidICU',
+    'Ventilator Usage': 'incidVent',
+    'Deaths': 'incidD'
+}
 
 export const COUNTIES = [
     {'GEOID': '06067', 'NAME': 'Sacramento County', 'USPS': 'CA'},

@@ -5,6 +5,8 @@ import Scenarios from './Filters/Scenarios.js';
 import Severity from './Filters/Severity.js';
 import Sliders from './Filters/Sliders.js';
 import Overlays from './Filters/Overlays.js';
+import { utcParse } from 'd3-time-format'
+// import { STATOBJ } from '../store/constants.js';
 
 class MainContainer extends Component {
     constructor(props) {
@@ -26,6 +28,63 @@ class MainContainer extends Component {
             showConfBounds: false,
             showActual: false,
         };
+    }
+
+    async componentDidMount() {
+        await this.fetchData('./geo06085.json')
+    }
+
+    async fetchData(file) {
+        fetch(file).then(response => {
+            // console.log(response);
+            return response.json();
+          }).then(data => {
+            // Work with JSON data here
+            // console.log(data);
+            const formatted = this.formatData(data)
+            this.setState({ data: formatted }, () => { this.setState({ dataLoaded: true }) });
+          }).catch(err => {
+            // Do something for an error here
+            console.log("Error Reading data " + err);
+          });
+    }
+
+    formatData(data) {
+        const parseDate = utcParse("%Y-%m-%d")
+        const endDate = parseDate("2020-08-30")
+
+        return {
+            dates: data.dates.map( d => parseDate(d)),
+            series: Object.entries(data.series).map(([k,v]) => {
+                const obj = {}
+                obj[k] = v.map( val => +val)
+                return obj
+            })
+        }
+  
+        // const reduced = data.reduce((obj, d, i) => {
+        //   const group = d['sim_num']
+        //   obj[group] = obj[group] || [];
+        //   const newD = {'date': parseDate(d.time), 'value': +d[STATOBJ[this.state.stat]]}
+        //   // filter based on timestamp
+        //   if (newD.date < endDate) {
+        //     obj[group].push(newD)
+        //   }
+        //   return obj
+        // }, {})
+    
+        // const formatted =  {
+        //   y: `Number of Daily ${this.state.stat} in ${this.state.geoid}`,
+        //   series: Object.entries(reduced).map(([k,v]) => {
+        //     return {
+        //       name: k,
+        //       values: v.map( d => d.value)
+        //     }
+        //   }),
+        //   dates: Object.values(reduced)[0].map(r => r.date)
+        // }
+        // // console.log(formatted)
+        // return formatted
     }
 
     handleButtonClick(i) {
@@ -86,6 +145,7 @@ class MainContainer extends Component {
                                 onButtonClick={this.handleButtonClick}
                                 />
                             <p></p>
+                            {this.state.dataLoaded &&
                             <Graph 
                                 stat={this.state.stat}
                                 geoid={this.state.geoid}
@@ -95,7 +155,8 @@ class MainContainer extends Component {
                                 simNum={this.state.simNum}
                                 showConfBounds={this.state.showConfBounds}
                                 showActual={this.state.showActual}
-                            />
+                                data={this.state.data}
+                            /> }
                         </div>
                         <div className="col-3">
                             <h5>Scenarios</h5>
