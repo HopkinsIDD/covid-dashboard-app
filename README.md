@@ -12,12 +12,12 @@ Clone the repository and enter directory.
 
 ```console
 $ git clone git@github.com:HopkinsIDD/covid-dashboard-app.git
-cd covid-dashboard-app
+$ cd covid-dashboard-app
 ```
 
 Spin up development server by running:
 ```console
-npm start
+$ npm start
 ```
 
 Add scenario simulation files into the `store/` directory.

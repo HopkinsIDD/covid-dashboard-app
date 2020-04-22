@@ -29,11 +29,15 @@ ul {
 
 .btn-stat {
   border: 1px solid #ddd;
-  margin: 4px;
+  margin-right: 8px;
 }
 
 .main-container {
   padding-left: 5%;
+}
+
+.filter-text {
+  font-size: 13px;
 }
 
 .no-margin {
@@ -44,4 +48,14 @@ ul {
 .graph {
   margin-top: 2%;
   height: 40vh;
+}
+
+.slider-menu {
+  margin-top: 5px;
+}
+
+.param-header {
+  color: #808080;
+  font-size: 15px;
+  margin-bottom: 0.25rem;
 }

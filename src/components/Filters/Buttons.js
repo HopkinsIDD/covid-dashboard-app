@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { STATS } from '../store/constants.js';
+import { STATS } from '../../store/constants.js';
 
 class Buttons extends Component {
     constructor(props) {
