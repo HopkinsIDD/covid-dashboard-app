@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SCENARIOS } from '../store/constants.js';
+import { SCENARIOS } from '../../store/constants.js';
 
 class Scenarios extends Component {
     constructor(props) {
@@ -23,7 +23,7 @@ class Scenarios extends Component {
                             id="defaultCheck1"
                             onClick={() => this.handleClick(scenario)}
                             key={scenario.id} />
-                        <label className="form-check-label" htmlFor="defaultCheck1">
+                        <label className="form-check-label filter-text" htmlFor="defaultCheck1">
                             {scenario.name}
                         </label>
                     </div>
