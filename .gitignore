@@ -7,13 +7,18 @@
 
 # testing
 /coverage
+/.vscode
+launch.json
 
 # production
 /build
 
-# misc
+# datasets
 *.txt
 *.csv
+/src/store/sims
+
+# misc
 .DS_Store
 .env.local
 .env.development.local
