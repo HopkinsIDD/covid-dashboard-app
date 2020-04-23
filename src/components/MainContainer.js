@@ -36,30 +36,13 @@ class MainContainer extends Component {
     async componentDidMount() {
         console.log(data)
         const formatted = this.formatData(data)
-        console.log(formatted)
         this.setState({ data: formatted }, () => { this.setState({ dataLoaded: true }) });
         // await this.fetchData('./geo06085.json')
-    }
-
-    async fetchData(file) {
-        fetch(file).then(response => {
-            // console.log(response);
-            return response.json();
-          }).then(data => {
-            // Work with JSON data here
-            // console.log(data);
-            const formatted = this.formatData(data)
-            this.setState({ data: formatted }, () => { this.setState({ dataLoaded: true }) });
-          }).catch(err => {
-            // Do something for an error here
-            console.log("Error Reading data " + err);
-          });
     }
 
     formatData(data) {
         // console.log(data)
         const parseDate = utcParse("%Y-%m-%d")
-
         // console.log(data.series[STATOBJ[this.state.stat]])
 
         return {
@@ -126,7 +109,7 @@ class MainContainer extends Component {
     }
 
     render() {
-        console.log(this.state.dataLoaded, this.state.data)
+        // console.log(this.state.dataLoaded, this.state.data)
         return (
             <div className="main-container">
                 <div className="container no-margin">

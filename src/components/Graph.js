@@ -58,10 +58,11 @@ class Graph extends Component {
     }
 
     static getDerivedStateFromProps(nextProps, prevState) {
+        
         if (!nextProps.data) return null; // data hasn't been loaded yet so do nothing
         const { data } = nextProps;
         const { xScale, yScale, lineGenerator } = prevState;
-        console.log(data)
+        // console.log(data)
 
         // data has changed, so recalculate scale domains
         const timeDomain = extent(data.dates);
@@ -75,16 +76,11 @@ class Graph extends Component {
         lineGenerator.y(d => yScale(d))
 
         const simPaths = data.series.map( (d, i) => {
-            console.log(i, d.values)
-            console.log(Object.values(d)[i]['values'])
-            return lineGenerator(Object.values(d)[i])
-            // return sims.map( sim => {
-            //     // console.log(sim)
-            //     return lineGenerator(sim.values)
-            // })
+            // console.log(i, d.values)
+            // console.log(Object.values(d)[i])
+            return lineGenerator(Object.values(d)[i].values)
         })
-        // const simPaths = lineGenerator(data.series)
-        console.log(simPaths)
+        // console.log(simPaths)
 
         return { simPaths, series: data.series, dates: data.dates };
     }
@@ -104,6 +100,11 @@ class Graph extends Component {
     handleMouseEnter = (event) => {
         
     }
+
+    handleMouseLeave = (event) => {
+        
+    }
+
 
     render() {
         // return(
