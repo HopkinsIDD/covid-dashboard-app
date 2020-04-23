@@ -95,11 +95,9 @@ class Graph extends Component {
         lineGenerator.y(d => yScale(d))
         // generate simPaths from lineGenerator
         
-        const simPaths = series.map( d => {
-            // lily messed up something here...
+        const simPaths = series.map( (d,i) => {
             // console.log(i, d.values)
-            // console.log(Object.values(d)[i])
-            return lineGenerator(Object.values(d).values)
+            return lineGenerator(d.values)
         })
         // set new values to state
         this.setState({ 
