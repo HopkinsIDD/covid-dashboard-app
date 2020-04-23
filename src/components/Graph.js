@@ -32,6 +32,8 @@ class Graph extends Component {
         this.yAxisRef = React.createRef();
         this.yAxis = axisLeft().scale(this.state.yScale)
             .tickFormat(d => numberWithCommas(d));
+        
+        this.simPathsRef = React.createRef();
     }
     
     componentDidMount() {
@@ -50,8 +52,30 @@ class Graph extends Component {
         // compare prevProps to newProps
         if (this.props.series !== prevProps.series) {
             const { series, dates } = this.props;
-            const { xScale, yScale, lineGenerator } = prevState;
-            this.drawSimPaths(series, dates)
+            const { xScale, yScale, lineGenerator, width, height } = prevState;
+
+            if (this.simPathsRef.current) {
+                this.drawSimPaths(series, dates)
+                // const timeDomain = extent(dates);
+                // console.log(timeDomain)
+                // // const maxVal = max(series, sims => max(sims.map( d => max(d.values))))
+                // const maxVal = max(series, sims => max(sims.values))
+                // console.log(maxVal)
+                // // set scale ranges to width and height of container
+                // xScale.range([margin.left, width - margin.right])
+                // yScale.range([height - margin.bottom, margin.top])
+                // // set scale domains and lineGenerator domains
+                // xScale.domain(timeDomain);
+                // yScale.domain([0, maxVal]).nice();
+                // lineGenerator.x((d,i) => xScale(dates[i]))
+                // lineGenerator.y(d => yScale(d))
+
+                // const simPathsNode = select(this.simPathsRef.current)
+                // simPathsNode
+                //     .transition()
+                //     .duration(1000)
+                //     .attr("d", d => lineGenerator(d.values))
+            }
 
             // Update Axes
             if (this.xAxisRef.current) {
@@ -132,7 +156,7 @@ class Graph extends Component {
     render() {
         return (
             <div>
-                <svg width={this.state.width} height={this.state.height}>
+                <svg width={this.state.width} height={this.state.height} ref={this.simPathsRef}>
                     <path 
                         d={this.state.simPaths}
                         fill='none' 
