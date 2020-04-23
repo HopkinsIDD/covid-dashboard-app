@@ -45,14 +45,14 @@ try {
 
         // skip header and empty lines
         if (date.length > 1 && date !== 'time') {
-            const simNum = splitLine[idxSim];
-            if (simNum === '1') {
+            const simNum = parseInt(splitLine[idxSim]);
+            if (simNum === 1) {
                 dates.push(date);
             }
 
             for (let i = 0; i < parameters.length; i ++) {
                 const stat = parameters[i]; 
-                const val = splitLine[getIdx[stat]];
+                const val = parseInt(splitLine[getIdx[stat]]);
 
                 if (simNum in series[i][stat]) {
                     series[i][stat][simNum]['values'].push(val);
@@ -90,7 +90,7 @@ const obj = {
 
 const json = JSON.stringify(obj);
 
-fs.writeFile('src/store/high_death-1.json', json, 'utf8', function(err) {
+fs.writeFile('src/store/high_death.json', json, 'utf8', function(err) {
     if (err) throw err;
     console.log('complete');
 });

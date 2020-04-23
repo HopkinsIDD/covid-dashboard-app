@@ -7,7 +7,7 @@ import Sliders from './Filters/Sliders.js';
 import Overlays from './Filters/Overlays.js';
 import { utcParse } from 'd3-time-format'
 import { STATOBJ } from '../store/constants.js';
-const dataset = require('../store/geo06085.json')
+const dataset = require('../store/high_death.json')
 
 
 class MainContainer extends Component {
@@ -23,7 +23,7 @@ class MainContainer extends Component {
         this.state = {
             dataset: {},
             dataLoaded: false,
-            series: 'hello friend',
+            series: {},
             seriesMax: 0,
             dates: [],
             yAxisLabel: '',
@@ -57,6 +57,7 @@ class MainContainer extends Component {
         const seriesMax = Math.max.apply(null, series[0][1].values);
 
         this.setState({
+            dataset,
             dates,
             series,
             seriesMax,
@@ -71,7 +72,6 @@ class MainContainer extends Component {
     };
 
     handleButtonClick(i) {
-        console.log(i)
         const yAxisLabel = `Number of Daily ${i} in ${this.state.geoid}`;
         const series = dataset.series[STATOBJ[i]].map( d => {
             return Object.values(d).map( val => {
