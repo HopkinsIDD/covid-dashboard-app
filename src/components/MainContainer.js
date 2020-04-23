@@ -36,8 +36,11 @@ class MainContainer extends Component {
     async componentDidMount() {
         console.log(data)
         const formatted = this.formatData(data)
-        this.setState({ data: formatted }, () => { this.setState({ dataLoaded: true }) });
+        this.setState({ series: formatted.series, dates: formatted.dates }, () => { this.setState({ dataLoaded: true }) });
         // await this.fetchData('./geo06085.json')
+        const graphW = this.graphEl.clientWidth;
+        const graphH = this.graphEl.clientHeight;
+        this.setState({ graphW, graphH });
     }
 
     formatData(data) {
@@ -120,18 +123,23 @@ class MainContainer extends Component {
                                 onButtonClick={this.handleButtonClick}
                                 />
                             <p></p>
-                            {this.state.dataLoaded &&
-                            <Graph 
-                                stat={this.state.stat}
-                                geoid={this.state.geoid}
-                                scenario={this.state.scenario}
-                                severity={this.state.severity}
-                                r0={this.state.r0}
-                                simNum={this.state.simNum}
-                                showConfBounds={this.state.showConfBounds}
-                                showActual={this.state.showActual}
-                                data={this.state.data}
-                            /> }
+                            <div className="graph border" ref={ (graphEl) => { this.graphEl = graphEl } }>
+                                {this.state.dataLoaded &&
+                                <Graph 
+                                    stat={this.state.stat}
+                                    geoid={this.state.geoid}
+                                    scenario={this.state.scenario}
+                                    severity={this.state.severity}
+                                    r0={this.state.r0}
+                                    simNum={this.state.simNum}
+                                    showConfBounds={this.state.showConfBounds}
+                                    showActual={this.state.showActual}
+                                    series={this.state.series}
+                                    dates={this.state.dates}
+                                    width={this.state.graphW}
+                                    height={this.state.graphH}
+                                /> }
+                            </div>
                         </div>
                         <div className="col-3">
                             <h5>Scenarios</h5>
