@@ -35,6 +35,8 @@ class MainContainer extends Component {
             simNum: '150',
             showConfBounds: false,
             showActual: false,
+            graphW: 0,
+            graphH: 0,
         };
     }
 
@@ -42,6 +44,8 @@ class MainContainer extends Component {
         const parseDate = utcParse("%Y-%m-%d");
         const dates = dataset.dates.map( d => parseDate(d));
         const yAxisLabel = `Number of Daily ${this.state.stat} in ${this.state.geoid}`;
+        const graphW = this.graphEl.clientWidth;
+        const graphH = this.graphEl.clientHeight;
         const series = dataset.series[STATOBJ[this.state.stat]].map( d => {
             return Object.values(d).map( val => {
                 return {
@@ -56,13 +60,15 @@ class MainContainer extends Component {
             dates,
             series,
             seriesMax,
-            yAxisLabel
+            yAxisLabel,
+            graphW,
+            graphH
         }, () => {
             this.setState({
                 dataLoaded: true
             })
-        });
-    }
+        })
+    };
 
     handleButtonClick(i) {
         console.log(i)
@@ -138,21 +144,24 @@ class MainContainer extends Component {
                                 onButtonClick={this.handleButtonClick}
                                 />
                             <p></p>
-                            {this.state.dataLoaded &&
-                            <Graph 
-                                stat={this.state.stat}
-                                geoid={this.state.geoid}
-                                scenario={this.state.scenario}
-                                severity={this.state.severity}
-                                r0={this.state.r0}
-                                simNum={this.state.simNum}
-                                showConfBounds={this.state.showConfBounds}
-                                showActual={this.state.showActual}
-                                series={this.state.series}
-                                dates={this.state.dates}
-                                yAxisLabel={this.state.yAxisLabel}
-                                seriesMax={this.state.seriesMax}
-                            /> }
+
+                            <div className="graph border" ref={ (graphEl) => { this.graphEl = graphEl } }>
+                                {this.state.dataLoaded &&
+                                <Graph 
+                                    stat={this.state.stat}
+                                    geoid={this.state.geoid}
+                                    scenario={this.state.scenario}
+                                    severity={this.state.severity}
+                                    r0={this.state.r0}
+                                    simNum={this.state.simNum}
+                                    showConfBounds={this.state.showConfBounds}
+                                    showActual={this.state.showActual}
+                                    series={this.state.series}
+                                    dates={this.state.dates}
+                                    width={this.state.graphW}
+                                    height={this.state.graphH}
+                                /> }
+                            </div>
                         </div>
                         <div className="col-3">
                             <h5>Scenarios</h5>
