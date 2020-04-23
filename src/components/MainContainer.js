@@ -7,7 +7,8 @@ import Sliders from './Filters/Sliders.js';
 import Overlays from './Filters/Overlays.js';
 import { utcParse } from 'd3-time-format'
 import { STATOBJ } from '../store/constants.js';
-const data = require('../store/geo06085.json')
+const dataset = require('../store/high_death.json')
+
 
 class MainContainer extends Component {
     constructor(props) {
@@ -20,6 +21,12 @@ class MainContainer extends Component {
         this.handleConfClick = this.handleConfClick.bind(this);
         this.handleActualClick = this.handleActualClick.bind(this);
         this.state = {
+            dataset: {},
+            dataLoaded: false,
+            series: {},
+            seriesMax: 0,
+            dates: [],
+            yAxisLabel: '',
             stat: 'Infections',
             geoid: '101',
             scenario: [],
@@ -28,44 +35,59 @@ class MainContainer extends Component {
             simNum: '150',
             showConfBounds: false,
             showActual: false,
-            data: {},
-            dataLoaded: false,
+            graphW: 0,
+            graphH: 0,
         };
     }
 
     async componentDidMount() {
-        console.log(data)
-        const formatted = this.formatData(data)
-        this.setState({ series: formatted.series, dates: formatted.dates }, () => { this.setState({ dataLoaded: true }) });
-        // await this.fetchData('./geo06085.json')
+        const parseDate = utcParse("%Y-%m-%d");
+        const dates = dataset.dates.map( d => parseDate(d));
+        const yAxisLabel = `Number of Daily ${this.state.stat} in ${this.state.geoid}`;
         const graphW = this.graphEl.clientWidth;
         const graphH = this.graphEl.clientHeight;
-        this.setState({ graphW, graphH });
-    }
-
-    formatData(data) {
-        // console.log(data)
-        const parseDate = utcParse("%Y-%m-%d")
-        // console.log(data.series[STATOBJ[this.state.stat]])
-
-        return {
-            dates: data.dates.map( d => parseDate(d)),
-            yAxisLabel: `Number of Daily ${this.state.stat} in ${this.state.geoid}`,
-            series: data.series[STATOBJ[this.state.stat]].map( d => {
-                // console.log(d)
-                // console.log(Object.values(d))
-                return Object.values(d).map( val => {
-                    return {
-                        name: val.name,
-                        values: val.values.map( v => +v)
-                    }
-                })
+        const series = dataset.series[STATOBJ[this.state.stat]].map( d => {
+            return Object.values(d).map( val => {
+                return {
+                    name: val.name,
+                    values: val.values.map( v => +v)
+                }
             })
-        }
-    }
+        });
+        const seriesMax = Math.max.apply(null, series[0][1].values);
+
+        this.setState({
+            dataset,
+            dates,
+            series,
+            seriesMax,
+            yAxisLabel,
+            graphW,
+            graphH
+        }, () => {
+            this.setState({
+                dataLoaded: true
+            })
+        })
+    };
 
     handleButtonClick(i) {
-        this.setState({stat: i})
+        const yAxisLabel = `Number of Daily ${i} in ${this.state.geoid}`;
+        const series = dataset.series[STATOBJ[i]].map( d => {
+            return Object.values(d).map( val => {
+                return {
+                    name: val.name,
+                    values: val.values.map( v => +v)
+                }
+            })
+        });
+        const seriesMax = Math.max.apply(null, series[0][1].values);
+        this.setState({
+            stat: i,
+            series,
+            seriesMax,
+            yAxisLabel
+        })
     }
 
     handleScenarioClick(item) {
@@ -112,7 +134,6 @@ class MainContainer extends Component {
     }
 
     render() {
-        // console.log(this.state.dataLoaded, this.state.data)
         return (
             <div className="main-container">
                 <div className="container no-margin">
@@ -123,6 +144,7 @@ class MainContainer extends Component {
                                 onButtonClick={this.handleButtonClick}
                                 />
                             <p></p>
+
                             <div className="graph border" ref={ (graphEl) => { this.graphEl = graphEl } }>
                                 {this.state.dataLoaded &&
                                 <Graph 
