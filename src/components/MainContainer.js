@@ -31,7 +31,7 @@ class MainContainer extends Component {
     }
 
     async componentDidMount() {
-        await this.fetchData('./geo06085.json')
+        await this.fetchData('./geo06085_old.json')
     }
 
     async fetchData(file) {
