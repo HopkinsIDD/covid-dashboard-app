@@ -46,15 +46,8 @@ class MainContainer extends Component {
         const yAxisLabel = `Number of Daily ${this.state.stat} in ${this.state.geoid}`;
         const graphW = this.graphEl.clientWidth;
         const graphH = this.graphEl.clientHeight;
-        const series = dataset.series[STATOBJ[this.state.stat]].map( d => {
-            return Object.values(d).map( val => {
-                return {
-                    name: val.name,
-                    values: val.values.map( v => +v)
-                }
-            })
-        });
-        const seriesMax = Math.max.apply(null, series[0][1].values);
+        const series = dataset.series[STATOBJ[this.state.stat]]
+        const seriesMax = Math.max.apply(null, series[0].values);
 
         this.setState({
             dataset,
@@ -73,15 +66,8 @@ class MainContainer extends Component {
 
     handleButtonClick(i) {
         const yAxisLabel = `Number of Daily ${i} in ${this.state.geoid}`;
-        const series = dataset.series[STATOBJ[i]].map( d => {
-            return Object.values(d).map( val => {
-                return {
-                    name: val.name,
-                    values: val.values.map( v => +v)
-                }
-            })
-        });
-        const seriesMax = Math.max.apply(null, series[0][1].values);
+        const series = dataset.series[STATOBJ[i]];
+        const seriesMax = Math.max.apply(null, series[0].values);
         this.setState({
             stat: i,
             series,
