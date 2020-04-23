@@ -6,7 +6,7 @@ import Severity from './Filters/Severity.js';
 import Sliders from './Filters/Sliders.js';
 import Overlays from './Filters/Overlays.js';
 import { utcParse } from 'd3-time-format'
-// import { STATOBJ } from '../store/constants.js';
+import { STATOBJ } from '../store/constants.js';
 
 class MainContainer extends Component {
     constructor(props) {
@@ -27,6 +27,8 @@ class MainContainer extends Component {
             simNum: '150',
             showConfBounds: false,
             showActual: false,
+            data: {},
+            dataLoaded: false,
         };
     }
 
@@ -50,41 +52,25 @@ class MainContainer extends Component {
     }
 
     formatData(data) {
+        console.log(data)
         const parseDate = utcParse("%Y-%m-%d")
         const endDate = parseDate("2020-08-30")
 
+        console.log(data.series[STATOBJ[this.state.stat]])
+
         return {
             dates: data.dates.map( d => parseDate(d)),
-            series: Object.entries(data.series).map(([k,v]) => {
-                const obj = {}
-                obj[k] = v.map( val => +val)
-                return obj
+            yAxisLabel: `Number of Daily ${this.state.stat} in ${this.state.geoid}`,
+            series: data.series[STATOBJ[this.state.stat]].map( d => {
+                // console.log(Object.values(d))
+                return Object.values(d).map( val => {
+                    return {
+                        name: val.name,
+                        values: val.values.map( v => +v)
+                    }
+                })
             })
         }
-  
-        // const reduced = data.reduce((obj, d, i) => {
-        //   const group = d['sim_num']
-        //   obj[group] = obj[group] || [];
-        //   const newD = {'date': parseDate(d.time), 'value': +d[STATOBJ[this.state.stat]]}
-        //   // filter based on timestamp
-        //   if (newD.date < endDate) {
-        //     obj[group].push(newD)
-        //   }
-        //   return obj
-        // }, {})
-    
-        // const formatted =  {
-        //   y: `Number of Daily ${this.state.stat} in ${this.state.geoid}`,
-        //   series: Object.entries(reduced).map(([k,v]) => {
-        //     return {
-        //       name: k,
-        //       values: v.map( d => d.value)
-        //     }
-        //   }),
-        //   dates: Object.values(reduced)[0].map(r => r.date)
-        // }
-        // // console.log(formatted)
-        // return formatted
     }
 
     handleButtonClick(i) {
@@ -135,6 +121,7 @@ class MainContainer extends Component {
     }
 
     render() {
+        console.log(this.state.dataLoaded, this.state.data)
         return (
             <div className="main-container">
                 <div className="container no-margin">
