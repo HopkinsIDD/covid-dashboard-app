@@ -5,6 +5,7 @@ import { max, extent, bisectLeft, least } from 'd3-array'
 import { axisLeft, axisBottom } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
 import { select, clientPoint } from 'd3-selection'
+import { transition } from 'd3-transition'
 import { numberWithCommas } from '../store/utils.js'
 
 // TODO: Make graph responsive based on passing props in
@@ -63,15 +64,21 @@ class Graph extends Component {
 
         // Update Axes
         if (this.xAxisRef.current) {
-            select(this.xAxisRef.current)
-            //   .transition()
-              .call(this.xAxis);
+            //update xAxis
+            const xAxisNode = select(this.xAxisRef.current)
+            xAxisNode
+                .transition()
+                .duration(1000)
+                .call(this.xAxis);
         }
         if (this.yAxisRef.current) {
-            select(this.yAxisRef.current)
-            //   .transition()
-              .call(this.yAxis)
-              .call(g => g.select(".domain").remove());
+            // update yAxis
+            const yAxisNode = select(this.yAxisRef.current)
+            yAxisNode
+                .transition()
+                .duration(1000)
+                .call(this.yAxis)
+                .call(g => g.select(".domain").remove());
         }
     }
 
