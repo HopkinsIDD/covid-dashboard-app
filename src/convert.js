@@ -16,6 +16,7 @@ const parameters = [
 let dates = [];
 let series = [];
 let getIdx = Object();
+let simNums = new Set();
 
 for (let i = 0; i < parameters.length; i ++) {
     getIdx[parameters[i]] = headers.indexOf(parameters[i])
@@ -46,6 +47,8 @@ try {
         // skip header and empty lines
         if (date.length > 1 && date !== 'time') {
             const simNum = parseInt(splitLine[idxSim]);
+            simNums.add(simNum);
+
             if (simNum === 1) {
                 dates.push(date);
             }
@@ -77,11 +80,11 @@ const seriesD3 = {
 
 for (let i = 0; i < parameters.length; i ++) {
     const stat = parameters[i]; 
-    for (var key in series[i][stat]) {
-        seriesD3[stat].push(series[i][stat])
+    const simList = Array.from(simNums).sort(function(a, b) {return a-b});
+    for (let j = 0; j < simList.length; j ++) {
+        seriesD3[stat].push(series[i][stat][simList[j]])
     }
 }
-
 
 const obj = {
     'dates': dates,
