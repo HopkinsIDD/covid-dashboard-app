@@ -82,7 +82,8 @@ class Graph extends Component {
         // calculate scale domains
         const timeDomain = extent(dates);
         console.log(timeDomain)
-        const maxVal = max(series, sims => max(sims.map( d => max(d.values))))
+        // const maxVal = max(series, sims => max(sims.map( d => max(d.values))))
+        const maxVal = max(series, sims => max(sims.values))
         console.log(maxVal)
         // set scale ranges to width and height of container
         xScale.range([margin.left, width - margin.right])
@@ -93,10 +94,12 @@ class Graph extends Component {
         lineGenerator.x((d,i) => xScale(dates[i]))
         lineGenerator.y(d => yScale(d))
         // generate simPaths from lineGenerator
-        const simPaths = series.map( (d, i) => {
+        
+        const simPaths = series.map( d => {
+            // lily messed up something here...
             // console.log(i, d.values)
             // console.log(Object.values(d)[i])
-            return lineGenerator(Object.values(d)[i].values)
+            return lineGenerator(Object.values(d).values)
         })
         // set new values to state
         this.setState({ 
@@ -130,37 +133,24 @@ class Graph extends Component {
     }
 
     render() {
-        // return(
-        //     <div className="graph border">
-        //         <p>GeoID: {this.props.geoid}</p>
-        //         <p>Stat: {this.props.stat}</p>
-        //         <p>Scenario: {this.props.scenario}</p>
-        //         <p>Severity: {this.props.severity}</p>
-        //         <p>r0: {this.props.r0}</p>
-        //         <p>Number of Simulations: {this.props.simNum}</p>
-        //         <p>Confidence: {this.props.showConfBounds}</p>
-        //         <p>Actual: {this.props.showActual}</p>
-        //     </div>
-        // )
-
         return (
-        <div>
-            <svg width={this.state.width} height={this.state.height}>
-                <path 
-                    d={this.state.simPaths}
-                    fill='none' 
-                    stroke={green} 
-                    strokeWidth='1'
-                    onMouseMove={this.handleMouseMove}
-                    onMouseEnter={this.handleMouseEnter}
-                    onMouseLeave={this.handleMouseLeave}
-                />
-            <g>
-                <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
-                <g ref={this.yAxisRef} transform={`translate(${margin.left}, 0)`} />
-            </g>
-            </svg>
-        </div>
+            <div>
+                <svg width={this.state.width} height={this.state.height}>
+                    <path 
+                        d={this.state.simPaths}
+                        fill='none' 
+                        stroke={green} 
+                        strokeWidth='1'
+                        onMouseMove={this.handleMouseMove}
+                        onMouseEnter={this.handleMouseEnter}
+                        onMouseLeave={this.handleMouseLeave}
+                    />
+                <g>
+                    <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
+                    <g ref={this.yAxisRef} transform={`translate(${margin.left}, 0)`} />
+                </g>
+                </svg>
+            </div>
         )
     }
 }
