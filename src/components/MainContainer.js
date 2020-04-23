@@ -7,7 +7,7 @@ import Sliders from './Filters/Sliders.js';
 import Overlays from './Filters/Overlays.js';
 import { utcParse } from 'd3-time-format'
 import { STATOBJ } from '../store/constants.js';
-const dataset = require('../store/high_death.json')
+const dataset = require('../store/geo06085.json')
 
 
 class MainContainer extends Component {

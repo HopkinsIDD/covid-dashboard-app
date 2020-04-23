@@ -4,14 +4,10 @@ import { line } from 'd3-shape'
 import { max, extent, bisectLeft, least } from 'd3-array'
 import { axisLeft, axisBottom } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
-import { select, clientPoint } from 'd3-selection'
+import { select, selectAll, clientPoint } from 'd3-selection'
+import { transition } from 'd3-transition'
 import { numberWithCommas } from '../store/utils.js'
 
-// TODO: Make graph responsive based on passing props in
-// const width = document.getElementById('graph-container').getBoundingClientRect().width;
-// const height = document.getElementById('graph-container').getBoundingClientRect().height;
-// const width = 800;
-// const height = 350;
 const margin = { top: 20, right: 40, bottom: 30, left: 50 };
 const green = '#4ddaba';
 
@@ -39,9 +35,6 @@ class Graph extends Component {
     }
     
     componentDidMount() {
-        // const width = this.divElement.clientWidth;
-        // const height = this.divElement.clientHeight;
-        // this.setState({ width, height });
 
         this.drawSimPaths(this.state.series, this.state.dates);
 
@@ -59,19 +52,25 @@ class Graph extends Component {
             const { series, dates } = this.props;
             const { xScale, yScale, lineGenerator } = prevState;
             this.drawSimPaths(series, dates)
-        }
 
-        // Update Axes
-        if (this.xAxisRef.current) {
-            select(this.xAxisRef.current)
-            //   .transition()
-              .call(this.xAxis);
-        }
-        if (this.yAxisRef.current) {
-            select(this.yAxisRef.current)
-            //   .transition()
-              .call(this.yAxis)
-              .call(g => g.select(".domain").remove());
+            // Update Axes
+            if (this.xAxisRef.current) {
+                //update xAxis
+                const xAxisNode = select(this.xAxisRef.current)
+                xAxisNode
+                    .transition()
+                    .duration(1000)
+                    .call(this.xAxis);
+            }
+            if (this.yAxisRef.current) {
+                // update yAxis
+                const yAxisNode = select(this.yAxisRef.current)
+                yAxisNode
+                    .transition()
+                    .duration(1000)
+                    .call(this.yAxis)
+                    .call(g => g.select(".domain").remove());
+            }
         }
     }
 
