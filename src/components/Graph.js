@@ -72,9 +72,10 @@ class Graph extends Component {
         xScale.domain(timeDomain);
         yScale.domain([0, maxVal]).nice();
         lineGenerator.x((d,i) => xScale(data.dates[i]))
-        lineGenerator.y(d => yScale(d.values ))
+        lineGenerator.y(d => yScale(d))
 
         const simPaths = data.series.map( (d, i) => {
+            console.log(i, d.values)
             console.log(Object.values(d)[i]['values'])
             return lineGenerator(Object.values(d)[i])
             // return sims.map( sim => {
@@ -122,16 +123,14 @@ class Graph extends Component {
         <div className="graph border">
             <svg width={width} height={height}>
                 <path 
-                        d={this.state.simPaths}
-                        fill='none' 
-                        stroke={green} 
-                        strokeWidth='1'
-                        onMouseMove={this.handleMouseMove}
-                        onMouseEnter={this.handleMouseEnter}
-                        onMouseLeave={this.handleMouseLeave}
-                    />
-
-                
+                    d={this.state.simPaths}
+                    fill='none' 
+                    stroke={green} 
+                    strokeWidth='1'
+                    onMouseMove={this.handleMouseMove}
+                    onMouseEnter={this.handleMouseEnter}
+                    onMouseLeave={this.handleMouseLeave}
+                />
             <g>
                 <g ref={this.xAxisRef} transform={`translate(0, ${height - margin.bottom})`} />
                 <g ref={this.yAxisRef} transform={`translate(${margin.left}, 0)`} />

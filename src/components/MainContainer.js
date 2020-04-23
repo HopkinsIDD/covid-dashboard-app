@@ -7,6 +7,7 @@ import Sliders from './Filters/Sliders.js';
 import Overlays from './Filters/Overlays.js';
 import { utcParse } from 'd3-time-format'
 import { STATOBJ } from '../store/constants.js';
+const data = require('../store/geo06085.json')
 
 class MainContainer extends Component {
     constructor(props) {
@@ -33,7 +34,11 @@ class MainContainer extends Component {
     }
 
     async componentDidMount() {
-        await this.fetchData('./geo06085.json')
+        console.log(data)
+        const formatted = this.formatData(data)
+        console.log(formatted)
+        this.setState({ data: formatted }, () => { this.setState({ dataLoaded: true }) });
+        // await this.fetchData('./geo06085.json')
     }
 
     async fetchData(file) {
@@ -52,16 +57,16 @@ class MainContainer extends Component {
     }
 
     formatData(data) {
-        console.log(data)
+        // console.log(data)
         const parseDate = utcParse("%Y-%m-%d")
-        const endDate = parseDate("2020-08-30")
 
-        console.log(data.series[STATOBJ[this.state.stat]])
+        // console.log(data.series[STATOBJ[this.state.stat]])
 
         return {
             dates: data.dates.map( d => parseDate(d)),
             yAxisLabel: `Number of Daily ${this.state.stat} in ${this.state.geoid}`,
             series: data.series[STATOBJ[this.state.stat]].map( d => {
+                // console.log(d)
                 // console.log(Object.values(d))
                 return Object.values(d).map( val => {
                     return {
