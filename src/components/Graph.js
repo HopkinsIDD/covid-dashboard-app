@@ -41,7 +41,7 @@ class Graph extends Component {
     }
     
     componentDidMount() {
-
+        // console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
 
         if (this.xAxisRef.current) {
@@ -72,6 +72,28 @@ class Graph extends Component {
                     .transition()
                     .duration(1000)
                     .attr("d", d => updatedScales.lineGenerator(d.values))
+                
+                // update the hover paths with new data
+                simPathsNode.selectAll('.simPath-hover')
+                .data(series)
+                .transition()
+                .duration(1000)
+                .attr("d", d => updatedScales.lineGenerator(d.values))
+
+                // generate simPaths from lineGenerator
+                const simPaths = series.map( (d,i) => {
+                    // console.log(i, typeof(d.values))
+                    return lineGenerator(d.values)
+                })
+                // set new values to state
+                this.setState({ 
+                    series: series,
+                    dates: dates,
+                    xScale: updatedScales.xScale,
+                    yScale: updatedScales.yScale,
+                    lineGenerator: updatedScales.lineGenerator,
+                    simPaths: simPaths,
+                })
             }
             // Update Axes
             if (this.xAxisRef.current) {
@@ -165,7 +187,7 @@ class Graph extends Component {
                         id={`simPath-${i}`}
                         className={`simPath`}
                         fill='none' 
-                        stroke = { maxVal >= this.state.series.display ? red : green }
+                        stroke = { this.state.series[i].display ? red : green }
                         strokeWidth={'1'}
                         strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
                         onMouseMove={(e) => this.handleMouseMove(e, i)}
