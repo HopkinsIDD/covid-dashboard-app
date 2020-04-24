@@ -8,7 +8,7 @@ class Severity extends Component {
     }
     
     handleChange(i) {
-        this.props.onSeverityClick(i.name);
+        this.props.onSeverityClick(i);
     }
 
     render() {
