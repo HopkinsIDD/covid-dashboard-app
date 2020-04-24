@@ -25,6 +25,18 @@ export const STATOBJ = {
     'Deaths': 'incidD'
 }
 
+export const LEVELS = [
+    {id: 1, name: '1% IFR, 10% hospitalization rate'}, 
+    {id: 2, name: '0.5% IFR, 5% hospitalization rate'},
+    {id: 3, name: '0.25% IFR, 2.5% hospitalization rate'},
+];
+
+export const LEVOBJ = {
+    '1% IFR, 10% hospitalization rate': 'high',
+    '0.5% IFR, 5% hospitalization rate': 'medium',
+    '0.25% IFR, 2.5% hospitalization rate': 'low',
+}
+
 export const COUNTIES = [
     {'GEOID': '06067', 'NAME': 'Sacramento County', 'USPS': 'CA'},
     {'GEOID': '06081', 'NAME': 'San Mateo County', 'USPS': 'CA'},
