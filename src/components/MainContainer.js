@@ -156,8 +156,8 @@ class MainContainer extends Component {
             } 
            });
         this.setState({
-            statThreshold: i,
             series: statCopy,
+            statThreshold: +i, // what does this do?
         });
         console.log('threshold', this.state.statThreshold)
         console.log('series', this.state.series)

@@ -4,17 +4,15 @@ import { line } from 'd3-shape'
 import { max, extent, bisectLeft, least } from 'd3-array'
 import { axisLeft, axisBottom } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
-import { select, clientPoint } from 'd3-selection'
+import { select, selectAll, clientPoint } from 'd3-selection'
 import { transition } from 'd3-transition'
 import { numberWithCommas } from '../store/utils.js'
 
-// TODO: Make graph responsive based on passing props in
-// const width = document.getElementById('graph-container').getBoundingClientRect().width;
-// const height = document.getElementById('graph-container').getBoundingClientRect().height;
-// const width = 800;
-// const height = 350;
 const margin = { top: 20, right: 40, bottom: 30, left: 50 };
+const red = '#d31d30';
 const green = '#4ddaba';
+const blue = '#1f90db';
+const gray = '#9b9b9b';
 
 class Graph extends Component {
     constructor(props) {
@@ -28,6 +26,7 @@ class Graph extends Component {
             yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top]),
             lineGenerator: line().defined(d => !isNaN(d)),
             simPaths: [],
+            hoveredSimPathId: null,
         };
         this.xAxisRef = React.createRef();
         this.xAxis = axisBottom().scale(this.state.xScale)
@@ -37,13 +36,12 @@ class Graph extends Component {
         this.yAxisRef = React.createRef();
         this.yAxis = axisLeft().scale(this.state.yScale)
             .tickFormat(d => numberWithCommas(d));
+        
+        this.simPathsRef = React.createRef();
     }
     
     componentDidMount() {
-        // const width = this.divElement.clientWidth;
-        // const height = this.divElement.clientHeight;
-        // this.setState({ width, height });
-
+        // console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
 
         if (this.xAxisRef.current) {
@@ -56,33 +54,69 @@ class Graph extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         // compare prevProps to newProps
-        if (this.props.series !== prevProps.series) {
+        if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
             const { series, dates } = this.props;
-            const { xScale, yScale, lineGenerator } = prevState;
-            this.drawSimPaths(series, dates)
-        }
+            const { xScale, yScale, lineGenerator, width, height } = prevState;
 
-        // Update Axes
-        if (this.xAxisRef.current) {
-            //update xAxis
-            const xAxisNode = select(this.xAxisRef.current)
-            xAxisNode
+            if (this.simPathsRef.current) {
+                
+                // update scale and data
+                const updatedScales = this.calculateSimPaths(series, dates)
+
+                // get svg node
+                const simPathsNode = select(this.simPathsRef.current)
+                console.log(simPathsNode.selectAll('.simPath'))
+                // update the paths with new data
+                simPathsNode.selectAll('.simPath')
+                    .data(series)
+                    .transition()
+                    .duration(1000)
+                    .attr("d", d => updatedScales.lineGenerator(d.values))
+                
+                // update the hover paths with new data
+                simPathsNode.selectAll('.simPath-hover')
+                .data(series)
                 .transition()
                 .duration(1000)
-                .call(this.xAxis);
-        }
-        if (this.yAxisRef.current) {
-            // update yAxis
-            const yAxisNode = select(this.yAxisRef.current)
-            yAxisNode
-                .transition()
-                .duration(1000)
-                .call(this.yAxis)
-                .call(g => g.select(".domain").remove());
+                .attr("d", d => updatedScales.lineGenerator(d.values))
+
+                // generate simPaths from lineGenerator
+                const simPaths = series.map( (d,i) => {
+                    // console.log(i, typeof(d.values))
+                    return lineGenerator(d.values)
+                })
+                // set new values to state
+                this.setState({ 
+                    series: series,
+                    dates: dates,
+                    xScale: updatedScales.xScale,
+                    yScale: updatedScales.yScale,
+                    lineGenerator: updatedScales.lineGenerator,
+                    simPaths: simPaths,
+                })
+            }
+            // Update Axes
+            if (this.xAxisRef.current) {
+                //update xAxis
+                const xAxisNode = select(this.xAxisRef.current)
+                xAxisNode
+                    .transition()
+                    .duration(1000)
+                    .call(this.xAxis);
+            }
+            if (this.yAxisRef.current) {
+                // update yAxis
+                const yAxisNode = select(this.yAxisRef.current)
+                yAxisNode
+                    .transition()
+                    .duration(1000)
+                    .call(this.yAxis)
+                    .call(g => g.select(".domain").remove());
+            }
         }
     }
 
-    drawSimPaths = (series, dates) => {
+    calculateSimPaths = (series, dates) => {
         // draw the sims first here (without transitioning)
         const { xScale, yScale, lineGenerator, width, height } = this.state;
         // calculate scale domains
@@ -97,56 +131,89 @@ class Graph extends Component {
         yScale.domain([0, maxVal]).nice();
         lineGenerator.x((d,i) => xScale(dates[i]))
         lineGenerator.y(d => yScale(d))
+
+        return { xScale, yScale, lineGenerator }
+    }
+
+    drawSimPaths = (series, dates) => {
+        const { xScale, yScale, lineGenerator, width, height } = this.state;
+        const updatedScales = this.calculateSimPaths(series, dates);
         // generate simPaths from lineGenerator
-        
         const simPaths = series.map( (d,i) => {
-            // console.log(i, d.values)
+            // console.log(i, typeof(d.values))
             return lineGenerator(d.values)
         })
         // set new values to state
         this.setState({ 
             series: series,
             dates: dates,
-            xScale: xScale,
-            yScale: yScale,
-            lineGenerator: lineGenerator,
+            xScale: updatedScales.xScale,
+            yScale: updatedScales.yScale,
+            lineGenerator: updatedScales.lineGenerator,
             simPaths: simPaths,
         })
     }
 
-    handleMouseMove = (event) => {
+    handleMouseMove = (event, index) => {
+        // console.log(index)
         // console.log(clientPoint(event.target, event))
-        
-        // console.log(this)
-        // const ym = this.state.yScale.invert(clientPoint[1]);
-        // const xm = this.state.xScale.invert(clientPoint[0]);
-        // const i1 = bisectLeft(this.state.dates, xm, 1);
-        // const i0 = i1 - 1;
-        // const i = xm - this.state.dates[i0] > this.state.dates[i1] - xm ? i1 : i0;
-        // const s = least(this.state.series, d => Math.abs(d.values[i] - ym));
+        this.setState({ hoveredSimPathId: index })
     }
 
-    handleMouseEnter = (event) => {
-        
+    handleMouseEnter = (event, index) => {
+        this.setState({ hoveredSimPathId: index })
     }
 
-    handleMouseLeave = (event) => {
-        
+    handleMouseLeave = (event, index) => {
+        this.setState({ hoveredSimPathId: null })
     }
 
     render() {
         return (
             <div>
-                <svg width={this.state.width} height={this.state.height}>
-                    <path 
-                        d={this.state.simPaths}
+                <svg 
+                    width={this.state.width} 
+                    height={this.state.height} 
+                    ref={this.simPathsRef}
+                >
+                <g>
+                {
+                // visible simPaths
+                this.state.simPaths.map( (simPath, i) => {
+                    const maxVal = max(this.state.series[i].values)
+                    return <path
+                        d={simPath}
+                        key={`simPath-${i}`}
+                        id={`simPath-${i}`}
+                        className={`simPath`}
                         fill='none' 
-                        stroke={green} 
-                        strokeWidth='1'
-                        onMouseMove={this.handleMouseMove}
-                        onMouseEnter={this.handleMouseEnter}
-                        onMouseLeave={this.handleMouseLeave}
+                        stroke = { this.state.series[i].display ? red : green }
+                        strokeWidth={'1'}
+                        strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
+                        onMouseMove={(e) => this.handleMouseMove(e, i)}
+                        onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                        onMouseLeave={(e) => this.handleMouseLeave(e, i)}
                     />
+                })}
+                {// highlight simPaths
+                this.state.hoveredSimPathId &&
+                this.state.simPaths.map( (simPath, i) => {
+                    const simIsHovered = (i === this.state.hoveredSimPathId)
+                    return <path
+                        d={simPath}
+                        key={`simPath-${i}-hover`}
+                        id={`simPath-${i}-hover`}
+                        className={`simPath-hover`}
+                        fill='none' 
+                        stroke={simIsHovered ? blue : gray}
+                        strokeWidth={simIsHovered ? '2' : '1'}
+                        strokeOpacity={simIsHovered && this.state.hoveredSimPathId ? 1 : 0.5}
+                        onMouseMove={(e) => this.handleMouseMove(e, i)}
+                        onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                        onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                    />
+                })}
+                </g>
                 <g>
                     <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
                     <g ref={this.yAxisRef} transform={`translate(${margin.left}, 0)`} />
