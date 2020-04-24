@@ -16,6 +16,7 @@ class MainContainer extends Component {
         this.handleButtonClick = this.handleButtonClick.bind(this);
         this.handleScenarioClick = this.handleScenarioClick.bind(this);
         this.handleSeverityClick = this.handleSeverityClick.bind(this);
+        this.handleStatSliderChange = this.handleStatSliderChange.bind(this);
         this.handleReprSliderChange = this.handleReprSliderChange.bind(this);
         this.handleSimSliderChange = this.handleSimSliderChange.bind(this);
         this.handleConfClick = this.handleConfClick.bind(this);
@@ -31,6 +32,7 @@ class MainContainer extends Component {
             geoid: '101',
             scenario: [],
             severity: '1% IFR, 10% hospitalization rate',
+            statThreshold: 0,
             r0: '1',
             simNum: '150',
             showConfBounds: false,
@@ -46,7 +48,8 @@ class MainContainer extends Component {
         const yAxisLabel = `Number of Daily ${this.state.stat} in ${this.state.geoid}`;
         const graphW = this.graphEl.clientWidth;
         const graphH = this.graphEl.clientHeight;
-        const series = dataset.series[STATOBJ[this.state.stat]]
+        const series = dataset.series[STATOBJ[this.state.stat]];
+        series.map(sim => sim['display'] = true);
         const seriesMax = Math.max.apply(null, series[0].values);
 
         this.setState({
@@ -92,11 +95,25 @@ class MainContainer extends Component {
                 scenario: this.state.scenario.concat(item)
             });
         }
-        console.log(this.state.scenario)
     }
 
     handleSeverityClick(i) {
         this.setState({severity: i});
+    }
+
+    handleStatSliderChange(i) {
+        const seriesCopy = Array.from(this.state.series);
+        seriesCopy.forEach(sim => {
+            if (Math.max.apply(null, sim.values) < this.state.statThreshold) {
+              return sim.display = false;
+            } 
+           });
+        this.setState({
+            statThreshold: i,
+            series: seriesCopy,
+        });
+        console.log('threshold', this.state.statThreshold)
+        console.log('series', this.state.series)
     }
 
     handleReprSliderChange(i) {
@@ -170,6 +187,7 @@ class MainContainer extends Component {
                                 onSeverityClick={this.handleSeverityClick}
                             />
                             <Sliders 
+                                onStatSliderChange={this.handleStatSliderChange}
                                 onReprSliderChange={this.handleReprSliderChange}
                                 onSimSliderChange={this.handleSimSliderChange}
                             />

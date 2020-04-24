@@ -4,10 +4,15 @@ class Sliders extends Component {
     // TODO: only allow to click on one severity checked 
     constructor(props) {
         super(props);
+        this.handleStatChange = this.handleStatChange.bind(this);
         this.handleReprChange = this.handleReprChange.bind(this);
         this.handleSimChange = this.handleSimChange.bind(this);
     }
     
+    handleStatChange(i) {
+        this.props.onStatSliderChange(i);
+    }
+
     handleReprChange(i) {
         this.props.onReprSliderChange(i);
     }
@@ -19,6 +24,18 @@ class Sliders extends Component {
     render() {
         return (
             <div className="slider-menu">
+
+
+                <p className="param-header">Stat Threshold</p>
+                    <div className="slidecontainer">
+                        <input
+                            // TODO: min and max should be based on this.state.seriesRange
+                            id="statThreshold" type="range" min="0" max="80000"
+                            ref={ref => this.statInput = ref}
+                            onChange={() => this.handleStatChange(this.statInput.value)}>
+                        </input>
+                    </div>
+
                 <p className="param-header">Reproductive Number</p>
                 <div className="slidecontainer">
                     <input
