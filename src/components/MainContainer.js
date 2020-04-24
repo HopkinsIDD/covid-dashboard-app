@@ -109,7 +109,7 @@ class MainContainer extends Component {
             } 
            });
         this.setState({
-            statThreshold: i,
+            statThreshold: +i,
             series: seriesCopy,
         });
         console.log('threshold', this.state.statThreshold)
@@ -163,6 +163,7 @@ class MainContainer extends Component {
                                     dates={this.state.dates}
                                     width={this.state.graphW}
                                     height={this.state.graphH}
+                                    statThreshold={this.state.statThreshold}
                                 /> }
                             </div>
                         </div>

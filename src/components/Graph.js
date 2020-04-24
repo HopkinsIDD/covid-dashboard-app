@@ -9,7 +9,10 @@ import { transition } from 'd3-transition'
 import { numberWithCommas } from '../store/utils.js'
 
 const margin = { top: 20, right: 40, bottom: 30, left: 50 };
+const red = '#d31d30';
 const green = '#4ddaba';
+const blue = '#1f90db';
+const gray = '#9b9b9b';
 
 class Graph extends Component {
     constructor(props) {
@@ -23,6 +26,7 @@ class Graph extends Component {
             yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top]),
             lineGenerator: line().defined(d => !isNaN(d)),
             simPaths: [],
+            hoveredSimPathId: null,
         };
         this.xAxisRef = React.createRef();
         this.xAxis = axisBottom().scale(this.state.xScale)
@@ -129,45 +133,66 @@ class Graph extends Component {
     }
 
     handleMouseMove = (event, index) => {
-        console.log(index)
-        console.log(clientPoint(event.target, event))
-        
-        // console.log(this)
-        // const ym = this.state.yScale.invert(clientPoint[1]);
-        // const xm = this.state.xScale.invert(clientPoint[0]);
-        // const i1 = bisectLeft(this.state.dates, xm, 1);
-        // const i0 = i1 - 1;
-        // const i = xm - this.state.dates[i0] > this.state.dates[i1] - xm ? i1 : i0;
-        // const s = least(this.state.series, d => Math.abs(d.values[i] - ym));
+        // console.log(index)
+        // console.log(clientPoint(event.target, event))
+        this.setState({ hoveredSimPathId: index })
     }
 
-    handleMouseEnter = (event) => {
-        
+    handleMouseEnter = (event, index) => {
+        this.setState({ hoveredSimPathId: index })
     }
 
-    handleMouseLeave = (event) => {
-        
+    handleMouseLeave = (event, index) => {
+        this.setState({ hoveredSimPathId: null })
     }
 
     render() {
         return (
             <div>
-                <svg width={this.state.width} height={this.state.height} ref={this.simPathsRef}>
-                    {this.state.simPaths.map( (simPath, i) => {
-                        return <path
-                            d={simPath}
-                            key={`simPath-${i}`}
-                            id={`simPath-${i}`}
-                            className={`simPath`}
-                            fill='none' 
-                            stroke={green} 
-                            strokeWidth='1'
-                            onMouseMove={(e) => this.handleMouseMove(e, i)}
-                            onMouseEnter={(e) => this.handleMouseEnter(e, i)}
-                            onMouseLeave={(e) => this.handleMouseLeave(e, i)}
-                        />
-                    }) 
-                    }
+                <svg 
+                    width={this.state.width} 
+                    height={this.state.height} 
+                    ref={this.simPathsRef}
+                >
+                <g>
+                {
+                // visible simPaths
+                this.state.simPaths.map( (simPath, i) => {
+                    const maxVal = max(this.state.series[i].values)
+                    // console.log(maxVal, this.props.statThreshold, maxVal >= this.props.statThreshold)
+                    return <path
+                        d={simPath}
+                        key={`simPath-${i}`}
+                        id={`simPath-${i}`}
+                        className={`simPath`}
+                        fill='none' 
+                        stroke = { maxVal >= this.props.statThreshold ? red : green }
+                        strokeWidth={'1'}
+                        strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
+                        onMouseMove={(e) => this.handleMouseMove(e, i)}
+                        onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                        onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                    />
+                })}
+                {// highlight simPaths
+                this.state.hoveredSimPathId &&
+                this.state.simPaths.map( (simPath, i) => {
+                    const simIsHovered = (i === this.state.hoveredSimPathId)
+                    return <path
+                        d={simPath}
+                        key={`simPath-${i}-hover`}
+                        id={`simPath-${i}-hover`}
+                        className={`simPath-hover`}
+                        fill='none' 
+                        stroke={simIsHovered ? blue : gray}
+                        strokeWidth={simIsHovered ? '2' : '1'}
+                        strokeOpacity={simIsHovered && this.state.hoveredSimPathId ? 1 : 0.5}
+                        onMouseMove={(e) => this.handleMouseMove(e, i)}
+                        onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                        onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                    />
+                })}
+                </g>
                 <g>
                     <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
                     <g ref={this.yAxisRef} transform={`translate(${margin.left}, 0)`} />
