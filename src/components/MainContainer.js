@@ -6,8 +6,8 @@ import Severity from './Filters/Severity.js';
 import Sliders from './Filters/Sliders.js';
 import Overlays from './Filters/Overlays.js';
 import { utcParse } from 'd3-time-format'
-import { STATOBJ } from '../store/constants.js';
-const dataset = require('../store/high_death.json')
+import { STATOBJ, LEVOBJ } from '../store/constants.js';
+const rawData = require('../store/high_death.json')
 
 
 class MainContainer extends Component {
@@ -30,8 +30,8 @@ class MainContainer extends Component {
             yAxisLabel: '',
             stat: 'Infections',
             geoid: '101',
-            scenario: [],
-            severity: '1% IFR, 10% hospitalization rate',
+            scenario: 'Fixed Lockdown',
+            severity: 'high',
             statThreshold: 0,
             r0: '1',
             simNum: '150',
@@ -42,15 +42,54 @@ class MainContainer extends Component {
         };
     }
 
+    buildDummyDataset() {
+        // Temp function to build out a dummy dataset given unknown input data format 
+        // eg: csv, parquet, json? 
+        // Only first simulation of incidI infections were altered to visualize change
+        const medData = JSON.parse(JSON.stringify(rawData));
+        medData.series['incidI'][0].values = medData.series['incidI'][0].values.map(d => d/2);
+
+        const lowData = JSON.parse(JSON.stringify(rawData));
+        lowData.series['incidI'][0].values = lowData.series['incidI'][0].values.map(d => d/3);
+
+        const hiData2= JSON.parse(JSON.stringify(rawData));
+        hiData2.series['incidI'][0].values = hiData2.series['incidI'][0].values.map(d => d*4);
+
+        const medData2= JSON.parse(JSON.stringify(rawData));
+        medData2.series['incidI'][0].values = medData2.series['incidI'][0].values.map(d => d*2);
+
+        const lowData2= JSON.parse(JSON.stringify(rawData));
+        lowData2.series['incidI'][0].values = lowData2.series['incidI'][0].values.map(d => d*1.5);
+
+
+        const dummy = {
+            'Fixed Lockdown': {
+                'high': rawData,
+                'medium': medData,
+                'low': lowData,
+            },
+            'Fatiguing Lockdown': {
+                'high': hiData2,
+                'medium': medData2,
+                'low': lowData2,
+            }
+        }
+        return dummy;
+    };
+
     async componentDidMount() {
+        const dataset = this.buildDummyDataset();
+        const initialData = dataset[this.state.scenario][this.state.severity];
+
         const parseDate = utcParse("%Y-%m-%d");
-        const dates = dataset.dates.map( d => parseDate(d));
-        const yAxisLabel = `Number of Daily ${this.state.stat} in ${this.state.geoid}`;
-        const graphW = this.graphEl.clientWidth;
-        const graphH = this.graphEl.clientHeight;
-        const series = dataset.series[STATOBJ[this.state.stat]];
+        const dates = initialData.dates.map( d => parseDate(d));
+        const series = initialData.series[STATOBJ[this.state.stat]];
         series.map(sim => sim['display'] = true);
         const seriesMax = Math.max.apply(null, series[0].values);
+        const yAxisLabel = `Number of Daily ${this.state.stat} in ${this.state.geoid}`;
+        
+        const graphW = this.graphEl.clientWidth;
+        const graphH = this.graphEl.clientHeight;
 
         this.setState({
             dataset,
@@ -69,11 +108,11 @@ class MainContainer extends Component {
 
     handleButtonClick(i) {
         const yAxisLabel = `Number of Daily ${i} in ${this.state.geoid}`;
-        const series = dataset.series[STATOBJ[i]];
-        const seriesMax = Math.max.apply(null, series[0].values);
+        const seriesCopy = Array.from(this.state.dataset[this.state.scenario][this.state.severity].series[STATOBJ[i]]);
+        const seriesMax = Math.max.apply(null, seriesCopy[0].values);
         this.setState({
             stat: i,
-            series,
+            series: seriesCopy,
             seriesMax,
             yAxisLabel
         })
@@ -98,7 +137,11 @@ class MainContainer extends Component {
     }
 
     handleSeverityClick(i) {
-        this.setState({severity: i});
+        const sevCopy = Array.from(this.state.dataset[this.state.scenario][LEVOBJ[i]].series[STATOBJ[this.state.stat]]);
+        this.setState({
+            severity: LEVOBJ[i],
+            series: sevCopy,
+        });
     }
 
     handleStatSliderChange(i) {
