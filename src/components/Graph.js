@@ -85,13 +85,10 @@ class Graph extends Component {
     drawSimPaths = (series, dates) => {
         // draw the sims first here (without transitioning)
         const { xScale, yScale, lineGenerator, width, height } = this.state;
-        console.log(series)
         // calculate scale domains
         const timeDomain = extent(dates);
-        console.log(timeDomain)
         // const maxVal = max(series, sims => max(sims.map( d => max(d.values))))
         const maxVal = max(series, sims => max(sims.values))
-        console.log(maxVal)
         // set scale ranges to width and height of container
         xScale.range([margin.left, width - margin.right])
         yScale.range([height - margin.bottom, margin.top])
@@ -118,7 +115,7 @@ class Graph extends Component {
     }
 
     handleMouseMove = (event) => {
-        console.log(clientPoint(event.target, event))
+        // console.log(clientPoint(event.target, event))
         
         // console.log(this)
         // const ym = this.state.yScale.invert(clientPoint[1]);
