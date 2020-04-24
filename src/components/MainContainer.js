@@ -6,7 +6,6 @@ import Severity from './Filters/Severity.js';
 import Sliders from './Filters/Sliders.js';
 import Overlays from './Filters/Overlays.js';
 import { utcParse } from 'd3-time-format'
-import { STATOBJ, LEVOBJ } from '../store/constants.js';
 const rawData = require('../store/high_death.json')
 
 
@@ -28,10 +27,10 @@ class MainContainer extends Component {
             seriesMax: 0,
             dates: [],
             yAxisLabel: '',
-            stat: 'Infections',
+            stat: {'id': 1, 'name': 'Infections', 'key': 'incidI'},
             geoid: '101',
-            scenario: 'Fixed Lockdown',
-            severity: 'high',
+            scenario: {'id': 1, 'key': 'Fixed Lockdown', 'name': 'Fixed Lockdown'},
+            severity: {'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'}, 
             statThreshold: 0,
             r0: '1',
             simNum: '150',
@@ -79,11 +78,11 @@ class MainContainer extends Component {
 
     async componentDidMount() {
         const dataset = this.buildDummyDataset();
-        const initialData = dataset[this.state.scenario][this.state.severity];
+        const initialData = dataset[this.state.scenario.key][this.state.severity.key];
 
         const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
-        const series = initialData.series[STATOBJ[this.state.stat]];
+        const series = initialData.series[this.state.stat.key];
         series.map(sim => sim['display'] = true);
         const seriesMax = Math.max.apply(null, series[0].values);
         const yAxisLabel = `Number of Daily ${this.state.stat} in ${this.state.geoid}`;
@@ -107,53 +106,58 @@ class MainContainer extends Component {
     };
 
     handleButtonClick(i) {
-        const yAxisLabel = `Number of Daily ${i} in ${this.state.geoid}`;
-        const seriesCopy = Array.from(this.state.dataset[this.state.scenario][this.state.severity].series[STATOBJ[i]]);
-        const seriesMax = Math.max.apply(null, seriesCopy[0].values);
+        const yAxisLabel = `Number of Daily ${i.name} in ${this.state.geoid}`;
+        const buttonCopy = Array.from(this.state.dataset[this.state.scenario.key][this.state.severity.key].series[i.key]);
+        const seriesMax = Math.max.apply(null, buttonCopy[0].values);
         this.setState({
-            stat: i,
-            series: seriesCopy,
+            stat: i.key,
+            series: buttonCopy,
             seriesMax,
             yAxisLabel
         })
     }
 
-    handleScenarioClick(item) {
-        if (this.state.scenario.includes(item)) {
-            const scenarioCopy = Array.from(this.state.scenario);
-            const index = this.state.scenario.indexOf(item);
-            if (index > -1) {
-                scenarioCopy.splice(index, 1);
-                this.setState({
-                    scenario: scenarioCopy,
-                })
-            };
+    handleScenarioClick(i) {
+        const scenarioCopy = Array.from(this.state.dataset[i.name][this.state.severity.key].series[this.state.stat.key]);
+        this.setState({
+            series: scenarioCopy,
+        })
+        // TODO: for handling multiple scenarios toggled
+        //     if (this.state.scenario.includes(i)) {
+        //     const scenarioCopy = Array.from(this.state.scenario);
+        //     const index = this.state.scenario.indexOf(item);
+        //     if (index > -1) {
+        //         scenarioCopy.splice(index, 1);
+        //         this.setState({
+        //             scenario: scenarioCopy,
+        //         })
+        //     };
 
-        } else {
-            this.setState({
-                scenario: this.state.scenario.concat(item)
-            });
-        }
+        // } else {
+        //     this.setState({
+        //         scenario: this.state.scenario.concat(item)
+        //     });
+        // }
     }
 
     handleSeverityClick(i) {
-        const sevCopy = Array.from(this.state.dataset[this.state.scenario][LEVOBJ[i]].series[STATOBJ[this.state.stat]]);
+        const sevCopy = Array.from(this.state.dataset[this.state.scenario.key][i.key].series[this.state.stat]);
         this.setState({
-            severity: LEVOBJ[i],
+            severity: i,
             series: sevCopy,
         });
     }
 
     handleStatSliderChange(i) {
-        const seriesCopy = Array.from(this.state.series);
-        seriesCopy.forEach(sim => {
+        const statCopy = Array.from(this.state.series);
+        statCopy.forEach(sim => {
             if (Math.max.apply(null, sim.values) < this.state.statThreshold) {
               return sim.display = false;
             } 
            });
         this.setState({
             statThreshold: i,
-            series: seriesCopy,
+            series: statCopy,
         });
         console.log('threshold', this.state.statThreshold)
         console.log('series', this.state.series)

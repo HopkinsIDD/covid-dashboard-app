@@ -8,27 +8,33 @@ class Scenarios extends Component {
     }
     
     handleClick(i) {
-        this.props.onScenarioClick(i.name);
+        this.props.onScenarioClick(i);
     }
 
     render() {
-        return (          
-            SCENARIOS.map(scenario => {
-                return (
-                    <div className="form-check">
-                        <input
-                            className="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="defaultCheck1"
-                            onClick={() => this.handleClick(scenario)}
-                            key={scenario.id} />
-                        <label className="form-check-label filter-text" htmlFor="defaultCheck1">
-                            {scenario.name}
-                        </label>
-                    </div>
-                )
-            })
+        return (
+            <div className="dropdown">
+                <button
+                    className="btn btn-light dropdown-toggle btn-stat filter-text"
+                    type="button" 
+                    id="dropdownMenu2" 
+                    data-toggle="dropdown" 
+                    aria-haspopup="true" 
+                    aria-expanded="false">
+                    Select Scenarios
+                </button>
+                <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
+                    {SCENARIOS.map(scenario => {
+                        return <button
+                                    className="dropdown-item" 
+                                    type="button" 
+                                    onClick={() => this.handleClick(scenario)} 
+                                    key={scenario.id}>
+                                    {scenario.name}
+                                </button>
+                    })}
+                </div>
+            </div>
         )
     }
 }

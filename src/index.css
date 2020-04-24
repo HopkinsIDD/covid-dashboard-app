@@ -30,6 +30,7 @@ ul {
 .btn-stat {
   border: 1px solid #ddd;
   margin-right: 8px;
+  padding: 0.3rem 0.5rem;
 }
 
 .main-container {
