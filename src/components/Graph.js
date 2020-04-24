@@ -50,50 +50,57 @@ class Graph extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         // compare prevProps to newProps
-        if (this.props.series !== prevProps.series) {
+        if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
             const { series, dates } = this.props;
             const { xScale, yScale, lineGenerator, width, height } = prevState;
 
             if (this.simPathsRef.current) {
-                this.drawSimPaths(series, dates)
-                // const timeDomain = extent(dates);
-                // console.log(timeDomain)
-                // // const maxVal = max(series, sims => max(sims.map( d => max(d.values))))
-                // const maxVal = max(series, sims => max(sims.values))
-                // console.log(maxVal)
-                // // set scale ranges to width and height of container
-                // xScale.range([margin.left, width - margin.right])
-                // yScale.range([height - margin.bottom, margin.top])
-                // // set scale domains and lineGenerator domains
-                // xScale.domain(timeDomain);
-                // yScale.domain([0, maxVal]).nice();
-                // lineGenerator.x((d,i) => xScale(dates[i]))
-                // lineGenerator.y(d => yScale(d))
+                
+                // update scale and data
+                const timeDomain = extent(dates);
+                console.log(timeDomain)
+                // const maxVal = max(series, sims => max(sims.map( d => max(d.values))))
+                const maxVal = max(series, sims => max(sims.values))
+                const oldMaxVal = max(prevProps.series, sims => max(sims.values))
+                console.log(maxVal, oldMaxVal)
+                // set scale ranges to width and height of container
+                xScale.range([margin.left, width - margin.right])
+                yScale.range([height - margin.bottom, margin.top])
+                // set scale domains and lineGenerator domains
+                xScale.domain(timeDomain);
+                yScale.domain([0, maxVal]).nice();
 
-                // const simPathsNode = select(this.simPathsRef.current)
-                // simPathsNode
-                //     .transition()
-                //     .duration(1000)
-                //     .attr("d", d => lineGenerator(d.values))
-            }
+                lineGenerator.x((d,i) => xScale(dates[i]))
+                lineGenerator.y(d => yScale(d))
 
-            // Update Axes
-            if (this.xAxisRef.current) {
-                //update xAxis
-                const xAxisNode = select(this.xAxisRef.current)
-                xAxisNode
+                // get svg node
+                const simPathsNode = select(this.simPathsRef.current)
+                console.log(simPathsNode.selectAll('.simPath'))
+                // update the paths with new data
+                simPathsNode.selectAll('.simPath')
+                    .data(series)
                     .transition()
                     .duration(1000)
-                    .call(this.xAxis);
-            }
-            if (this.yAxisRef.current) {
-                // update yAxis
-                const yAxisNode = select(this.yAxisRef.current)
-                yAxisNode
-                    .transition()
-                    .duration(1000)
-                    .call(this.yAxis)
-                    .call(g => g.select(".domain").remove());
+                    .attr("d", d => lineGenerator(d.values))
+
+                // Update Axes
+                if (this.xAxisRef.current) {
+                    //update xAxis
+                    const xAxisNode = select(this.xAxisRef.current)
+                    xAxisNode
+                        .transition()
+                        .duration(1000)
+                        .call(this.xAxis);
+                }
+                if (this.yAxisRef.current) {
+                    // update yAxis
+                    const yAxisNode = select(this.yAxisRef.current)
+                    yAxisNode
+                        .transition()
+                        .duration(1000)
+                        .call(this.yAxis)
+                        .call(g => g.select(".domain").remove());
+                }
             }
         }
     }
@@ -119,7 +126,7 @@ class Graph extends Component {
         // generate simPaths from lineGenerator
         
         const simPaths = series.map( (d,i) => {
-            // console.log(i, d.values)
+            // console.log(i, typeof(d.values))
             return lineGenerator(d.values)
         })
         // set new values to state
@@ -133,7 +140,8 @@ class Graph extends Component {
         })
     }
 
-    handleMouseMove = (event) => {
+    handleMouseMove = (event, index) => {
+        console.log(index)
         console.log(clientPoint(event.target, event))
         
         // console.log(this)
@@ -157,15 +165,21 @@ class Graph extends Component {
         return (
             <div>
                 <svg width={this.state.width} height={this.state.height} ref={this.simPathsRef}>
-                    <path 
-                        d={this.state.simPaths}
-                        fill='none' 
-                        stroke={green} 
-                        strokeWidth='1'
-                        onMouseMove={this.handleMouseMove}
-                        onMouseEnter={this.handleMouseEnter}
-                        onMouseLeave={this.handleMouseLeave}
-                    />
+                    {this.state.simPaths.map( (simPath, i) => {
+                        return <path
+                            d={simPath}
+                            key={`simPath-${i}`}
+                            id={`simPath-${i}`}
+                            className={`simPath`}
+                            fill='none' 
+                            stroke={green} 
+                            strokeWidth='1'
+                            onMouseMove={(e) => this.handleMouseMove(e, i)}
+                            onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                            onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                        />
+                    }) 
+                    }
                 <g>
                     <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
                     <g ref={this.yAxisRef} transform={`translate(${margin.left}, 0)`} />
