@@ -4,15 +4,10 @@ import { line } from 'd3-shape'
 import { max, extent, bisectLeft, least } from 'd3-array'
 import { axisLeft, axisBottom } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
-import { select, clientPoint } from 'd3-selection'
+import { select, selectAll, clientPoint } from 'd3-selection'
 import { transition } from 'd3-transition'
 import { numberWithCommas } from '../store/utils.js'
 
-// TODO: Make graph responsive based on passing props in
-// const width = document.getElementById('graph-container').getBoundingClientRect().width;
-// const height = document.getElementById('graph-container').getBoundingClientRect().height;
-// const width = 800;
-// const height = 350;
 const margin = { top: 20, right: 40, bottom: 30, left: 50 };
 const green = '#4ddaba';
 
@@ -37,12 +32,11 @@ class Graph extends Component {
         this.yAxisRef = React.createRef();
         this.yAxis = axisLeft().scale(this.state.yScale)
             .tickFormat(d => numberWithCommas(d));
+        
+        this.simPathsRef = React.createRef();
     }
     
     componentDidMount() {
-        // const width = this.divElement.clientWidth;
-        // const height = this.divElement.clientHeight;
-        // this.setState({ width, height });
 
         this.drawSimPaths(this.state.series, this.state.dates);
 
@@ -56,33 +50,47 @@ class Graph extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         // compare prevProps to newProps
-        if (this.props.series !== prevProps.series) {
+        if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
             const { series, dates } = this.props;
-            const { xScale, yScale, lineGenerator } = prevState;
-            this.drawSimPaths(series, dates)
-        }
+            const { xScale, yScale, lineGenerator, width, height } = prevState;
 
-        // Update Axes
-        if (this.xAxisRef.current) {
-            //update xAxis
-            const xAxisNode = select(this.xAxisRef.current)
-            xAxisNode
-                .transition()
-                .duration(1000)
-                .call(this.xAxis);
-        }
-        if (this.yAxisRef.current) {
-            // update yAxis
-            const yAxisNode = select(this.yAxisRef.current)
-            yAxisNode
-                .transition()
-                .duration(1000)
-                .call(this.yAxis)
-                .call(g => g.select(".domain").remove());
+            if (this.simPathsRef.current) {
+                
+                // update scale and data
+                const updatedScales = this.calculateSimPaths(series, dates)
+
+                // get svg node
+                const simPathsNode = select(this.simPathsRef.current)
+                console.log(simPathsNode.selectAll('.simPath'))
+                // update the paths with new data
+                simPathsNode.selectAll('.simPath')
+                    .data(series)
+                    .transition()
+                    .duration(1000)
+                    .attr("d", d => updatedScales.lineGenerator(d.values))
+            }
+            // Update Axes
+            if (this.xAxisRef.current) {
+                //update xAxis
+                const xAxisNode = select(this.xAxisRef.current)
+                xAxisNode
+                    .transition()
+                    .duration(1000)
+                    .call(this.xAxis);
+            }
+            if (this.yAxisRef.current) {
+                // update yAxis
+                const yAxisNode = select(this.yAxisRef.current)
+                yAxisNode
+                    .transition()
+                    .duration(1000)
+                    .call(this.yAxis)
+                    .call(g => g.select(".domain").remove());
+            }
         }
     }
 
-    drawSimPaths = (series, dates) => {
+    calculateSimPaths = (series, dates) => {
         // draw the sims first here (without transitioning)
         const { xScale, yScale, lineGenerator, width, height } = this.state;
         // calculate scale domains
@@ -97,25 +105,32 @@ class Graph extends Component {
         yScale.domain([0, maxVal]).nice();
         lineGenerator.x((d,i) => xScale(dates[i]))
         lineGenerator.y(d => yScale(d))
+
+        return { xScale, yScale, lineGenerator }
+    }
+
+    drawSimPaths = (series, dates) => {
+        const { xScale, yScale, lineGenerator, width, height } = this.state;
+        const updatedScales = this.calculateSimPaths(series, dates);
         // generate simPaths from lineGenerator
-        
         const simPaths = series.map( (d,i) => {
-            // console.log(i, d.values)
+            // console.log(i, typeof(d.values))
             return lineGenerator(d.values)
         })
         // set new values to state
         this.setState({ 
             series: series,
             dates: dates,
-            xScale: xScale,
-            yScale: yScale,
-            lineGenerator: lineGenerator,
+            xScale: updatedScales.xScale,
+            yScale: updatedScales.yScale,
+            lineGenerator: updatedScales.lineGenerator,
             simPaths: simPaths,
         })
     }
 
-    handleMouseMove = (event) => {
-        // console.log(clientPoint(event.target, event))
+    handleMouseMove = (event, index) => {
+        console.log(index)
+        console.log(clientPoint(event.target, event))
         
         // console.log(this)
         // const ym = this.state.yScale.invert(clientPoint[1]);
@@ -137,16 +152,22 @@ class Graph extends Component {
     render() {
         return (
             <div>
-                <svg width={this.state.width} height={this.state.height}>
-                    <path 
-                        d={this.state.simPaths}
-                        fill='none' 
-                        stroke={green} 
-                        strokeWidth='1'
-                        onMouseMove={this.handleMouseMove}
-                        onMouseEnter={this.handleMouseEnter}
-                        onMouseLeave={this.handleMouseLeave}
-                    />
+                <svg width={this.state.width} height={this.state.height} ref={this.simPathsRef}>
+                    {this.state.simPaths.map( (simPath, i) => {
+                        return <path
+                            d={simPath}
+                            key={`simPath-${i}`}
+                            id={`simPath-${i}`}
+                            className={`simPath`}
+                            fill='none' 
+                            stroke={green} 
+                            strokeWidth='1'
+                            onMouseMove={(e) => this.handleMouseMove(e, i)}
+                            onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                            onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                        />
+                    }) 
+                    }
                 <g>
                     <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
                     <g ref={this.yAxisRef} transform={`translate(${margin.left}, 0)`} />
