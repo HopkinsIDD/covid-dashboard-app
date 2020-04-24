@@ -159,14 +159,13 @@ class Graph extends Component {
                 // visible simPaths
                 this.state.simPaths.map( (simPath, i) => {
                     const maxVal = max(this.state.series[i].values)
-                    // console.log(maxVal, this.props.statThreshold, maxVal >= this.props.statThreshold)
                     return <path
                         d={simPath}
                         key={`simPath-${i}`}
                         id={`simPath-${i}`}
                         className={`simPath`}
                         fill='none' 
-                        stroke = { maxVal >= this.props.statThreshold ? red : green }
+                        stroke = { maxVal >= this.state.series.display ? red : green }
                         strokeWidth={'1'}
                         strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
                         onMouseMove={(e) => this.handleMouseMove(e, i)}
