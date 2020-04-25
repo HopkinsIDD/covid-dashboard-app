@@ -1,29 +1,27 @@
+// id: explicit key to list items in onChange()
+// key: use this to key into dataset
+// name: display name for visualization
+
 export const SCENARIOS = [
-    {'id': 1, 'name': 'Fixed Lockdown'},
-    {'id': 2, 'name': 'Fatiguing Lockdown'},
-    {'id': 3, 'name': 'Pulsed Lockdown'},
-    {'id': 4, 'name': 'Fixed, Pulsed Lockdown'},
-    // {'id': 1, 'name': 'Fixed Lockdown + Mild Social Distancing'},
-    // {'id': 2, 'name': 'Fatiguing Lockdown + Mild Social Distancing'},
-    // {'id': 3, 'name': 'Fixed Lockdown + Pulsed Social Distancing'},
-    // {'id': 4, 'name': 'Fatiguing Lockdown + Pulsed Social Distancing'},
+    {'id': 1, 'key': 'Fixed Lockdown', 'name': 'Fixed Lockdown'},
+    {'id': 2, 'key': 'Fatiguing Lockdown', 'name': 'Fatiguing Lockdown'},
+    {'id': 3, 'key': 'Pulsed Lockdown', 'name': 'Pulsed Lockdown'},
+    {'id': 4, 'key': 'Fixed, Pulsed Lockdown', 'name': 'Fixed, Pulsed Lockdown'},
 ];
 
 export const STATS = [
-    {'id': 0, 'name': 'Infections', 'key': 'incidI'},
-    {'id': 1, 'name': 'Hospitalizations', 'key': 'incidH'},
-    {'id': 2, 'name': 'ICU Cases', 'key': 'incidICU'},
-    {'id': 3, 'name': 'Ventilator Usage', 'key': 'incidVent'},
-    {'id': 4, 'name': 'Deaths', 'key': 'incidD'},
+    {'id': 0, 'key': 'incidI', 'name': 'Infections'},
+    {'id': 1, 'key': 'incidH', 'name': 'Hospitalizations'},
+    {'id': 2, 'key': 'incidICU', 'name': 'ICU Cases'},
+    {'id': 3, 'key': 'incidVent', 'name': 'Ventilator Usage'},
+    {'id': 4, 'key': 'incidD', 'name': 'Deaths'},
 ];
 
-export const STATOBJ = {
-    'Infections': 'incidI',
-    'Hospitalizations': 'incidH',
-    'ICU Cases': 'incidICU',
-    'Ventilator Usage': 'incidVent',
-    'Deaths': 'incidD'
-}
+export const LEVELS = [
+    {'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'}, 
+    {'id': 2, 'key': 'medium', 'name': '0.5% IFR, 5% hospitalization rate'},
+    {'id': 3, 'key': 'low', 'name': '0.25% IFR, 2.5% hospitalization rate'},
+];
 
 export const COUNTIES = [
     {'GEOID': '06067', 'NAME': 'Sacramento County', 'USPS': 'CA'},

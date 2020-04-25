@@ -8,7 +8,7 @@ class Buttons extends Component {
     }
     
     handleClick(i) {
-        this.props.onButtonClick(i.name);
+        this.props.onButtonClick(i);
     }
 
     render() {
@@ -17,7 +17,7 @@ class Buttons extends Component {
                 return (
                     <button
                         type="button"
-                        className="btn btn-light btn-stat"
+                        className="btn btn-light btn-stat filter-text"
                         onClick={() => this.handleClick(stat)}
                         key={stat.id}>
                         {stat.name}
