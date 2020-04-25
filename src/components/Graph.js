@@ -62,7 +62,13 @@ class Graph extends Component {
                 
                 // update scale and data
                 const updatedScales = this.calculateSimPaths(series, dates)
-
+              
+                // generate simPaths from lineGenerator
+                const simPaths = series.map( (d,i) => {
+                    // console.log(i, typeof(d.values))
+                    return lineGenerator(d.values)
+                })
+              
                 // get svg node
                 const simPathsNode = select(this.simPathsRef.current)
                 console.log(simPathsNode.selectAll('.simPath'))
@@ -72,28 +78,25 @@ class Graph extends Component {
                     .transition()
                     .duration(1000)
                     .attr("d", d => updatedScales.lineGenerator(d.values))
+                    .on("end", () => {
+                        // set new values to state
+                        this.setState({ 
+                            series: series,
+                            dates: dates,
+                            xScale: updatedScales.xScale,
+                            yScale: updatedScales.yScale,
+                            lineGenerator: updatedScales.lineGenerator,
+                            simPaths: simPaths,
+                        })
+                    })
                 
-                // update the hover paths with new data
-                simPathsNode.selectAll('.simPath-hover')
-                .data(series)
-                .transition()
-                .duration(1000)
-                .attr("d", d => updatedScales.lineGenerator(d.values))
-
-                // generate simPaths from lineGenerator
-                const simPaths = series.map( (d,i) => {
-                    // console.log(i, typeof(d.values))
-                    return lineGenerator(d.values)
-                })
-                // set new values to state
-                this.setState({ 
-                    series: series,
-                    dates: dates,
-                    xScale: updatedScales.xScale,
-                    yScale: updatedScales.yScale,
-                    lineGenerator: updatedScales.lineGenerator,
-                    simPaths: simPaths,
-                })
+                // update the hover paths with new data - but we don't need transitions
+                // simPathsNode.selectAll('.simPath-hover')
+                //     .data(series)
+                //     .transition()
+                //     .duration(1000)
+                //     .attr("d", d => updatedScales.lineGenerator(d.values))
+              
             }
             // Update Axes
             if (this.xAxisRef.current) {
@@ -169,6 +172,8 @@ class Graph extends Component {
     }
 
     render() {
+        // console.log(this.props.stat, this.props.scenario)
+        // console.log(this.state.series)
         return (
             <div>
                 <svg 
