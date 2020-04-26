@@ -24,14 +24,13 @@ class MainContainer extends Component {
             dataset: {},
             dataLoaded: false,
             series: {},
-            seriesMax: 0,
             dates: [],
             yAxisLabel: '',
             stat: {'id': 1, 'name': 'Infections', 'key': 'incidI'},
             geoid: '101',
             scenario: {'id': 1, 'key': 'Fixed Lockdown', 'name': 'Fixed Lockdown'},
             severity: {'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'}, 
-            statThreshold: 0,
+            statThreshold: null,
             r0: '1',
             simNum: '150',
             showConfBounds: false,
@@ -79,13 +78,11 @@ class MainContainer extends Component {
     async componentDidMount() {
         const dataset = this.buildDummyDataset();
         const initialData = dataset[this.state.scenario.key][this.state.severity.key];
-
         const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
         const series = initialData.series[this.state.stat.key];
-        series.map(sim => sim['display'] = true);
-        const seriesMax = Math.max.apply(null, series[0].values);
-        const yAxisLabel = `Number of Daily ${this.state.stat} in ${this.state.geoid}`;
+        series.map(sim => sim['surpassed'] = false);
+        const yAxisLabel = `Number of Daily ${this.state.stat.name} in ${this.state.geoid}`;
         
         const graphW = this.graphEl.clientWidth;
         const graphH = this.graphEl.clientHeight;
@@ -94,33 +91,50 @@ class MainContainer extends Component {
             dataset,
             dates,
             series,
-            seriesMax,
             yAxisLabel,
             graphW,
             graphH
         }, () => {
             this.setState({
                 dataLoaded: true
-            })
+            });
         })
     };
 
+    updateSeries(scenario, stat, severity, dataThreshold) {
+        const newSeries = Array.from(this.state.dataset[scenario.key][severity.key].series[stat.key]);
+        if (dataThreshold) {
+            newSeries.forEach(sim => {
+                if (Math.max.apply(null, sim.values) > dataThreshold) {
+                  return sim.surpassed = true;
+                } else {
+                    return sim.surpassed = false;
+                }
+               });
+        } else {
+            // quick fix to add "false" to all series where thresholds aren't set (right way: add to original dataset)
+            newSeries.forEach(sim => {
+                  return sim.surpassed = false;
+               });
+        }
+        return newSeries;
+    }
+
     handleButtonClick(i) {
         const yAxisLabel = `Number of Daily ${i.name} in ${this.state.geoid}`;
-        const buttonCopy = Array.from(this.state.dataset[this.state.scenario.key][this.state.severity.key].series[i.key]);
-        const seriesMax = Math.max.apply(null, buttonCopy[0].values);
+        const series = this.updateSeries(this.state.scenario, i, this.state.severity, this.state.dataThreshold);
         this.setState({
-            stat: i.key,
-            series: buttonCopy,
-            seriesMax,
+            stat: i,
+            series,
             yAxisLabel
         })
     }
 
     handleScenarioClick(i) {
-        const scenarioCopy = Array.from(this.state.dataset[i.name][this.state.severity.key].series[this.state.stat.key]);
+        const series = this.updateSeries(i, this.state.stat, this.state.severity, this.state.dataThreshold);
         this.setState({
-            series: scenarioCopy,
+            scenario: i,
+            series
         })
         // TODO: for handling multiple scenarios toggled
         //     if (this.state.scenario.includes(i)) {
@@ -141,26 +155,25 @@ class MainContainer extends Component {
     }
 
     handleSeverityClick(i) {
-        const sevCopy = Array.from(this.state.dataset[this.state.scenario.key][i.key].series[this.state.stat]);
+        const series = this.updateSeries(this.state.scenario, this.state.stat, i, this.state.dataThreshold);
         this.setState({
             severity: i,
-            series: sevCopy,
+            series,
         });
     }
 
     handleStatSliderChange(i) {
-        const statCopy = Array.from(this.state.series);
-        statCopy.forEach(sim => {
-            if (Math.max.apply(null, sim.values) < this.state.statThreshold) {
-              return sim.display = false;
-            } 
-           });
+        const series = this.updateSeries(this.state.scenario, this.state.stat, this.state.severity, i);
+        // const statCopy = Array.from(this.state.series);
+        // statCopy.forEach(sim => {
+        //     if (Math.max.apply(null, sim.values) < this.state.statThreshold) {
+        //       return sim.surpassed = false;
+        //     } 
+        //    });
         this.setState({
-            series: statCopy,
-            statThreshold: +i, // what does this do?
+            series,
+            statThreshold: +i, 
         });
-        console.log('threshold', this.state.statThreshold)
-        console.log('series', this.state.series)
     }
 
     handleReprSliderChange(i) {
