@@ -192,7 +192,7 @@ class Graph extends Component {
                         id={`simPath-${i}`}
                         className={`simPath`}
                         fill='none' 
-                        stroke = { this.state.series[i].display ? red : green }
+                        stroke = { this.state.series[i].surpassed ? red : green }
                         strokeWidth={'1'}
                         strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
                         onMouseMove={(e) => this.handleMouseMove(e, i)}

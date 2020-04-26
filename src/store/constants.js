@@ -5,8 +5,8 @@
 export const SCENARIOS = [
     {'id': 1, 'key': 'Fixed Lockdown', 'name': 'Fixed Lockdown'},
     {'id': 2, 'key': 'Fatiguing Lockdown', 'name': 'Fatiguing Lockdown'},
-    {'id': 3, 'key': 'Pulsed Lockdown', 'name': 'Pulsed Lockdown'},
-    {'id': 4, 'key': 'Fixed, Pulsed Lockdown', 'name': 'Fixed, Pulsed Lockdown'},
+    // {'id': 3, 'key': 'Pulsed Lockdown', 'name': 'Pulsed Lockdown'},
+    // {'id': 4, 'key': 'Fixed, Pulsed Lockdown', 'name': 'Fixed, Pulsed Lockdown'},
 ];
 
 export const STATS = [
