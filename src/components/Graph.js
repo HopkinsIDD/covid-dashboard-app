@@ -53,6 +53,7 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        // console.log(this.props)
         // compare prevProps to newProps
         if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
             const { series, dates } = this.props;
@@ -172,12 +173,12 @@ class Graph extends Component {
     }
 
     render() {
-        console.log(this.props.stat, this.props.scenario)
-        console.log(this.state.series)
+        // console.log(this.props.stat, this.props.scenario, this.props.yAxisLabel)
+        // console.log(this.state.series)
         return (
             <div className="graph-wrapper">
                 <div className="y-axis-label">
-                    {`Number of ${this.props.stat.name} Per Day`}
+                    {this.props.yAxisLabel}
                 </div>
                 <svg 
                     width={this.state.width} 

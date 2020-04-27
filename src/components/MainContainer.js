@@ -45,7 +45,7 @@ class MainContainer extends Component {
         const dates = initialData.dates.map( d => parseDate(d));
         const series = initialData.series[this.state.stat.key];
         series.map(sim => sim['over'] = false);
-        const yAxisLabel = `Number of Daily ${this.state.stat.name} in ${this.state.geoid}`;
+        const yAxisLabel = `Amount of Daily ${this.state.stat.name}`;
         
         const graphW = this.graphEl.clientWidth;
         const graphH = this.graphEl.clientHeight;
@@ -79,7 +79,7 @@ class MainContainer extends Component {
     }
 
     handleButtonClick(i) {
-        const yAxisLabel = `Number of Daily ${i.name} in ${this.state.geoid}`;
+        const yAxisLabel = `Amount of Daily ${i.name}`;
         const series = this.updateSeries(this.state.scenario, i, this.state.severity, this.state.dataThreshold);
         this.setState({
             stat: i,
@@ -113,6 +113,7 @@ class MainContainer extends Component {
     }
 
     handleSeverityClick(i) {
+        console.log(i)
         const series = this.updateSeries(this.state.scenario, this.state.stat, i, this.state.dataThreshold);
         this.setState({
             severity: i,
@@ -165,6 +166,7 @@ class MainContainer extends Component {
                                 <Graph 
                                     stat={this.state.stat}
                                     geoid={this.state.geoid}
+                                    yAxisLabel={this.state.yAxisLabel}
                                     scenario={this.state.scenario}
                                     severity={this.state.severity}
                                     r0={this.state.r0}
