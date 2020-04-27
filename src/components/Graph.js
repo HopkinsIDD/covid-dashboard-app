@@ -8,7 +8,7 @@ import { select, selectAll, clientPoint } from 'd3-selection'
 import { transition } from 'd3-transition'
 import { numberWithCommas } from '../store/utils.js'
 
-const margin = { top: 20, right: 40, bottom: 30, left: 50 };
+const margin = { top: 20, right: 40, bottom: 30, left: 80 };
 const red = '#d31d30';
 const green = '#4ddaba';
 const blue = '#1f90db';
@@ -172,10 +172,13 @@ class Graph extends Component {
     }
 
     render() {
-        // console.log(this.props.stat, this.props.scenario)
-        // console.log(this.state.series)
+        console.log(this.props.stat, this.props.scenario)
+        console.log(this.state.series)
         return (
-            <div>
+            <div className="graph-wrapper">
+                <div className="y-axis-label">
+                    {`Number of ${this.props.stat.name} Per Day`}
+                </div>
                 <svg 
                     width={this.state.width} 
                     height={this.state.height} 
@@ -185,7 +188,6 @@ class Graph extends Component {
                 {
                 // visible simPaths
                 this.state.simPaths.map( (simPath, i) => {
-                    const maxVal = max(this.state.series[i].vals)
                     return <path
                         d={simPath}
                         key={`simPath-${i}`}
