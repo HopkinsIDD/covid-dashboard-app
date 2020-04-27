@@ -4,7 +4,8 @@ import Buttons from './Filters/Buttons.js';
 import Scenarios from './Filters/Scenarios.js';
 import Severity from './Filters/Severity.js';
 import Sliders from './Filters/Sliders.js';
-import Overlays from './Filters/Overlays.js';
+// import Overlays from './Filters/Overlays.js';
+import { getRange, updateThresholdFlag } from '../utils/utils.js'
 import { utcParse } from 'd3-time-format'
 const dataset = require('../store/geo06085.json');
 
@@ -16,7 +17,6 @@ class MainContainer extends Component {
         this.handleSeverityClick = this.handleSeverityClick.bind(this);
         this.handleStatSliderChange = this.handleStatSliderChange.bind(this);
         this.handleReprSliderChange = this.handleReprSliderChange.bind(this);
-        this.handleSimSliderChange = this.handleSimSliderChange.bind(this);
         this.handleConfClick = this.handleConfClick.bind(this);
         this.handleActualClick = this.handleActualClick.bind(this);
         this.state = {
@@ -25,11 +25,24 @@ class MainContainer extends Component {
             series: {},
             dates: [],
             yAxisLabel: '',
-            stat: {'id': 1, 'name': 'Infections', 'key': 'incidI'},
+            stat: {
+                'id': 1,
+                'name': 'Infections',
+                'key': 'incidI'
+            },
             geoid: '101',
-            scenario: {'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled'},
-            severity: {'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'}, 
-            statThreshold: null,
+            scenario: {
+                'id': 1,
+                'key': 'USA_Uncontrolled',
+                'name': 'USA_Uncontrolled'
+            },
+            severity: {
+                'id': 1,
+                'key': 'high',
+                'name': '1% IFR, 10% hospitalization rate'}, 
+            statThreshold: 0,
+            seriesMax: Number.NEGATIVE_INFINITY,
+            seriesMin: Number.POSITIVE_INFINITY,
             r0: '1',
             simNum: '150',
             showConfBounds: false,
@@ -40,13 +53,17 @@ class MainContainer extends Component {
     };
 
     async componentDidMount() {
-        const initialData = dataset[this.state.scenario.key][this.state.severity.key];
+        const { scenario, severity, geoid, stat } = this.state;
+        const initialData = dataset[scenario.key][severity.key];
+        const series = initialData.series[stat.key];
         const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
-        const series = initialData.series[this.state.stat.key];
-        series.map(sim => sim['over'] = false);
-        const yAxisLabel = `Number of Daily ${this.state.stat.name} in ${this.state.geoid}`;
         
+        const [seriesMin, seriesMax] = getRange(series);
+        const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
+        updateThresholdFlag(series, statThreshold);
+        
+        const yAxisLabel = `Number of Daily ${stat.name} in ${geoid}`;
         const graphW = this.graphEl.clientWidth;
         const graphH = this.graphEl.clientHeight;
 
@@ -54,6 +71,9 @@ class MainContainer extends Component {
             dataset,
             dates,
             series,
+            seriesMax,
+            seriesMin,
+            statThreshold,
             yAxisLabel,
             graphW,
             graphH
@@ -64,35 +84,48 @@ class MainContainer extends Component {
         })
     };
 
-    updateSeries(scenario, stat, severity, dataThreshold) {
-        const newSeries = Array.from(this.state.dataset[scenario.key][severity.key].series[stat.key]);
-        if (dataThreshold) {
-            newSeries.forEach(sim => {
-                if (Math.max.apply(null, sim.vals) > dataThreshold) {
-                  return sim.over = true;
-                } else {
-                    return sim.over = false;
-                }
-               });
-        };
-        return newSeries;
-    }
+    updateSeries(scenario, stat, severity) {
+        const { dataset } = this.state;
+        const newSeries = Array.from(
+            dataset[scenario.key][severity.key].series[stat.key]
+            );
+        this.setState({
+            series: newSeries
+        })
+    };
+    
+    updateThreshold(series) {
+        const [seriesMin, seriesMax] = getRange(series);
+        const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
+        updateThresholdFlag(series, statThreshold);
+        console.log('updateSeries statThreshold', this.state.statThreshold)
 
+        this.setState({
+            statThreshold,
+            seriesMin,
+            seriesMax
+        })
+    };
+    
     handleButtonClick(i) {
-        const yAxisLabel = `Number of Daily ${i.name} in ${this.state.geoid}`;
-        const series = this.updateSeries(this.state.scenario, i, this.state.severity, this.state.dataThreshold);
+        const { geoid, scenario, severity} = this.state;
+        const yAxisLabel = `Number of Daily ${i.name} in ${geoid}`;
+        // TODO: ALTERNATIVELY, updateSeries can return a Series, then set
+        // to state here, and then on callback, call updateThreshold
+        this.updateSeries(scenario, i, severity, () => {
+            this.updateThreshold(this.state.series)
+        });
         this.setState({
             stat: i,
-            series,
             yAxisLabel
         })
-    }
+    };
 
     handleScenarioClick(i) {
-        const series = this.updateSeries(i, this.state.stat, this.state.severity, this.state.dataThreshold);
+        const { stat, severity} = this.state;
+        this.updateSeries(i, stat, severity);
         this.setState({
             scenario: i,
-            series
         })
         // TODO: for handling multiple scenarios toggled
         //     if (this.state.scenario.includes(i)) {
@@ -113,27 +146,27 @@ class MainContainer extends Component {
     }
 
     handleSeverityClick(i) {
-        const series = this.updateSeries(this.state.scenario, this.state.stat, i, this.state.dataThreshold);
+        const { scenario, stat} = this.state;
+        this.updateSeries(scenario, stat, i);
         this.setState({
             severity: i,
-            series,
         });
     }
 
     handleStatSliderChange(i) {
-        const series = this.updateSeries(this.state.scenario, this.state.stat, this.state.severity, i);
+        console.log('MainContainer', i)
+        const { scenario, stat, severity } = this.state;
+        const rounded = Math.ceil(i / 100) * 100;
+
         this.setState({
-            series,
-            statThreshold: +i, 
+            statThreshold: +rounded, 
+        }, () => {
+            this.updateSeries(scenario, stat, severity, i, this.state.statThreshold);
         });
     }
 
     handleReprSliderChange(i) {
         this.setState({r0: i});
-    }
-
-    handleSimSliderChange(i) {
-        this.setState({simNum: i});
     }
 
     handleConfClick(i) {
@@ -160,7 +193,13 @@ class MainContainer extends Component {
                                 />
                             <p></p>
 
-                            <div className="graph border" ref={ (graphEl) => { this.graphEl = graphEl } }>
+                            <p className="filter-text scenario-title">
+                                {this.state.scenario.name}
+                            </p>
+                            <div
+                                className="graph border"
+                                ref={ (graphEl) => { this.graphEl = graphEl } }
+                                >
                                 {this.state.dataLoaded &&
                                 <Graph 
                                     stat={this.state.stat}
@@ -185,23 +224,28 @@ class MainContainer extends Component {
                                 onScenarioClick={this.handleScenarioClick}
                             />
                             <p></p>
-                            <h5>Overlays</h5>
+                            {/* <h5>Overlays</h5>
                             <Overlays 
                                 showConfBounds={this.state.showConfBounds}
                                 showActual={this.state.showActual}
                                 onConfClick={this.handleConfClick}
                                 onActualClick={this.handleActualClick}
-                            />                        
+                            />                         */}
                             <h5>Parameters</h5>
                             <p className="param-header">Severity</p>
                             <Severity 
                                 severity={this.state.severity}
                                 onSeverityClick={this.handleSeverityClick}
                             />
+                            <p></p>
+                            <h5>Thresholds</h5>
                             <Sliders 
+                                stat={this.state.stat}
+                                seriesMax={this.state.seriesMax}
+                                seriesMin={this.state.seriesMin}
+                                statThreshold={this.state.statThreshold}
                                 onStatSliderChange={this.handleStatSliderChange}
                                 onReprSliderChange={this.handleReprSliderChange}
-                                onSimSliderChange={this.handleSimSliderChange}
                             />
 
                         </div>

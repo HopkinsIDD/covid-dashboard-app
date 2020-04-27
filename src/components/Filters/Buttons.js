@@ -14,10 +14,11 @@ class Buttons extends Component {
     render() {
         return (
             STATS.map(stat => {
+                const isActive = (stat.key === this.props.stat.key) ? ' btn-active' : '';
                 return (
                     <button
                         type="button"
-                        className="btn btn-light btn-stat filter-text"
+                        className={"btn btn-light btn-stat filter-text" + isActive}
                         onClick={() => this.handleClick(stat)}
                         key={stat.id}>
                         {stat.name}
