@@ -6,6 +6,7 @@ import Severity from './Filters/Severity.js';
 import Sliders from './Filters/Sliders.js';
 import Overlays from './Filters/Overlays.js';
 import { utcParse } from 'd3-time-format'
+import { max } from 'd3-array';
 const dataset = require('../store/geo06085.json');
 
 class MainContainer extends Component {
@@ -46,6 +47,7 @@ class MainContainer extends Component {
         const series = initialData.series[this.state.stat.key];
         series.map(sim => sim['over'] = false);
         const yAxisLabel = `Amount of Daily ${this.state.stat.name}`;
+        const statThreshold = Math.round(max(series.map( s => max(s.vals))) / 2);
         
         const graphW = this.graphEl.clientWidth;
         const graphH = this.graphEl.clientHeight;
@@ -55,6 +57,7 @@ class MainContainer extends Component {
             dates,
             series,
             yAxisLabel,
+            statThreshold,
             graphW,
             graphH
         }, () => {
@@ -174,6 +177,7 @@ class MainContainer extends Component {
                                     showActual={this.state.showActual}
                                     series={this.state.series}
                                     dates={this.state.dates}
+                                    statThreshold={this.state.statThreshold}
                                     width={this.state.graphW}
                                     height={this.state.graphH}
                                 /> }

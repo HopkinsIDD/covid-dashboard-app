@@ -175,6 +175,7 @@ class Graph extends Component {
     render() {
         // console.log(this.props.stat, this.props.scenario, this.props.yAxisLabel)
         // console.log(this.state.series)
+        // console.log(this.props.statThreshold)
         return (
             <div className="graph-wrapper">
                 <div className="y-axis-label">
@@ -221,6 +222,13 @@ class Graph extends Component {
                         onMouseLeave={(e) => this.handleMouseLeave(e, i)}
                     />
                 })}
+                <line
+                    x1={this.state.xScale(this.state.dates[0])}
+                    y1={this.state.yScale(this.props.statThreshold)}
+                    x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
+                    y2={this.state.yScale(this.props.statThreshold)}
+                    stroke={gray}
+                ></line>
                 </g>
                 <g>
                     <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
