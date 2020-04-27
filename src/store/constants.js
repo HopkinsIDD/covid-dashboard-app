@@ -3,10 +3,9 @@
 // name: display name for visualization
 
 export const SCENARIOS = [
-    {'id': 1, 'key': 'Fixed Lockdown', 'name': 'Fixed Lockdown'},
-    {'id': 2, 'key': 'Fatiguing Lockdown', 'name': 'Fatiguing Lockdown'},
-    // {'id': 3, 'key': 'Pulsed Lockdown', 'name': 'Pulsed Lockdown'},
-    // {'id': 4, 'key': 'Fixed, Pulsed Lockdown', 'name': 'Fixed, Pulsed Lockdown'},
+    {'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled'},
+    {'id': 2, 'key': 'USA_Lockdown1918', 'name': 'USA_Lockdown1918'},
+    {'id': 3, 'key': 'USA_LockdownUK', 'name': 'USA_LockdownUK'},
 ];
 
 export const STATS = [
@@ -19,7 +18,7 @@ export const STATS = [
 
 export const LEVELS = [
     {'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'}, 
-    {'id': 2, 'key': 'medium', 'name': '0.5% IFR, 5% hospitalization rate'},
+    {'id': 2, 'key': 'med', 'name': '0.5% IFR, 5% hospitalization rate'},
     {'id': 3, 'key': 'low', 'name': '0.25% IFR, 2.5% hospitalization rate'},
 ];
 

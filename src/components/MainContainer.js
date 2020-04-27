@@ -6,8 +6,7 @@ import Severity from './Filters/Severity.js';
 import Sliders from './Filters/Sliders.js';
 import Overlays from './Filters/Overlays.js';
 import { utcParse } from 'd3-time-format'
-const rawData = require('../store/high_death.json')
-
+const dataset = require('../store/geo06085.json');
 
 class MainContainer extends Component {
     constructor(props) {
@@ -28,7 +27,7 @@ class MainContainer extends Component {
             yAxisLabel: '',
             stat: {'id': 1, 'name': 'Infections', 'key': 'incidI'},
             geoid: '101',
-            scenario: {'id': 1, 'key': 'Fixed Lockdown', 'name': 'Fixed Lockdown'},
+            scenario: {'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled'},
             severity: {'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'}, 
             statThreshold: null,
             r0: '1',
@@ -38,50 +37,14 @@ class MainContainer extends Component {
             graphW: 0,
             graphH: 0,
         };
-    }
-
-    buildDummyDataset() {
-        // Temp function to build out a dummy dataset given unknown input data format 
-        // eg: csv, parquet, json? 
-        // Only first simulation of incidI infections were altered to visualize change
-        const medData = JSON.parse(JSON.stringify(rawData));
-        medData.series['incidI'][0].values = medData.series['incidI'][0].values.map(d => d/2);
-
-        const lowData = JSON.parse(JSON.stringify(rawData));
-        lowData.series['incidI'][0].values = lowData.series['incidI'][0].values.map(d => d/3);
-
-        const hiData2= JSON.parse(JSON.stringify(rawData));
-        hiData2.series['incidI'][0].values = hiData2.series['incidI'][0].values.map(d => d*4);
-
-        const medData2= JSON.parse(JSON.stringify(rawData));
-        medData2.series['incidI'][0].values = medData2.series['incidI'][0].values.map(d => d*2);
-
-        const lowData2= JSON.parse(JSON.stringify(rawData));
-        lowData2.series['incidI'][0].values = lowData2.series['incidI'][0].values.map(d => d*1.5);
-
-
-        const dummy = {
-            'Fixed Lockdown': {
-                'high': rawData,
-                'medium': medData,
-                'low': lowData,
-            },
-            'Fatiguing Lockdown': {
-                'high': hiData2,
-                'medium': medData2,
-                'low': lowData2,
-            }
-        }
-        return dummy;
     };
 
     async componentDidMount() {
-        const dataset = this.buildDummyDataset();
         const initialData = dataset[this.state.scenario.key][this.state.severity.key];
         const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
         const series = initialData.series[this.state.stat.key];
-        series.map(sim => sim['surpassed'] = false);
+        series.map(sim => sim['over'] = false);
         const yAxisLabel = `Number of Daily ${this.state.stat.name} in ${this.state.geoid}`;
         
         const graphW = this.graphEl.clientWidth;
@@ -105,18 +68,13 @@ class MainContainer extends Component {
         const newSeries = Array.from(this.state.dataset[scenario.key][severity.key].series[stat.key]);
         if (dataThreshold) {
             newSeries.forEach(sim => {
-                if (Math.max.apply(null, sim.values) > dataThreshold) {
-                  return sim.surpassed = true;
+                if (Math.max.apply(null, sim.vals) > dataThreshold) {
+                  return sim.over = true;
                 } else {
-                    return sim.surpassed = false;
+                    return sim.over = false;
                 }
                });
-        } else {
-            // quick fix to add "false" to all series where thresholds aren't set (right way: add to original dataset)
-            newSeries.forEach(sim => {
-                  return sim.surpassed = false;
-               });
-        }
+        };
         return newSeries;
     }
 
@@ -164,12 +122,6 @@ class MainContainer extends Component {
 
     handleStatSliderChange(i) {
         const series = this.updateSeries(this.state.scenario, this.state.stat, this.state.severity, i);
-        // const statCopy = Array.from(this.state.series);
-        // statCopy.forEach(sim => {
-        //     if (Math.max.apply(null, sim.values) < this.state.statThreshold) {
-        //       return sim.surpassed = false;
-        //     } 
-        //    });
         this.setState({
             series,
             statThreshold: +i, 
