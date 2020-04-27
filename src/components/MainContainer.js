@@ -113,7 +113,6 @@ class MainContainer extends Component {
     }
 
     handleSeverityClick(i) {
-        console.log(i)
         const series = this.updateSeries(this.state.scenario, this.state.stat, i, this.state.dataThreshold);
         this.setState({
             severity: i,
