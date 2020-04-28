@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import Graph from './Graph.js';
+import Graph from './Graph/Graph.js';
+import ThresholdLabel from './Graph/ThresholdLabel.js';
+import Legend from './Graph/Legend.js';
 import Buttons from './Filters/Buttons.js';
 import Scenarios from './Filters/Scenarios.js';
 import Severity from './Filters/Severity.js';
@@ -37,10 +39,12 @@ class MainContainer extends Component {
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
+            dateThreshold: '2020-04-01',
             dateRange: ['2020-03-01', '2020-07-01'],
             firstDate: '',
             r0: '1',
             simNum: '150',
+            percExceedence: 0,
             showConfBounds: false,
             showActual: false,
             graphW: 0,
@@ -59,7 +63,9 @@ class MainContainer extends Component {
         
         const [seriesMin, seriesMax] = getRange(series);
         const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
-        updateThresholdFlag(series, statThreshold);
+        // mutates series
+        const simsOver = updateThresholdFlag(series, statThreshold); 
+        const percExceedence = simsOver / series.length;
         
         const yAxisLabel = `Number of Daily ${stat.name} in ${geoid}`;
         const graphW = this.graphEl.clientWidth;
@@ -74,6 +80,7 @@ class MainContainer extends Component {
             statThreshold,
             yAxisLabel,
             firstDate,
+            percExceedence,
             graphW,
             graphH
         }, () => {
@@ -96,13 +103,16 @@ class MainContainer extends Component {
             const statThreshold = Math.ceil(seriesMax / 1.2);
             // const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
 
-            updateThresholdFlag(newSeries, statThreshold)
-            
+            // mutates series
+            const simsOver = updateThresholdFlag(newSeries, statThreshold)
+            const percExceedence = simsOver / newSeries.length;
+
             this.setState({
                 series: newSeries,
                 statThreshold,
                 seriesMin,
-                seriesMax
+                seriesMax,
+                percExceedence
             })
         }
     };
@@ -123,11 +133,13 @@ class MainContainer extends Component {
     handleStatSliderChange = (i) => {
         // const rounded = Math.ceil(i / 100) * 100;
         const copy = Array.from(this.state.series);
-        updateThresholdFlag(copy, i)
+        const simsOver = updateThresholdFlag(copy, i);
+        const percExceedence = simsOver / copy.length;
 
         this.setState({
             series: copy,
-            statThreshold: +i
+            statThreshold: +i,
+            percExceedence
         });
     };
 
@@ -184,6 +196,11 @@ class MainContainer extends Component {
                                 className="graph border"
                                 ref={ (graphEl) => { this.graphEl = graphEl } }
                                 >
+                                <ThresholdLabel
+                                    statThreshold={this.state.statThreshold}
+                                    dateThreshold={this.state.dateThreshold}
+                                    percExceedence={this.state.percExceedence}
+                                />
                                 {this.state.dataLoaded &&
                                 <Graph 
                                     stat={this.state.stat}

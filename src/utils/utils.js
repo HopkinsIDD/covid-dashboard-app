@@ -23,12 +23,17 @@ export function getRange(series) {
 
 export function updateThresholdFlag(series, statThreshold) {
   // update 'over' flag to true if sim peak surpasses statThreshold
-  series.forEach(sim => {
-      const simPeak = Math.max.apply(null, sim.vals);
-      if (simPeak > statThreshold) {
-          return sim.over = true;
-      } else {
-          return sim.over = false;
-      };
-  });
+  // returns numSims 'over' threshold
+  let simsOver = 0;
+  
+  Object.values(series).map(sim => {
+    const simPeak = Math.max.apply(null, sim.vals);
+    if (simPeak > statThreshold) {
+        simsOver = simsOver + 1;
+        return sim.over = true;
+    } else {
+        return sim.over = false;
+    };
+  })
+  return simsOver;
 };
