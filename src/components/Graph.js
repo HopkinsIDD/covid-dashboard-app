@@ -4,7 +4,8 @@ import { line } from 'd3-shape'
 import { max, extent, bisectLeft, least } from 'd3-array'
 import { axisLeft, axisBottom } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
-import { select, selectAll, clientPoint } from 'd3-selection'
+import { select } from 'd3-selection'
+import { easeCubicOut } from 'd3-ease'
 import { transition } from 'd3-transition'
 import { addCommas } from '../utils/utils.js'
 
@@ -22,6 +23,7 @@ class Graph extends Component {
             height: this.props.height,
             series: this.props.series,
             dates: this.props.dates,
+            statThreshold: this.props.statThreshold,
             xScale: scaleUtc().range([margin.left, this.props.width - margin.right]),
             yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top]),
             lineGenerator: line().defined(d => !isNaN(d)),
@@ -38,6 +40,7 @@ class Graph extends Component {
             .tickFormat(d => addCommas(d));
         
         this.simPathsRef = React.createRef();
+        this.thresholdRef = React.createRef();
     }
     
     componentDidMount() {
@@ -53,10 +56,14 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log(this.props)
-        // compare prevProps to newProps
+        // console.log(prevProps, this.props)
+        console.log('prev series different from new series is ', this.props.series !== prevProps.series)
+        console.log('prev dates different from new dates is ', this.props.dates !== prevProps.dates)
+        console.log('prev statThreshold', prevProps.statThreshold, 'new statThreshold', this.props.statThreshold)
+       
+        // compare prevProps series or dates to newProps series or dates
         if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
-            const { series, dates } = this.props;
+            const { series, dates, statThreshold } = this.props;
             const { xScale, yScale, lineGenerator, width, height } = prevState;
 
             if (this.simPathsRef.current) {
@@ -78,7 +85,9 @@ class Graph extends Component {
                     .data(series)
                     .transition()
                     .duration(1000)
+                    .ease(easeCubicOut)
                     .attr("d", d => updatedScales.lineGenerator(d.vals))
+                    .attr("stroke", (d,i) => series[i].over ? red : green )
                     .on("end", () => {
                         // set new vals to state
                         this.setState({ 
@@ -90,15 +99,22 @@ class Graph extends Component {
                             simPaths: simPaths,
                         })
                     })
-                
-                // update the hover paths with new data - but we don't need transitions
-                // simPathsNode.selectAll('.simPath-hover')
-                //     .data(series)
-                //     .transition()
-                //     .duration(1000)
-                //     .attr("d", d => updatedScales.lineGenerator(d.vals))
-              
             }
+
+            // Update statThresholdLine
+            if (this.thresholdRef.current) {
+                const thresholdNode = select(this.thresholdRef.current)
+                thresholdNode.selectAll('.statThreshold')
+                    .transition()
+                    .duration(1000)
+                    .attr("y1", yScale(statThreshold))
+                    .attr("y2", yScale(statThreshold))
+                    .ease(easeCubicOut)
+                    .on("end", () => {
+                        this.setState({ statThreshold })
+                    })
+            }
+
             // Update Axes
             if (this.xAxisRef.current) {
                 //update xAxis
@@ -222,13 +238,16 @@ class Graph extends Component {
                         onMouseLeave={(e) => this.handleMouseLeave(e, i)}
                     />
                 })}
+                <g ref={this.thresholdRef}>
                 <line
                     x1={this.state.xScale(this.state.dates[0])}
-                    y1={this.state.yScale(this.props.statThreshold)}
+                    y1={this.state.yScale(this.state.statThreshold)}
                     x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
-                    y2={this.state.yScale(this.props.statThreshold)}
+                    y2={this.state.yScale(this.state.statThreshold)}
                     stroke={gray}
+                    className={'statThreshold'}
                 ></line>
+                </g>
                 </g>
                 <g>
                     <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
