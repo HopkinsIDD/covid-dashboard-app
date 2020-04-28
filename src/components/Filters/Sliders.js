@@ -12,10 +12,11 @@ class Sliders extends Component {
 
     render() {
         const { stat, statThreshold, seriesMin, seriesMax } = this.props;
+        const roundedStat = Math.ceil(statThreshold / 100) * 100;
         return (
             <div className="slider-menu">
                 <p className="filter-text">
-                    {stat.name} Threshold: {addCommas(statThreshold)}
+                    {stat.name} Threshold: {addCommas(roundedStat)}
                 </p>
                     <div className="slidecontainer">
                         <input
