@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Graph from './Graph.js';
+import Brush from './Filters/Brush.js';
 import Buttons from './Filters/Buttons.js';
 import Scenarios from './Filters/Scenarios.js';
 import Severity from './Filters/Severity.js';
@@ -63,7 +64,7 @@ class MainContainer extends Component {
         const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
         updateThresholdFlag(series, statThreshold);
         
-        const yAxisLabel = `Number of Daily ${stat.name} in ${geoid}`;
+        const yAxisLabel = `Number of ${stat.name} per Day`;
         const graphW = this.graphEl.clientWidth;
         const graphH = this.graphEl.clientHeight;
 
@@ -109,7 +110,7 @@ class MainContainer extends Component {
     };
 
     handleButtonClick = (i) => {
-        const yAxisLabel = `Amount of Daily ${i.name}`;
+        const yAxisLabel = `Number of ${i.name} per Day`;
         this.setState({stat: i, yAxisLabel})
     };
 
@@ -184,6 +185,7 @@ class MainContainer extends Component {
                                 ref={ (graphEl) => { this.graphEl = graphEl } }
                                 >
                                 {this.state.dataLoaded &&
+                                <div>
                                 <Graph 
                                     stat={this.state.stat}
                                     geoid={this.state.geoid}
@@ -199,7 +201,13 @@ class MainContainer extends Component {
                                     statThreshold={this.state.statThreshold}
                                     width={this.state.graphW}
                                     height={this.state.graphH}
-                                /> }
+                                /> 
+                                <Brush
+                                    width={this.state.graphW}
+                                    height={100} 
+                                />
+                                </div>
+                                }
                             </div>
                         </div>
                         <div className="col-3">

@@ -57,7 +57,7 @@ ul {
 
 .graph {
   /* margin-top: 2%; */
-  height: 40vh;
+  height: 50vh;
 }
 
 .slider-menu {
@@ -79,7 +79,7 @@ ul {
   bottom: 0;
   left: 0;
   margin-left: 5px;
-  margin-bottom: 70px;
+  margin-bottom: 50px;
   font-size: 0.75rem;
   font-weight: bold;
   pointer-events: none;
