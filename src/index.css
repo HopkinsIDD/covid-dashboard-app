@@ -51,6 +51,14 @@ ul {
   margin-bottom: 0px;
 }
 
+.threshold-label {
+  text-align: center;
+}
+
+.bold {
+  font-weight: bold;
+}
+
 .slider {
   width: 100%;
 }
