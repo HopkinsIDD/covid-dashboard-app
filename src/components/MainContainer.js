@@ -7,7 +7,7 @@ import Severity from './Filters/Severity.js';
 import Sliders from './Filters/Sliders.js';
 // import Overlays from './Filters/Overlays.js';
 import { getRange, updateThresholdFlag } from '../utils/utils.js'
-import { utcParse } from 'd3-time-format'
+import { utcParse, timeFormat } from 'd3-time-format'
 import { max } from 'd3-array';
 const dataset = require('../store/geo06085.json');
 
@@ -116,6 +116,31 @@ class MainContainer extends Component {
                 statThreshold,
                 seriesMin,
                 seriesMax
+            })
+        }
+        if (this.state.dateRange !== prevState.dateRange) {
+            const { dataset, stat, scenario, severity, series, dates, dateRange } = this.state;
+            // const newSeries = Array.from(
+            //     dataset[scenario.key][severity.key].series[stat.key]
+            //     );
+            let minIndex, maxIndex;
+            const formatDate = timeFormat("%B %d, %Y");
+            const newDates = dates.filter( (date, index) => { 
+                if (formatDate(date) === formatDate(dateRange[0])) minIndex = index
+                if (formatDate(date) === formatDate(dateRange[1])) maxIndex = index
+                return date >= dateRange[0] && date < dateRange[1]
+            })
+            console.log(newDates)
+            console.log(minIndex, maxIndex, maxIndex-minIndex)
+            const newSeries = Array.from(series).map( s => {
+                const newS = {...s}
+                newS.vals = s.vals.slice(minIndex, maxIndex)
+                return newS
+            })
+            console.log(newSeries)
+            this.setState({
+                dates: newDates,
+                series: newSeries
             })
         }
     };

@@ -59,9 +59,9 @@ class Graph extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         // console.log(prevProps, this.props)
-        console.log('prev series different from new series is ', this.props.series !== prevProps.series)
-        console.log('prev dates different from new dates is ', this.props.dates !== prevProps.dates)
-        console.log('prev statThreshold', prevProps.statThreshold, 'new statThreshold', this.props.statThreshold)
+        // console.log('prev series different from new series is ', this.props.series !== prevProps.series)
+        // console.log('prev dates different from new dates is ', this.props.dates !== prevProps.dates)
+        // console.log('prev statThreshold', prevProps.statThreshold, 'new statThreshold', this.props.statThreshold)
        
         // compare prevProps series or dates to newProps series or dates
         if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
