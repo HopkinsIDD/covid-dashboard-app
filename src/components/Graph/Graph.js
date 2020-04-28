@@ -7,7 +7,7 @@ import { timeFormat } from 'd3-time-format'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { transition } from 'd3-transition'
-import { addCommas } from '../utils/utils.js'
+import { addCommas } from '../../utils/utils.js'
 
 const margin = { top: 20, right: 40, bottom: 30, left: 80 };
 const red = '#d31d30';
