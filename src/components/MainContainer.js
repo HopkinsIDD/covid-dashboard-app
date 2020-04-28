@@ -38,10 +38,8 @@ class MainContainer extends Component {
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
-            dateThreshold: '2020-02-01',
+            dateRange: ['2020-03-01', '2020-07-01'],
             firstDate: '',
-            dateMax: '2020-02-01',
-            dateMin: '2020-02-01',
             r0: '1',
             simNum: '150',
             showConfBounds: false,
@@ -96,7 +94,8 @@ class MainContainer extends Component {
                 dataset[scenario.key][severity.key].series[stat.key]
                 );
             const [seriesMin, seriesMax] = getRange(newSeries);
-            const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
+            const statThreshold = Math.ceil(seriesMax / 1.2);
+            // const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
 
             updateThresholdFlag(newSeries, statThreshold)
             
@@ -123,29 +122,30 @@ class MainContainer extends Component {
     };
 
     handleStatSliderChange = (i) => {
-        const rounded = Math.ceil(i / 100) * 100;
+        // const rounded = Math.ceil(i / 100) * 100;
         const copy = Array.from(this.state.series);
-        updateThresholdFlag(copy, rounded)
+        updateThresholdFlag(copy, i)
 
         this.setState({
             series: copy,
-            statThreshold: +rounded
+            statThreshold: +i
         });
     };
 
     handleDateSliderChange = (i) => {
         // for example, if props received is dateRange like i = [minDate, maxDate]
         const parseDate = utcParse("%Y-%m-%d");
-        const dateThreshold = parseDate(i);
-        const idxMin = dateThreshold[0] - this.state.firstDate;
-        const idxMax = dateThreshold[1] - this.state.firstDate;
-        const copy = Array.from(this.state.dates.slice(idxMin, idxMax));
+        const dateRange = [parseDate(i[0]), parseDate(i[1])];
+        const idxMin = dateRange[0] - this.state.firstDate;
+        const idxMax = dateRange[1] - this.state.firstDate;
+        
+        const copyDates = Array.from(this.state.dates.slice(idxMin, idxMax));
+        const copySeries = Array.from(this.state.series);
+        Object.values(copySeries).map(sim => sim.vals.splice(idxMin, idxMax));
 
         this.setState({
-            dateThreshold,
-            dates: copy,
-            dateMin: i[0],
-            dateMax: i[1],
+            series: copySeries,
+            dates: copyDates,
         });
     };
 
