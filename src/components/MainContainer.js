@@ -4,34 +4,43 @@ import Buttons from './Filters/Buttons.js';
 import Scenarios from './Filters/Scenarios.js';
 import Severity from './Filters/Severity.js';
 import Sliders from './Filters/Sliders.js';
-import Overlays from './Filters/Overlays.js';
+// import Overlays from './Filters/Overlays.js';
+import { getRange, updateThresholdFlag } from '../utils/utils.js'
 import { utcParse } from 'd3-time-format'
-const rawData = require('../store/high_death.json')
-
+import { max } from 'd3-array';
+const dataset = require('../store/geo06085.json');
 
 class MainContainer extends Component {
     constructor(props) {
         super(props);
-        this.handleButtonClick = this.handleButtonClick.bind(this);
-        this.handleScenarioClick = this.handleScenarioClick.bind(this);
-        this.handleSeverityClick = this.handleSeverityClick.bind(this);
-        this.handleStatSliderChange = this.handleStatSliderChange.bind(this);
-        this.handleReprSliderChange = this.handleReprSliderChange.bind(this);
-        this.handleSimSliderChange = this.handleSimSliderChange.bind(this);
-        this.handleConfClick = this.handleConfClick.bind(this);
-        this.handleActualClick = this.handleActualClick.bind(this);
         this.state = {
             dataset: {},
             dataLoaded: false,
             series: {},
-            seriesMax: 0,
             dates: [],
             yAxisLabel: '',
-            stat: {'id': 1, 'name': 'Infections', 'key': 'incidI'},
+            stat: {
+                'id': 1,
+                'name': 'Infections',
+                'key': 'incidI'
+            },
             geoid: '101',
-            scenario: {'id': 1, 'key': 'Fixed Lockdown', 'name': 'Fixed Lockdown'},
-            severity: {'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'}, 
+            scenario: {
+                'id': 1,
+                'key': 'USA_Uncontrolled',
+                'name': 'USA_Uncontrolled'
+            },
+            severity: {
+                'id': 1,
+                'key': 'high',
+                'name': '1% IFR, 10% hospitalization rate'}, 
             statThreshold: 0,
+            seriesMax: Number.NEGATIVE_INFINITY,
+            seriesMin: Number.POSITIVE_INFINITY,
+            dateThreshold: '2020-02-01',
+            firstDate: '',
+            dateMax: '2020-02-01',
+            dateMin: '2020-02-01',
             r0: '1',
             simNum: '150',
             showConfBounds: false,
@@ -39,54 +48,22 @@ class MainContainer extends Component {
             graphW: 0,
             graphH: 0,
         };
-    }
-
-    buildDummyDataset() {
-        // Temp function to build out a dummy dataset given unknown input data format 
-        // eg: csv, parquet, json? 
-        // Only first simulation of incidI infections were altered to visualize change
-        const medData = JSON.parse(JSON.stringify(rawData));
-        medData.series['incidI'][0].values = medData.series['incidI'][0].values.map(d => d/2);
-
-        const lowData = JSON.parse(JSON.stringify(rawData));
-        lowData.series['incidI'][0].values = lowData.series['incidI'][0].values.map(d => d/3);
-
-        const hiData2= JSON.parse(JSON.stringify(rawData));
-        hiData2.series['incidI'][0].values = hiData2.series['incidI'][0].values.map(d => d*4);
-
-        const medData2= JSON.parse(JSON.stringify(rawData));
-        medData2.series['incidI'][0].values = medData2.series['incidI'][0].values.map(d => d*2);
-
-        const lowData2= JSON.parse(JSON.stringify(rawData));
-        lowData2.series['incidI'][0].values = lowData2.series['incidI'][0].values.map(d => d*1.5);
-
-
-        const dummy = {
-            'Fixed Lockdown': {
-                'high': rawData,
-                'medium': medData,
-                'low': lowData,
-            },
-            'Fatiguing Lockdown': {
-                'high': hiData2,
-                'medium': medData2,
-                'low': lowData2,
-            }
-        }
-        return dummy;
     };
 
     async componentDidMount() {
-        const dataset = this.buildDummyDataset();
-        const initialData = dataset[this.state.scenario.key][this.state.severity.key];
-
+        console.log('componentDidMount')
+        const { scenario, severity, geoid, stat } = this.state;
+        const initialData = dataset[scenario.key][severity.key];
+        const series = initialData.series[stat.key];
         const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
-        const series = initialData.series[this.state.stat.key];
-        series.map(sim => sim['display'] = true);
-        const seriesMax = Math.max.apply(null, series[0].values);
-        const yAxisLabel = `Number of Daily ${this.state.stat} in ${this.state.geoid}`;
+        const firstDate = dates[0];
         
+        const [seriesMin, seriesMax] = getRange(series);
+        const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
+        updateThresholdFlag(series, statThreshold);
+        
+        const yAxisLabel = `Number of Daily ${stat.name} in ${geoid}`;
         const graphW = this.graphEl.clientWidth;
         const graphH = this.graphEl.clientHeight;
 
@@ -95,93 +72,97 @@ class MainContainer extends Component {
             dates,
             series,
             seriesMax,
+            seriesMin,
+            statThreshold,
             yAxisLabel,
+            firstDate,
             graphW,
             graphH
         }, () => {
             this.setState({
                 dataLoaded: true
-            })
+            });
         })
     };
 
-    handleButtonClick(i) {
-        const yAxisLabel = `Number of Daily ${i.name} in ${this.state.geoid}`;
-        const buttonCopy = Array.from(this.state.dataset[this.state.scenario.key][this.state.severity.key].series[i.key]);
-        const seriesMax = Math.max.apply(null, buttonCopy[0].values);
-        this.setState({
-            stat: i.key,
-            series: buttonCopy,
-            seriesMax,
-            yAxisLabel
-        })
-    }
+    componentDidUpdate(prevProp, prevState) {
+        if (this.state.stat !== prevState.stat ||
+            this.state.scenario !== prevState.scenario ||
+            this.state.severity !== prevState.severity) {
 
-    handleScenarioClick(i) {
-        const scenarioCopy = Array.from(this.state.dataset[i.name][this.state.severity.key].series[this.state.stat.key]);
-        this.setState({
-            series: scenarioCopy,
-        })
-        // TODO: for handling multiple scenarios toggled
-        //     if (this.state.scenario.includes(i)) {
-        //     const scenarioCopy = Array.from(this.state.scenario);
-        //     const index = this.state.scenario.indexOf(item);
-        //     if (index > -1) {
-        //         scenarioCopy.splice(index, 1);
-        //         this.setState({
-        //             scenario: scenarioCopy,
-        //         })
-        //     };
+            const { dataset, stat, scenario, severity } = this.state;
+            const newSeries = Array.from(
+                dataset[scenario.key][severity.key].series[stat.key]
+                );
+            const [seriesMin, seriesMax] = getRange(newSeries);
+            const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
 
-        // } else {
-        //     this.setState({
-        //         scenario: this.state.scenario.concat(item)
-        //     });
-        // }
-    }
+            updateThresholdFlag(newSeries, statThreshold)
+            
+            this.setState({
+                series: newSeries,
+                statThreshold,
+                seriesMin,
+                seriesMax
+            })
+        }
+    };
 
-    handleSeverityClick(i) {
-        const sevCopy = Array.from(this.state.dataset[this.state.scenario.key][i.key].series[this.state.stat]);
+    handleButtonClick = (i) => {
+        const yAxisLabel = `Amount of Daily ${i.name}`;
+        this.setState({stat: i, yAxisLabel})
+    };
+
+    handleScenarioClick = (i) => {
+        this.setState({scenario: i})
+    };
+
+    handleSeverityClick = (i) => {
+        this.setState({severity: i});
+    };
+
+    handleStatSliderChange = (i) => {
+        const rounded = Math.ceil(i / 100) * 100;
+        const copy = Array.from(this.state.series);
+        updateThresholdFlag(copy, rounded)
+
         this.setState({
-            severity: i,
-            series: sevCopy,
+            series: copy,
+            statThreshold: +rounded
         });
-    }
+    };
 
-    handleStatSliderChange(i) {
-        const statCopy = Array.from(this.state.series);
-        statCopy.forEach(sim => {
-            if (Math.max.apply(null, sim.values) < this.state.statThreshold) {
-              return sim.display = false;
-            } 
-           });
+    handleDateSliderChange = (i) => {
+        // for example, if props received is dateRange like i = [minDate, maxDate]
+        const parseDate = utcParse("%Y-%m-%d");
+        const dateThreshold = parseDate(i);
+        const idxMin = dateThreshold[0] - this.state.firstDate;
+        const idxMax = dateThreshold[1] - this.state.firstDate;
+        const copy = Array.from(this.state.dates.slice(idxMin, idxMax));
+
         this.setState({
-            series: statCopy,
-            statThreshold: +i, // what does this do?
+            dateThreshold,
+            dates: copy,
+            dateMin: i[0],
+            dateMax: i[1],
         });
-        console.log('threshold', this.state.statThreshold)
-        console.log('series', this.state.series)
-    }
+    };
 
-    handleReprSliderChange(i) {
+    handleReprSliderChange = (i) => {
         this.setState({r0: i});
-    }
+    };
 
-    handleSimSliderChange(i) {
-        this.setState({simNum: i});
-    }
-
-    handleConfClick(i) {
+    handleConfClick = (i) => {
         this.setState(prevState => ({
             showConfBounds: !prevState.showConfBounds
         }));
-    }
+    };
 
-    handleActualClick(i) {
+    handleActualClick = (i) => {
         this.setState(prevState => ({
             showActual: !prevState.showActual
         }));
-    }
+    };
 
     render() {
         return (
@@ -195,11 +176,18 @@ class MainContainer extends Component {
                                 />
                             <p></p>
 
-                            <div className="graph border" ref={ (graphEl) => { this.graphEl = graphEl } }>
+                            <p className="filter-text scenario-title">
+                                {this.state.scenario.name}
+                            </p>
+                            <div
+                                className="graph border"
+                                ref={ (graphEl) => { this.graphEl = graphEl } }
+                                >
                                 {this.state.dataLoaded &&
                                 <Graph 
                                     stat={this.state.stat}
                                     geoid={this.state.geoid}
+                                    yAxisLabel={this.state.yAxisLabel}
                                     scenario={this.state.scenario}
                                     severity={this.state.severity}
                                     r0={this.state.r0}
@@ -208,6 +196,7 @@ class MainContainer extends Component {
                                     showActual={this.state.showActual}
                                     series={this.state.series}
                                     dates={this.state.dates}
+                                    statThreshold={this.state.statThreshold}
                                     width={this.state.graphW}
                                     height={this.state.graphH}
                                 /> }
@@ -220,23 +209,28 @@ class MainContainer extends Component {
                                 onScenarioClick={this.handleScenarioClick}
                             />
                             <p></p>
-                            <h5>Overlays</h5>
+                            {/* <h5>Overlays</h5>
                             <Overlays 
                                 showConfBounds={this.state.showConfBounds}
                                 showActual={this.state.showActual}
                                 onConfClick={this.handleConfClick}
                                 onActualClick={this.handleActualClick}
-                            />                        
+                            />                         */}
                             <h5>Parameters</h5>
                             <p className="param-header">Severity</p>
                             <Severity 
                                 severity={this.state.severity}
                                 onSeverityClick={this.handleSeverityClick}
                             />
+                            <p></p>
+                            <h5>Thresholds</h5>
                             <Sliders 
+                                stat={this.state.stat}
+                                seriesMax={this.state.seriesMax}
+                                seriesMin={this.state.seriesMin}
+                                statThreshold={this.state.statThreshold}
                                 onStatSliderChange={this.handleStatSliderChange}
                                 onReprSliderChange={this.handleReprSliderChange}
-                                onSimSliderChange={this.handleSimSliderChange}
                             />
 
                         </div>
