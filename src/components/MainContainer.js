@@ -12,13 +12,6 @@ const dataset = require('../store/geo06085.json');
 class MainContainer extends Component {
     constructor(props) {
         super(props);
-        this.handleButtonClick = this.handleButtonClick.bind(this);
-        this.handleScenarioClick = this.handleScenarioClick.bind(this);
-        this.handleSeverityClick = this.handleSeverityClick.bind(this);
-        this.handleStatSliderChange = this.handleStatSliderChange.bind(this);
-        this.handleReprSliderChange = this.handleReprSliderChange.bind(this);
-        this.handleConfClick = this.handleConfClick.bind(this);
-        this.handleActualClick = this.handleActualClick.bind(this);
         this.state = {
             dataset: {},
             dataLoaded: false,
@@ -53,6 +46,7 @@ class MainContainer extends Component {
     };
 
     async componentDidMount() {
+        console.log('componentDidMount')
         const { scenario, severity, geoid, stat } = this.state;
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
@@ -88,74 +82,60 @@ class MainContainer extends Component {
         if (this.state.stat !== prevState.stat ||
             this.state.scenario !== prevState.scenario ||
             this.state.severity !== prevState.severity) {
+
             const { dataset, stat, scenario, severity } = this.state;
             const newSeries = Array.from(
                 dataset[scenario.key][severity.key].series[stat.key]
                 );
+            const [seriesMin, seriesMax] = getRange(newSeries);
+            const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
+
+            updateThresholdFlag(newSeries, statThreshold)
+            
             this.setState({
-                series: newSeries
+                series: newSeries,
+                statThreshold,
+                seriesMin,
+                seriesMax
             })
         }
     };
 
-    // updateThreshold(series) {
-    //     const [seriesMin, seriesMax] = getRange(series);
-    //     const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
-    //     const updatedSeries = updateThresholdFlag(series, statThreshold);
-    //     console.log('updateSeries statThreshold', this.state.statThreshold)
-    //     console.log('updatedSeries', updatedSeries)
-
-    //     this.setState({
-    //         series: updatedSeries,
-    //         statThreshold,
-    //         seriesMin,
-    //         seriesMax
-    //     })
-    // };
-    
-    handleButtonClick(i) {
+    handleButtonClick = (i) => {
         const yAxisLabel = `Number of Daily ${i.name} in ${this.state.geoid}`;
-        this.setState({
-            stat: i,
-            yAxisLabel
-        })
+        this.setState({stat: i, yAxisLabel})
     };
 
-    handleScenarioClick(i) {
-        this.setState({
-            scenario: i,
-        })
+    handleScenarioClick = (i) => {
+        this.setState({scenario: i})
     };
 
-    handleSeverityClick(i) {
-        this.setState({
-            severity: i,
-        });
+    handleSeverityClick = (i) => {
+        this.setState({severity: i});
     };
 
-    handleStatSliderChange(i) {
-        console.log('MainContainer', i)
-        const { scenario, stat, severity } = this.state;
+    handleStatSliderChange = (i) => {
         const rounded = Math.ceil(i / 100) * 100;
+        const copy = Array.from(this.state.series);
+        updateThresholdFlag(copy, rounded)
 
         this.setState({
-            statThreshold: +rounded, 
-        }, () => {
-            this.updateSeries(scenario, stat, severity, i, this.state.statThreshold);
+            series: copy,
+            statThreshold: +rounded
         });
     };
 
-    handleReprSliderChange(i) {
+    handleReprSliderChange = (i) => {
         this.setState({r0: i});
     };
 
-    handleConfClick(i) {
+    handleConfClick = (i) => {
         this.setState(prevState => ({
             showConfBounds: !prevState.showConfBounds
         }));
     };
 
-    handleActualClick(i) {
+    handleActualClick = (i) => {
         this.setState(prevState => ({
             showActual: !prevState.showActual
         }));
