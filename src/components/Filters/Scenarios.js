@@ -10,7 +10,7 @@ class Scenarios extends Component {
         return (
             <div className="dropdown">
                 <button
-                    className="btn btn-light dropdown-toggle btn-stat filter-text"
+                    className="btn btn-light dropdown-toggle btn-stat filter-label"
                     type="button" 
                     id="dropdownMenu2" 
                     data-toggle="dropdown" 
