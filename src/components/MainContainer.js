@@ -7,7 +7,7 @@ import Scenarios from './Filters/Scenarios';
 import Severity from './Filters/Severity';
 import Sliders from './Filters/Sliders';
 // import Overlays from './Filters/Overlays';
-import { getRange, updateThresholdFlag } from '../utils/utils'
+import { getRange } from '../utils/utils'
 import { utcParse } from 'd3-time-format'
 import { max } from 'd3-array';
 const dataset = require('../store/geo06085.json');
@@ -39,9 +39,10 @@ class MainContainer extends Component {
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
-            dateThreshold: '2020-04-01',
+            dateThreshold: '2020-05-04',
             dateRange: ['2020-03-01', '2020-07-01'],
             firstDate: '',
+            lastDate: '',
             r0: '1',
             simNum: '150',
             percExceedence: 0,
@@ -59,12 +60,20 @@ class MainContainer extends Component {
         const series = initialData.series[stat.key];
         const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
-        const firstDate = dates[0];
-        
+        const firstDate = dates[0].toISOString().split('T')[0];
+        const lastDate = dates[dates.length - 1].toISOString().split('T')[0];
+
         const [seriesMin, seriesMax] = getRange(series);
         const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
+        const dateThreshold = "2020-05-04";
+
         // mutates series
-        const simsOver = updateThresholdFlag(series, statThreshold); 
+        const simsOver = this.updateThreshold(
+            series,
+            statThreshold,
+            dates,
+            dateThreshold
+            )        
         const percExceedence = simsOver / series.length;
         
         const yAxisLabel = `Number of Daily ${stat.name} in ${geoid}`;
@@ -80,6 +89,7 @@ class MainContainer extends Component {
             statThreshold,
             yAxisLabel,
             firstDate,
+            lastDate,
             percExceedence,
             graphW,
             graphH
@@ -101,10 +111,15 @@ class MainContainer extends Component {
                 );
             const [seriesMin, seriesMax] = getRange(newSeries);
             const statThreshold = Math.ceil(seriesMax / 1.2);
-            // const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
+            const dateThreshold = "2020-05-04";
 
             // mutates series
-            const simsOver = updateThresholdFlag(newSeries, statThreshold)
+            const simsOver = this.updateThreshold(
+                newSeries,
+                statThreshold,
+                this.state.dates,
+                dateThreshold
+                )
             const percExceedence = simsOver / newSeries.length;
 
             this.setState({
@@ -115,6 +130,27 @@ class MainContainer extends Component {
                 percExceedence
             })
         }
+    };
+
+    updateThreshold(series, statThreshold, dates, dateThreshold) {
+        // update 'over' flag to true if sim peak surpasses statThreshold
+        // returns numSims 'over' threshold
+        let simsOver = 0;
+        const dateInput = new Date(Date.parse(dateThreshold));
+
+        Object.values(series).map(sim => {
+          const simPeak = Math.max.apply(null, sim.vals);
+          const simPeakDate = dates[sim.vals.indexOf(simPeak)];
+
+          if (simPeak > statThreshold && simPeakDate < dateInput) {
+              simsOver = simsOver + 1;
+              return sim.over = true;
+          } else {
+              return sim.over = false;
+          };
+        })
+        console.log('simsOver', simsOver)
+        return simsOver;
     };
 
     handleButtonClick = (i) => {
@@ -131,9 +167,10 @@ class MainContainer extends Component {
     };
 
     handleStatSliderChange = (i) => {
+        const { dates, dateThreshold } = this.state;
         // const rounded = Math.ceil(i / 100) * 100;
         const copy = Array.from(this.state.series);
-        const simsOver = updateThresholdFlag(copy, i);
+        const simsOver = this.updateThreshold(copy, i, dates, dateThreshold);
         const percExceedence = simsOver / copy.length;
 
         this.setState({
@@ -144,7 +181,21 @@ class MainContainer extends Component {
     };
 
     handleDateSliderChange = (i) => {
-        // for example, if props received is dateRange like i = [minDate, maxDate]
+        const { statThreshold, dates } = this.state;
+        console.log('handleDateSliderChange', i)
+        const copy = Array.from(this.state.series);
+        const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
+        const percExceedence = simsOver / copy.length;
+
+        this.setState({
+            series: copy,
+            dateThreshold: i,
+            percExceedence
+        })
+    }
+
+    handleBrushRange = (i) => {
+        // for example, if props received is dateRange [minDate, maxDate]
         const parseDate = utcParse("%Y-%m-%d");
         const dateRange = [parseDate(i[0]), parseDate(i[1])];
         const idxMin = dateRange[0] - this.state.firstDate;
@@ -257,8 +308,12 @@ class MainContainer extends Component {
                                 seriesMax={this.state.seriesMax}
                                 seriesMin={this.state.seriesMin}
                                 statThreshold={this.state.statThreshold}
+                                dateThreshold={this.state.dateThreshold}
+                                firstDate={this.state.firstDate}
+                                lastDate={this.state.lastDate}
                                 onStatSliderChange={this.handleStatSliderChange}
-                                onReprSliderChange={this.handleReprSliderChange}
+                                onDateSliderChange={this.handleDateSliderChange}
+                                // // onReprSliderChange={this.handleReprSliderChange}
                             />
 
                         </div>

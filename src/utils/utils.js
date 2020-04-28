@@ -21,19 +21,10 @@ export function getRange(series) {
   return [min, max];
 };
 
-export function updateThresholdFlag(series, statThreshold) {
-  // update 'over' flag to true if sim peak surpasses statThreshold
-  // returns numSims 'over' threshold
-  let simsOver = 0;
+export function readableDate(date) {
+  // takes date with format "%Y-%m-%d" and returns Month Day, Year
+  const dateObj = new Date(Date.parse(date));
+  const dateArray = dateObj.toDateString().split(' ').slice(1);
   
-  Object.values(series).map(sim => {
-    const simPeak = Math.max.apply(null, sim.vals);
-    if (simPeak > statThreshold) {
-        simsOver = simsOver + 1;
-        return sim.over = true;
-    } else {
-        return sim.over = false;
-    };
-  })
-  return simsOver;
-};
+  return dateArray[0] + ' ' + dateArray[1] + ', ' + dateArray[2];
+}

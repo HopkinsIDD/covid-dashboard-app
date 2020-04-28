@@ -13,7 +13,7 @@ function Legend(props) {
                         x2="50"
                         y2="0"
                         stroke={red}
-                        stroke-width="2"
+                        strokeWidth="2"
                     />
                 </svg>
                 &nbsp;simulation above threshold
@@ -26,7 +26,7 @@ function Legend(props) {
                         x2="50"
                         y2="0"
                         stroke={green}
-                        stroke-width="2"
+                        strokeWidth="2"
                     />
                 </svg>
                 &nbsp;simulation below threshold
