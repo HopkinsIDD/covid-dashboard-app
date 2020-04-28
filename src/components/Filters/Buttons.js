@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import { STATS } from '../../store/constants.js';
 
 class Buttons extends Component {
-    constructor(props) {
-        super(props);
-        this.handleClick = this.handleClick.bind(this);
-    }
-    
-    handleClick(i) {
+    handleClick = (i) => {
         this.props.onButtonClick(i);
     }
 

@@ -2,12 +2,7 @@ import React, { Component } from 'react';
 import { LEVELS } from '../../store/constants.js';
 
 class Severity extends Component {
-    constructor(props) {
-        super(props);
-        this.handleChange = this.handleChange.bind(this);
-    }
-    
-    handleChange(i) {
+    handleChange = (i) => {
         this.props.onSeverityClick(i);
     }
 

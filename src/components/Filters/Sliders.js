@@ -2,17 +2,11 @@ import React, { Component } from 'react';
 import { addCommas } from '../../utils/utils.js';
 
 class Sliders extends Component {
-    constructor(props) {
-        super(props);
-        this.handleStatChange = this.handleStatChange.bind(this);
-        this.handleReprChange = this.handleReprChange.bind(this);
-    }
-    
-    handleStatChange(i) {
+    handleStatChange = (i) => {
         this.props.onStatSliderChange(i);
     }
 
-    handleReprChange(i) {
+    handleReprChange = (i) => {
         this.props.onReprSliderChange(i);
     }
 
