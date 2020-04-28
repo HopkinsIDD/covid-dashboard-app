@@ -21,14 +21,10 @@ export function getRange(series) {
   return [min, max];
 };
 
-export function updateThresholdFlag(series, statThreshold) {
-  // update 'over' flag to true if sim peak surpasses statThreshold
-  series.forEach(sim => {
-      const simPeak = Math.max.apply(null, sim.vals);
-      if (simPeak > statThreshold) {
-          return sim.over = true;
-      } else {
-          return sim.over = false;
-      };
-  });
-};
+export function readableDate(date) {
+  // takes date with format "%Y-%m-%d" and returns Month Day, Year
+  const dateObj = new Date(Date.parse(date));
+  const dateArray = dateObj.toDateString().split(' ').slice(1);
+  
+  return dateArray[0] + ' ' + dateArray[1] + ', ' + dateArray[2];
+}

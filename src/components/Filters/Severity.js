@@ -19,7 +19,7 @@ class Severity extends Component {
                                 name="sev"
                                 onChange={() => this.handleChange(level)} 
                                 checked={isActive}/>
-                            <label className="form-check-label filter-text">
+                            <label className="form-check-label filter-label">
                             {level.name}
                             </label>
                         </div>

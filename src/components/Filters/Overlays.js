@@ -25,7 +25,7 @@ class Overlays extends Component {
                         value=""
                         id="defaultCheck1"
                         onClick={this.handleConfClick} />
-                    <label className="form-check-label filter-text" htmlFor="defaultCheck1">
+                    <label className="form-check-label filter-label" htmlFor="defaultCheck1">
                         Show Confidence Boundaries
                     </label>
                 </div>
@@ -36,7 +36,7 @@ class Overlays extends Component {
                         value=""
                         id="defaultCheck1"
                         onClick={this.handleActualClick} />
-                    <label className="form-check-label filter-text" htmlFor="defaultCheck1">
+                    <label className="form-check-label filter-label" htmlFor="defaultCheck1">
                         Show Actual Infections to Date
                     </label>
                 </div>

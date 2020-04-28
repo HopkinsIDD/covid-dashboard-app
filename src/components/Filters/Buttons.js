@@ -13,7 +13,7 @@ class Buttons extends Component {
                 return (
                     <button
                         type="button"
-                        className={"btn btn-light btn-stat filter-text" + isActive}
+                        className={"btn btn-light btn-stat filter-label" + isActive}
                         onClick={() => this.handleClick(stat)}
                         key={stat.id}>
                         {stat.name}
