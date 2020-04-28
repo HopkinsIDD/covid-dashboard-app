@@ -143,7 +143,6 @@ class Graph extends Component {
         const { xScale, yScale, lineGenerator, width, height } = this.state;
         // calculate scale domains
         const timeDomain = extent(dates);
-        // const maxVal = max(series, sims => max(sims.map( d => max(d.vals))))
         const maxVal = max(series, sims => max(sims.vals))
         // set scale ranges to width and height of container
         xScale.range([margin.left, width - margin.right])

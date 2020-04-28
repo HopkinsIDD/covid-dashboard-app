@@ -165,6 +165,10 @@ class MainContainer extends Component {
         }));
     };
 
+    handleBrushChange = (i) => {
+        // this.setState({ dateRange: i })
+    }
+
     render() {
         return (
             <div className="main-container">
@@ -207,6 +211,7 @@ class MainContainer extends Component {
                                         dates={this.state.dates}
                                         width={this.state.graphW}
                                         height={80}
+                                        onBrushChange={this.handleBrushChange}
                                     />
                                 </div>
                                 }

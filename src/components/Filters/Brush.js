@@ -4,6 +4,7 @@ import { scaleLinear, scaleUtc } from 'd3-scale'
 import { select } from 'd3-selection'
 import { line } from 'd3-shape'
 import { timeFormat } from 'd3-time-format'
+import { brushX } from 'd3-brush'
 import { event } from 'd3-selection'
 import { max, extent } from 'd3-array'
 import { COLORS } from '../../store/constants.js'
@@ -27,8 +28,15 @@ class Brush extends Component {
     this.xAxis = axisBottom().scale(this.state.xScale)
         .tickFormat(timeFormat('%b'))
         .ticks(this.state.width / 80).tickSizeOuter(0);
-    
     this.simPathsRef = React.createRef();
+    this.brushRef = React.createRef();
+    this.brush = brushX()
+        .extent([
+          [margin.left, margin.top],
+          [this.state.width - margin.right, this.state.height - margin.bottom]
+        ])
+        .on('end', this.brushEnded)
+        .on('brush', this.brushed)
   }
 
   componentDidMount() {
@@ -36,6 +44,10 @@ class Brush extends Component {
 
     if (this.xAxisRef.current) {
       select(this.xAxisRef.current).call(this.xAxis)
+    }
+    if (this.brushRef.current) {
+      select(this.brushRef.current).call(this.brush)
+      .call(this.brush.move, [this.state.dates[0], this.state.dates[this.state.dates.length - 1]])
     }
   }
 
@@ -112,7 +124,6 @@ class Brush extends Component {
     const { xScale, yScale, lineGenerator, width, height } = this.state;
     // calculate scale domains
     const timeDomain = extent(dates);
-    // const maxVal = max(series, sims => max(sims.map( d => max(d.vals))))
     const maxVal = max(series, sims => max(sims.vals))
     // set scale ranges to width and height of container
     xScale.range([margin.left, width - margin.right])
@@ -124,6 +135,20 @@ class Brush extends Component {
     lineGenerator.y(d => yScale(d))
 
     return { xScale, yScale, lineGenerator }
+  }
+
+  brushed = () => {
+    console.log(event)
+  }
+
+  brushEnded = () => {
+    console.log(event)
+    if (event.selection) {
+      const [x1, x2] = event.selection;
+      const range = [this.state.xScale.invert(x1), this.state.xScale.invert(x2)];
+      console.log(range)
+      this.props.onBrushChange(range);
+    }
   }
 
   render() {
@@ -148,6 +173,7 @@ class Brush extends Component {
                   />
               })}
             </g>
+            <g ref={this.brushRef} />
           </g>
         </svg>
       </div>
