@@ -37,6 +37,10 @@ class MainContainer extends Component {
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
+            dateThreshold: '2020-02-01',
+            firstDate: '',
+            dateMax: '2020-02-01',
+            dateMin: '2020-02-01',
             r0: '1',
             simNum: '150',
             showConfBounds: false,
@@ -53,6 +57,7 @@ class MainContainer extends Component {
         const series = initialData.series[stat.key];
         const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
+        const firstDate = dates[0];
         
         const [seriesMin, seriesMax] = getRange(series);
         const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
@@ -70,6 +75,7 @@ class MainContainer extends Component {
             seriesMin,
             statThreshold,
             yAxisLabel,
+            firstDate,
             graphW,
             graphH
         }, () => {
@@ -123,6 +129,20 @@ class MainContainer extends Component {
         this.setState({
             series: copy,
             statThreshold: +rounded
+        });
+    };
+
+    handleDateSliderChange = (i) => {
+        // for example, if i is dateRange like i = [minDate, maxDate]
+        const parseDate = utcParse("%Y-%m-%d");
+        const dateThreshold = parseDate(i);
+        const idxMin = dateThreshold[0] - this.state.firstDate;
+        const idxMax = dateThreshold[1] - this.state.firstDate;
+        const copy = Array.from(this.state.dates.slice(idxMin, idxMax));
+
+        this.setState({
+            dateThreshold,
+            dates: copy,
         });
     };
 
