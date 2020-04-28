@@ -84,37 +84,37 @@ class MainContainer extends Component {
         })
     };
 
-    updateSeries(scenario, stat, severity) {
-        const { dataset } = this.state;
-        const newSeries = Array.from(
-            dataset[scenario.key][severity.key].series[stat.key]
-            );
-        this.setState({
-            series: newSeries
-        })
+    componentDidUpdate(prevProp, prevState) {
+        if (this.state.stat !== prevState.stat ||
+            this.state.scenario !== prevState.scenario ||
+            this.state.severity !== prevState.severity) {
+            const { dataset, stat, scenario, severity } = this.state;
+            const newSeries = Array.from(
+                dataset[scenario.key][severity.key].series[stat.key]
+                );
+            this.setState({
+                series: newSeries
+            })
+        }
     };
-    
-    updateThreshold(series) {
-        const [seriesMin, seriesMax] = getRange(series);
-        const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
-        updateThresholdFlag(series, statThreshold);
-        console.log('updateSeries statThreshold', this.state.statThreshold)
 
-        this.setState({
-            statThreshold,
-            seriesMin,
-            seriesMax
-        })
-    };
+    // updateThreshold(series) {
+    //     const [seriesMin, seriesMax] = getRange(series);
+    //     const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
+    //     const updatedSeries = updateThresholdFlag(series, statThreshold);
+    //     console.log('updateSeries statThreshold', this.state.statThreshold)
+    //     console.log('updatedSeries', updatedSeries)
+
+    //     this.setState({
+    //         series: updatedSeries,
+    //         statThreshold,
+    //         seriesMin,
+    //         seriesMax
+    //     })
+    // };
     
     handleButtonClick(i) {
-        const { geoid, scenario, severity} = this.state;
-        const yAxisLabel = `Number of Daily ${i.name} in ${geoid}`;
-        // TODO: ALTERNATIVELY, updateSeries can return a Series, then set
-        // to state here, and then on callback, call updateThreshold
-        this.updateSeries(scenario, i, severity, () => {
-            this.updateThreshold(this.state.series)
-        });
+        const yAxisLabel = `Number of Daily ${i.name} in ${this.state.geoid}`;
         this.setState({
             stat: i,
             yAxisLabel
@@ -122,36 +122,16 @@ class MainContainer extends Component {
     };
 
     handleScenarioClick(i) {
-        const { stat, severity} = this.state;
-        this.updateSeries(i, stat, severity);
         this.setState({
             scenario: i,
         })
-        // TODO: for handling multiple scenarios toggled
-        //     if (this.state.scenario.includes(i)) {
-        //     const scenarioCopy = Array.from(this.state.scenario);
-        //     const index = this.state.scenario.indexOf(item);
-        //     if (index > -1) {
-        //         scenarioCopy.splice(index, 1);
-        //         this.setState({
-        //             scenario: scenarioCopy,
-        //         })
-        //     };
-
-        // } else {
-        //     this.setState({
-        //         scenario: this.state.scenario.concat(item)
-        //     });
-        // }
-    }
+    };
 
     handleSeverityClick(i) {
-        const { scenario, stat} = this.state;
-        this.updateSeries(scenario, stat, i);
         this.setState({
             severity: i,
         });
-    }
+    };
 
     handleStatSliderChange(i) {
         console.log('MainContainer', i)
@@ -163,23 +143,23 @@ class MainContainer extends Component {
         }, () => {
             this.updateSeries(scenario, stat, severity, i, this.state.statThreshold);
         });
-    }
+    };
 
     handleReprSliderChange(i) {
         this.setState({r0: i});
-    }
+    };
 
     handleConfClick(i) {
         this.setState(prevState => ({
             showConfBounds: !prevState.showConfBounds
         }));
-    }
+    };
 
     handleActualClick(i) {
         this.setState(prevState => ({
             showActual: !prevState.showActual
         }));
-    }
+    };
 
     render() {
         return (
