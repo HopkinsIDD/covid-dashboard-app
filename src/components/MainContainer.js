@@ -186,26 +186,28 @@ class MainContainer extends Component {
                                 >
                                 {this.state.dataLoaded &&
                                 <div>
-                                <Graph 
-                                    stat={this.state.stat}
-                                    geoid={this.state.geoid}
-                                    yAxisLabel={this.state.yAxisLabel}
-                                    scenario={this.state.scenario}
-                                    severity={this.state.severity}
-                                    r0={this.state.r0}
-                                    simNum={this.state.simNum}
-                                    showConfBounds={this.state.showConfBounds}
-                                    showActual={this.state.showActual}
-                                    series={this.state.series}
-                                    dates={this.state.dates}
-                                    statThreshold={this.state.statThreshold}
-                                    width={this.state.graphW}
-                                    height={this.state.graphH}
-                                /> 
-                                <Brush
-                                    width={this.state.graphW}
-                                    height={100} 
-                                />
+                                    <Graph 
+                                        stat={this.state.stat}
+                                        geoid={this.state.geoid}
+                                        yAxisLabel={this.state.yAxisLabel}
+                                        scenario={this.state.scenario}
+                                        severity={this.state.severity}
+                                        r0={this.state.r0}
+                                        simNum={this.state.simNum}
+                                        showConfBounds={this.state.showConfBounds}
+                                        showActual={this.state.showActual}
+                                        series={this.state.series}
+                                        dates={this.state.dates}
+                                        statThreshold={this.state.statThreshold}
+                                        width={this.state.graphW}
+                                        height={this.state.graphH}
+                                    /> 
+                                    <Brush
+                                        series={this.state.series}
+                                        dates={this.state.dates}
+                                        width={this.state.graphW}
+                                        height={80}
+                                    />
                                 </div>
                                 }
                             </div>

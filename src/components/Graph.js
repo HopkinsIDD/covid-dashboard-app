@@ -8,6 +8,8 @@ import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { transition } from 'd3-transition'
 import { addCommas } from '../utils/utils.js'
+import { COLORS } from '../store/constants.js'
+
 
 const margin = { top: 20, right: 40, bottom: 30, left: 80 };
 const red = '#d31d30';
@@ -87,7 +89,7 @@ class Graph extends Component {
                     .duration(1000)
                     .ease(easeCubicOut)
                     .attr("d", d => updatedScales.lineGenerator(d.vals))
-                    .attr("stroke", (d,i) => series[i].over ? red : green )
+                    .attr("stroke", (d,i) => series[i].over ? COLORS['red'] : COLORS['green'] )
                     .on("end", () => {
                         // set new vals to state
                         this.setState({ 
@@ -212,7 +214,7 @@ class Graph extends Component {
                         id={`simPath-${i}`}
                         className={`simPath`}
                         fill='none' 
-                        stroke = { this.state.series[i].over ? red : green }
+                        stroke = { this.state.series[i].over ? COLORS['red'] : COLORS['green'] }
                         strokeWidth={'1'}
                         strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
                         onMouseMove={(e) => this.handleMouseMove(e, i)}
@@ -230,7 +232,7 @@ class Graph extends Component {
                         id={`simPath-${i}-hover`}
                         className={`simPath-hover`}
                         fill='none' 
-                        stroke={simIsHovered ? blue : gray}
+                        stroke={simIsHovered ? COLORS['blue'] : COLORS['gray']}
                         strokeWidth={simIsHovered ? '2' : '1'}
                         strokeOpacity={simIsHovered && this.state.hoveredSimPathId ? 1 : 0.5}
                         onMouseMove={(e) => this.handleMouseMove(e, i)}
@@ -244,7 +246,7 @@ class Graph extends Component {
                     y1={this.state.yScale(this.state.statThreshold)}
                     x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
                     y2={this.state.yScale(this.state.statThreshold)}
-                    stroke={gray}
+                    stroke={COLORS['gray']}
                     className={'statThreshold'}
                 ></line>
                 </g>

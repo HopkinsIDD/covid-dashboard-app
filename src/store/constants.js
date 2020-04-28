@@ -35,3 +35,10 @@ export const COUNTIES = [
     {'GEOID': '10501', 'NAME': 'Clay County', 'USPS': 'AL'},
     {'GEOID': '10601', 'NAME': 'Coffee County', 'USPS': 'AL'},
 ];
+
+export const COLORS = {
+    'red': '#d31d30',
+    'green': '#4ddaba',
+    'blue': '#1f90db',
+    'gray': '#9b9b9b'
+}
