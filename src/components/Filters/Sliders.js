@@ -1,58 +1,47 @@
 import React, { Component } from 'react';
+import { addCommas } from '../../utils/utils.js';
 
 class Sliders extends Component {
-    // TODO: only allow to click on one severity checked 
-    constructor(props) {
-        super(props);
-        this.handleStatChange = this.handleStatChange.bind(this);
-        this.handleReprChange = this.handleReprChange.bind(this);
-        this.handleSimChange = this.handleSimChange.bind(this);
-    }
-    
-    handleStatChange(i) {
+    handleStatChange = (i) => {
         this.props.onStatSliderChange(i);
     }
 
-    handleReprChange(i) {
+    handleReprChange = (i) => {
         this.props.onReprSliderChange(i);
     }
 
-    handleSimChange(i) {
-        this.props.onSimSliderChange(i);
-    }
-
     render() {
+        const { stat, statThreshold, seriesMin, seriesMax } = this.props;
         return (
             <div className="slider-menu">
-
-
-                <p className="param-header">Stat Threshold</p>
+                <p className="filter-text">
+                    {stat.name} Threshold: {addCommas(statThreshold)}
+                </p>
                     <div className="slidecontainer">
                         <input
-                            // TODO: min and max should be based on this.state.seriesRange
-                            id="statThreshold" type="range" min="0" max="80000"
+                            id="statThreshold"
+                            type="range"
+                            min={seriesMin.toString()}
+                            max={seriesMax.toString()}
+                            value={statThreshold.toString()}
                             ref={ref => this.statInput = ref}
-                            onChange={() => this.handleStatChange(this.statInput.value)}>
+                            onChange={
+                                () => {this.handleStatChange(this.statInput.value)}
+                            }>
                         </input>
+                        <p className="filter-text">
+                            {addCommas(seriesMin)} ... {addCommas(seriesMax)}
+                        </p>
                     </div>
-
-                <p className="param-header">Reproductive Number</p>
+{/*             <p className="param-header">Reproductive Number</p>
                 <div className="slidecontainer">
                     <input
                         id="r0" type="range" min="0" max="4"
                         ref={ref => this.r0Input = ref}
                         onChange={() => this.handleReprChange(this.r0Input.value)}>
                     </input>
-                </div>
+                </div> */}
 
-                <p className="param-header">Number of Simulations</p>
-                <div className="slidecontainer">
-                    <input
-                        id="simNum" type="range" min="1" max="1000"
-                        ref={ref => this.simInput = ref}
-                        onChange={() => this.handleSimChange(this.simInput.value)}>
-                    </input>
-                </div>
             </div>
         )
     }

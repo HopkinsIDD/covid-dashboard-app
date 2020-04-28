@@ -6,7 +6,7 @@ import { axisLeft, axisBottom } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
 import { select, selectAll, clientPoint } from 'd3-selection'
 import { transition } from 'd3-transition'
-import { numberWithCommas } from '../store/utils.js'
+import { addCommas } from '../utils/utils.js'
 
 const margin = { top: 20, right: 40, bottom: 30, left: 80 };
 const red = '#d31d30';
@@ -35,7 +35,7 @@ class Graph extends Component {
 
         this.yAxisRef = React.createRef();
         this.yAxis = axisLeft().scale(this.state.yScale)
-            .tickFormat(d => numberWithCommas(d));
+            .tickFormat(d => addCommas(d));
         
         this.simPathsRef = React.createRef();
     }
