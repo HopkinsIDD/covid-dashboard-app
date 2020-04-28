@@ -20,8 +20,10 @@ class Scenarios extends Component {
                 </button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
                     {SCENARIOS.map(scenario => {
+                        const isEqual = scenario.key === this.props.scenario.key;
+                        const isActive = isEqual ? ' active' : '';
                         return <button
-                                    className="dropdown-item" 
+                                    className={"dropdown-item" + isActive}
                                     type="button" 
                                     onClick={() => this.handleClick(scenario)} 
                                     key={scenario.id}>
