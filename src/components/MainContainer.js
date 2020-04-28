@@ -7,6 +7,7 @@ import Sliders from './Filters/Sliders.js';
 // import Overlays from './Filters/Overlays.js';
 import { getRange, updateThresholdFlag } from '../utils/utils.js'
 import { utcParse } from 'd3-time-format'
+import { max } from 'd3-array';
 const dataset = require('../store/geo06085.json');
 
 class MainContainer extends Component {
@@ -102,7 +103,7 @@ class MainContainer extends Component {
     };
 
     handleButtonClick = (i) => {
-        const yAxisLabel = `Number of Daily ${i.name} in ${this.state.geoid}`;
+        const yAxisLabel = `Amount of Daily ${i.name}`;
         this.setState({stat: i, yAxisLabel})
     };
 
@@ -164,6 +165,7 @@ class MainContainer extends Component {
                                 <Graph 
                                     stat={this.state.stat}
                                     geoid={this.state.geoid}
+                                    yAxisLabel={this.state.yAxisLabel}
                                     scenario={this.state.scenario}
                                     severity={this.state.severity}
                                     r0={this.state.r0}
@@ -172,6 +174,7 @@ class MainContainer extends Component {
                                     showActual={this.state.showActual}
                                     series={this.state.series}
                                     dates={this.state.dates}
+                                    statThreshold={this.state.statThreshold}
                                     width={this.state.graphW}
                                     height={this.state.graphH}
                                 /> }

@@ -8,7 +8,7 @@ import { select, selectAll, clientPoint } from 'd3-selection'
 import { transition } from 'd3-transition'
 import { addCommas } from '../utils/utils.js'
 
-const margin = { top: 20, right: 40, bottom: 30, left: 50 };
+const margin = { top: 20, right: 40, bottom: 30, left: 80 };
 const red = '#d31d30';
 const green = '#4ddaba';
 const blue = '#1f90db';
@@ -53,6 +53,7 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        // console.log(this.props)
         // compare prevProps to newProps
         if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
             const { series, dates } = this.props;
@@ -172,10 +173,14 @@ class Graph extends Component {
     }
 
     render() {
-        // console.log(this.props.stat, this.props.scenario)
+        // console.log(this.props.stat, this.props.scenario, this.props.yAxisLabel)
         // console.log(this.state.series)
+        // console.log(this.props.statThreshold)
         return (
-            <div>
+            <div className="graph-wrapper">
+                <div className="y-axis-label">
+                    {this.props.yAxisLabel}
+                </div>
                 <svg 
                     width={this.state.width} 
                     height={this.state.height} 
@@ -185,7 +190,6 @@ class Graph extends Component {
                 {
                 // visible simPaths
                 this.state.simPaths.map( (simPath, i) => {
-                    const maxVal = max(this.state.series[i].vals)
                     return <path
                         d={simPath}
                         key={`simPath-${i}`}
@@ -218,6 +222,13 @@ class Graph extends Component {
                         onMouseLeave={(e) => this.handleMouseLeave(e, i)}
                     />
                 })}
+                <line
+                    x1={this.state.xScale(this.state.dates[0])}
+                    y1={this.state.yScale(this.props.statThreshold)}
+                    x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
+                    y2={this.state.yScale(this.props.statThreshold)}
+                    stroke={gray}
+                ></line>
                 </g>
                 <g>
                     <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
