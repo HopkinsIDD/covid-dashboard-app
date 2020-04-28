@@ -62,14 +62,14 @@ class MainContainer extends Component {
         const { scenario, severity, geoid, stat } = this.state;
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
-        const allTimeSeries = Array.from(series)
         const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
         const firstDate = dates[0];
-        const allTimeDates = Array.from(dates)
         const [seriesMin, seriesMax] = getRange(series);
         const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
         updateThresholdFlag(series, statThreshold);
+        const allTimeSeries = Array.from(series)
+        const allTimeDates = Array.from(dates)
         
         const yAxisLabel = `Number of ${stat.name} per Day`;
         const graphW = this.graphEl.clientWidth;
@@ -112,6 +112,7 @@ class MainContainer extends Component {
             
             this.setState({
                 series: newSeries,
+                allTimeSeries: newSeries,
                 statThreshold,
                 seriesMin,
                 seriesMax
