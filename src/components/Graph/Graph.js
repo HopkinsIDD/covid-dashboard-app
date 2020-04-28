@@ -8,12 +8,7 @@ import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { transition } from 'd3-transition'
 import { addCommas } from '../../utils/utils.js'
-
-const margin = { top: 20, right: 40, bottom: 30, left: 80 };
-const red = '#d31d30';
-const green = '#4ddaba';
-const blue = '#1f90db';
-const gray = '#9b9b9b';
+import { margin, red, green, blue, gray } from '../../store/constants'
 
 class Graph extends Component {
     constructor(props) {

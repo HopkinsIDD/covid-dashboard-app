@@ -59,6 +59,12 @@ ul {
   font-weight: bold;
 }
 
+.legend {
+  font-size: 9px;
+  text-align: end;
+  margin-bottom: 0px;
+}
+
 .slider {
   width: 100%;
 }

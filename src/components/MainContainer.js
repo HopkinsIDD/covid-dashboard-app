@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import Graph from './Graph/Graph.js';
-import ThresholdLabel from './Graph/ThresholdLabel.js';
-import Legend from './Graph/Legend.js';
-import Buttons from './Filters/Buttons.js';
-import Scenarios from './Filters/Scenarios.js';
-import Severity from './Filters/Severity.js';
-import Sliders from './Filters/Sliders.js';
-// import Overlays from './Filters/Overlays.js';
-import { getRange, updateThresholdFlag } from '../utils/utils.js'
+import Graph from './Graph/Graph';
+import ThresholdLabel from './Graph/ThresholdLabel';
+import Legend from './Graph/Legend';
+import Buttons from './Filters/Buttons';
+import Scenarios from './Filters/Scenarios';
+import Severity from './Filters/Severity';
+import Sliders from './Filters/Sliders';
+// import Overlays from './Filters/Overlays';
+import { getRange, updateThresholdFlag } from '../utils/utils'
 import { utcParse } from 'd3-time-format'
 import { max } from 'd3-array';
 const dataset = require('../store/geo06085.json');
@@ -189,9 +189,19 @@ class MainContainer extends Component {
                                 />
                             <p></p>
 
-                            <p className="filter-label scenario-title">
-                                {scenarioTitle}
-                            </p>
+                            {/* temp title row + legend */}
+                            <div className="row">
+                                <div className="col-3"></div>
+                                <div className="col-6">
+                                    <p className="filter-label scenario-title">
+                                        {scenarioTitle}
+                                    </p>
+                                </div>
+                                <div className="col-3">
+                                    <Legend />
+                                </div>
+                            </div>
+
                             <div
                                 className="graph border"
                                 ref={ (graphEl) => { this.graphEl = graphEl } }
