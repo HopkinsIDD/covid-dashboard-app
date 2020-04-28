@@ -6,9 +6,9 @@ import { axisLeft, axisBottom } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
 import { select, selectAll, clientPoint } from 'd3-selection'
 import { transition } from 'd3-transition'
-import { numberWithCommas } from '../store/utils.js'
+import { addCommas } from '../utils/utils.js'
 
-const margin = { top: 20, right: 40, bottom: 30, left: 50 };
+const margin = { top: 20, right: 40, bottom: 30, left: 80 };
 const red = '#d31d30';
 const green = '#4ddaba';
 const blue = '#1f90db';
@@ -35,7 +35,7 @@ class Graph extends Component {
 
         this.yAxisRef = React.createRef();
         this.yAxis = axisLeft().scale(this.state.yScale)
-            .tickFormat(d => numberWithCommas(d));
+            .tickFormat(d => addCommas(d));
         
         this.simPathsRef = React.createRef();
     }
@@ -53,6 +53,7 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        // console.log(this.props)
         // compare prevProps to newProps
         if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
             const { series, dates } = this.props;
@@ -65,21 +66,21 @@ class Graph extends Component {
               
                 // generate simPaths from lineGenerator
                 const simPaths = series.map( (d,i) => {
-                    // console.log(i, typeof(d.values))
-                    return lineGenerator(d.values)
+                    // console.log(i, typeof(d.vals))
+                    return lineGenerator(d.vals)
                 })
               
                 // get svg node
                 const simPathsNode = select(this.simPathsRef.current)
-                console.log(simPathsNode.selectAll('.simPath'))
+                // console.log(simPathsNode.selectAll('.simPath'))
                 // update the paths with new data
                 simPathsNode.selectAll('.simPath')
                     .data(series)
                     .transition()
                     .duration(1000)
-                    .attr("d", d => updatedScales.lineGenerator(d.values))
+                    .attr("d", d => updatedScales.lineGenerator(d.vals))
                     .on("end", () => {
-                        // set new values to state
+                        // set new vals to state
                         this.setState({ 
                             series: series,
                             dates: dates,
@@ -95,7 +96,7 @@ class Graph extends Component {
                 //     .data(series)
                 //     .transition()
                 //     .duration(1000)
-                //     .attr("d", d => updatedScales.lineGenerator(d.values))
+                //     .attr("d", d => updatedScales.lineGenerator(d.vals))
               
             }
             // Update Axes
@@ -124,8 +125,8 @@ class Graph extends Component {
         const { xScale, yScale, lineGenerator, width, height } = this.state;
         // calculate scale domains
         const timeDomain = extent(dates);
-        // const maxVal = max(series, sims => max(sims.map( d => max(d.values))))
-        const maxVal = max(series, sims => max(sims.values))
+        // const maxVal = max(series, sims => max(sims.map( d => max(d.vals))))
+        const maxVal = max(series, sims => max(sims.vals))
         // set scale ranges to width and height of container
         xScale.range([margin.left, width - margin.right])
         yScale.range([height - margin.bottom, margin.top])
@@ -143,10 +144,10 @@ class Graph extends Component {
         const updatedScales = this.calculateSimPaths(series, dates);
         // generate simPaths from lineGenerator
         const simPaths = series.map( (d,i) => {
-            // console.log(i, typeof(d.values))
-            return lineGenerator(d.values)
+            // console.log(i, typeof(d.vals))
+            return lineGenerator(d.vals)
         })
-        // set new values to state
+        // set new vals to state
         this.setState({ 
             series: series,
             dates: dates,
@@ -172,10 +173,14 @@ class Graph extends Component {
     }
 
     render() {
-        // console.log(this.props.stat, this.props.scenario)
+        // console.log(this.props.stat, this.props.scenario, this.props.yAxisLabel)
         // console.log(this.state.series)
+        // console.log(this.props.statThreshold)
         return (
-            <div>
+            <div className="graph-wrapper">
+                <div className="y-axis-label">
+                    {this.props.yAxisLabel}
+                </div>
                 <svg 
                     width={this.state.width} 
                     height={this.state.height} 
@@ -185,14 +190,13 @@ class Graph extends Component {
                 {
                 // visible simPaths
                 this.state.simPaths.map( (simPath, i) => {
-                    const maxVal = max(this.state.series[i].values)
                     return <path
                         d={simPath}
                         key={`simPath-${i}`}
                         id={`simPath-${i}`}
                         className={`simPath`}
                         fill='none' 
-                        stroke = { this.state.series[i].display ? red : green }
+                        stroke = { this.state.series[i].over ? red : green }
                         strokeWidth={'1'}
                         strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
                         onMouseMove={(e) => this.handleMouseMove(e, i)}
@@ -218,6 +222,13 @@ class Graph extends Component {
                         onMouseLeave={(e) => this.handleMouseLeave(e, i)}
                     />
                 })}
+                <line
+                    x1={this.state.xScale(this.state.dates[0])}
+                    y1={this.state.yScale(this.props.statThreshold)}
+                    x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
+                    y2={this.state.yScale(this.props.statThreshold)}
+                    stroke={gray}
+                ></line>
                 </g>
                 <g>
                     <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
