@@ -18,7 +18,15 @@ class MainContainer extends Component {
             dataset: {},
             dataLoaded: false,
             series: {},
+            allTimeSeries: {},
             dates: [],
+            allTimeDates: [],
+            // this.state = {
+            //     series: this will be updated based on scenario, stat, sev, statFilter, AND DateFilter ranges
+            //     dates: this will be updated based on scenario, stat, sev, statFilter, AND DateFilter ranges
+            //     allTimeSeries: this will be updated based on scenario, stat, sev but NOT on DateFilter ranges
+            //     allTimeDates: this will be updated based on scenario, stat, sev but NOT on DateFilter ranges
+            //   }
             yAxisLabel: '',
             stat: {
                 'id': 1,
@@ -54,10 +62,11 @@ class MainContainer extends Component {
         const { scenario, severity, geoid, stat } = this.state;
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
+        const allTimeSeries = Array.from(series)
         const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
         const firstDate = dates[0];
-        
+        const allTimeDates = Array.from(dates)
         const [seriesMin, seriesMax] = getRange(series);
         const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
         updateThresholdFlag(series, statThreshold);
@@ -69,7 +78,9 @@ class MainContainer extends Component {
         this.setState({
             dataset,
             dates,
+            allTimeDates,
             series,
+            allTimeSeries,
             seriesMax,
             seriesMin,
             statThreshold,
@@ -166,7 +177,7 @@ class MainContainer extends Component {
     };
 
     handleBrushChange = (i) => {
-        // this.setState({ dateRange: i })
+        this.setState({ dateRange: i })
     }
 
     render() {
@@ -207,10 +218,11 @@ class MainContainer extends Component {
                                         height={this.state.graphH}
                                     /> 
                                     <Brush
-                                        series={this.state.series}
-                                        dates={this.state.dates}
+                                        series={this.state.allTimeSeries}
+                                        dates={this.state.allTimeDates}
                                         width={this.state.graphW}
                                         height={80}
+                                        dateRange={this.state.dateRange}
                                         onBrushChange={this.handleBrushChange}
                                     />
                                 </div>
