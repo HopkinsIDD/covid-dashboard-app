@@ -46,8 +46,21 @@ ul {
   margin-bottom: 0px;
 }
 
-.filter-text {
+.filter-label {
   font-size: 13px;
+  margin-bottom: 0px;
+}
+
+.slider {
+  width: 100%;
+}
+
+.slider-max {
+  text-align: end;
+}
+
+.slider-label {
+  margin-top: -6%;
 }
 
 .no-margin {
@@ -79,9 +92,8 @@ ul {
   bottom: 0;
   left: 0;
   margin-left: 5px;
-  margin-bottom: 70px;
+  margin-bottom: 5%;
   font-size: 0.75rem;
-  font-weight: bold;
   pointer-events: none;
   -webkit-transform: rotate(270deg);
   -moz-transform: rotate(270deg);

@@ -24,7 +24,7 @@ class MainContainer extends Component {
                 'name': 'Infections',
                 'key': 'incidI'
             },
-            geoid: '101',
+            geoid: '06085',
             scenario: {
                 'id': 1,
                 'key': 'USA_Uncontrolled',
@@ -108,7 +108,7 @@ class MainContainer extends Component {
     };
 
     handleButtonClick = (i) => {
-        const yAxisLabel = `Amount of Daily ${i.name}`;
+        const yAxisLabel = `Number of Daily ${i.name}`;
         this.setState({stat: i, yAxisLabel})
     };
 
@@ -137,7 +137,7 @@ class MainContainer extends Component {
         const dateRange = [parseDate(i[0]), parseDate(i[1])];
         const idxMin = dateRange[0] - this.state.firstDate;
         const idxMax = dateRange[1] - this.state.firstDate;
-        
+
         const copyDates = Array.from(this.state.dates.slice(idxMin, idxMax));
         const copySeries = Array.from(this.state.series);
         Object.values(copySeries).map(sim => sim.vals.splice(idxMin, idxMax));
@@ -165,6 +165,7 @@ class MainContainer extends Component {
     };
 
     render() {
+        const scenarioTitle = this.state.scenario.name.replace('_', ' ');
         return (
             <div className="main-container">
                 <div className="container no-margin">
@@ -176,8 +177,8 @@ class MainContainer extends Component {
                                 />
                             <p></p>
 
-                            <p className="filter-text scenario-title">
-                                {this.state.scenario.name}
+                            <p className="filter-label scenario-title">
+                                {scenarioTitle}
                             </p>
                             <div
                                 className="graph border"
