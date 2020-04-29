@@ -53,9 +53,9 @@ class Graph extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         // console.log(prevProps, this.props)
-        console.log('prev series different from new series is ', this.props.series !== prevProps.series)
-        console.log('prev dates different from new dates is ', this.props.dates !== prevProps.dates)
-        console.log('prev statThreshold', prevProps.statThreshold, 'new statThreshold', this.props.statThreshold)
+        // console.log('prev series different from new series is ', this.props.series !== prevProps.series)
+        // console.log('prev dates different from new dates is ', this.props.dates !== prevProps.dates)
+        // console.log('prev statThreshold', prevProps.statThreshold, 'new statThreshold', this.props.statThreshold)
        
         // compare prevProps series or dates to newProps series or dates
         if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
@@ -200,8 +200,8 @@ class Graph extends Component {
         // console.log(this.props.stat, this.props.scenario, this.props.yAxisLabel)
         // console.log(this.state.series)
         // console.log(this.props.statThreshold)
-        console.log(this.state.dates[0])
-        console.log(this.state.dateThreshold)
+        // console.log(this.state.dates[0])
+        // console.log(this.state.dateThreshold)
         return (
             <div className="graph-wrapper">
                 <div className="y-axis-label">
