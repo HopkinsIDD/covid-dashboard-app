@@ -1,21 +1,13 @@
 import React, { Component } from 'react'
 import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line } from 'd3-shape'
-import { max, extent, bisectLeft, least } from 'd3-array'
+import { max, extent } from 'd3-array'
 import { axisLeft, axisBottom } from 'd3-axis'
-import { timeFormat } from 'd3-time-format'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { transition } from 'd3-transition'
-import { addCommas } from '../utils/utils.js'
-import { COLORS } from '../store/constants.js'
-
-
-const margin = { top: 20, right: 40, bottom: 30, left: 80 };
-const red = '#d31d30';
-const green = '#4ddaba';
-const blue = '#1f90db';
-const gray = '#9b9b9b';
+import { addCommas } from '../../utils/utils.js'
+import { margin, red, green, blue, gray } from '../../store/constants'
 
 class Graph extends Component {
     constructor(props) {
@@ -26,6 +18,7 @@ class Graph extends Component {
             series: this.props.series,
             dates: this.props.dates,
             statThreshold: this.props.statThreshold,
+            dateThreshold: this.props.dateThreshold,
             xScale: scaleUtc().range([margin.left, this.props.width - margin.right]),
             yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top]),
             lineGenerator: line().defined(d => !isNaN(d)),
@@ -58,16 +51,15 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log(prevProps, this.props)
         // console.log('prev series different from new series is ', this.props.series !== prevProps.series)
         // console.log('prev dates different from new dates is ', this.props.dates !== prevProps.dates)
         // console.log('prev statThreshold', prevProps.statThreshold, 'new statThreshold', this.props.statThreshold)
        
         // compare prevProps series or dates to newProps series or dates
         if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
-            const { series, dates, statThreshold } = this.props;
+            const { series, dates, statThreshold, dateThreshold } = this.props;
             const { xScale, yScale, lineGenerator, width, height } = prevState;
-
+            //TODO: update based on resizing width and height
             if (this.simPathsRef.current) {
                 
                 // update scale and data
@@ -89,7 +81,7 @@ class Graph extends Component {
                     .duration(1000)
                     .ease(easeCubicOut)
                     .attr("d", d => updatedScales.lineGenerator(d.vals))
-                    .attr("stroke", (d,i) => series[i].over ? COLORS['red'] : COLORS['green'] )
+                    .attr("stroke", (d,i) => series[i].over ? red : green )
                     .on("end", () => {
                         // set new vals to state
                         this.setState({ 
@@ -103,7 +95,7 @@ class Graph extends Component {
                     })
             }
 
-            // Update statThresholdLine
+            // Update statThreshold Line
             if (this.thresholdRef.current) {
                 const thresholdNode = select(this.thresholdRef.current)
                 thresholdNode.selectAll('.statThreshold')
@@ -114,6 +106,19 @@ class Graph extends Component {
                     .ease(easeCubicOut)
                     .on("end", () => {
                         this.setState({ statThreshold })
+                    })
+            }
+            // Update dateThreshold Line
+            if (this.thresholdRef.current) {
+                const thresholdNode = select(this.thresholdRef.current)
+                thresholdNode.selectAll('.dateThreshold')
+                    .transition()
+                    .duration(1000)
+                    .attr("x1", xScale(dateThreshold))
+                    .attr("x2", xScale(dateThreshold))
+                    .ease(easeCubicOut)
+                    .on("end", () => {
+                        this.setState({ dateThreshold })
                     })
             }
 
@@ -190,11 +195,6 @@ class Graph extends Component {
     }
 
     render() {
-        
-        // console.log(this.props.stat, this.props.scenario, this.props.yAxisLabel)
-        // console.log(this.state.series)
-        // console.log(this.state.dates)
-        // console.log(this.props.statThreshold)
         return (
             <div className="graph-wrapper">
                 <div className="y-axis-label">
@@ -215,7 +215,7 @@ class Graph extends Component {
                         id={`simPath-${i}`}
                         className={`simPath`}
                         fill='none' 
-                        stroke = { this.state.series[i].over ? COLORS['red'] : COLORS['green'] }
+                        stroke = { this.state.series[i].over ? red : green}
                         strokeWidth={'1'}
                         strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
                         onMouseMove={(e) => this.handleMouseMove(e, i)}
@@ -233,7 +233,7 @@ class Graph extends Component {
                         id={`simPath-${i}-hover`}
                         className={`simPath-hover`}
                         fill='none' 
-                        stroke={simIsHovered ? COLORS['blue'] : COLORS['gray']}
+                        stroke={simIsHovered ? blue : gray}
                         strokeWidth={simIsHovered ? '2' : '1'}
                         strokeOpacity={simIsHovered && this.state.hoveredSimPathId ? 1 : 0.5}
                         onMouseMove={(e) => this.handleMouseMove(e, i)}
@@ -242,14 +242,23 @@ class Graph extends Component {
                     />
                 })}
                 <g ref={this.thresholdRef}>
-                <line
-                    x1={this.state.xScale(this.state.dates[0])}
-                    y1={this.state.yScale(this.state.statThreshold)}
-                    x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
-                    y2={this.state.yScale(this.state.statThreshold)}
-                    stroke={COLORS['gray']}
-                    className={'statThreshold'}
-                ></line>
+                    <line
+                        x1={this.state.xScale(this.state.dates[0])}
+                        y1={this.state.yScale(this.state.statThreshold)}
+                        x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
+                        y2={this.state.yScale(this.state.statThreshold)}
+                        stroke={gray}
+                        className={'statThreshold'}
+                    ></line>
+                    <line
+                        x1={this.state.xScale(this.state.dateThreshold)}
+                        //this.props.height - margin.bottom, margin.top
+                        y1={margin.top}
+                        x2={this.state.xScale(this.state.dateThreshold)}
+                        y2={this.props.height - margin.bottom}
+                        stroke={gray}
+                        className={'dateThreshold'}
+                    ></line>
                 </g>
                 </g>
                 <g>

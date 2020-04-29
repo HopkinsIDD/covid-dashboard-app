@@ -10,7 +10,7 @@ class Scenarios extends Component {
         return (
             <div className="dropdown">
                 <button
-                    className="btn btn-light dropdown-toggle btn-stat filter-text"
+                    className="btn btn-light dropdown-toggle btn-stat filter-label"
                     type="button" 
                     id="dropdownMenu2" 
                     data-toggle="dropdown" 
@@ -20,8 +20,10 @@ class Scenarios extends Component {
                 </button>
                 <div className="dropdown-menu" aria-labelledby="dropdownMenu2">
                     {SCENARIOS.map(scenario => {
+                        const isEqual = scenario.key === this.props.scenario.key;
+                        const isActive = isEqual ? ' active' : '';
                         return <button
-                                    className="dropdown-item" 
+                                    className={"dropdown-item" + isActive}
                                     type="button" 
                                     onClick={() => this.handleClick(scenario)} 
                                     key={scenario.id}>

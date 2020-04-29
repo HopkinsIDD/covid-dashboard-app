@@ -7,9 +7,7 @@ import { timeFormat } from 'd3-time-format'
 import { brushX } from 'd3-brush'
 import { event } from 'd3-selection'
 import { max, extent } from 'd3-array'
-import { COLORS } from '../../store/constants.js'
-
-const margin = { top: 20, right: 40, bottom: 30, left: 80 };
+import { margin, red, green } from '../../store/constants'
 
 class Brush extends Component {
   constructor(props) {
@@ -167,7 +165,7 @@ class Brush extends Component {
                       id={`simPath-${i}`}
                       className={`simPath`}
                       fill='none' 
-                      stroke = { this.state.series[i].over ? COLORS['red'] : COLORS['green'] }
+                      stroke = { this.state.series[i].over ? red : green }
                       strokeWidth={'1'}
                       strokeOpacity={ 0.4 }
                   />

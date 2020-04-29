@@ -2,6 +2,12 @@
 // key: use this to key into dataset
 // name: display name for visualization
 
+export const margin = { top: 20, right: 40, bottom: 30, left: 80 };
+export const red = '#d31d30';
+export const green = '#4ddaba';
+export const blue = '#1f90db';
+export const gray = '#9b9b9b';
+
 export const SCENARIOS = [
     {'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled'},
     {'id': 2, 'key': 'USA_Lockdown1918', 'name': 'USA_Lockdown1918'},
