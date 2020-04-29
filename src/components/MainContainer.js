@@ -8,6 +8,7 @@ import Sliders from './Filters/Sliders.js';
 // import Overlays from './Filters/Overlays.js';
 import { getRange, updateThresholdFlag } from '../utils/utils.js'
 import { utcParse, timeFormat } from 'd3-time-format'
+import { timeDay } from 'd3-time'
 import { max } from 'd3-array';
 const dataset = require('../store/geo06085.json');
 
@@ -118,31 +119,6 @@ class MainContainer extends Component {
                 seriesMax
             })
         }
-        if (this.state.dateRange !== prevState.dateRange) {
-            const { dataset, stat, scenario, severity, series, dates, dateRange } = this.state;
-            // const newSeries = Array.from(
-            //     dataset[scenario.key][severity.key].series[stat.key]
-            //     );
-            let minIndex, maxIndex;
-            const formatDate = timeFormat("%B %d, %Y");
-            const newDates = dates.filter( (date, index) => { 
-                if (formatDate(date) === formatDate(dateRange[0])) minIndex = index
-                if (formatDate(date) === formatDate(dateRange[1])) maxIndex = index
-                return date >= dateRange[0] && date < dateRange[1]
-            })
-            console.log(newDates)
-            console.log(minIndex, maxIndex, maxIndex-minIndex)
-            const newSeries = Array.from(series).map( s => {
-                const newS = {...s}
-                newS.vals = s.vals.slice(minIndex, maxIndex)
-                return newS
-            })
-            console.log(newSeries)
-            this.setState({
-                dates: newDates,
-                series: newSeries
-            })
-        }
     };
 
     handleButtonClick = (i) => {
@@ -169,20 +145,25 @@ class MainContainer extends Component {
         });
     };
 
-    handleDateSliderChange = (i) => {
+    handleBrushRange = (i) => { 
         // for example, if props received is dateRange like i = [minDate, maxDate]
-        const parseDate = utcParse("%Y-%m-%d");
-        const dateRange = [parseDate(i[0]), parseDate(i[1])];
-        const idxMin = dateRange[0] - this.state.firstDate;
-        const idxMax = dateRange[1] - this.state.firstDate;
-        
-        const copyDates = Array.from(this.state.dates.slice(idxMin, idxMax));
-        const copySeries = Array.from(this.state.series);
-        Object.values(copySeries).map(sim => sim.vals.splice(idxMin, idxMax));
-
+        // console.log(this.state.firstDate, i)
+        const idxMin = timeDay.count(this.state.firstDate, i[0]);
+        const idxMax = timeDay.count(this.state.firstDate, i[1]);
+        // console.log(idxMin, idxMax)
+        // console.log(this.state.allTimeDates)
+        // console.log(this.state.allTimeSeries)
+        const newDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
+        const newSeries = Array.from(this.state.allTimeSeries).map( s => {
+            const newS = {...s}
+            newS.vals = s.vals.slice(idxMin, idxMax)
+            return newS
+        })
+        // console.log(newDates)
+        // console.log(newSeries)
         this.setState({
-            series: copySeries,
-            dates: copyDates,
+            series: newSeries,
+            dates: newDates,
         });
     };
 
@@ -202,11 +183,9 @@ class MainContainer extends Component {
         }));
     };
 
-    handleBrushChange = (i) => {
-        this.setState({ dateRange: i })
-    }
-
     render() {
+        // console.log(this.state.dates)
+        // console.log(this.state.series)
         return (
             <div className="main-container">
                 <div className="container no-margin">
@@ -249,7 +228,7 @@ class MainContainer extends Component {
                                         width={this.state.graphW}
                                         height={80}
                                         dateRange={this.state.dateRange}
-                                        onBrushChange={this.handleBrushChange}
+                                        onBrushChange={this.handleBrushRange}
                                     />
                                 </div>
                                 }

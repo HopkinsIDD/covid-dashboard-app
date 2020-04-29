@@ -36,7 +36,7 @@ class Brush extends Component {
           [this.state.width - margin.right, this.state.height - margin.bottom]
         ])
         .on('end', this.brushEnded)
-        .on('brush', this.brushed)
+        .on('start brush', this.brushed)
   }
 
   componentDidMount() {
@@ -138,7 +138,7 @@ class Brush extends Component {
   }
 
   brushed = () => {
-    console.log(event)
+    // console.log(event)
   }
 
   brushEnded = () => {
