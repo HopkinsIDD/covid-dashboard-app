@@ -282,6 +282,7 @@ class MainContainer extends Component {
                                         series={this.state.series}
                                         dates={this.state.dates}
                                         statThreshold={this.state.statThreshold}
+                                        dateThreshold={this.state.dateThreshold}
                                         width={this.state.graphW}
                                         height={this.state.graphH}
                                     /> 

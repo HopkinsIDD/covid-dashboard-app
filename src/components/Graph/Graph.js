@@ -19,6 +19,7 @@ class Graph extends Component {
             series: this.props.series,
             dates: this.props.dates,
             statThreshold: this.props.statThreshold,
+            dateThreshold: this.props.dateThreshold,
             xScale: scaleUtc().range([margin.left, this.props.width - margin.right]),
             yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top]),
             lineGenerator: line().defined(d => !isNaN(d)),
@@ -82,7 +83,7 @@ class Graph extends Component {
                     .duration(1000)
                     .ease(easeCubicOut)
                     .attr("d", d => updatedScales.lineGenerator(d.vals))
-                    .attr("stroke", (d,i) => series[i].over ? COLORS['red'] : COLORS['green'] )
+                    .attr("stroke", (d,i) => series[i].over ? red : green )
                     .on("end", () => {
                         // set new vals to state
                         this.setState({ 
@@ -186,6 +187,8 @@ class Graph extends Component {
         // console.log(this.props.stat, this.props.scenario, this.props.yAxisLabel)
         // console.log(this.state.series)
         // console.log(this.props.statThreshold)
+        console.log(this.state.dates[0])
+        console.log(this.state.dateThreshold)
         return (
             <div className="graph-wrapper">
                 <div className="y-axis-label">
@@ -233,14 +236,31 @@ class Graph extends Component {
                     />
                 })}
                 <g ref={this.thresholdRef}>
-                <line
-                    x1={this.state.xScale(this.state.dates[0])}
-                    y1={this.state.yScale(this.state.statThreshold)}
-                    x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
-                    y2={this.state.yScale(this.state.statThreshold)}
-                    stroke={gray}
-                    className={'statThreshold'}
-                ></line>
+                    <line
+                        x1={this.state.xScale(this.state.dates[0])}
+                        y1={this.state.yScale(this.state.statThreshold)}
+                        x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
+                        y2={this.state.yScale(this.state.statThreshold)}
+                        stroke={gray}
+                        className={'statThreshold'}
+                    ></line>
+                    <line
+                        x1={this.state.xScale(Date.parse(this.state.dateThreshold))}
+                        //this.props.height - margin.bottom, margin.top
+                        y1={margin.top}
+                        x2={this.state.xScale(Date.parse(this.state.dateThreshold))}
+                        y2={this.props.height - margin.bottom}
+                        stroke={gray}
+                        className={'dateThreshold'}
+                    ></line>
+                    {/* <line
+                        x1={this.state.xScale(this.state.dateThreshold)}
+                        y1={this.state.yScale(this.state.series[0])}
+                        x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
+                        y2={this.state.yScale(this.state.statThreshold)}
+                        stroke={gray}
+                        className={'statThreshold'}
+                    ></line> */}
                 </g>
                 </g>
                 <g>
