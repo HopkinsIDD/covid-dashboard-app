@@ -33,6 +33,7 @@ class Brush extends Component {
           [margin.left, margin.top],
           [this.state.width - margin.right, this.state.height - margin.bottom]
         ])
+        .on('start', this.brushStart)
         .on('end', this.brushEnded)
         .on('start brush', this.brushed)
   }
@@ -44,8 +45,9 @@ class Brush extends Component {
       select(this.xAxisRef.current).call(this.xAxis)
     }
     if (this.brushRef.current) {
-      select(this.brushRef.current).call(this.brush)
-      .call(this.brush.move, [this.state.dates[0], this.state.dates[this.state.dates.length - 1]])
+      const brushRefNode = select(this.brushRef.current)
+      brushRefNode.call(this.brush)
+        .call(this.brush.move, [ this.state.xScale(this.props.dateRange[0]), this.state.xScale(this.props.dateRange[1]) ])
     }
   }
 
@@ -135,8 +137,12 @@ class Brush extends Component {
     return { xScale, yScale, lineGenerator }
   }
 
+  brushStart = () => {
+    console.log(event)
+  }
+
   brushed = () => {
-    // console.log(event)
+    console.log(event)
   }
 
   brushEnded = () => {
