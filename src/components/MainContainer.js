@@ -86,6 +86,15 @@ class MainContainer extends Component {
             this.state.dateThreshold
             )        
         const percExceedence = simsOver / series.length;
+
+        const idxMin = timeDay.count(firstDate, this.state.dateRange[0]);
+        const idxMax = timeDay.count(firstDate, this.state.dateRange[1]);
+        const newDates = Array.from(allTimeDates.slice(idxMin, idxMax));
+        const filteredSeries = series.map( s => {
+            const newS = {...s}
+            newS.vals = s.vals.slice(idxMin, idxMax)
+            return newS
+        })
         
         const yAxisLabel = `Number of ${stat.name} per Day`;
         const graphW = this.graphEl.clientWidth;
@@ -93,9 +102,9 @@ class MainContainer extends Component {
 
         this.setState({
             dataset,
-            dates,
+            dates: newDates,
             allTimeDates,
-            series,
+            series: filteredSeries,
             allTimeSeries,
             seriesMax,
             seriesMin,
@@ -139,7 +148,7 @@ class MainContainer extends Component {
             console.log(this.state.firstDate, this.state.dateRange)
             const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
             const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
-            console.log(idxMin, idxMax)
+            // console.log(idxMin, idxMax)
             const newDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
             const filteredSeries = newSeries.map( s => {
                 const newS = {...s}
