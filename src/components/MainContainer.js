@@ -65,9 +65,9 @@ class MainContainer extends Component {
         };
     };
 
-    async componentDidMount() {
+    componentDidMount() {
         console.log('componentDidMount')
-        const { scenario, severity, geoid, stat } = this.state;
+        const { scenario, severity, stat } = this.state;
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
         const dates = initialData.dates.map( d => parseDate(d));
@@ -76,15 +76,14 @@ class MainContainer extends Component {
         const firstDate = dates[0].toISOString().split('T')[0];
         const lastDate = dates[dates.length - 1].toISOString().split('T')[0];
         const [seriesMin, seriesMax] = getRange(series);
-        const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
-        const dateThreshold = "2020-05-04";
+        const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
         // mutates series
         const simsOver = this.updateThreshold(
             series,
             statThreshold,
             dates,
-            dateThreshold
+            this.state.dateThreshold
             )        
         const percExceedence = simsOver / series.length;
         
@@ -126,7 +125,6 @@ class MainContainer extends Component {
                 );
             const [seriesMin, seriesMax] = getRange(newSeries);
             const statThreshold = Math.ceil(seriesMax / 1.2);
-            const dateThreshold = "2020-05-04";
 
             // mutates series
             const simsOver = this.updateThreshold(
@@ -165,20 +163,17 @@ class MainContainer extends Component {
         // update 'over' flag to true if sim peak surpasses statThreshold
         // returns numSims 'over' threshold
         let simsOver = 0;
-        const dateInput = new Date(Date.parse(dateThreshold));
-
         Object.values(series).map(sim => {
           const simPeak = Math.max.apply(null, sim.vals);
           const simPeakDate = dates[sim.vals.indexOf(simPeak)];
 
-          if (simPeak > statThreshold && simPeakDate < dateInput) {
+          if (simPeak > statThreshold && simPeakDate < dateThreshold) {
               simsOver = simsOver + 1;
               return sim.over = true;
           } else {
               return sim.over = false;
           };
         })
-        console.log('simsOver', simsOver)
         return simsOver;
     };
 
@@ -211,7 +206,6 @@ class MainContainer extends Component {
 
     handleDateSliderChange = (i) => {
         const { statThreshold, dates } = this.state;
-        console.log('handleDateSliderChange', i)
         const copy = Array.from(this.state.series);
         const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
         const percExceedence = simsOver / copy.length;
@@ -334,8 +328,10 @@ class MainContainer extends Component {
                             />
                             <p></p>
                             <h5>Thresholds</h5>
+                            {this.state.dataLoaded &&
                             <Sliders 
                                 stat={this.state.stat}
+                                dates={this.state.dates}
                                 seriesMax={this.state.seriesMax}
                                 seriesMin={this.state.seriesMin}
                                 statThreshold={this.state.statThreshold}
@@ -346,7 +342,7 @@ class MainContainer extends Component {
                                 onDateSliderChange={this.handleDateSliderChange}
                                 // // onReprSliderChange={this.handleReprSliderChange}
                             />
-
+                            }
                         </div>
                     </div>
                 </div>
