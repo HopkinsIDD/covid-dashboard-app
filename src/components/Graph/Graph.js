@@ -59,9 +59,9 @@ class Graph extends Component {
        
         // compare prevProps series or dates to newProps series or dates
         if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
-            const { series, dates, statThreshold } = this.props;
+            const { series, dates, statThreshold, dateThreshold } = this.props;
             const { xScale, yScale, lineGenerator, width, height } = prevState;
-
+            //TODO: update based on resizing width and height
             if (this.simPathsRef.current) {
                 
                 // update scale and data
@@ -97,7 +97,7 @@ class Graph extends Component {
                     })
             }
 
-            // Update statThresholdLine
+            // Update statThreshold Line
             if (this.thresholdRef.current) {
                 const thresholdNode = select(this.thresholdRef.current)
                 thresholdNode.selectAll('.statThreshold')
@@ -108,6 +108,19 @@ class Graph extends Component {
                     .ease(easeCubicOut)
                     .on("end", () => {
                         this.setState({ statThreshold })
+                    })
+            }
+            // Update dateThreshold Line
+            if (this.thresholdRef.current) {
+                const thresholdNode = select(this.thresholdRef.current)
+                thresholdNode.selectAll('.dateThreshold')
+                    .transition()
+                    .duration(1000)
+                    .attr("x1", xScale(Date.parse(dateThreshold)))
+                    .attr("x2", xScale(Date.parse(dateThreshold)))
+                    .ease(easeCubicOut)
+                    .on("end", () => {
+                        this.setState({ dateThreshold })
                     })
             }
 
