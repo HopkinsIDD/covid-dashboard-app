@@ -128,6 +128,15 @@ class MainContainer extends Component {
             const statThreshold = Math.ceil(seriesMax / 1.2);
             const dateThreshold = "2020-05-04";
 
+            // mutates series
+            const simsOver = this.updateThreshold(
+                newSeries,
+                statThreshold,
+                this.state.allTimeDates,
+                dateThreshold
+                )
+            const percExceedence = simsOver / newSeries.length;
+
             // filter series and dates by dateRange
             // console.log(parseDate(this.state.firstDate), this.state.dateRange)
             const idxMin = timeDay.count(parseDate(this.state.firstDate), this.state.dateRange[0]);
@@ -139,15 +148,6 @@ class MainContainer extends Component {
                 newS.vals = s.vals.slice(idxMin, idxMax)
                 return newS
             })
-
-            // mutates series
-            const simsOver = this.updateThreshold(
-                filteredSeries,
-                statThreshold,
-                this.state.dates,
-                dateThreshold
-                )
-            const percExceedence = simsOver / filteredSeries.length;
 
             this.setState({
                 series: filteredSeries,
