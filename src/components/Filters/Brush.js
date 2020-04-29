@@ -146,7 +146,7 @@ class Brush extends Component {
     if (event.selection && event.sourceEvent !== null) {
       const [x1, x2] = event.selection;
       const range = [this.state.xScale.invert(x1), this.state.xScale.invert(x2)];
-      console.log(range)
+      // console.log(range)
       this.props.onBrushChange(range);
     }
   }

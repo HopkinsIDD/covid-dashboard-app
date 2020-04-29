@@ -12,6 +12,8 @@ import { timeDay } from 'd3-time'
 import { max } from 'd3-array';
 const dataset = require('../store/geo06085.json');
 
+const parseDate = utcParse('%Y-%m-%d')
+
 class MainContainer extends Component {
     constructor(props) {
         super(props);
@@ -47,7 +49,7 @@ class MainContainer extends Component {
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
-            dateRange: ['2020-03-01', '2020-07-01'],
+            dateRange: [parseDate('2020-03-01'), parseDate('2020-07-01')],
             firstDate: '',
             r0: '1',
             simNum: '150',
@@ -63,7 +65,6 @@ class MainContainer extends Component {
         const { scenario, severity, geoid, stat } = this.state;
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
-        const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
         const firstDate = dates[0];
         const [seriesMin, seriesMax] = getRange(series);
@@ -99,7 +100,8 @@ class MainContainer extends Component {
     componentDidUpdate(prevProp, prevState) {
         if (this.state.stat !== prevState.stat ||
             this.state.scenario !== prevState.scenario ||
-            this.state.severity !== prevState.severity) {
+            this.state.severity !== prevState.severity ||
+            this.state.dateRange !== prevState.dateRange) {
 
             const { dataset, stat, scenario, severity } = this.state;
             const newSeries = Array.from(
@@ -108,12 +110,23 @@ class MainContainer extends Component {
             const [seriesMin, seriesMax] = getRange(newSeries);
             const statThreshold = Math.ceil(seriesMax / 1.2);
             // const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
-
+        
             updateThresholdFlag(newSeries, statThreshold)
             
+            // filter series and dates by dateRange
+            const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
+            const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
+            const newDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
+            const filteredSeries = newSeries.map( s => {
+                const newS = {...s}
+                newS.vals = s.vals.slice(idxMin, idxMax)
+                return newS
+            })
+            
             this.setState({
-                series: newSeries,
+                series: filteredSeries,
                 allTimeSeries: newSeries,
+                dates: newDates,
                 statThreshold,
                 seriesMin,
                 seriesMax
@@ -146,24 +159,8 @@ class MainContainer extends Component {
     };
 
     handleBrushRange = (i) => { 
-        // for example, if props received is dateRange like i = [minDate, maxDate]
-        // console.log(this.state.firstDate, i)
-        const idxMin = timeDay.count(this.state.firstDate, i[0]);
-        const idxMax = timeDay.count(this.state.firstDate, i[1]);
-        // console.log(idxMin, idxMax)
-        // console.log(this.state.allTimeDates)
-        // console.log(this.state.allTimeSeries)
-        const newDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
-        const newSeries = Array.from(this.state.allTimeSeries).map( s => {
-            const newS = {...s}
-            newS.vals = s.vals.slice(idxMin, idxMax)
-            return newS
-        })
-        // console.log(newDates)
-        // console.log(newSeries)
         this.setState({
-            series: newSeries,
-            dates: newDates,
+            dateRange: i
         });
     };
 

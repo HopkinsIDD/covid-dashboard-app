@@ -190,8 +190,10 @@ class Graph extends Component {
     }
 
     render() {
+        
         // console.log(this.props.stat, this.props.scenario, this.props.yAxisLabel)
         // console.log(this.state.series)
+        // console.log(this.state.dates)
         // console.log(this.props.statThreshold)
         return (
             <div className="graph-wrapper">
