@@ -51,7 +51,7 @@ class MainContainer extends Component {
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
-            dateThreshold: '2020-05-04',
+            dateThreshold: parseDate('2020-05-04'),
             dateRange: [parseDate('2020-03-01'), parseDate('2020-07-01')],
             firstDate: '',
             lastDate: '',
@@ -73,8 +73,8 @@ class MainContainer extends Component {
         const dates = initialData.dates.map( d => parseDate(d));
         const allTimeSeries = Array.from(series)
         const allTimeDates = Array.from(dates)
-        const firstDate = dates[0].toISOString().split('T')[0];
-        const lastDate = dates[dates.length - 1].toISOString().split('T')[0];
+        const firstDate = dates[0]; //.toISOString().split('T')[0];
+        const lastDate = dates[dates.length - 1]; //.toISOString().split('T')[0];
         const [seriesMin, seriesMax] = getRange(series);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
@@ -131,15 +131,15 @@ class MainContainer extends Component {
                 newSeries,
                 statThreshold,
                 this.state.allTimeDates,
-                dateThreshold
+                this.state.dateThreshold
                 )
             const percExceedence = simsOver / newSeries.length;
 
             // filter series and dates by dateRange
-            // console.log(parseDate(this.state.firstDate), this.state.dateRange)
-            const idxMin = timeDay.count(parseDate(this.state.firstDate), this.state.dateRange[0]);
-            const idxMax = timeDay.count(parseDate(this.state.firstDate), this.state.dateRange[1]);
-            // console.log(idxMin, idxMax)
+            console.log(this.state.firstDate, this.state.dateRange)
+            const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
+            const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
+            console.log(idxMin, idxMax)
             const newDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
             const filteredSeries = newSeries.map( s => {
                 const newS = {...s}
@@ -290,7 +290,7 @@ class MainContainer extends Component {
                                         series={this.state.series}
                                         dates={this.state.dates}
                                         statThreshold={this.state.statThreshold}
-                                        dateThreshold={parseDate(this.state.dateThreshold)}
+                                        dateThreshold={this.state.dateThreshold}
                                         width={this.state.graphW}
                                         height={this.state.graphH}
                                     /> 
