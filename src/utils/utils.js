@@ -22,9 +22,22 @@ export function getRange(series) {
 };
 
 export function readableDate(date) {
-  // takes date with format "%Y-%m-%d" and returns Month Day, Year
-  const dateObj = new Date(Date.parse(date));
-  const dateArray = dateObj.toDateString().split(' ').slice(1);
+  // takes date Obj returns Month Day, Year
+
+  const dateArray = date.toDateString().split(' ').slice(1);
+  const day = dateArray[1];
+  const newDay = day[0] === '0' ? day.slice(1) : day;
   
-  return dateArray[0] + ' ' + dateArray[1] + ', ' + dateArray[2];
+  return dateArray[0] + ' ' + newDay + ', ' + dateArray[2];
 }
+
+
+    // export function calcSimsOver(series) {
+    //     let simsOver = 0;
+    //     Object.values(series).map(sim => {
+    //       if (sim.over === true) {
+    //           simsOver = simsOver + 1;
+    //       } ;
+    //     });
+    //     return simsOver;
+    // };
