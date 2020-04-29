@@ -34,7 +34,7 @@ class Graph extends Component {
         };
         this.xAxisRef = React.createRef();
         this.xAxis = axisBottom().scale(this.state.xScale)
-            .tickFormat(timeFormat('%b'))
+            // .tickFormat(timeFormat('%b'))
             .ticks(this.state.width / 80).tickSizeOuter(0);
 
         this.yAxisRef = React.createRef();
