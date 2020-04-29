@@ -1,21 +1,14 @@
 import React, { Component } from 'react'
 import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line } from 'd3-shape'
-import { max, extent, bisectLeft, least } from 'd3-array'
+import { max, extent } from 'd3-array'
 import { axisLeft, axisBottom } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { transition } from 'd3-transition'
-import { addCommas } from '../utils/utils.js'
-import { COLORS } from '../store/constants.js'
-
-
-const margin = { top: 20, right: 40, bottom: 30, left: 80 };
-const red = '#d31d30';
-const green = '#4ddaba';
-const blue = '#1f90db';
-const gray = '#9b9b9b';
+import { addCommas } from '../../utils/utils.js'
+import { margin, red, green, blue, gray } from '../../store/constants'
 
 class Graph extends Component {
     constructor(props) {
@@ -213,7 +206,7 @@ class Graph extends Component {
                         id={`simPath-${i}`}
                         className={`simPath`}
                         fill='none' 
-                        stroke = { this.state.series[i].over ? COLORS['red'] : COLORS['green'] }
+                        stroke = { this.state.series[i].over ? red : green}
                         strokeWidth={'1'}
                         strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
                         onMouseMove={(e) => this.handleMouseMove(e, i)}
@@ -231,7 +224,7 @@ class Graph extends Component {
                         id={`simPath-${i}-hover`}
                         className={`simPath-hover`}
                         fill='none' 
-                        stroke={simIsHovered ? COLORS['blue'] : COLORS['gray']}
+                        stroke={simIsHovered ? blue : gray}
                         strokeWidth={simIsHovered ? '2' : '1'}
                         strokeOpacity={simIsHovered && this.state.hoveredSimPathId ? 1 : 0.5}
                         onMouseMove={(e) => this.handleMouseMove(e, i)}
@@ -245,7 +238,7 @@ class Graph extends Component {
                     y1={this.state.yScale(this.state.statThreshold)}
                     x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
                     y2={this.state.yScale(this.state.statThreshold)}
-                    stroke={COLORS['gray']}
+                    stroke={gray}
                     className={'statThreshold'}
                 ></line>
                 </g>
