@@ -3,7 +3,6 @@ import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line } from 'd3-shape'
 import { max, extent } from 'd3-array'
 import { axisLeft, axisBottom } from 'd3-axis'
-import { timeFormat } from 'd3-time-format'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { transition } from 'd3-transition'
@@ -28,7 +27,7 @@ class Graph extends Component {
         };
         this.xAxisRef = React.createRef();
         this.xAxis = axisBottom().scale(this.state.xScale)
-            .tickFormat(timeFormat('%b'))
+            // .tickFormat(timeFormat('%b'))
             .ticks(this.state.width / 80).tickSizeOuter(0);
 
         this.yAxisRef = React.createRef();
@@ -52,7 +51,6 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log(prevProps, this.props)
         // console.log('prev series different from new series is ', this.props.series !== prevProps.series)
         // console.log('prev dates different from new dates is ', this.props.dates !== prevProps.dates)
         // console.log('prev statThreshold', prevProps.statThreshold, 'new statThreshold', this.props.statThreshold)
@@ -116,8 +114,8 @@ class Graph extends Component {
                 thresholdNode.selectAll('.dateThreshold')
                     .transition()
                     .duration(1000)
-                    .attr("x1", xScale(Date.parse(dateThreshold)))
-                    .attr("x2", xScale(Date.parse(dateThreshold)))
+                    .attr("x1", xScale(dateThreshold))
+                    .attr("x2", xScale(dateThreshold))
                     .ease(easeCubicOut)
                     .on("end", () => {
                         this.setState({ dateThreshold })
@@ -197,11 +195,6 @@ class Graph extends Component {
     }
 
     render() {
-        // console.log(this.props.stat, this.props.scenario, this.props.yAxisLabel)
-        // console.log(this.state.series)
-        // console.log(this.props.statThreshold)
-        // console.log(this.state.dates[0])
-        // console.log(this.state.dateThreshold)
         return (
             <div className="graph-wrapper">
                 <div className="y-axis-label">
@@ -258,22 +251,14 @@ class Graph extends Component {
                         className={'statThreshold'}
                     ></line>
                     <line
-                        x1={this.state.xScale(Date.parse(this.state.dateThreshold))}
+                        x1={this.state.xScale(this.state.dateThreshold)}
                         //this.props.height - margin.bottom, margin.top
                         y1={margin.top}
-                        x2={this.state.xScale(Date.parse(this.state.dateThreshold))}
+                        x2={this.state.xScale(this.state.dateThreshold)}
                         y2={this.props.height - margin.bottom}
                         stroke={gray}
                         className={'dateThreshold'}
                     ></line>
-                    {/* <line
-                        x1={this.state.xScale(this.state.dateThreshold)}
-                        y1={this.state.yScale(this.state.series[0])}
-                        x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
-                        y2={this.state.yScale(this.state.statThreshold)}
-                        stroke={gray}
-                        className={'statThreshold'}
-                    ></line> */}
                 </g>
                 </g>
                 <g>

@@ -34,7 +34,7 @@ class Brush extends Component {
           [this.state.width - margin.right, this.state.height - margin.bottom]
         ])
         .on('end', this.brushEnded)
-        .on('brush', this.brushed)
+        .on('start brush', this.brushed)
   }
 
   componentDidMount() {
@@ -117,7 +117,7 @@ class Brush extends Component {
   }
 
   calculateSimPaths = (series, dates) => {
-    console.log(series)
+    // console.log(series)
     // draw the sims first here (without transitioning)
     const { xScale, yScale, lineGenerator, width, height } = this.state;
     // calculate scale domains
@@ -136,15 +136,15 @@ class Brush extends Component {
   }
 
   brushed = () => {
-    console.log(event)
+    // console.log(event)
   }
 
   brushEnded = () => {
     console.log(event)
-    if (event.selection) {
+    if (event.selection && event.sourceEvent !== null) {
       const [x1, x2] = event.selection;
       const range = [this.state.xScale.invert(x1), this.state.xScale.invert(x2)];
-      console.log(range)
+      // console.log(range)
       this.props.onBrushChange(range);
     }
   }

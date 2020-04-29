@@ -10,8 +10,11 @@ import Sliders from './Filters/Sliders';
 // import Overlays from './Filters/Overlays';
 import { getRange } from '../utils/utils'
 import { utcParse } from 'd3-time-format'
+import { timeDay } from 'd3-time'
 import { max } from 'd3-array';
 const dataset = require('../store/geo06085.json');
+
+const parseDate = utcParse('%Y-%m-%d')
 
 class MainContainer extends Component {
     constructor(props) {
@@ -20,7 +23,15 @@ class MainContainer extends Component {
             dataset: {},
             dataLoaded: false,
             series: {},
+            allTimeSeries: {},
             dates: [],
+            allTimeDates: [],
+            // this.state = {
+            //     series: this will be updated based on scenario, stat, sev, statFilter, AND DateFilter ranges
+            //     dates: this will be updated based on scenario, stat, sev, statFilter, AND DateFilter ranges
+            //     allTimeSeries: this will be updated based on scenario, stat, sev but NOT on DateFilter ranges
+            //     allTimeDates: this will be updated based on scenario, stat, sev but NOT on DateFilter ranges
+            //   }
             yAxisLabel: '',
             stat: {
                 'id': 1,
@@ -41,7 +52,7 @@ class MainContainer extends Component {
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: '2020-05-04',
-            dateRange: ['2020-03-01', '2020-07-01'],
+            dateRange: [parseDate('2020-03-01'), parseDate('2020-07-01')],
             firstDate: '',
             lastDate: '',
             r0: '1',
@@ -59,11 +70,11 @@ class MainContainer extends Component {
         const { scenario, severity, geoid, stat } = this.state;
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
-        const parseDate = utcParse("%Y-%m-%d");
         const dates = initialData.dates.map( d => parseDate(d));
+        const allTimeSeries = Array.from(series)
+        const allTimeDates = Array.from(dates)
         const firstDate = dates[0].toISOString().split('T')[0];
         const lastDate = dates[dates.length - 1].toISOString().split('T')[0];
-
         const [seriesMin, seriesMax] = getRange(series);
         const statThreshold = Math.ceil((seriesMax / 1.2) / 100) * 100;
         const dateThreshold = "2020-05-04";
@@ -84,7 +95,9 @@ class MainContainer extends Component {
         this.setState({
             dataset,
             dates,
+            allTimeDates,
             series,
+            allTimeSeries,
             seriesMax,
             seriesMin,
             statThreshold,
@@ -104,7 +117,8 @@ class MainContainer extends Component {
     componentDidUpdate(prevProp, prevState) {
         if (this.state.stat !== prevState.stat ||
             this.state.scenario !== prevState.scenario ||
-            this.state.severity !== prevState.severity) {
+            this.state.severity !== prevState.severity ||
+            this.state.dateRange !== prevState.dateRange) {
 
             const { dataset, stat, scenario, severity } = this.state;
             const newSeries = Array.from(
@@ -118,13 +132,27 @@ class MainContainer extends Component {
             const simsOver = this.updateThreshold(
                 newSeries,
                 statThreshold,
-                this.state.dates,
+                this.state.allTimeDates,
                 dateThreshold
                 )
             const percExceedence = simsOver / newSeries.length;
 
+            // filter series and dates by dateRange
+            // console.log(parseDate(this.state.firstDate), this.state.dateRange)
+            const idxMin = timeDay.count(parseDate(this.state.firstDate), this.state.dateRange[0]);
+            const idxMax = timeDay.count(parseDate(this.state.firstDate), this.state.dateRange[1]);
+            // console.log(idxMin, idxMax)
+            const newDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
+            const filteredSeries = newSeries.map( s => {
+                const newS = {...s}
+                newS.vals = s.vals.slice(idxMin, idxMax)
+                return newS
+            })
+
             this.setState({
-                series: newSeries,
+                series: filteredSeries,
+                allTimeSeries: newSeries,
+                dates: newDates,
                 statThreshold,
                 seriesMin,
                 seriesMax,
@@ -196,19 +224,9 @@ class MainContainer extends Component {
     }
 
     handleBrushRange = (i) => {
-        // for example, if props received is dateRange [minDate, maxDate]
-        const parseDate = utcParse("%Y-%m-%d");
-        const dateRange = [parseDate(i[0]), parseDate(i[1])];
-        const idxMin = dateRange[0] - this.state.firstDate;
-        const idxMax = dateRange[1] - this.state.firstDate;
-
-        const copyDates = Array.from(this.state.dates.slice(idxMin, idxMax));
-        const copySeries = Array.from(this.state.series);
-        Object.values(copySeries).map(sim => sim.vals.splice(idxMin, idxMax));
-
+        // console.log(i)
         this.setState({
-            series: copySeries,
-            dates: copyDates,
+            dateRange: i
         });
     };
 
@@ -227,10 +245,6 @@ class MainContainer extends Component {
             showActual: !prevState.showActual
         }));
     };
-
-    handleBrushChange = (i) => {
-        // this.setState({ dateRange: i })
-    }
 
     render() {
         const scenarioTitle = this.state.scenario.name.replace('_', ' ');
@@ -282,16 +296,17 @@ class MainContainer extends Component {
                                         series={this.state.series}
                                         dates={this.state.dates}
                                         statThreshold={this.state.statThreshold}
-                                        dateThreshold={this.state.dateThreshold}
+                                        dateThreshold={parseDate(this.state.dateThreshold)}
                                         width={this.state.graphW}
                                         height={this.state.graphH}
                                     /> 
                                     <Brush
-                                        series={this.state.series}
-                                        dates={this.state.dates}
+                                        series={this.state.allTimeSeries}
+                                        dates={this.state.allTimeDates}
                                         width={this.state.graphW}
                                         height={80}
-                                        onBrushChange={this.handleBrushChange}
+                                        dateRange={this.state.dateRange}
+                                        onBrushChange={this.handleBrushRange}
                                     />
                                 </div>
                                 }
