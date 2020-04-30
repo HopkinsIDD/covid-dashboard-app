@@ -52,6 +52,9 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        // console.log(prevState.yScale(prevState.statThreshold))
+        console.log(this.state.yScale.domain())
+        console.log(this.props.statThreshold, this.state.yScale(this.props.statThreshold))
         // compare prevProps series or dates to newProps series or dates
         if (this.props.stat !== prevProps.stat || 
             this.props.severity !== prevProps.severity ||
@@ -73,14 +76,19 @@ class Graph extends Component {
         if (this.props.dateRange !== prevProps.dateRange || this.props.dateRange !== prevProps.dateRange) {
             // console.log('prevDateRange', prevProps.dateRange, 'newDateRange', this.props.dateRange)
 
-            const { series, dates } = this.props;
-            const { lineGenerator } = prevState;
+            const { series, dates, statThreshold, dateThreshold } = this.props;
+            const { xScale, yScale, lineGenerator } = prevState;
             
             this.updateSimPaths(series, dates, lineGenerator, 'brush');
+            this.updateStatThresholdLine(statThreshold, yScale);
+            this.updateDateThresholdLine(dateThreshold, xScale);
+            this.updateXAxis();
+            this.updateYAxis();
         }
     }
 
     calculateSimPaths = (series, dates) => {
+        console.log('in calculate sims')
         // draw the sims first here (without transitioning)
         const { xScale, yScale, lineGenerator, width, height } = this.state;
         // calculate scale domains
@@ -141,7 +149,7 @@ class Graph extends Component {
                 .data(series)
                 .attr("d", d => updatedScales.lineGenerator(d.vals))
                 .attr("stroke", (d,i) => series[i].over ? red : green )
-                .on("end", () => {
+                // .on("end", () => {
                     // set new vals to state
                     this.setState({ 
                         series: series,
@@ -151,7 +159,7 @@ class Graph extends Component {
                         lineGenerator: updatedScales.lineGenerator,
                         simPaths: simPaths,
                     })
-                })
+                // })
             } else if (updateType === 'statSevScenario') {
                 // animate the path and color transitions
                 simPathsNode.selectAll('.simPath')
@@ -247,7 +255,7 @@ class Graph extends Component {
     }
 
     render() {
-        // console.log(this.state.dateRange)
+
         return (
             <div className="graph-wrapper">
                 <div className="y-axis-label">
