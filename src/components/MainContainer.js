@@ -145,7 +145,6 @@ class MainContainer extends Component {
             const percExceedence = simsOver / newSeries.length;
 
             // filter series and dates by dateRange
-            console.log(this.state.firstDate, this.state.dateRange)
             const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
             const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
             // console.log(idxMin, idxMax)
@@ -300,6 +299,7 @@ class MainContainer extends Component {
                                         dates={this.state.dates}
                                         statThreshold={this.state.statThreshold}
                                         dateThreshold={this.state.dateThreshold}
+                                        dateRange={this.state.dateRange}
                                         width={this.state.graphW}
                                         height={this.state.graphH}
                                     /> 

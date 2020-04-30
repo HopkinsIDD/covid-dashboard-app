@@ -33,7 +33,7 @@ class Brush extends Component {
           [margin.left, margin.top],
           [this.state.width - margin.right, this.state.height - margin.bottom]
         ])
-        .on('start', this.brushStart)
+        // .on('start', this.brushStart)
         .on('end', this.brushEnded)
         .on('start brush', this.brushed)
   }
@@ -57,7 +57,6 @@ class Brush extends Component {
       const { xScale, yScale, lineGenerator, width, height } = prevState;
 
       if (this.simPathsRef.current) {
-                
         // update scale and data
         const updatedScales = this.calculateSimPaths(series, dates)
       
@@ -137,21 +136,24 @@ class Brush extends Component {
     return { xScale, yScale, lineGenerator }
   }
 
-  brushStart = () => {
-    console.log(event)
-  }
+  // brushStart = () => {
+  //   console.log(event)
+  // }
 
   brushed = () => {
-    console.log(event)
-  }
-
-  brushEnded = () => {
     console.log(event)
     if (event.selection && event.sourceEvent !== null) {
       const [x1, x2] = event.selection;
       const range = [this.state.xScale.invert(x1), this.state.xScale.invert(x2)];
       // console.log(range)
       this.props.onBrushChange(range);
+    }
+  }
+
+  brushEnded = () => {
+    console.log(event)
+    if (!event.selection && this.brushRef.current) {
+      select(this.brushRef.current).call(this.brush.move, this.state.defaultRange)
     }
   }
 

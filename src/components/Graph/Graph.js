@@ -19,6 +19,7 @@ class Graph extends Component {
             dates: this.props.dates,
             statThreshold: this.props.statThreshold,
             dateThreshold: this.props.dateThreshold,
+            dateRange: this.props.dateRange,
             xScale: scaleUtc().range([margin.left, this.props.width - margin.right]),
             yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top]),
             lineGenerator: line().defined(d => !isNaN(d)),
@@ -51,95 +52,35 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log('prev series different from new series is ', this.props.series !== prevProps.series)
-        // console.log('prev dates different from new dates is ', this.props.dates !== prevProps.dates)
-        // console.log('prev statThreshold', prevProps.statThreshold, 'new statThreshold', this.props.statThreshold)
-       
         // compare prevProps series or dates to newProps series or dates
-        if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
+        if (this.props.stat !== prevProps.stat || 
+            this.props.severity !== prevProps.severity ||
+             this.props.scenario !== prevProps.scenario ||
+             this.props.dateThreshold !== prevProps.dateThreshold || 
+             this.props.statThreshold !== prevProps.statThreshold){
+
+            console.log('prev series different from new series is ', this.props.series !== prevProps.series)
+            console.log('prev dates different from new dates is ', this.props.dates !== prevProps.dates)
+            // console.log('prev statThreshold', prevProps.statThreshold, 'new statThreshold', this.props.statThreshold)
+
             const { series, dates, statThreshold, dateThreshold } = this.props;
             const { xScale, yScale, lineGenerator, width, height } = prevState;
             //TODO: update based on resizing width and height
-            if (this.simPathsRef.current) {
-                
-                // update scale and data
-                const updatedScales = this.calculateSimPaths(series, dates)
-              
-                // generate simPaths from lineGenerator
-                const simPaths = series.map( (d,i) => {
-                    // console.log(i, typeof(d.vals))
-                    return lineGenerator(d.vals)
-                })
-              
-                // get svg node
-                const simPathsNode = select(this.simPathsRef.current)
-                // console.log(simPathsNode.selectAll('.simPath'))
-                // update the paths with new data
-                simPathsNode.selectAll('.simPath')
-                    .data(series)
-                    .transition()
-                    .duration(1000)
-                    .ease(easeCubicOut)
-                    .attr("d", d => updatedScales.lineGenerator(d.vals))
-                    .attr("stroke", (d,i) => series[i].over ? red : green )
-                    .on("end", () => {
-                        // set new vals to state
-                        this.setState({ 
-                            series: series,
-                            dates: dates,
-                            xScale: updatedScales.xScale,
-                            yScale: updatedScales.yScale,
-                            lineGenerator: updatedScales.lineGenerator,
-                            simPaths: simPaths,
-                        })
-                    })
-            }
 
-            // Update statThreshold Line
-            if (this.thresholdRef.current) {
-                const thresholdNode = select(this.thresholdRef.current)
-                thresholdNode.selectAll('.statThreshold')
-                    .transition()
-                    .duration(1000)
-                    .attr("y1", yScale(statThreshold))
-                    .attr("y2", yScale(statThreshold))
-                    .ease(easeCubicOut)
-                    .on("end", () => {
-                        this.setState({ statThreshold })
-                    })
-            }
-            // Update dateThreshold Line
-            if (this.thresholdRef.current) {
-                const thresholdNode = select(this.thresholdRef.current)
-                thresholdNode.selectAll('.dateThreshold')
-                    .transition()
-                    .duration(1000)
-                    .attr("x1", xScale(dateThreshold))
-                    .attr("x2", xScale(dateThreshold))
-                    .ease(easeCubicOut)
-                    .on("end", () => {
-                        this.setState({ dateThreshold })
-                    })
-            }
+            this.updateSimPaths(series, dates, lineGenerator, 'statSevScenario');
+            // this.updateStatThresholdLine(statThreshold, yScale);
+            // this.updateDateThresholdLine(dateThreshold, xScale);
+            this.updateXAxis();
+            this.updateYAxis();
+            
+        }
+        if (this.props.dateRange !== prevProps.dateRange || this.props.dateRange !== prevProps.dateRange) {
+            console.log('prevDateRange', prevProps.dateRange, 'newDateRange', this.props.dateRange)
 
-            // Update Axes
-            if (this.xAxisRef.current) {
-                //update xAxis
-                const xAxisNode = select(this.xAxisRef.current)
-                xAxisNode
-                    .transition()
-                    .duration(1000)
-                    .call(this.xAxis);
-            }
-            if (this.yAxisRef.current) {
-                // update yAxis
-                const yAxisNode = select(this.yAxisRef.current)
-                yAxisNode
-                    .transition()
-                    .duration(1000)
-                    .call(this.yAxis)
-                    .call(g => g.select(".domain").remove());
-            }
+            const { series, dates } = this.props;
+            const { lineGenerator } = prevState;
+            
+            this.updateSimPaths(series, dates, lineGenerator, 'brush');
         }
     }
 
@@ -180,6 +121,143 @@ class Graph extends Component {
         })
     }
 
+    updateSimPaths = (series, dates, lineGenerator, updateType) => {
+        console.log('update type', updateType)
+        //Animate simPath color but don't change data
+        if (this.simPathsRef.current) {
+                
+            // update scale and data
+            const updatedScales = this.calculateSimPaths(series, dates)
+          
+            // generate simPaths from lineGenerator
+            const simPaths = series.map( (d,i) => {
+                // console.log(i, typeof(d.vals))
+                return lineGenerator(d.vals)
+            })
+          
+            // get svg node
+            const simPathsNode = select(this.simPathsRef.current)
+            // console.log(simPathsNode.selectAll('.simPath'))
+            // update the paths with new data, animate if it's not a brush update
+            if (updateType === 'brush') {
+                // no transitions since it's called every frame of brush event
+                simPathsNode.selectAll('.simPath')
+                .data(series)
+                .attr("d", d => updatedScales.lineGenerator(d.vals))
+                .attr("stroke", (d,i) => series[i].over ? red : green )
+                .on("end", () => {
+                    // set new vals to state
+                    this.setState({ 
+                        series: series,
+                        dates: dates,
+                        xScale: updatedScales.xScale,
+                        yScale: updatedScales.yScale,
+                        lineGenerator: updatedScales.lineGenerator,
+                        simPaths: simPaths,
+                    })
+                })
+            } else if (updateType === 'statSevScenario') {
+                // animate the path and color transitions
+                simPathsNode.selectAll('.simPath')
+                    .data(series)
+                    .transition()
+                    .duration(1000)
+                    .ease(easeCubicOut)
+                    .attr("d", d => updatedScales.lineGenerator(d.vals))
+                    .attr("stroke", (d,i) => series[i].over ? red : green )
+                    .on("end", () => {
+                        // set new vals to state
+                        this.setState({ 
+                            series: series,
+                            dates: dates,
+                            xScale: updatedScales.xScale,
+                            yScale: updatedScales.yScale,
+                            lineGenerator: updatedScales.lineGenerator,
+                            simPaths: simPaths,
+                        })
+                    })
+            } 
+            // else if (updateType === 'threshold') {
+            //     // only update the path color, not the path itself
+            //     simPathsNode.selectAll('.simPath')
+            //         .data(series)
+            //         .transition()
+            //         .duration(200)
+            //         .ease(easeCubicOut)
+            //         .attr("d", d => updatedScales.lineGenerator(d.vals))
+            //         .attr("stroke", (d,i) => series[i].over ? red : green )
+            //         .on("end", () => {
+            //             // set new vals to state
+            //             this.setState({ 
+            //                 series: series,
+            //                 dates: dates,
+            //                 xScale: updatedScales.xScale,
+            //                 yScale: updatedScales.yScale,
+            //                 lineGenerator: updatedScales.lineGenerator,
+            //                 simPaths: simPaths,
+            //             })
+            //         })
+            // }
+            
+        }
+    }
+
+    updateStatThresholdLine = (statThreshold, yScale) => {
+        // Update statThreshold Line
+        if (this.thresholdRef.current) {
+            const thresholdNode = select(this.thresholdRef.current)
+            thresholdNode.selectAll('.statThreshold')
+                .transition()
+                .duration(200)
+                .attr("y1", yScale(statThreshold))
+                .attr("y2", yScale(statThreshold))
+                .ease(easeCubicOut)
+                .on("end", () => {
+                    this.setState({ statThreshold })
+                })
+        }
+    }
+
+    updateDateThresholdLine = (dateThreshold, xScale) => {
+        // Update dateThreshold Line
+        if (this.thresholdRef.current) {
+            const thresholdNode = select(this.thresholdRef.current)
+            thresholdNode.selectAll('.dateThreshold')
+                .transition()
+                .duration(200)
+                .attr("x1", xScale(dateThreshold))
+                .attr("x2", xScale(dateThreshold))
+                .ease(easeCubicOut)
+                .on("end", () => {
+                    this.setState({ dateThreshold })
+                })
+        }
+    }
+
+    updateXAxis = () => {
+        // Update Axes
+        if (this.xAxisRef.current) {
+            //update xAxis
+            const xAxisNode = select(this.xAxisRef.current)
+            xAxisNode
+                .transition()
+                .duration(1000)
+                .call(this.xAxis);
+        }
+    }
+
+    updateYAxis = () => {
+        if (this.yAxisRef.current) {
+            // update yAxis
+            const yAxisNode = select(this.yAxisRef.current)
+            yAxisNode
+                .transition()
+                .duration(1000)
+                .call(this.yAxis)
+                .call(g => g.select(".domain").remove());
+        }
+    }
+
     handleMouseMove = (event, index) => {
         // console.log(index)
         // console.log(clientPoint(event.target, event))
@@ -195,6 +273,7 @@ class Graph extends Component {
     }
 
     render() {
+        // console.log(this.state.dateRange)
         return (
             <div className="graph-wrapper">
                 <div className="y-axis-label">
@@ -243,16 +322,15 @@ class Graph extends Component {
                 })}
                 <g ref={this.thresholdRef}>
                     <line
-                        x1={this.state.xScale(this.state.dates[0])}
+                        x1={margin.left}
                         y1={this.state.yScale(this.state.statThreshold)}
-                        x2={this.state.xScale(this.state.dates[this.state.dates.length - 1])}
+                        x2={this.props.width - margin.right}
                         y2={this.state.yScale(this.state.statThreshold)}
                         stroke={gray}
                         className={'statThreshold'}
                     ></line>
                     <line
                         x1={this.state.xScale(this.state.dateThreshold)}
-                        //this.props.height - margin.bottom, margin.top
                         y1={margin.top}
                         x2={this.state.xScale(this.state.dateThreshold)}
                         y2={this.props.height - margin.bottom}
