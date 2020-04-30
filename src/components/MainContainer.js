@@ -132,23 +132,34 @@ class MainContainer extends Component {
             const newSeries = Array.from(
                 dataset[scenario.key][severity.key].series[stat.key]
                 );
-            const [seriesMin, seriesMax] = getRange(newSeries);
+            // filter series and dates by dateRange
+            const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
+            const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
+
+            // console.log(idxMin, idxMax)
+            const filteredDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
+            const filteredSeriesForStatThreshold = newSeries.map( s => {
+                const newS = {...s}
+                newS.vals = s.vals.slice(idxMin, idxMax)
+                return newS
+            });
+            const [seriesMin, seriesMax] = getRange(filteredSeriesForStatThreshold);
+            // const [seriesMin, seriesMax] = getRange(newSeries);
+
+             // update dateThreshold before updating statThreshold?
             const statThreshold = Math.ceil(seriesMax / 1.2);
+            const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
+            const dateThreshold = filteredDates[dateThresholdIdx]
 
             // mutates series
             const simsOver = this.updateThreshold(
                 newSeries,
                 statThreshold,
                 this.state.allTimeDates,
-                this.state.dateThreshold
+                dateThreshold
                 )
             const percExceedence = simsOver / newSeries.length;
 
-            // filter series and dates by dateRange
-            const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
-            const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
-            // console.log(idxMin, idxMax)
-            const newDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
             const filteredSeries = newSeries.map( s => {
                 const newS = {...s}
                 newS.vals = s.vals.slice(idxMin, idxMax)
@@ -158,8 +169,9 @@ class MainContainer extends Component {
             this.setState({
                 series: filteredSeries,
                 allTimeSeries: newSeries,
-                dates: newDates,
+                dates: filteredDates,
                 statThreshold,
+                dateThreshold,
                 seriesMin,
                 seriesMax,
                 percExceedence
@@ -345,6 +357,7 @@ class MainContainer extends Component {
                                 seriesMin={this.state.seriesMin}
                                 statThreshold={this.state.statThreshold}
                                 dateThreshold={this.state.dateThreshold}
+                                dateThresholdIdx={this.state.dateThresholdIdx}
                                 firstDate={this.state.firstDate}
                                 lastDate={this.state.lastDate}
                                 dateRange={this.state.dateRange}

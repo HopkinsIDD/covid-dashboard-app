@@ -1,57 +1,31 @@
 import React, { Component } from 'react';
 import { addCommas, readableDate } from '../../utils/utils.js';
-import { timeFormat } from 'd3-time-format'
+import { timeFormat } from 'd3-time-format';
 
-const getDate = timeFormat('%b %d, %Y')
-const getMonth = timeFormat('%b')
+const getDate = timeFormat('%b %d, %Y');
+const getMonth = timeFormat('%b');
 
 class Sliders extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // date: '',
             dateIdx: "150",
-            // firstDateStr: '',
-            // lastDateStr: '',
-            // dateRange: []
         }
     }
 
     componentDidMount() {
-        console.log('seriesMin', this.props.seriesMin)
-        console.log('seriesMax', this.props.seriesMax)
-        console.log('firstDate', this.props.firstDate)
-        console.log('lastDate', this.props.lastDate)
-        console.log(this.props.dateRange)
-        console.log(this.props.dateThreshold)
+
         const dateIdx = this.props.dates.indexOf(this.props.dateThreshold).toString();
-        console.log('dateIndex', dateIdx)
         this.setState({
             dateIdx,
         })
-        // const date = readableDate(this.props.dateThreshold);
-        // const date = getDate(this.props.dateThreshold)
-        // const months = [
-        //     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-        //     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-        // ];
-        // const firstDateStr = months[this.props.firstDate.getMonth()];
-        // const lastDateStr = months[this.props.lastDate.getMonth()];
-        // const firstDateStr = getMonth(this.props.dateRange[0])
-        // const lastDateStr = getMonth(this.props.dateRange[1])
-
-        // this.setState({
-        //     date,
-        //     firstDateStr,
-        //     lastDateStr
-        // })
     }
             
-    componentDidUpdate(prevProp) {
-        const { dates, dateThreshold, dateRange } = this.props;
-        if (prevProp.dateThreshold !== this.props.dateThreshold) {
-            const dateIdx = dates.indexOf(this.props.dateThreshold).toString();
-            console.log('dateIndex', dateIdx)
+    componentDidUpdate(prevProps) {
+
+        if (prevProps.dateThreshold !== this.props.dateThreshold ||
+            prevProps.dateRange !== this.props.dateRange) {
+            const dateIdx = this.props.dates.indexOf(this.props.dateThreshold).toString();
             this.setState({
                 dateIdx,
             })
@@ -64,7 +38,6 @@ class Sliders extends Component {
 
     handleDateChange = (e) => {
         const selectedDate = this.props.dates[e];
-        console.log(selectedDate)
         this.props.onDateSliderChange(selectedDate);
     }
 
@@ -73,9 +46,8 @@ class Sliders extends Component {
     // }
 
     render() {
-        const { stat, statThreshold, seriesMin, seriesMax, dates, dateRange, dateThreshold } = this.props;
+        const { stat, statThreshold, seriesMin, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
         const roundedStat = Math.ceil(statThreshold / 100) * 100;
-        // const { date, firstDateStr, lastDateStr } = this.state;
         
         return (
             <div className="slider-menu">
@@ -119,7 +91,7 @@ class Sliders extends Component {
                         type="range"
                         min="0"
                         max={dates.length.toString()}
-                        value={this.state.dateIdx}
+                        value={dateThresholdIdx}
                         ref={ref => this.dateInput = ref}
                         onChange={
                             () => {this.handleDateChange(this.dateInput.value)}

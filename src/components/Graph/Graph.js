@@ -88,7 +88,7 @@ class Graph extends Component {
     }
 
     calculateSimPaths = (series, dates) => {
-        console.log('in calculate sims')
+        // console.log('in calculate sims')
         // draw the sims first here (without transitioning)
         const { xScale, yScale, lineGenerator, width, height } = this.state;
         // calculate scale domains
@@ -126,7 +126,7 @@ class Graph extends Component {
     }
 
     updateSimPaths = (series, dates, lineGenerator, updateType) => {
-        console.log('update type', updateType)
+        // console.log('update type', updateType)
         //Animate simPath color but don't change data
         if (this.simPathsRef.current) {
                 
