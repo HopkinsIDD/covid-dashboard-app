@@ -347,6 +347,7 @@ class MainContainer extends Component {
                                 dateThreshold={this.state.dateThreshold}
                                 firstDate={this.state.firstDate}
                                 lastDate={this.state.lastDate}
+                                dateRange={this.state.dateRange}
                                 onStatSliderChange={this.handleStatSliderChange}
                                 onDateSliderChange={this.handleDateSliderChange}
                                 // // onReprSliderChange={this.handleReprSliderChange}
