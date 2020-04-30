@@ -74,7 +74,7 @@ class Graph extends Component {
             
         }
         if (this.props.dateRange !== prevProps.dateRange || this.props.dateRange !== prevProps.dateRange) {
-            // console.log('prevDateRange', prevProps.dateRange, 'newDateRange', this.props.dateRange)
+            console.log('prevDateRange', prevProps.dateRange, 'newDateRange', this.props.dateRange)
 
             const { series, dates, statThreshold, dateThreshold } = this.props;
             const { xScale, yScale, lineGenerator } = prevState;
