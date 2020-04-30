@@ -75,6 +75,7 @@ class Brush extends Component {
             .transition()
             .duration(1000)
             .attr("d", d => updatedScales.lineGenerator(d.vals))
+            .attr("stroke", (d,i) => series[i].over ? red : green )
             .on("end", () => {
                 // set new vals to state
                 this.setState({ 
@@ -141,7 +142,7 @@ class Brush extends Component {
   // }
 
   brushed = () => {
-    console.log(event)
+    // console.log(event)
     if (event.selection && event.sourceEvent !== null) {
       const [x1, x2] = event.selection;
       const range = [this.state.xScale.invert(x1), this.state.xScale.invert(x2)];
@@ -151,7 +152,7 @@ class Brush extends Component {
   }
 
   brushEnded = () => {
-    console.log(event)
+    // console.log(event)
     if (!event.selection && this.brushRef.current) {
       select(this.brushRef.current).call(this.brush.move, this.state.defaultRange)
     }
