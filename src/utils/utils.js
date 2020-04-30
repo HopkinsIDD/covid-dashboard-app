@@ -1,3 +1,4 @@
+import { extent, max } from 'd3-array'
 ///////////////// UTILS ///////////////////
 export function addCommas(x) {
   var parts = x.toString().split(".");
@@ -7,18 +8,16 @@ export function addCommas(x) {
 
 export function getRange(series) {
   // return range [min, max] of all sims given a series
-  let min = Number.POSITIVE_INFINITY;
-  let max = Number.NEGATIVE_INFINITY;
-  series.forEach(sim => {
-      const simPeak = Math.max.apply(null, sim.vals);
-      max = simPeak > max ? simPeak : max;
-      min = simPeak < min ? simPeak : min;
+  const seriesMaxPeaks = series.map( sim => {
+    return max(sim.vals)
   });
-  
-  min = Math.ceil(min / 100) * 100;
-  max = Math.ceil(max / 100) * 100;
+  const seriesPeakExtent = extent(seriesMaxPeaks)
 
-  return [min, max];
+  // take out rounding until display
+  // minPeak = Math.ceil(minPeak / 100) * 100;
+  // maxPeak = Math.ceil(maxPeak / 100) * 100;
+
+  return seriesPeakExtent;
 };
 
 export function readableDate(date) {
