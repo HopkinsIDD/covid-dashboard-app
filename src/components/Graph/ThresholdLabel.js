@@ -1,10 +1,14 @@
 import React from 'react';
 import { addCommas, readableDate } from '../../utils/utils.js';
+import { timeFormat } from 'd3-time-format'
+
+const getReadableDate = timeFormat('%b %d, %Y')
 
 function ThresholdLabel(props) {
     const chance = Math.round(100 * props.percExceedence);
     const val = addCommas(props.statThreshold);
-    const date = readableDate(props.dateThreshold);
+    const date = getReadableDate(props.dateThreshold);
+    // const date = readableDate(props.dateThreshold);
 
     return (
         <p className="filter-label threshold-label">

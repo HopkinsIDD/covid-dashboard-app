@@ -20,15 +20,15 @@ export function getRange(series) {
   return seriesPeakExtent;
 };
 
-export function readableDate(date) {
-  // takes date Obj returns Month Day, Year
+// export function readableDate(date) {
+//   // takes date Obj returns Month Day, Year
 
-  const dateArray = date.toDateString().split(' ').slice(1);
-  const day = dateArray[1];
-  const newDay = day[0] === '0' ? day.slice(1) : day;
+//   const dateArray = date.toDateString().split(' ').slice(1);
+//   const day = dateArray[1];
+//   const newDay = day[0] === '0' ? day.slice(1) : day;
   
-  return dateArray[0] + ' ' + newDay + ', ' + dateArray[2];
-}
+//   return dateArray[0] + ' ' + newDay + ', ' + dateArray[2];
+// }
 
 
     // export function calcSimsOver(series) {

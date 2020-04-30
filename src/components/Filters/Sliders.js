@@ -1,37 +1,57 @@
 import React, { Component } from 'react';
 import { addCommas, readableDate } from '../../utils/utils.js';
+import { timeFormat } from 'd3-time-format'
+
+const getDate = timeFormat('%b %d, %Y')
+const getMonth = timeFormat('%b')
 
 class Sliders extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            date: '',
+            // date: '',
             dateIdx: "150",
-            firstDateStr: '',
-            lastDateStr: '',
+            // firstDateStr: '',
+            // lastDateStr: '',
+            // dateRange: []
         }
     }
 
     componentDidMount() {
-        const date = readableDate(this.props.dateThreshold);
-        const months = [
-            'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-            'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-        ];
-        const firstDateStr = months[this.props.firstDate.getMonth()];
-        const lastDateStr = months[this.props.lastDate.getMonth()];
-
+        console.log('seriesMin', this.props.seriesMin)
+        console.log('seriesMax', this.props.seriesMax)
+        console.log('firstDate', this.props.firstDate)
+        console.log('lastDate', this.props.lastDate)
+        console.log(this.props.dateRange)
+        console.log(this.props.dateThreshold)
+        const dateIdx = this.props.dates.indexOf(this.props.dateThreshold).toString();
+        console.log('dateIndex', dateIdx)
         this.setState({
-            date,
-            firstDateStr,
-            lastDateStr
+            dateIdx,
         })
+        // const date = readableDate(this.props.dateThreshold);
+        // const date = getDate(this.props.dateThreshold)
+        // const months = [
+        //     'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+        //     'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+        // ];
+        // const firstDateStr = months[this.props.firstDate.getMonth()];
+        // const lastDateStr = months[this.props.lastDate.getMonth()];
+        // const firstDateStr = getMonth(this.props.dateRange[0])
+        // const lastDateStr = getMonth(this.props.dateRange[1])
+
+        // this.setState({
+        //     date,
+        //     firstDateStr,
+        //     lastDateStr
+        // })
     }
             
     componentDidUpdate(prevProp) {
-        const { dates } = this.props;
+        const { dates, dateThreshold, dateRange } = this.props;
         if (prevProp.dateThreshold !== this.props.dateThreshold) {
             const dateIdx = dates.indexOf(this.props.dateThreshold).toString();
+            console.log('dateIndex', dateIdx)
             this.setState({
                 dateIdx,
             })
@@ -43,8 +63,9 @@ class Sliders extends Component {
     }
 
     handleDateChange = (e) => {
-        const dateString = this.props.dates[e];
-        this.props.onDateSliderChange(dateString);
+        const selectedDate = this.props.dates[e];
+        console.log(selectedDate)
+        this.props.onDateSliderChange(selectedDate);
     }
 
     // handleReprChange = (i) => {
@@ -52,9 +73,9 @@ class Sliders extends Component {
     // }
 
     render() {
-        const { stat, statThreshold, seriesMin, seriesMax, dates } = this.props;
+        const { stat, statThreshold, seriesMin, seriesMax, dates, dateRange, dateThreshold } = this.props;
         const roundedStat = Math.ceil(statThreshold / 100) * 100;
-        const { date, firstDateStr, lastDateStr } = this.state;
+        // const { date, firstDateStr, lastDateStr } = this.state;
         
         return (
             <div className="slider-menu">
@@ -88,7 +109,8 @@ class Sliders extends Component {
 
                 {/* Date Threshold */}
                 <p className="filter-label">
-                    Date Threshold: {date}
+                    {/* Date Threshold: {date} */}
+                    Date Threshold: {getDate(dateThreshold)}
                 </p>
                 <div className="slidecontainer">
                     <input
@@ -105,10 +127,12 @@ class Sliders extends Component {
                     </input>
                     <div className="row slider-label">
                         <p className="col-6 filter-label">
-                            {firstDateStr}
+                            {/* {firstDateStr} */}
+                            {getMonth(dateRange[0])}
                         </p>
                         <p className="col-6 filter-label slider-max">
-                            {lastDateStr}
+                            {/* {lastDateStr} */}
+                            {getMonth(dateRange[1])}
                         </p>
                     </div>
                 </div>
