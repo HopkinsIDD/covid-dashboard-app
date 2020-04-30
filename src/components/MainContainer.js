@@ -11,7 +11,7 @@ import Sliders from './Filters/Sliders';
 import { getRange } from '../utils/utils'
 import { utcParse } from 'd3-time-format'
 import { timeDay } from 'd3-time'
-import { max } from 'd3-array';
+import { max, maxIndex } from 'd3-array';
 const dataset = require('../store/geo06085.json');
 
 const parseDate = utcParse('%Y-%m-%d')
@@ -151,13 +151,20 @@ class MainContainer extends Component {
             const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
             const dateThreshold = filteredDates[dateThresholdIdx]
 
-            // mutates series
-            const simsOver = this.updateThreshold(
+            const simsOver = this.altUpdateThreshold(
                 newSeries,
                 statThreshold,
                 this.state.allTimeDates,
                 dateThreshold
-                )
+            )
+
+            // mutates series
+            // const simsOver = this.updateThreshold(
+            //     newSeries,
+            //     statThreshold,
+            //     this.state.allTimeDates,
+            //     dateThreshold
+            //     )
             const percExceedence = simsOver / newSeries.length;
 
             const filteredSeries = newSeries.map( s => {
@@ -178,6 +185,28 @@ class MainContainer extends Component {
             })
         }
     };
+
+    altUpdateThreshold(series, statThreshold, dates, dateThreshold) {
+        // update 'over' flag to true if sim peak surpasses statThreshold
+        // returns numSims 'over' threshold
+        // first find index of dates at dateThreshold
+        const dateIndex = dates.indexOf(dateThreshold);
+
+        let simsOver = 0;
+        Object.values(series).map(sim => {
+            const maxIdx = maxIndex(sim.vals)
+            const dateAtMax = dates[maxIdx]
+            // we need to keep track of whether simval at dateThreshold is over statThreshold
+            // as well as whether the max is over statThreshold and occured in the past
+            if (sim.vals[dateIndex] > statThreshold || (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
+                simsOver = simsOver + 1;
+                return sim.over = true;
+            } else {
+                return sim.over = false;
+            }
+        })
+        return simsOver;
+    }
 
     updateThreshold(series, statThreshold, dates, dateThreshold) {
         // update 'over' flag to true if sim peak surpasses statThreshold
@@ -214,7 +243,8 @@ class MainContainer extends Component {
         const { dates, dateThreshold } = this.state;
         // const rounded = Math.ceil(i / 100) * 100;
         const copy = Array.from(this.state.series);
-        const simsOver = this.updateThreshold(copy, i, dates, dateThreshold);
+        // const simsOver = this.updateThreshold(copy, i, dates, dateThreshold);
+        const simsOver = this.altUpdateThreshold(copy, i, dates, dateThreshold);
         const percExceedence = simsOver / copy.length;
 
         this.setState({
@@ -227,7 +257,8 @@ class MainContainer extends Component {
     handleDateSliderChange = (i) => {
         const { statThreshold, dates } = this.state;
         const copy = Array.from(this.state.series);
-        const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
+        // const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
+        const simsOver = this.altUpdateThreshold(copy, statThreshold, dates, i);
         const percExceedence = simsOver / copy.length;
 
         this.setState({
