@@ -52,9 +52,9 @@ class Brush extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('different series is ', this.props.series !== prevProps.series)
-    console.log('different dateThreshold is', this.props.dateThreshold !== prevProps.dateThreshold)
-    console.log('different statThreshold is', this.props.statThreshold !== prevProps.statThreshold)
+    // console.log('different series is ', this.props.series !== prevProps.series)
+    // console.log('different dateThreshold is', this.props.dateThreshold !== prevProps.dateThreshold)
+    // console.log('different statThreshold is', this.props.statThreshold !== prevProps.statThreshold)
     // if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
     if (this.props.dateRange !== prevProps.dateRange || 
         this.props.dateThreshold !== prevProps.dateThreshold || 
@@ -149,7 +149,7 @@ class Brush extends Component {
   // }
 
   brushed = () => {
-    console.log(event)
+    // console.log(event)
     if (event.selection && event.sourceEvent !== null) {
       const [x1, x2] = event.selection;
       const range = [this.state.xScale.invert(x1), this.state.xScale.invert(x2)];
