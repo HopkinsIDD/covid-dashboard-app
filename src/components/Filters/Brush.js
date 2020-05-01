@@ -142,7 +142,7 @@ class Brush extends Component {
   // }
 
   brushed = () => {
-    // console.log(event)
+    console.log(event)
     if (event.selection && event.sourceEvent !== null) {
       const [x1, x2] = event.selection;
       const range = [this.state.xScale.invert(x1), this.state.xScale.invert(x2)];

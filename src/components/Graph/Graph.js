@@ -58,10 +58,8 @@ class Graph extends Component {
         // compare prevProps series or dates to newProps series or dates
         if (this.props.stat !== prevProps.stat || 
             this.props.severity !== prevProps.severity ||
-             this.props.scenario !== prevProps.scenario ||
-             this.props.dateThreshold !== prevProps.dateThreshold || 
-             this.props.statThreshold !== prevProps.statThreshold){
-
+             this.props.scenario !== prevProps.scenario){
+        
             const { series, dates, statThreshold, dateThreshold } = this.props;
             const { xScale, yScale, lineGenerator, width, height } = prevState;
             //TODO: update based on resizing width and height
@@ -73,7 +71,11 @@ class Graph extends Component {
             this.updateYAxis();
             
         }
-        if (this.props.dateRange !== prevProps.dateRange || this.props.dateRange !== prevProps.dateRange) {
+        if (this.props.dateRange !== prevProps.dateRange || 
+            this.props.dateThreshold !== prevProps.dateThreshold || 
+            this.props.statThreshold !== prevProps.statThreshold) {
+            console.log(this.props.statThreshold)
+            console.log(this.props.dateThreshold)
             console.log('prevDateRange', prevProps.dateRange, 'newDateRange', this.props.dateRange)
 
             const { series, dates, statThreshold, dateThreshold } = this.props;
