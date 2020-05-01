@@ -79,10 +79,10 @@ class Brush extends Component {
         // update the paths with new data
         simPathsNode.selectAll('.simPath')
             .data(series)
+            .attr("stroke", (d,i) => series[i].over ? red : green )
             .transition()
             .duration(1000)
             .attr("d", d => updatedScales.lineGenerator(d.vals))
-            .attr("stroke", (d,i) => series[i].over ? red : green )
             .on("end", () => {
                 // set new vals to state
                 this.setState({ 

@@ -241,29 +241,35 @@ class MainContainer extends Component {
     };
 
     handleStatSliderChange = (i) => {
-        const { dates, dateThreshold } = this.state;
+        const { dates, dateThreshold, allTimeDates } = this.state;
         // const rounded = Math.ceil(i / 100) * 100;
         const copy = Array.from(this.state.series);
         const simsOver = this.updateThreshold(copy, i, dates, dateThreshold);
+        const allSeriesCopy = Array.from(this.state.allTimeSeries)
+        this.updateThreshold(allSeriesCopy, i, allTimeDates, dateThreshold)
         // const simsOver = this.altUpdateThreshold(copy, i, dates, dateThreshold);
         const percExceedence = simsOver / copy.length;
 
         this.setState({
             series: copy,
+            allTimeSeries: allSeriesCopy,
             statThreshold: +i,
             percExceedence
         });
     };
 
     handleDateSliderChange = (i) => {
-        const { statThreshold, dates } = this.state;
+        const { statThreshold, dates, allTimeDates } = this.state;
         const copy = Array.from(this.state.series);
         const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
+        const allSeriesCopy = Array.from(this.state.allTimeSeries)
+        this.updateThreshold(allSeriesCopy, statThreshold, allTimeDates, i);
         // const simsOver = this.altUpdateThreshold(copy, statThreshold, dates, i);
         const percExceedence = simsOver / copy.length;
 
         this.setState({
             series: copy,
+            allTimeSeries: allSeriesCopy,
             dateThreshold: i,
             percExceedence
         })
