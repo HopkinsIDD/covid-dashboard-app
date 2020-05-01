@@ -132,6 +132,7 @@ ul {
   display: inline-block;
   opacity: 1;
   z-index: 50;
+  cursor: pointer;
 }
 
 .tooltip-text {
