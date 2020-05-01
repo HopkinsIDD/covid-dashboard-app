@@ -62,7 +62,6 @@ class Sliders extends Component {
                 <div className="slidecontainer">
                     <input
                         id="statThreshold"
-                        className="slider"
                         type="range"
                         min={seriesMin.toString()}
                         max={seriesMax.toString()}
