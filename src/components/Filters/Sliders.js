@@ -61,6 +61,9 @@ class Sliders extends Component {
                 {/* Stat Threshold */}
                 <p className="filter-label">
                     {stat.name} Threshold: {addCommas(roundedStat)}
+                    <div className="tooltip">&nbsp;&#9432;
+                        <span className="tooltip-text">Slide the {stat.name} threshold to visualize the percent chance daily {stat.name} exceed the selected value.</span>
+                    </div>
                 </p>
                 <div className="slidecontainer">
                     <input
@@ -89,6 +92,9 @@ class Sliders extends Component {
                 {/* Date Threshold */}
                 <p className="filter-label">
                     Date Threshold: {date}
+                    <div className="tooltip">&nbsp;&#9432;
+                        <span className="tooltip-text">Slide the date threshold to visualize the percent chance daily {stat.name}s exceed the selected value by a given date.</span>
+                    </div>
                 </p>
                 <div className="slidecontainer">
                     <input
