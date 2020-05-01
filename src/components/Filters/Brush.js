@@ -52,7 +52,14 @@ class Brush extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
+    console.log('different series is ', this.props.series !== prevProps.series)
+    console.log('different dateThreshold is', this.props.dateThreshold !== prevProps.dateThreshold)
+    console.log('different statThreshold is', this.props.statThreshold !== prevProps.statThreshold)
+    // if (this.props.series !== prevProps.series || this.props.dates !== prevProps.dates) {
+    if (this.props.dateRange !== prevProps.dateRange || 
+        this.props.dateThreshold !== prevProps.dateThreshold || 
+        this.props.statThreshold !== prevProps.statThreshold) {
+
       const { series, dates } = this.props;
       const { xScale, yScale, lineGenerator, width, height } = prevState;
 
