@@ -16,8 +16,7 @@ launch.json
 # datasets
 *.txt
 *.csv
-*.json
-/src/store/sims
+/src/store/
 
 # misc
 .DS_Store
