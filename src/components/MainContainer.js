@@ -26,12 +26,6 @@ class MainContainer extends Component {
             allTimeSeries: {},
             dates: [],
             allTimeDates: [],
-            // this.state = {
-            //     series: this will be updated based on scenario, stat, sev, statFilter, AND DateFilter ranges
-            //     dates: this will be updated based on scenario, stat, sev, statFilter, AND DateFilter ranges
-            //     allTimeSeries: this will be updated based on scenario, stat, sev but NOT on DateFilter ranges
-            //     allTimeDates: this will be updated based on scenario, stat, sev but NOT on DateFilter ranges
-            //   }
             yAxisLabel: '',
             stat: {
                 'id': 1,
@@ -368,7 +362,12 @@ class MainContainer extends Component {
                             </div>
                         </div>
                         <div className="col-3">
-                            <h5>Scenarios</h5>
+                            <h5>Scenarios
+                                <div className="tooltip">&nbsp;&#9432;
+                                    <span className="tooltip-text">There are 3 intervention scenarios for model simulations for comparison.</span>
+                                </div>
+                            </h5>
+                            
                             <Scenarios 
                                 scenario={this.state.scenario}
                                 onScenarioClick={this.handleScenarioClick}
@@ -382,7 +381,11 @@ class MainContainer extends Component {
                                 onActualClick={this.handleActualClick}
                             />                         */}
                             <h5>Parameters</h5>
-                            <p className="param-header">Severity</p>
+                            <p className="param-header">Severity
+                                <div className="tooltip">&nbsp;&#9432;
+                                    <span className="tooltip-text">There are three levels of severity (high, medium, low) based on Infection-fatality-ratio (IFR) and hospitalization rate.</span>
+                                </div>
+                            </p>
                             <Severity 
                                 severity={this.state.severity}
                                 onSeverityClick={this.handleSeverityClick}
