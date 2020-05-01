@@ -67,7 +67,7 @@ class Sliders extends Component {
                         onChange={
                             () => {this.handleStatChange(this.statInput.value)}
                         }>
-                    </input>
+                    </input> 
                     <div className="row slider-label">
                         <p className="col-6 filter-label">
                             {addCommas(seriesMin)}
@@ -86,7 +86,7 @@ class Sliders extends Component {
                 </p>
                 <div className="slidecontainer">
                     <input
-                        id="statThreshold"
+                        id="dateThreshold"
                         className="slider"
                         type="range"
                         min="0"

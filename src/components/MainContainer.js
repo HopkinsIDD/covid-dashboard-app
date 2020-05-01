@@ -198,7 +198,7 @@ class MainContainer extends Component {
             const dateAtMax = dates[maxIdx]
             // we need to keep track of whether simval at dateThreshold is over statThreshold
             // as well as whether the max is over statThreshold and occured in the past
-            if (sim.vals[dateIndex] > statThreshold || (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
+            if (sim.vals[dateIndex] > statThreshold || (dateAtMax < dateThreshold && max(sim.vals) > statThreshold)) {
                 simsOver = simsOver + 1;
                 return sim.over = true;
             } else {
