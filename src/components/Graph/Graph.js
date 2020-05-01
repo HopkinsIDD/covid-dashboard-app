@@ -52,39 +52,14 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log(prevState.yScale(prevState.statThreshold))
-        // console.log(this.state.yScale.domain())
-        // console.log(this.props.statThreshold, this.state.yScale(this.props.statThreshold))
-        // compare prevProps series or dates to newProps series or dates
-        // console.log('different series is ', this.props.series !== prevProps.series)
-        // console.log('different dateThreshold is', this.props.dateThreshold !== prevProps.dateThreshold)
-        // console.log('different statThreshold is', this.props.statThreshold !== prevProps.statThreshold)
-        if (this.props.stat !== prevProps.stat || 
-            this.props.severity !== prevProps.severity ||
-             this.props.scenario !== prevProps.scenario){
-        
+
+        if (this.props.series !== prevProps.series) {
+            // console.log('in only series diff update')
             const { series, dates, statThreshold, dateThreshold } = this.props;
             const { xScale, yScale, lineGenerator, width, height } = prevState;
             //TODO: update based on resizing width and height
 
-            this.updateSimPaths(series, dates, lineGenerator, 'statSevScenario');
-            this.updateStatThresholdLine(statThreshold, yScale);
-            this.updateDateThresholdLine(dateThreshold, xScale);
-            this.updateXAxis();
-            this.updateYAxis();
-            
-        }
-        if (this.props.dateRange !== prevProps.dateRange || 
-            this.props.dateThreshold !== prevProps.dateThreshold || 
-            this.props.statThreshold !== prevProps.statThreshold) {
-            console.log(this.props.statThreshold)
-            console.log(this.props.dateThreshold)
-            console.log('prevDateRange', prevProps.dateRange, 'newDateRange', this.props.dateRange)
-
-            const { series, dates, statThreshold, dateThreshold } = this.props;
-            const { xScale, yScale, lineGenerator } = prevState;
-            
-            this.updateSimPaths(series, dates, lineGenerator, 'brush');
+            this.updateSimPaths(series, dates, lineGenerator);
             this.updateStatThresholdLine(statThreshold, yScale);
             this.updateDateThresholdLine(dateThreshold, xScale);
             this.updateXAxis();
@@ -130,7 +105,7 @@ class Graph extends Component {
         })
     }
 
-    updateSimPaths = (series, dates, lineGenerator, updateType) => {
+    updateSimPaths = (series, dates, lineGenerator) => {
         // console.log('update type', updateType)
         //Animate simPath color but don't change data
         if (this.simPathsRef.current) {
@@ -146,15 +121,15 @@ class Graph extends Component {
           
             // get svg node
             const simPathsNode = select(this.simPathsRef.current)
-            // console.log(simPathsNode.selectAll('.simPath'))
-            // update the paths with new data, animate if it's not a brush update
-            if (updateType === 'brush') {
-                // no transitions since it's called every frame of brush event
-                simPathsNode.selectAll('.simPath')
+
+            simPathsNode.selectAll('.simPath')
                 .data(series)
+                .transition()
+                .duration(1000)
+                .ease(easeCubicOut)
                 .attr("d", d => updatedScales.lineGenerator(d.vals))
                 .attr("stroke", (d,i) => series[i].over ? red : green )
-                // .on("end", () => {
+                .on("end", () => {
                     // set new vals to state
                     this.setState({ 
                         series: series,
@@ -164,28 +139,7 @@ class Graph extends Component {
                         lineGenerator: updatedScales.lineGenerator,
                         simPaths: simPaths,
                     })
-                // })
-            } else if (updateType === 'statSevScenario') {
-                // animate the path and color transitions
-                simPathsNode.selectAll('.simPath')
-                    .data(series)
-                    .transition()
-                    .duration(1000)
-                    .ease(easeCubicOut)
-                    .attr("d", d => updatedScales.lineGenerator(d.vals))
-                    .attr("stroke", (d,i) => series[i].over ? red : green )
-                    .on("end", () => {
-                        // set new vals to state
-                        this.setState({ 
-                            series: series,
-                            dates: dates,
-                            xScale: updatedScales.xScale,
-                            yScale: updatedScales.yScale,
-                            lineGenerator: updatedScales.lineGenerator,
-                            simPaths: simPaths,
-                        })
-                    })
-            } 
+                })
         }
     }
 
