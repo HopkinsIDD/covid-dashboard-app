@@ -56,6 +56,9 @@ class Graph extends Component {
         // console.log(this.state.yScale.domain())
         // console.log(this.props.statThreshold, this.state.yScale(this.props.statThreshold))
         // compare prevProps series or dates to newProps series or dates
+        console.log('different series is ', this.props.series !== prevProps.series)
+        console.log('different dateThreshold is', this.props.dateThreshold !== prevProps.dateThreshold)
+        console.log('different statThreshold is', this.props.statThreshold !== prevProps.statThreshold)
         if (this.props.stat !== prevProps.stat || 
             this.props.severity !== prevProps.severity ||
              this.props.scenario !== prevProps.scenario){

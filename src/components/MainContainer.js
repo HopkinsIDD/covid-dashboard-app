@@ -71,8 +71,6 @@ class MainContainer extends Component {
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
         const dates = initialData.dates.map( d => parseDate(d));
-        const allTimeSeries = Array.from(series)
-        const allTimeDates = Array.from(dates)
         const firstDate = dates[0]; //.toISOString().split('T')[0];
         const lastDate = dates[dates.length - 1]; //.toISOString().split('T')[0];
         const [seriesMin, seriesMax] = getRange(series);
@@ -86,6 +84,9 @@ class MainContainer extends Component {
             this.state.dateThreshold
             )        
         const percExceedence = simsOver / series.length;
+
+        const allTimeSeries = Array.from(series)
+        const allTimeDates = Array.from(dates)
 
         const idxMin = timeDay.count(firstDate, this.state.dateRange[0]);
         const idxMax = timeDay.count(firstDate, this.state.dateRange[1]);
@@ -198,7 +199,7 @@ class MainContainer extends Component {
             const dateAtMax = dates[maxIdx]
             // we need to keep track of whether simval at dateThreshold is over statThreshold
             // as well as whether the max is over statThreshold and occured in the past
-            if (sim.vals[dateIndex] > statThreshold || (dateAtMax < dateThreshold && max(sim.vals) > statThreshold)) {
+            if (sim.vals[dateIndex] > statThreshold || (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
                 simsOver = simsOver + 1;
                 return sim.over = true;
             } else {

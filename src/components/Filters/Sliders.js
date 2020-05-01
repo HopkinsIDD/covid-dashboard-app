@@ -3,7 +3,7 @@ import { addCommas, readableDate } from '../../utils/utils.js';
 import { timeFormat } from 'd3-time-format';
 
 const getDate = timeFormat('%b %d, %Y');
-const getMonth = timeFormat('%b');
+const getMonth = timeFormat('%b %d');
 
 class Sliders extends Component {
     constructor(props) {
