@@ -14,10 +14,10 @@ export function getRange(series) {
   const seriesPeakExtent = extent(seriesMaxPeaks)
 
   // take out rounding until display
-  // minPeak = Math.ceil(minPeak / 100) * 100;
-  // maxPeak = Math.ceil(maxPeak / 100) * 100;
+  const minPeak = Math.ceil(seriesPeakExtent[0] / 100) * 100;
+  const maxPeak = Math.ceil(seriesPeakExtent[1] / 100) * 100;
 
-  return seriesPeakExtent;
+  return [minPeak, maxPeak];
 };
 
 // export function readableDate(date) {

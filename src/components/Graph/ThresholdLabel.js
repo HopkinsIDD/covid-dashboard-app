@@ -6,9 +6,8 @@ const getReadableDate = timeFormat('%b %d, %Y');
 
 function ThresholdLabel(props) {
     const chance = Math.round(100 * props.percExceedence);
-    const val = addCommas(props.statThreshold);
+    const val = addCommas(Math.ceil(props.statThreshold / 100) * 100);
     const date = getReadableDate(props.dateThreshold);
-    // const date = readableDate(props.dateThreshold);
 
     return (
         <p className="filter-label threshold-label">
