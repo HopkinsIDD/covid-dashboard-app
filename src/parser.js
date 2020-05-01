@@ -1,3 +1,4 @@
+// TO RUN FILE: remove "type": "module" from package.json
 const fs = require('fs');
 // need to add a display/surpassed parameter in obj
 
@@ -114,31 +115,35 @@ function parseFile(path, series, getIdx, simNums, geoInput, headers, parameters)
         const lines = data.split(/\r?\n/);
         const fileName = path.split('/').splice(-1).pop()
         const simNum = parseInt(fileName.split('_death-')[1].split('.')[0]);
-        console.log('sim', simNum)
-        simNums.push(simNum);
 
-        lines.forEach((line) => {
-            const splitLine = line.split(',')
-            const date = splitLine[0]
-            const geoid = splitLine[headers.indexOf('geoid')];
-
-            if (geoid === geoInput) {
-                // skip header and empty lines
-                if (date.length > 1 && date !== 'time') {
-
-                    for (let i = 0; i < parameters.length; i ++) {
-                        const stat = parameters[i]; 
-                        const val = parseInt(splitLine[getIdx[stat]]);
-
-                        if (simNum in series[i][stat]) {
-                            series[i][stat][simNum]['vals'].push(val);
-                        } else {
-                            series[i][stat][simNum] = {'name': simNum, 'vals': [val]};
+        // reduce simulations down to 30%
+        if (simNum % 3 === 0) {
+            console.log('sim', simNum)
+            simNums.push(simNum);
+    
+            lines.forEach((line) => {
+                const splitLine = line.split(',')
+                const date = splitLine[0]
+                const geoid = splitLine[headers.indexOf('geoid')];
+    
+                if (geoid === geoInput) {
+                    // skip header and empty lines
+                    if (date.length > 1 && date !== 'time') {
+    
+                        for (let i = 0; i < parameters.length; i ++) {
+                            const stat = parameters[i]; 
+                            const val = parseInt(splitLine[getIdx[stat]]);
+    
+                            if (simNum in series[i][stat]) {
+                                series[i][stat][simNum]['vals'].push(val);
+                            } else {
+                                series[i][stat][simNum] = {'name': simNum, 'vals': [val]};
+                            }
                         }
                     }
                 }
-            }
-        });
+            });
+        }
     } catch (err) {
         console.error(err);
     };
@@ -203,12 +208,14 @@ function parseSims(dir, geoInput, parameters) {
     };
     const json = JSON.stringify(obj);
     
-    const path = 'src/store/geo' + geoInput + '.json';
+    const path = 'src/store/geo' + geoInput + '_combed.json';
     fs.writeFile(path, json, 'utf8', function(err) {
         if (err) throw err;
         console.log('end:', new Date());
         console.log('parse complete!'); 
-    });}
+    });
+
+}
 
 const geoInput = '06085';
 const parameters = ['incidI','incidH','incidD','incidVent','incidICU'];
