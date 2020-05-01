@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { STATS } from '../../store/constants.js';
+import { STATS } from '../../utils/constants.js';
 
 class Buttons extends Component {
     handleClick = (i) => {

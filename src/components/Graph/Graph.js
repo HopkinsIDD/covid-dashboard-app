@@ -9,7 +9,7 @@ import { timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { transition } from 'd3-transition'
 import { addCommas } from '../../utils/utils.js'
-import { margin, red, green, blue, gray } from '../../store/constants'
+import { margin, red, green, blue, gray } from '../../utils/constants'
 
 class Graph extends Component {
     constructor(props) {

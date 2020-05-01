@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { SCENARIOS } from '../../store/constants.js';
+import { SCENARIOS } from '../../utils/constants.js';
 
 class Scenarios extends Component {
     handleClick = (i) => {

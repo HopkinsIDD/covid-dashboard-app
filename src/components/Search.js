@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { COUNTIES } from '../store/constants.js';
+import { COUNTIES } from '../utils/constants.js';
 import InputGroup from 'react-bootstrap/InputGroup';
 import FormControl from 'react-bootstrap/FormControl';
 // import axios from 'axios'
