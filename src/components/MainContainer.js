@@ -146,20 +146,20 @@ class MainContainer extends Component {
             const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
             const dateThreshold = filteredDates[dateThresholdIdx]
 
-            // const simsOver = this.altUpdateThreshold(
-            //     newSeries,
-            //     statThreshold,
-            //     this.state.allTimeDates,
-            //     dateThreshold
-            // )
-
-            // mutates series
-            const simsOver = this.updateThreshold(
+            const simsOver = this.altUpdateThreshold(
                 newSeries,
                 statThreshold,
                 this.state.allTimeDates,
                 dateThreshold
-                )
+            )
+
+            // // mutates series
+            // const simsOver = this.updateThreshold(
+            //     newSeries,
+            //     statThreshold,
+            //     this.state.allTimeDates,
+            //     dateThreshold
+            //     )
             const percExceedence = simsOver / newSeries.length;
 
             const filteredSeries = newSeries.map( s => {
@@ -238,10 +238,12 @@ class MainContainer extends Component {
         const { dates, dateThreshold, allTimeDates } = this.state;
         // const rounded = Math.ceil(i / 100) * 100;
         const copy = Array.from(this.state.series);
-        const simsOver = this.updateThreshold(copy, i, dates, dateThreshold);
+        // const simsOver = this.updateThreshold(copy, i, dates, dateThreshold);
+        const simsOver = this.altUpdateThreshold(copy, i, dates, dateThreshold);
         const allSeriesCopy = Array.from(this.state.allTimeSeries)
-        this.updateThreshold(allSeriesCopy, i, allTimeDates, dateThreshold)
-        // const simsOver = this.altUpdateThreshold(copy, i, dates, dateThreshold);
+        // this.updateThreshold(allSeriesCopy, i, allTimeDates, dateThreshold)
+        this.altUpdateThreshold(allSeriesCopy, i, allTimeDates, dateThreshold)
+        
         const percExceedence = simsOver / copy.length;
 
         this.setState({
@@ -255,10 +257,11 @@ class MainContainer extends Component {
     handleDateSliderChange = (i) => {
         const { statThreshold, dates, allTimeDates } = this.state;
         const copy = Array.from(this.state.series);
-        const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
+        // const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
+        const simsOver = this.altUpdateThreshold(copy, statThreshold, dates, i);
         const allSeriesCopy = Array.from(this.state.allTimeSeries)
-        this.updateThreshold(allSeriesCopy, statThreshold, allTimeDates, i);
-        // const simsOver = this.altUpdateThreshold(copy, statThreshold, dates, i);
+        // this.updateThreshold(allSeriesCopy, statThreshold, allTimeDates, i);
+        this.altUpdateThreshold(allSeriesCopy, statThreshold, allTimeDates, i);
         const percExceedence = simsOver / copy.length;
 
         this.setState({
