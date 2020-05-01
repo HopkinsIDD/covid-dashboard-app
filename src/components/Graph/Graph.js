@@ -5,6 +5,8 @@ import { max, extent } from 'd3-array'
 import { axisLeft, axisBottom } from 'd3-axis'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
+import { timeFormat } from 'd3-time-format'
+import { timeDay } from 'd3-time'
 import { transition } from 'd3-transition'
 import { addCommas } from '../../utils/utils.js'
 import { margin, red, green, blue, gray } from '../../store/constants'
@@ -26,10 +28,12 @@ class Graph extends Component {
             simPaths: [],
             hoveredSimPathId: null,
         };
+        console.log(this.props.width/80)
         this.xAxisRef = React.createRef();
         this.xAxis = axisBottom().scale(this.state.xScale)
-            // .tickFormat(timeFormat('%b'))
-            .ticks(this.state.width / 80).tickSizeOuter(0);
+            .tickFormat(timeFormat('%b-%d'))
+            .ticks(this.props.width / 60)
+            .tickSizeOuter(0);
 
         this.yAxisRef = React.createRef();
         this.yAxis = axisLeft().scale(this.state.yScale)

@@ -18,7 +18,7 @@ export const STATS = [
     {'id': 1, 'key': 'incidI', 'name': 'Infections'},
     {'id': 2, 'key': 'incidH', 'name': 'Hospitalizations'},
     {'id': 3, 'key': 'incidICU', 'name': 'ICU Cases'},
-    {'id': 4, 'key': 'incidVent', 'name': 'Ventilator Usage'},
+    {'id': 4, 'key': 'incidVent', 'name': 'Ventilators Used'},
     {'id': 5, 'key': 'incidD', 'name': 'Deaths'},
 ];
 

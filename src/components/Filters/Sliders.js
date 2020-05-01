@@ -54,7 +54,7 @@ class Sliders extends Component {
             <div className="slider-menu">
                 {/* Stat Threshold */}
                 <p className="filter-label">
-                    {stat.name} Threshold: {addCommas(roundedStat)}
+                    {stat.name} Threshold: <span className='callout'>{addCommas(roundedStat)}</span>
                     <div className="tooltip">&nbsp;&#9432;
                         <span className="tooltip-text">Slide the {stat.name} threshold to visualize the percent chance daily {stat.name} exceed the selected value.</span>
                     </div>
@@ -73,10 +73,10 @@ class Sliders extends Component {
                         }>
                     </input> 
                     <div className="row slider-label">
-                        <p className="col-6 filter-label">
+                        <p className="col-6 filter-label callout">
                             {addCommas(seriesMin)}
                         </p>
-                        <p className="col-6 filter-label slider-max">
+                        <p className="col-6 filter-label slider-max callout">
                             {addCommas(seriesMax)}
                         </p>
                     </div>
@@ -85,7 +85,7 @@ class Sliders extends Component {
 
                 {/* Date Threshold */}
                 <p className="filter-label">
-                    Date Threshold: {getDate(dateThreshold)}
+                    Date Threshold: <span className='callout'>{getDate(dateThreshold)}</span>
                     <div className="tooltip">&nbsp;&#9432;
                         <span className="tooltip-text">Slide the date threshold to visualize the percent chance daily {stat.name}s exceed the selected value by a given date.</span>
                     </div>
@@ -104,11 +104,11 @@ class Sliders extends Component {
                         }>
                     </input>
                     <div className="row slider-label">
-                        <p className="col-6 filter-label">
+                        <p className="col-6 filter-label callout">
                             {/* {firstDateStr} */}
                             {getMonth(dateRange[0])}
                         </p>
-                        <p className="col-6 filter-label slider-max">
+                        <p className="col-6 filter-label slider-max callout">
                             {/* {lastDateStr} */}
                             {getMonth(timeDay.offset(dateRange[1], -1))}
                         </p>
