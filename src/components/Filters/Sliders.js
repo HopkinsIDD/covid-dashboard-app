@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { addCommas, readableDate } from '../../utils/utils.js';
 import { timeFormat } from 'd3-time-format';
+import { timeDay }  from 'd3-time';
 
 const getDate = timeFormat('%b %d, %Y');
 const getMonth = timeFormat('%b %d');
@@ -95,7 +96,7 @@ class Sliders extends Component {
                         className="slider"
                         type="range"
                         min="0"
-                        max={dates.length.toString()}
+                        max={dates.length.toString()-1}
                         value={dateThresholdIdx}
                         ref={ref => this.dateInput = ref}
                         onChange={
@@ -109,7 +110,7 @@ class Sliders extends Component {
                         </p>
                         <p className="col-6 filter-label slider-max">
                             {/* {lastDateStr} */}
-                            {getMonth(dateRange[1])}
+                            {getMonth(timeDay.offset(dateRange[1], -1))}
                         </p>
                     </div>
                 </div>
