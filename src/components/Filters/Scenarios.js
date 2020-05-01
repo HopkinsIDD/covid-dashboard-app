@@ -23,7 +23,7 @@ class Scenarios extends Component {
                         const isEqual = scenario.key === this.props.scenario.key;
                         const isActive = isEqual ? ' active' : '';
                         return <button
-                                    className={"dropdown-item" + isActive}
+                                    className={"dropdown-item filter-label" + isActive}
                                     type="button" 
                                     onClick={() => this.handleClick(scenario)} 
                                     key={scenario.id}>
