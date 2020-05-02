@@ -1,5 +1,5 @@
 import React from 'react';
-import { green, red } from '../../store/constants';
+import { green, red } from '../../utils/constants';
 
 function Legend(props) {
     if (!props.showConfBounds) {

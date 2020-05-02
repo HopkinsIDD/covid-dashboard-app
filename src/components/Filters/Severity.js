@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { LEVELS } from '../../store/constants.js';
+import { LEVELS } from '../../utils/constants.js';
 
 class Severity extends Component {
     handleChange = (i) => {
