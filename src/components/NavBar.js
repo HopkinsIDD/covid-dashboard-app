@@ -4,11 +4,11 @@ class NavBar extends Component {
     render() {
         return (
             <div>
-                <h1>COVID-19 Scenario Modeling</h1>
-                <h3>Prepared by&nbsp;
-                    <a href="http://www.iddynamics.jhsph.edu/">Johns Hopkins IDD</a>
+                <h1 className="titleNarrow siteTitle">COVID-19 Scenario Modeling</h1>
+                <h4>Prepared by&nbsp;
+                    <a className="customLink" href="http://www.iddynamics.jhsph.edu/">Johns Hopkins IDD</a>
                     &nbsp;Working Group 
-                </h3>
+                </h4>
             </div>
         )
     }

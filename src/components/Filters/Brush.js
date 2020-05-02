@@ -170,6 +170,13 @@ class Brush extends Component {
           <g>
             <g ref={this.xAxisRef}  transform={`translate(0, ${this.state.height - margin.bottom})`} />
             <g ref={this.simPathsRef}>
+            <rect 
+                x={margin.left}
+                y={margin.top}
+                width={this.state.width - margin.left - margin.right}
+                height={this.state.height - margin.bottom - margin.top}
+                fill={'#f6f5f5'}
+            />
             {
               // visible simPaths
               this.state.simPaths.map( (simPath, i) => {

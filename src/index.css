@@ -1,9 +1,10 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+    sans-serif; */
   /* font-family: 'Roboto Mono', monospace; */
+  font-family: 'PT Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -11,7 +12,27 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
-    
+}
+
+.siteTitle {
+  font-size: 3rem;
+}
+
+.customLink {
+  color: #4ddaba;
+  font-weight: bold;
+}
+.customLink:hover {
+  color: #4ddaba;
+  font-weight: bold;
+}
+
+.tick {
+  font-family: 'PT Sans', sans-serif;
+}
+
+.titleNarrow {
+  font-family: 'PT Sans Narrow', sans-serif;
 }
 
 .callout {
@@ -92,7 +113,7 @@ ul {
 
 .graph {
   /* margin-top: 2%; */
-  height: 62vh;
+  height: 60vh;
 }
 
 .slider-menu {
@@ -114,8 +135,8 @@ ul {
   bottom: 0;
   left: 0;
   margin-left: 5px;
-  margin-bottom: 10%;
-  font-size: 0.75rem;
+  margin-bottom: 20%;
+  font-size: 0.85rem;
   pointer-events: none;
   font-weight: bold;
   -webkit-transform: rotate(270deg);

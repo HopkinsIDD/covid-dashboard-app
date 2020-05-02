@@ -221,7 +221,7 @@ class Graph extends Component {
 
         return (
             <div className="graph-wrapper">
-                <div className="y-axis-label">
+                <div className="y-axis-label titleNarrow">
                     {this.props.yAxisLabel}
                 </div>
                 <svg 
@@ -230,6 +230,13 @@ class Graph extends Component {
                     ref={this.simPathsRef}
                 >
                 <g>
+                    <rect 
+                        x={margin.left}
+                        y={margin.top}
+                        width={this.state.width - margin.left - margin.right}
+                        height={this.state.height - margin.bottom - margin.top}
+                        fill={'#f6f5f5'}
+                    />
                 {
                 // visible simPaths
                 this.state.simPaths.map( (simPath, i) => {
@@ -268,20 +275,28 @@ class Graph extends Component {
                 <g ref={this.thresholdRef}>
                     <line
                         x1={margin.left}
-                        y1={this.state.yScale(this.state.statThreshold) < margin.top ? margin.top : this.state.yScale(this.state.statThreshold)}
+                        y1={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
                         x2={this.props.width - margin.right}
-                        y2={this.state.yScale(this.state.statThreshold) < margin.top ? margin.top : this.state.yScale(this.state.statThreshold)}
+                        y2={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
                         stroke={gray}
                         className={'statThreshold'}
+                        strokeDasharray="4 2"
                     ></line>
                     <line
-                        x1={this.state.xScale(this.state.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.state.dateThreshold)}
+                        x1={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
                         y1={margin.top}
-                        x2={this.state.xScale(this.state.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.state.dateThreshold)}
+                        x2={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
                         y2={this.props.height - margin.bottom}
                         stroke={gray}
                         className={'dateThreshold'}
+                        strokeDasharray="4 2"
                     ></line>
+                    <circle
+                        cx={this.state.xScale(this.props.dateThreshold)}
+                        cy={this.state.yScale(this.props.statThreshold)}
+                        r={4}
+                        fill={gray}
+                    ></circle>
                 </g>
                 </g>
                 <g>

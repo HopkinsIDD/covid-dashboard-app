@@ -322,7 +322,7 @@ class MainContainer extends Component {
                             </div>
 
                             <div
-                                className="graph border"
+                                className="graph"
                                 ref={ (graphEl) => { this.graphEl = graphEl } }
                                 >
                                 <ThresholdLabel
