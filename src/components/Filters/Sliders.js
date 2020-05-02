@@ -53,12 +53,12 @@ class Sliders extends Component {
         return (
             <div className="slider-menu">
                 {/* Stat Threshold */}
-                <p className="filter-label">
+                <div className="filter-label">
                     {stat.name} Threshold: <span className='callout'>{addCommas(roundedStat)}</span>
                     <div className="tooltip">&nbsp;&#9432;
                         <span className="tooltip-text">Slide the {stat.name} threshold to visualize the percent chance daily {stat.name} exceed the selected value.</span>
                     </div>
-                </p>
+                </div>
                 <div className="slidecontainer">
                     <input
                         id="statThreshold"
@@ -84,12 +84,12 @@ class Sliders extends Component {
                 <p></p>
 
                 {/* Date Threshold */}
-                <p className="filter-label">
+                <div className="filter-label">
                     Date Threshold: <span className='callout'>{getDate(dateThreshold)}</span>
                     <div className="tooltip">&nbsp;&#9432;
                         <span className="tooltip-text">Slide the date threshold to visualize the percent chance daily {stat.name}s exceed the selected value by a given date.</span>
                     </div>
-                </p>
+                </div>
                 <div className="slidecontainer">
                     <input
                         id="dateThreshold"
