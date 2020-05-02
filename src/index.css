@@ -96,6 +96,7 @@ ul {
   font-size: 9px;
   text-align: end;
   margin-bottom: 0px;
+  margin-right: 10px;
 }
 
 .slider-max {
@@ -138,7 +139,7 @@ ul {
   margin-bottom: 20%;
   font-size: 0.85rem;
   pointer-events: none;
-  font-weight: bold;
+  /* font-weight: bold; */
   -webkit-transform: rotate(270deg);
   -moz-transform: rotate(270deg);
   -ms-transform: rotate(270deg);

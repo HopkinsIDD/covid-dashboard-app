@@ -57,13 +57,26 @@ class Graph extends Component {
 
     componentDidUpdate(prevProps, prevState) {
 
-        if (this.props.series !== prevProps.series) {
+        if (this.props.series !== prevProps.series && this.props.brushActive) {
             // console.log('in only series diff update')
             const { series, dates, statThreshold, dateThreshold } = this.props;
             const { xScale, yScale, lineGenerator, width, height } = prevState;
             //TODO: update based on resizing width and height
 
-            this.updateSimPaths(series, dates, lineGenerator);
+            this.updateSimPaths(series, dates, lineGenerator, true);
+            this.updateStatThresholdLine(statThreshold, yScale);
+            this.updateDateThresholdLine(dateThreshold, xScale);
+            this.updateXAxis();
+            this.updateYAxis();
+        }
+
+        if (this.props.series !== prevProps.series && !this.props.brushActive) {
+            // console.log('in only series diff update')
+            const { series, dates, statThreshold, dateThreshold } = this.props;
+            const { xScale, yScale, lineGenerator, width, height } = prevState;
+            //TODO: update based on resizing width and height
+
+            this.updateSimPaths(series, dates, lineGenerator, false);
             this.updateStatThresholdLine(statThreshold, yScale);
             this.updateDateThresholdLine(dateThreshold, xScale);
             this.updateXAxis();
@@ -109,8 +122,7 @@ class Graph extends Component {
         })
     }
 
-    updateSimPaths = (series, dates, lineGenerator) => {
-        // console.log('update type', updateType)
+    updateSimPaths = (series, dates, lineGenerator, brushed) => {
         //Animate simPath color but don't change data
         if (this.simPathsRef.current) {
                 
@@ -126,24 +138,46 @@ class Graph extends Component {
             // get svg node
             const simPathsNode = select(this.simPathsRef.current)
 
-            simPathsNode.selectAll('.simPath')
-                .data(series)
-                .transition()
-                .duration(1000)
-                .ease(easeCubicOut)
-                .attr("d", d => updatedScales.lineGenerator(d.vals))
-                .attr("stroke", (d,i) => series[i].over ? red : green )
-                .on("end", () => {
-                    // set new vals to state
-                    this.setState({ 
-                        series: series,
-                        dates: dates,
-                        xScale: updatedScales.xScale,
-                        yScale: updatedScales.yScale,
-                        lineGenerator: updatedScales.lineGenerator,
-                        simPaths: simPaths,
+            if (brushed) {
+                simPathsNode.selectAll('.simPath')
+                    .data(series)
+                    // .transition()
+                    // .duration(1000)
+                    // .ease(easeCubicOut)
+                    .attr("d", d => updatedScales.lineGenerator(d.vals))
+                    .attr("stroke", (d,i) => series[i].over ? red : green )
+                    .on("end", () => {
+                        // set new vals to state
+                        this.setState({ 
+                            series: series,
+                            dates: dates,
+                            xScale: updatedScales.xScale,
+                            yScale: updatedScales.yScale,
+                            lineGenerator: updatedScales.lineGenerator,
+                            simPaths: simPaths,
+                        })
                     })
-                })
+            } else {
+                simPathsNode.selectAll('.simPath')
+                    .data(series)
+                    .transition()
+                    .duration(1000)
+                    .ease(easeCubicOut)
+                    .attr("d", d => updatedScales.lineGenerator(d.vals))
+                    .attr("stroke", (d,i) => series[i].over ? red : green )
+                    .on("end", () => {
+                        // set new vals to state
+                        this.setState({ 
+                            series: series,
+                            dates: dates,
+                            xScale: updatedScales.xScale,
+                            yScale: updatedScales.yScale,
+                            lineGenerator: updatedScales.lineGenerator,
+                            simPaths: simPaths,
+                        })
+                    })
+            }
+            
         }
     }
 

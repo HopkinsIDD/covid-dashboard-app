@@ -33,9 +33,9 @@ class Brush extends Component {
           [margin.left, margin.top],
           [this.state.width - margin.right, this.state.height - margin.bottom]
         ])
-        // .on('start', this.brushStart)
+        .on('start', this.brushStart)
         .on('end', this.brushEnded)
-        .on('start brush', this.brushed)
+        .on('brush', this.brushed)
   }
 
   componentDidMount() {
@@ -142,9 +142,10 @@ class Brush extends Component {
     return { xScale, yScale, lineGenerator }
   }
 
-  // brushStart = () => {
-  //   console.log(event)
-  // }
+  brushStart = () => {
+    // console.log(event)
+    this.props.onBrushStart();
+  }
 
   brushed = () => {
     // console.log(event)
@@ -161,6 +162,7 @@ class Brush extends Component {
     if (!event.selection && this.brushRef.current) {
       select(this.brushRef.current).call(this.brush.move, this.state.defaultRange)
     }
+    this.props.onBrushEnd();
   }
 
   render() {

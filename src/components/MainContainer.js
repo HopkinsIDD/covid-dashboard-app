@@ -56,6 +56,7 @@ class MainContainer extends Component {
             showActual: false,
             graphW: 0,
             graphH: 0,
+            brushActive: false,
         };
     };
 
@@ -279,6 +280,18 @@ class MainContainer extends Component {
         });
     };
 
+    handleBrushStart = () => {
+        this.setState({
+            brushActive: true
+        })
+    }
+
+    handleBrushEnd = () => {
+        this.setState({
+            brushActive: false
+        })
+    }
+
     handleReprSliderChange = (i) => {
         this.setState({r0: i});
     };
@@ -347,6 +360,7 @@ class MainContainer extends Component {
                                         statThreshold={this.state.statThreshold}
                                         dateThreshold={this.state.dateThreshold}
                                         dateRange={this.state.dateRange}
+                                        brushActive={this.state.brushActive}
                                         width={this.state.graphW}
                                         height={this.state.graphH}
                                     /> 
@@ -359,6 +373,8 @@ class MainContainer extends Component {
                                         dateThreshold={this.state.dateThreshold}
                                         statThreshold={this.state.statThreshold}
                                         onBrushChange={this.handleBrushRange}
+                                        onBrushStart={this.handleBrushStart}
+                                        onBrushEnd={this.handleBrushEnd}
                                     />
                                 </div>
                                 }
