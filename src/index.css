@@ -82,6 +82,7 @@ ul {
 .filter-label {
   font-size: 13px;
   margin-bottom: 0px;
+  margin-top: 3px;
 }
 
 .threshold-label {
