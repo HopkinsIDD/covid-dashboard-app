@@ -61,28 +61,34 @@ class Graph extends Component {
         }
     }
 
-    calculateSimPaths = (series, dates) => {
-        // console.log('in calculate sims')
-        // draw the sims first here (without transitioning)
-        const { xScale, yScale, lineGenerator, width, height } = this.state;
-        // calculate scale domains
-        const timeDomain = extent(dates);
-        const maxVal = max(series, sims => max(sims.vals))
-        // set scale ranges to width and height of container
-        xScale.range([margin.left, width - margin.right])
-        yScale.range([height - margin.bottom, margin.top])
-        // set scale domains and lineGenerator domains
-        xScale.domain(timeDomain);
-        yScale.domain([0, maxVal]).nice();
-        lineGenerator.x((d,i) => xScale(dates[i]))
-        lineGenerator.y(d => yScale(d))
+    // calculateSimPaths = (series, dates) => {
+    //     // console.log('in calculate sims')
+    //     // draw the sims first here (without transitioning)
+    //     const { xScale, yScale, lineGenerator, width, height } = this.state;
+    //     // calculate scale domains
+    //     const timeDomain = extent(dates);
+    //     const maxVal = max(series, sims => max(sims.vals))
+    //     // set scale ranges to width and height of container
+    //     xScale.range([margin.left, width - margin.right])
+    //     yScale.range([height - margin.bottom, margin.top])
+    //     // set scale domains and lineGenerator domains
+    //     xScale.domain(timeDomain);
+    //     yScale.domain([0, maxVal]).nice();
+    //     lineGenerator.x((d,i) => xScale(dates[i]))
+    //     lineGenerator.y(d => yScale(d))
 
-        return { xScale, yScale, lineGenerator }
-    }
+    //     return { xScale, yScale, lineGenerator }
+    // }
 
     drawSimPaths = (series, dates) => {
-        const { xScale, yScale, lineGenerator, width, height } = this.state;
-        const updatedScales = this.calculateSimPaths(series, dates);
+        const { lineGenerator } = this.state;
+        const { xScale, yScale } = this.props;
+        
+        // move this lineGenerator update in from calculateSimPaths
+        // and use scales passed in from GraphContainer
+        lineGenerator.x((d,i) => xScale(dates[i]))
+        lineGenerator.y(d => yScale(d))
+        // const updatedScales = this.calculateSimPaths(series, dates);
         // generate simPaths from lineGenerator
         const simPaths = series.map( (d,i) => {
             // console.log(i, typeof(d.vals))
@@ -92,9 +98,9 @@ class Graph extends Component {
         this.setState({ 
             series: series,
             dates: dates,
-            xScale: updatedScales.xScale,
-            yScale: updatedScales.yScale,
-            lineGenerator: updatedScales.lineGenerator,
+            xScale: xScale,
+            yScale: yScale,
+            lineGenerator: lineGenerator,
             simPaths: simPaths,
         })
     }
@@ -103,8 +109,9 @@ class Graph extends Component {
         //Animate simPath color but don't change data
         if (this.simPathsRef.current) {
                 
-            // update scale and data
-            const updatedScales = this.calculateSimPaths(series, dates)
+            // update lineGenerator from new scale and data
+            lineGenerator.x((d,i) => this.props.xScale(dates[i]))
+            lineGenerator.y(d => this.props.yScale(d))
           
             // generate simPaths from lineGenerator
             const simPaths = series.map( (d,i) => {
@@ -118,9 +125,6 @@ class Graph extends Component {
             if (brushed) {
                 simPathsNode.selectAll('.simPath')
                     .data(series)
-                    // .transition()
-                    // .duration(1000)
-                    // .ease(easeCubicOut)
                     .attr("d", d => updatedScales.lineGenerator(d.vals))
                     .attr("stroke", (d,i) => series[i].over ? red : green )
                     .on("end", () => {
@@ -128,9 +132,9 @@ class Graph extends Component {
                         this.setState({ 
                             series: series,
                             dates: dates,
-                            xScale: updatedScales.xScale,
-                            yScale: updatedScales.yScale,
-                            lineGenerator: updatedScales.lineGenerator,
+                            xScale: this.props.xScale,
+                            yScale: this.props.yScale,
+                            lineGenerator: lineGenerator,
                             simPaths: simPaths,
                         })
                     })
@@ -147,9 +151,9 @@ class Graph extends Component {
                         this.setState({ 
                             series: series,
                             dates: dates,
-                            xScale: updatedScales.xScale,
-                            yScale: updatedScales.yScale,
-                            lineGenerator: updatedScales.lineGenerator,
+                            xScale: this.props.xScale,
+                            yScale: this.props.yScale,
+                            lineGenerator: lineGenerator,
                             simPaths: simPaths,
                         })
                     })
@@ -221,67 +225,67 @@ class Graph extends Component {
                             height={this.state.height - margin.bottom - margin.top}
                             fill={'#f6f5f5'}
                         />
-                    {
-                    // visible simPaths
-                    this.state.simPaths.map( (simPath, i) => {
-                        return <path
-                            d={simPath}
-                            key={`simPath-${i}`}
-                            id={`simPath-${i}`}
-                            className={`simPath`}
-                            fill='none' 
-                            stroke = { this.state.series[i].over ? red : green}
-                            strokeWidth={'1'}
-                            strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
-                            onMouseMove={(e) => this.handleMouseMove(e, i)}
-                            onMouseEnter={(e) => this.handleMouseEnter(e, i)}
-                            onMouseLeave={(e) => this.handleMouseLeave(e, i)}
-                        />
-                    })}
-                    {// highlight simPaths
-                    this.state.hoveredSimPathId &&
-                    this.state.simPaths.map( (simPath, i) => {
-                        const simIsHovered = (i === this.state.hoveredSimPathId)
-                        return <path
-                            d={simPath}
-                            key={`simPath-${i}-hover`}
-                            id={`simPath-${i}-hover`}
-                            className={`simPath-hover`}
-                            fill='none' 
-                            stroke={simIsHovered ? blue : gray}
-                            strokeWidth={simIsHovered ? '2' : '1'}
-                            strokeOpacity={simIsHovered && this.state.hoveredSimPathId ? 1 : 0.5}
-                            onMouseMove={(e) => this.handleMouseMove(e, i)}
-                            onMouseEnter={(e) => this.handleMouseEnter(e, i)}
-                            onMouseLeave={(e) => this.handleMouseLeave(e, i)}
-                        />
-                    })}
-                    <g ref={this.thresholdRef}>
-                        <line
-                            x1={margin.left}
-                            y1={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
-                            x2={this.props.width - margin.right}
-                            y2={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
-                            stroke={gray}
-                            className={'statThreshold'}
-                            strokeDasharray="4 2"
-                        ></line>
-                        <line
-                            x1={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
-                            y1={margin.top}
-                            x2={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
-                            y2={this.props.height - margin.bottom}
-                            stroke={gray}
-                            className={'dateThreshold'}
-                            strokeDasharray="4 2"
-                        ></line>
-                        <circle
-                            cx={this.state.xScale(this.props.dateThreshold)}
-                            cy={this.state.yScale(this.props.statThreshold)}
-                            r={4}
-                            fill={gray}
-                        ></circle>
-                    </g>
+                        {
+                        // visible simPaths
+                        this.state.simPaths.map( (simPath, i) => {
+                            return <path
+                                d={simPath}
+                                key={`simPath-${i}`}
+                                id={`simPath-${i}`}
+                                className={`simPath`}
+                                fill='none' 
+                                stroke = { this.state.series[i].over ? red : green}
+                                strokeWidth={'1'}
+                                strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
+                                onMouseMove={(e) => this.handleMouseMove(e, i)}
+                                onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                                onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                            />
+                        })}
+                        {// highlight simPaths
+                        this.state.hoveredSimPathId &&
+                        this.state.simPaths.map( (simPath, i) => {
+                            const simIsHovered = (i === this.state.hoveredSimPathId)
+                            return <path
+                                d={simPath}
+                                key={`simPath-${i}-hover`}
+                                id={`simPath-${i}-hover`}
+                                className={`simPath-hover`}
+                                fill='none' 
+                                stroke={simIsHovered ? blue : gray}
+                                strokeWidth={simIsHovered ? '2' : '1'}
+                                strokeOpacity={simIsHovered && this.state.hoveredSimPathId ? 1 : 0.5}
+                                onMouseMove={(e) => this.handleMouseMove(e, i)}
+                                onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                                onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                            />
+                        })}
+                        <g ref={this.thresholdRef}>
+                            <line
+                                x1={margin.left}
+                                y1={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
+                                x2={this.props.width - margin.right}
+                                y2={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
+                                stroke={gray}
+                                className={'statThreshold'}
+                                strokeDasharray="4 2"
+                            ></line>
+                            <line
+                                x1={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
+                                y1={margin.top}
+                                x2={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
+                                y2={this.props.height - margin.bottom}
+                                stroke={gray}
+                                className={'dateThreshold'}
+                                strokeDasharray="4 2"
+                            ></line>
+                            <circle
+                                cx={this.state.xScale(this.props.dateThreshold)}
+                                cy={this.state.yScale(this.props.statThreshold)}
+                                r={4}
+                                fill={gray}
+                            ></circle>
+                        </g>
                     </g>
                     <g>
                         <Axis 

@@ -134,7 +134,7 @@ class GraphContainer extends Component {
                     width={this.state.width}
                     height={this.state.height}
                     orientation={'left'}
-                    scale={this.state.yScale}
+                    scale={this.state.scales.yScale}
                     x={margin.left}
                     y={0}
                   />
