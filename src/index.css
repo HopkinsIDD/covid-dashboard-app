@@ -50,7 +50,9 @@ ul {
 .dropdown-item.active, .dropdown-item:active {
   color: #fff;
   text-decoration: none;
-  background-color: lightslategray;
+  font-weight: bold;
+  /* background-color: lightslategray; */
+  background-color: #3885fa;
 }
 
 .search-bar {
@@ -115,7 +117,7 @@ ul {
 
 .graph {
   /* margin-top: 2%; */
-  height: 60vh;
+  height: 53vh;
 }
 
 .slider-menu {
