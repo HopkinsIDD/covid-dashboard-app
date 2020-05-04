@@ -78,7 +78,7 @@ class MainContainer extends Component {
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
         // mutates series
-        const simsOver = this.altUpdateThreshold(
+        const simsOver = this.updateThreshold(
             series,
             statThreshold,
             dates,
