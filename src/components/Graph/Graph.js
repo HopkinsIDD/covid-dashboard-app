@@ -1,14 +1,11 @@
 import React, { Component } from 'react'
+import Axis from './Axis'
 import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line } from 'd3-shape'
 import { max, extent } from 'd3-array'
-import { axisLeft, axisBottom } from 'd3-axis'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
-import { timeFormat } from 'd3-time-format'
-import { timeDay } from 'd3-time'
 import { transition } from 'd3-transition'
-import { addCommas } from '../../utils/utils.js'
 import { margin, red, green, blue, gray } from '../../utils/constants'
 
 class Graph extends Component {
@@ -28,16 +25,6 @@ class Graph extends Component {
             simPaths: [],
             hoveredSimPathId: null,
         };
-        console.log(this.props.width/80)
-        this.xAxisRef = React.createRef();
-        this.xAxis = axisBottom().scale(this.state.xScale)
-            .tickFormat(timeFormat('%b-%d'))
-            .ticks(this.props.width / 60)
-            .tickSizeOuter(0);
-
-        this.yAxisRef = React.createRef();
-        this.yAxis = axisLeft().scale(this.state.yScale)
-            .tickFormat(d => addCommas(d));
         
         this.simPathsRef = React.createRef();
         this.thresholdRef = React.createRef();
@@ -46,13 +33,6 @@ class Graph extends Component {
     componentDidMount() {
         // console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
-
-        if (this.xAxisRef.current) {
-            select(this.xAxisRef.current).call(this.xAxis)
-        }
-        if (this.yAxisRef.current) {
-            select(this.yAxisRef.current).call(this.yAxis).call(g => g.select(".domain").remove());
-        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -66,8 +46,6 @@ class Graph extends Component {
             this.updateSimPaths(series, dates, lineGenerator, true);
             this.updateStatThresholdLine(statThreshold, yScale);
             this.updateDateThresholdLine(dateThreshold, xScale);
-            this.updateXAxis();
-            this.updateYAxis();
         }
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
@@ -79,8 +57,6 @@ class Graph extends Component {
             this.updateSimPaths(series, dates, lineGenerator, false);
             this.updateStatThresholdLine(statThreshold, yScale);
             this.updateDateThresholdLine(dateThreshold, xScale);
-            this.updateXAxis();
-            this.updateYAxis();
         }
     }
 
@@ -213,30 +189,6 @@ class Graph extends Component {
         }
     }
 
-    updateXAxis = () => {
-        // Update Axes
-        if (this.xAxisRef.current) {
-            //update xAxis
-            const xAxisNode = select(this.xAxisRef.current)
-            xAxisNode
-                .transition()
-                .duration(1000)
-                .call(this.xAxis);
-        }
-    }
-
-    updateYAxis = () => {
-        if (this.yAxisRef.current) {
-            // update yAxis
-            const yAxisNode = select(this.yAxisRef.current)
-            yAxisNode
-                .transition()
-                .duration(1000)
-                .call(this.yAxis)
-                .call(g => g.select(".domain").remove());
-        }
-    }
-
     handleMouseMove = (event, index) => {
         // console.log(index)
         // console.log(clientPoint(event.target, event))
@@ -334,8 +286,22 @@ class Graph extends Component {
                 </g>
                 </g>
                 <g>
-                    <g ref={this.xAxisRef} transform={`translate(0, ${this.state.height - margin.bottom})`} />
-                    <g ref={this.yAxisRef} transform={`translate(${margin.left}, 0)`} />
+                    <Axis 
+                        width={this.state.width}
+                        height={this.state.height}
+                        orientation={'bottom'}
+                        scale={this.state.xScale}
+                        x={0}
+                        y={this.state.height - margin.bottom}
+                    />
+                    <Axis 
+                        width={this.state.width}
+                        height={this.state.height}
+                        orientation={'left'}
+                        scale={this.state.yScale}
+                        x={margin.left}
+                        y={0}
+                    />
                 </g>
                 </svg>
             </div>
