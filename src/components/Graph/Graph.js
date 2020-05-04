@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
-import Axis from './Axis'
+// import Graph from '../Graph/Graph'
+// import Axis from './Axis'
 import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line } from 'd3-shape'
 import { max, extent } from 'd3-array'
