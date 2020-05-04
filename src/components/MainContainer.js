@@ -23,6 +23,7 @@ class MainContainer extends Component {
             dataset: {},
             dataLoaded: false,
             series: {},
+            seriesList: [{}],
             allTimeSeries: {},
             dates: [],
             allTimeDates: [],
@@ -38,6 +39,11 @@ class MainContainer extends Component {
                 'key': 'USA_Uncontrolled',
                 'name': 'USA_Uncontrolled'
             },
+            scenarioList: [{
+                'id': 1,
+                'key': 'USA_Uncontrolled',
+                'name': 'USA_Uncontrolled'
+            }],
             severity: {
                 'id': 1,
                 'key': 'high',
@@ -101,6 +107,7 @@ class MainContainer extends Component {
             dates: newDates,
             allTimeDates,
             series: filteredSeries,
+            seriesList: [filteredSeries],
             allTimeSeries,
             seriesMax,
             seriesMin,
@@ -154,7 +161,6 @@ class MainContainer extends Component {
                 dateThreshold
             )
 
-            // // mutates series
             // const simsOver = this.updateThreshold(
             //     newSeries,
             //     statThreshold,
@@ -169,8 +175,27 @@ class MainContainer extends Component {
                 return newS
             })
 
+            // add if series is new, remove if otherwise
+            let newSeriesList = Array.from(this.state.seriesList);
+            // todo: fix this workaround, issues hecking equality between arrays
+            const sumSeries = newSeriesList[0][0].vals.reduce((sum, a) => sum + a, 0);
+            const sumNew = filteredSeries[0].vals.reduce((sum, a) => sum + a, 0);
+            const isEqual = sumSeries === sumNew;
+
+            // console.log('active scenario', this.state.scenario)
+            // console.log('newSeriesList', newSeriesList)
+            // console.log('filteredSeries', filteredSeries)
+            // console.log('isEqual', isEqual)
+
+            if (isEqual) {
+                newSeriesList = [filteredSeries];
+            } else {
+                newSeriesList.push(filteredSeries);
+            }
+
             this.setState({
                 series: filteredSeries,
+                seriesList: newSeriesList,
                 allTimeSeries: newSeries,
                 dates: filteredDates,
                 statThreshold,
@@ -178,6 +203,9 @@ class MainContainer extends Component {
                 seriesMin,
                 seriesMax,
                 percExceedence
+            }, () => {
+                console.log('componentDidUpdate')
+                console.log('seriesList', this.state.seriesList)
             })
         }
     };
@@ -228,7 +256,26 @@ class MainContainer extends Component {
     };
 
     handleScenarioClick = (i) => {
-        this.setState({scenario: i})
+        const copy = Array.from(this.state.scenarioList);
+        const scenarioKeys = Object.values(copy).map(scenario => scenario.key);
+
+        // add if new scenario is selected otherwise remove
+        let newScenario = i;
+        if (!scenarioKeys.includes(i.key)) {
+            copy.push(i);
+        } else {
+            copy.splice(copy.indexOf(i.key), 1);
+            // reset current scenario
+            newScenario = copy[0];
+        }
+
+        this.setState({
+            scenario: newScenario,
+            scenarioList: copy,
+        }, () => {
+            console.log('handleScenario scenario', newScenario)
+            console.log('handleScenario scenarioList', copy)
+        })        
     };
 
     handleSeverityClick = (i) => {
@@ -350,12 +397,14 @@ class MainContainer extends Component {
                                         geoid={this.state.geoid}
                                         yAxisLabel={this.state.yAxisLabel}
                                         scenario={this.state.scenario}
+                                        scenarioList={this.state.scenarioList}
                                         severity={this.state.severity}
                                         r0={this.state.r0}
                                         simNum={this.state.simNum}
                                         showConfBounds={this.state.showConfBounds}
                                         showActual={this.state.showActual}
                                         series={this.state.series}
+                                        seriesList={this.state.seriesList}
                                         dates={this.state.dates}
                                         statThreshold={this.state.statThreshold}
                                         dateThreshold={this.state.dateThreshold}
@@ -389,6 +438,7 @@ class MainContainer extends Component {
                             
                             <Scenarios 
                                 scenario={this.state.scenario}
+                                scenarioList={this.state.scenarioList}
                                 onScenarioClick={this.handleScenarioClick}
                             />
                             <p></p>
