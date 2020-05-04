@@ -20,8 +20,8 @@ class Graph extends Component {
             statThreshold: this.props.statThreshold,
             dateThreshold: this.props.dateThreshold,
             dateRange: this.props.dateRange,
-            xScale: scaleUtc().range([margin.left, this.props.width - margin.right]),
-            yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top]),
+            xScale: this.props.xScale,
+            yScale: this.props.yScale,
             lineGenerator: line().defined(d => !isNaN(d)),
             simPaths: [],
             hoveredSimPathId: null,
@@ -207,105 +207,94 @@ class Graph extends Component {
     render() {
 
         return (
-            <div className="graph-wrapper">
-                <div className="y-axis-label titleNarrow">
-                    {this.props.yAxisLabel}
-                </div>
-                <svg 
+            // <div className="graph-area">
+                <g 
                     width={this.state.width} 
                     height={this.state.height} 
                     ref={this.simPathsRef}
                 >
-                <g>
-                    <rect 
-                        x={margin.left}
-                        y={margin.top}
-                        width={this.state.width - margin.left - margin.right}
-                        height={this.state.height - margin.bottom - margin.top}
-                        fill={'#f6f5f5'}
-                    />
-                {
-                // visible simPaths
-                this.state.simPaths.map( (simPath, i) => {
-                    return <path
-                        d={simPath}
-                        key={`simPath-${i}`}
-                        id={`simPath-${i}`}
-                        className={`simPath`}
-                        fill='none' 
-                        stroke = { this.state.series[i].over ? red : green}
-                        strokeWidth={'1'}
-                        strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
-                        onMouseMove={(e) => this.handleMouseMove(e, i)}
-                        onMouseEnter={(e) => this.handleMouseEnter(e, i)}
-                        onMouseLeave={(e) => this.handleMouseLeave(e, i)}
-                    />
-                })}
-                {// highlight simPaths
-                this.state.hoveredSimPathId &&
-                this.state.simPaths.map( (simPath, i) => {
-                    const simIsHovered = (i === this.state.hoveredSimPathId)
-                    return <path
-                        d={simPath}
-                        key={`simPath-${i}-hover`}
-                        id={`simPath-${i}-hover`}
-                        className={`simPath-hover`}
-                        fill='none' 
-                        stroke={simIsHovered ? blue : gray}
-                        strokeWidth={simIsHovered ? '2' : '1'}
-                        strokeOpacity={simIsHovered && this.state.hoveredSimPathId ? 1 : 0.5}
-                        onMouseMove={(e) => this.handleMouseMove(e, i)}
-                        onMouseEnter={(e) => this.handleMouseEnter(e, i)}
-                        onMouseLeave={(e) => this.handleMouseLeave(e, i)}
-                    />
-                })}
-                <g ref={this.thresholdRef}>
-                    <line
-                        x1={margin.left}
-                        y1={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
-                        x2={this.props.width - margin.right}
-                        y2={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
-                        stroke={gray}
-                        className={'statThreshold'}
-                        strokeDasharray="4 2"
-                    ></line>
-                    <line
-                        x1={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
-                        y1={margin.top}
-                        x2={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
-                        y2={this.props.height - margin.bottom}
-                        stroke={gray}
-                        className={'dateThreshold'}
-                        strokeDasharray="4 2"
-                    ></line>
-                    <circle
-                        cx={this.state.xScale(this.props.dateThreshold)}
-                        cy={this.state.yScale(this.props.statThreshold)}
-                        r={4}
-                        fill={gray}
-                    ></circle>
+                    <g>
+                        <rect 
+                            x={margin.left}
+                            y={margin.top}
+                            width={this.state.width - margin.left - margin.right}
+                            height={this.state.height - margin.bottom - margin.top}
+                            fill={'#f6f5f5'}
+                        />
+                    {
+                    // visible simPaths
+                    this.state.simPaths.map( (simPath, i) => {
+                        return <path
+                            d={simPath}
+                            key={`simPath-${i}`}
+                            id={`simPath-${i}`}
+                            className={`simPath`}
+                            fill='none' 
+                            stroke = { this.state.series[i].over ? red : green}
+                            strokeWidth={'1'}
+                            strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
+                            onMouseMove={(e) => this.handleMouseMove(e, i)}
+                            onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                            onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                        />
+                    })}
+                    {// highlight simPaths
+                    this.state.hoveredSimPathId &&
+                    this.state.simPaths.map( (simPath, i) => {
+                        const simIsHovered = (i === this.state.hoveredSimPathId)
+                        return <path
+                            d={simPath}
+                            key={`simPath-${i}-hover`}
+                            id={`simPath-${i}-hover`}
+                            className={`simPath-hover`}
+                            fill='none' 
+                            stroke={simIsHovered ? blue : gray}
+                            strokeWidth={simIsHovered ? '2' : '1'}
+                            strokeOpacity={simIsHovered && this.state.hoveredSimPathId ? 1 : 0.5}
+                            onMouseMove={(e) => this.handleMouseMove(e, i)}
+                            onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                            onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                        />
+                    })}
+                    <g ref={this.thresholdRef}>
+                        <line
+                            x1={margin.left}
+                            y1={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
+                            x2={this.props.width - margin.right}
+                            y2={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
+                            stroke={gray}
+                            className={'statThreshold'}
+                            strokeDasharray="4 2"
+                        ></line>
+                        <line
+                            x1={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
+                            y1={margin.top}
+                            x2={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
+                            y2={this.props.height - margin.bottom}
+                            stroke={gray}
+                            className={'dateThreshold'}
+                            strokeDasharray="4 2"
+                        ></line>
+                        <circle
+                            cx={this.state.xScale(this.props.dateThreshold)}
+                            cy={this.state.yScale(this.props.statThreshold)}
+                            r={4}
+                            fill={gray}
+                        ></circle>
+                    </g>
+                    </g>
+                    <g>
+                        <Axis 
+                            width={this.state.width}
+                            height={this.state.height}
+                            orientation={'bottom'}
+                            scale={this.state.xScale}
+                            x={0}
+                            y={this.state.height - margin.bottom}
+                        />
+                    </g>
                 </g>
-                </g>
-                <g>
-                    <Axis 
-                        width={this.state.width}
-                        height={this.state.height}
-                        orientation={'bottom'}
-                        scale={this.state.xScale}
-                        x={0}
-                        y={this.state.height - margin.bottom}
-                    />
-                    <Axis 
-                        width={this.state.width}
-                        height={this.state.height}
-                        orientation={'left'}
-                        scale={this.state.yScale}
-                        x={margin.left}
-                        y={0}
-                    />
-                </g>
-                </svg>
-            </div>
+            // </div>
         )
     }
 }

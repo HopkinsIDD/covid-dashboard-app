@@ -112,26 +112,35 @@ class GraphContainer extends Component {
       const { children } = this.state;
       return (            
           <div className="graph-wrapper">
-              <div className="y-axis-label">
+              <div className="y-axis-label titleNarrow">
                   {this.props.yAxisLabel}
               </div>
-              <svg>
-                width={this.props.width}
-                height={this.props.height}
-              </svg>
               <div className="row">
                   {children.map(child => {
                       return (
-                          <div key={child.key}>
+                          <div key={`${child.key}-label`}>
                               <ThresholdLabel
                                   statThreshold={this.props.statThreshold}
                                   dateThreshold={this.props.dateThreshold}
                                   percExceedence={this.props.percExceedence}
                               />
-                              {child.graph}
                           </div>
                       )
                   })}
+              </div>
+              <div className="row">
+                <svg >
+                  <Axis 
+                    width={this.state.width}
+                    height={this.state.height}
+                    orientation={'left'}
+                    scale={this.state.yScale}
+                    x={margin.left}
+                    y={0}
+                  />
+                {children.map(child => {child.graph})}
+                </svg>
+              
               </div>
           </div>
       )
