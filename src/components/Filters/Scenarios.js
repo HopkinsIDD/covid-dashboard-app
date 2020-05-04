@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { SCENARIOS } from '../../utils/constants.js';
-import { parseJsonSourceFileConfigFileContent } from 'typescript';
 
 // TODO: Warning: A component is changing an uncontrolled input of type checkbox 
 // to be controlled. Input elements should not switch from uncontrolled to controlled
@@ -70,8 +69,9 @@ class Scenarios extends Component {
     }
 
     handleClick = (event) => {
-        if (this.props.scenarioList.length === 1 && event.key === this.props.scenario.key) {
-            const x = 'do nothing';
+        const { scenario, scenarioList } = this.props;
+        if (scenarioList.length === 1 && event.key === scenario.key) {
+            return;
         } else {
             console.log('handleClick', event)
             this.props.onScenarioClick(event);
