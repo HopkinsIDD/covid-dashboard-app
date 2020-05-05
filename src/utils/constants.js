@@ -29,17 +29,9 @@ export const LEVELS = [
 ];
 
 export const COUNTIES = [
-    {'geoid': '06067', 'name': 'Sacramento County', 'usps': 'CA'},
-    {'geoid': '06081', 'name': 'San Mateo County', 'usps': 'CA'},
     {'geoid': '06085', 'name': 'Santa Clara County', 'usps': 'CA'},
-    {'geoid': '06071', 'name': 'San Bernardino County', 'usps': 'CA'},
     {'geoid': '06073', 'name': 'San Diego County', 'usps': 'CA'},
     {'geoid': '10001', 'name': 'Lee County', 'usps': 'AL'},
-    {'geoid': '10201', 'name': 'Tuskaloosa County', 'usps': 'AL'},    
-    {'geoid': '10301', 'name': 'DeKalb County', 'usps': 'AL'},
-    {'geoid': '10401', 'name': 'Jefferson County', 'usps': 'AL'},
-    {'geoid': '10501', 'name': 'Clay County', 'usps': 'AL'},
-    {'geoid': '10601', 'name': 'Coffee County', 'usps': 'AL'},
 ];
 
 export const COLORS = {
