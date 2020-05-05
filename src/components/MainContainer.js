@@ -24,6 +24,7 @@ class MainContainer extends Component {
             dataset: {},
             dataLoaded: false,
             series: {},
+            seriesList: [{}],
             allTimeSeries: {},
             dates: [],
             allTimeDates: [],
@@ -39,6 +40,11 @@ class MainContainer extends Component {
                 'key': 'USA_Uncontrolled',
                 'name': 'USA_Uncontrolled'
             },
+            scenarioList: [{
+                'id': 1,
+                'key': 'USA_Uncontrolled',
+                'name': 'USA_Uncontrolled'
+            }],
             severity: {
                 'id': 1,
                 'key': 'high',
@@ -73,7 +79,7 @@ class MainContainer extends Component {
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
         // mutates series
-        const simsOver = this.altUpdateThreshold(
+        const simsOver = this.updateThreshold(
             series,
             statThreshold,
             dates,
@@ -102,6 +108,7 @@ class MainContainer extends Component {
             dates: newDates,
             allTimeDates,
             series: filteredSeries,
+            seriesList: [filteredSeries],
             allTimeSeries,
             seriesMax,
             seriesMin,
@@ -133,7 +140,6 @@ class MainContainer extends Component {
             const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
             const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
 
-            // console.log(idxMin, idxMax)
             const filteredDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
             const filteredSeriesForStatThreshold = newSeries.map( s => {
                 const newS = {...s}
@@ -141,27 +147,19 @@ class MainContainer extends Component {
                 return newS
             });
             const [seriesMin, seriesMax] = getRange(filteredSeriesForStatThreshold);
-            // const [seriesMin, seriesMax] = getRange(newSeries);
 
              // update dateThreshold before updating statThreshold?
             const statThreshold = Math.ceil(seriesMax / 1.2);
             const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
             const dateThreshold = filteredDates[dateThresholdIdx]
 
-            const simsOver = this.altUpdateThreshold(
+            const simsOver = this.updateThreshold(
                 newSeries,
                 statThreshold,
                 this.state.allTimeDates,
                 dateThreshold
             )
 
-            // // mutates series
-            // const simsOver = this.updateThreshold(
-            //     newSeries,
-            //     statThreshold,
-            //     this.state.allTimeDates,
-            //     dateThreshold
-            //     )
             const percExceedence = simsOver / newSeries.length;
 
             const filteredSeries = newSeries.map( s => {
@@ -170,8 +168,27 @@ class MainContainer extends Component {
                 return newS
             })
 
+            // add if series is new, remove if otherwise
+            let newSeriesList = Array.from(this.state.seriesList);
+            // todo: fix this workaround, issues setting equality between arrays
+            const sumSeries = newSeriesList[0][0].vals.reduce((sum, a) => sum + a, 0);
+            const sumNew = filteredSeries[0].vals.reduce((sum, a) => sum + a, 0);
+            const isEqual = sumSeries === sumNew;
+
+            // console.log('active scenario', this.state.scenario)
+            // console.log('newSeriesList', newSeriesList)
+            // console.log('filteredSeries', filteredSeries)
+            // console.log('isEqual', isEqual)
+
+            if (isEqual) {
+                newSeriesList = [filteredSeries];
+            } else {
+                newSeriesList.push(filteredSeries);
+            }
+
             this.setState({
                 series: filteredSeries,
+                seriesList: newSeriesList,
                 allTimeSeries: newSeries,
                 dates: filteredDates,
                 statThreshold,
@@ -179,11 +196,14 @@ class MainContainer extends Component {
                 seriesMin,
                 seriesMax,
                 percExceedence
+            }, () => {
+                console.log('componentDidUpdate')
+                console.log('seriesList', this.state.seriesList)
             })
         }
     };
 
-    altUpdateThreshold(series, statThreshold, dates, dateThreshold) {
+    updateThreshold(series, statThreshold, dates, dateThreshold) {
         // update 'over' flag to true if sim peak surpasses statThreshold
         // returns numSims 'over' threshold
         // first find index of dates at dateThreshold
@@ -205,31 +225,32 @@ class MainContainer extends Component {
         return simsOver;
     }
 
-    updateThreshold(series, statThreshold, dates, dateThreshold) {
-        // update 'over' flag to true if sim peak surpasses statThreshold
-        // returns numSims 'over' threshold
-        let simsOver = 0;
-        Object.values(series).map(sim => {
-          const simPeak = Math.max.apply(null, sim.vals);
-          const simPeakDate = dates[sim.vals.indexOf(simPeak)];
-
-          if (simPeak > statThreshold && simPeakDate < dateThreshold) {
-              simsOver = simsOver + 1;
-              return sim.over = true;
-          } else {
-              return sim.over = false;
-          };
-        })
-        return simsOver;
-    };
-
     handleButtonClick = (i) => {
         const yAxisLabel = `Number of Daily ${i.name}`;
         this.setState({stat: i, yAxisLabel})
     };
 
     handleScenarioClick = (i) => {
-        this.setState({scenario: i})
+        const copy = Array.from(this.state.scenarioList);
+        const scenarioKeys = Object.values(copy).map(scenario => scenario.key);
+
+        // add if new scenario is selected otherwise remove
+        let newScenario = i;
+        if (!scenarioKeys.includes(i.key)) {
+            copy.push(i);
+        } else {
+            copy.splice(copy.indexOf(i.key), 1);
+            // reset current scenario
+            newScenario = copy[0];
+        }
+
+        this.setState({
+            scenario: newScenario,
+            scenarioList: copy,
+        }, () => {
+            console.log('handleScenario scenario', newScenario)
+            console.log('handleScenario scenarioList', copy)
+        })        
     };
 
     handleSeverityClick = (i) => {
@@ -241,10 +262,10 @@ class MainContainer extends Component {
         // const rounded = Math.ceil(i / 100) * 100;
         const copy = Array.from(this.state.series);
         // const simsOver = this.updateThreshold(copy, i, dates, dateThreshold);
-        const simsOver = this.altUpdateThreshold(copy, i, dates, dateThreshold);
+        const simsOver = this.updateThreshold(copy, i, dates, dateThreshold);
         const allSeriesCopy = Array.from(this.state.allTimeSeries)
         // this.updateThreshold(allSeriesCopy, i, allTimeDates, dateThreshold)
-        this.altUpdateThreshold(allSeriesCopy, i, allTimeDates, dateThreshold)
+        this.updateThreshold(allSeriesCopy, i, allTimeDates, dateThreshold)
         
         const percExceedence = simsOver / copy.length;
 
@@ -260,10 +281,10 @@ class MainContainer extends Component {
         const { statThreshold, dates, allTimeDates } = this.state;
         const copy = Array.from(this.state.series);
         // const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
-        const simsOver = this.altUpdateThreshold(copy, statThreshold, dates, i);
+        const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
         const allSeriesCopy = Array.from(this.state.allTimeSeries)
         // this.updateThreshold(allSeriesCopy, statThreshold, allTimeDates, i);
-        this.altUpdateThreshold(allSeriesCopy, statThreshold, allTimeDates, i);
+        this.updateThreshold(allSeriesCopy, statThreshold, allTimeDates, i);
         const percExceedence = simsOver / copy.length;
 
         this.setState({
@@ -388,6 +409,7 @@ class MainContainer extends Component {
                             
                             <Scenarios 
                                 scenario={this.state.scenario}
+                                scenarioList={this.state.scenarioList}
                                 onScenarioClick={this.handleScenarioClick}
                             />
                             <p></p>
