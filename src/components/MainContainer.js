@@ -251,9 +251,6 @@ class MainContainer extends Component {
         this.setState({
             scenario: newScenario,
             scenarioList: copy,
-        }, () => {
-            console.log('handleScenario scenario', newScenario)
-            console.log('handleScenario scenarioList', copy)
         })        
     };
 

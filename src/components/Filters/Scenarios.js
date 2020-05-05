@@ -1,20 +1,17 @@
 import React, { Component } from 'react';
 import { SCENARIOS } from '../../utils/constants.js';
 
-// TODO: Warning: A component is changing an uncontrolled input of type checkbox 
-// to be controlled. Input elements should not switch from uncontrolled to controlled
-// Component should be fully controlled.
 class Scenarios extends Component {
     constructor(props) {
         super(props);
         this.state = {
             currScenario: {},
-            scenariosObj: SCENARIOS
+            scenariosObj: SCENARIOS,
+            value: this.props.scenario.name,
         }
     }
 
     componentDidMount() {
-        console.log('scenarios componentDidMount')
         const obj = Array.from(this.state.scenariosObj)
 
         // update checked attribute for active scenario
@@ -25,8 +22,6 @@ class Scenarios extends Component {
                 return scenario.checked = false;
             }
         })
-        // add disable=false attribute
-        obj.map(scenario => {return scenario.disabled = false})
 
         this.setState({
             scenariosObj: obj,
@@ -84,11 +79,13 @@ class Scenarios extends Component {
                 return (
                     <div
                         className="form-check"
+                        value={scenario.key}
                         key={scenario.key}>
                         <input
                             className={"form-check-input"}
                             type="checkbox"
                             id="scenario"
+                            value={scenario.key}
                             onChange={() => this.handleClick(scenario)}
                             disabled={scenario.disabled}
                             checked={scenario.checked}

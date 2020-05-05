@@ -9,9 +9,9 @@ export const blue = '#1f90db';
 export const gray = '#9b9b9b';
 
 export const SCENARIOS = [
-    {'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled'},
-    {'id': 2, 'key': 'USA_Lockdown1918', 'name': 'USA_Lockdown1918'},
-    {'id': 3, 'key': 'USA_LockdownUK', 'name': 'USA_LockdownUK'},
+    {'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled', 'checked': false, 'disabled': false},
+    {'id': 2, 'key': 'USA_Lockdown1918', 'name': 'USA_Lockdown1918', 'checked': false, 'disabled': false},
+    {'id': 3, 'key': 'USA_LockdownUK', 'name': 'USA_LockdownUK', 'checked': false, 'disabled': false},
 ];
 
 export const STATS = [
