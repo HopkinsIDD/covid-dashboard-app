@@ -31,14 +31,15 @@ class Graph extends Component {
     }
     
     componentDidMount() {
-        // console.log(this.state.series)
+        console.log('ComponentDidMount')
+        console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
     }
 
     componentDidUpdate(prevProps, prevState) {
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
-            // console.log('in only series diff update')
+            console.log('in only series diff update')
             const { series, dates, statThreshold, dateThreshold } = this.props;
             const { xScale, yScale, lineGenerator } = prevState;
             //TODO: update based on resizing width and height

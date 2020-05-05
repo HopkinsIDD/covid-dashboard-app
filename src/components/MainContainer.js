@@ -332,7 +332,6 @@ class MainContainer extends Component {
 
     render() {
         const scenarioTitle = this.state.scenario.name.replace('_', ' ');
-        console.log(this.state)
         return (
             <div className="main-container">
                 <div className="container no-margin">

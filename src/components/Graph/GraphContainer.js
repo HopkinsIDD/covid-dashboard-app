@@ -60,11 +60,14 @@ class GraphContainer extends Component {
 
   componenDidUpdate(prevProp, prevState) {
       const { scenarioList } = this.props;
+      if (prevProp.series !== this.props.series) {
+          console.log('componentDidUpdate Series Only')
+      }
       const newChildren = [];
       // technically both scenarioList and seriesList need to update
       // but seriesList is updated later so using it to enter componentDidUpdate
       if (prevProp.seriesList !== this.props.seriesList) {
-          console.log('componentDidUpdate')
+          console.log('componentDidUpdate Series List')
           const adjWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
 
           for (let i = 0; i < scenarioList.length; i++) {
@@ -117,8 +120,6 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
-      console.log(this.state)
-      console.log(this.props)
       return (
                
           <div className="graph-wrapper">
