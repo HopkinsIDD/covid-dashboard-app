@@ -12,10 +12,11 @@ class GraphContainer extends Component {
       super(props);
       this.state = {
           children: [],
+          // we need to define scales here in order to send to the yAxis
           scales: {
               xScale: scaleUtc().range([margin.left, this.props.width - margin.right]),
               yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top])
-          },
+          }
       }
   }
 
@@ -58,7 +59,7 @@ class GraphContainer extends Component {
       })
   }
 
-  componenDidUpdate(prevProp, prevState) {
+  componentDidUpdate(prevProp, prevState) {
       console.log(this.props)
 
       const { scenarioList } = this.props;
