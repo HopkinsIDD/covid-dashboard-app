@@ -22,55 +22,55 @@ class GraphContainer extends Component {
 
   componentDidMount() {
       console.log('ComponentDidMount')
-      const { width, height, series, dates, scenario } = this.props;
-      const scales = this.getScales(series, dates, width, height);
+      const { width, height, seriesList, dates, scenario } = this.props;
+      if (seriesList.length > 0) {
 
-      const child = {
-          'key': scenario.key,
-          'graph': [],
+        const scales = this.getScales(seriesList, dates, width, height);
+        const child = {
+            'key': scenario.key,
+            'graph': [],
+        }
+        
+        child.graph.push(
+            <Graph
+                key={this.props.scenario}
+                stat={this.props.stat}
+                geoid={this.props.geoid}
+                scenario={this.props.scenario}
+                severity={this.props.severity}
+                r0={this.props.r0}
+                simNum={this.props.simNum}
+                showConfBounds={this.props.showConfBounds}
+                showActual={this.props.showActual}
+                series={this.props.seriesList[0]}
+                dates={this.props.dates}
+                statThreshold={this.props.statThreshold}
+                dateThreshold={this.props.dateThreshold}
+                dateRange={this.props.dateRange}
+                width={this.props.width}
+                height={this.props.height}
+                x={0}
+                y={0}
+                xScale={scales.xScale}
+                yScale={scales.yScale}
+            />
+        )
+        console.log(child)
+        this.setState({
+            scales,
+            children: [child]
+        })
       }
-      
-      child.graph.push(
-          <Graph
-              key={this.props.scenario}
-              stat={this.props.stat}
-              geoid={this.props.geoid}
-              scenario={this.props.scenario}
-              severity={this.props.severity}
-              r0={this.props.r0}
-              simNum={this.props.simNum}
-              showConfBounds={this.props.showConfBounds}
-              showActual={this.props.showActual}
-              series={this.props.series}
-              dates={this.props.dates}
-              statThreshold={this.props.statThreshold}
-              dateThreshold={this.props.dateThreshold}
-              dateRange={this.props.dateRange}
-              width={this.props.width}
-              height={this.props.height}
-              x={0}
-              y={0}
-              xScale={scales.xScale}
-              yScale={scales.yScale}
-          />
-      )
-      console.log(child)
-      this.setState({
-          scales,
-          children: [child]
-      })
   }
 
   componentDidUpdate(prevProp, prevState) {
-      console.log(this.props)
 
-      const { scenarioList, series, dates, height } = this.props;
+      const { scenarioList, seriesList, dates, height } = this.props;
+      
       if (prevProp.scenarioList !== this.props.scenarioList) {
           console.log('componentDidUpdate Scenario List')
       }
-      if (prevProp.series !== this.props.series) {
-          console.log('componentDidUpdate Series Only')
-      }
+
       const newChildren = [];
       // technically both scenarioList and seriesList need to update
       // but seriesList is updated later so using it to enter componentDidUpdate
@@ -78,7 +78,8 @@ class GraphContainer extends Component {
           console.log('componentDidUpdate Series List')
           const adjWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
           // need to adjust scale by length of scenario list
-          const scales = this.getScales(series, dates, adjWidth, height);
+          // break these out into X and Y (X out of the loop, Y in?)
+          const scales = this.getScales(seriesList, dates, adjWidth, height);
 
           for (let i = 0; i < scenarioList.length; i++) {
               const child = {
@@ -112,20 +113,43 @@ class GraphContainer extends Component {
               newChildren.push(child);
           }
           this.setState({
-              children: newChildren
+            scales,
+            children: newChildren,
           })
       }
   }
 
-  getScales = (series, dates, width, height) => {
+//   getXScale = (dates, width) => {
+//       const timeDomain = extent(dates);
+//       const xScale = scaleUtc().range([margin.left, width - margin.right])
+//                                .domain(timeDomain);
+//       return xScale
+//   }
+
+//   getYScale = (seriesList, height) => {
+//       let scaleMaxVal = 0
+//       for (let i = 0; i < seriesList.length; i++) {
+//           const seriesMaxVal = max(seriesList[i], sims => max(sims.vals));
+//           if (seriesMaxVal > scaleMaxVal) scaleMaxVal = seriesMaxVal
+//       }
+//       const yScale = scaleLinear().range([height - margin.bottom, margin.top])
+//                                   .domain([0, scaleMaxVal]).nice();
+//       return yScale
+//   }
+
+  getScales = (seriesList, dates, width, height) => {
       // calculate scale domains
       const timeDomain = extent(dates);
-      const maxVal = max(series, sims => max(sims.vals));
+      let scaleMaxVal = 0
+      for (let i = 0; i < seriesList.length; i++) {
+          const seriesMaxVal = max(seriesList[i], sims => max(sims.vals));
+          if (seriesMaxVal > scaleMaxVal) scaleMaxVal = seriesMaxVal
+      }
       // set scale ranges to width and height of container
       const xScale = scaleUtc().range([margin.left, width - margin.right])
                                .domain(timeDomain);
       const yScale = scaleLinear().range([height - margin.bottom, margin.top])
-                                  .domain([0, maxVal]).nice();
+                                  .domain([0, scaleMaxVal]).nice();
 
       return { xScale, yScale }
   }

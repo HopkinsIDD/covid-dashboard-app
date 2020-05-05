@@ -58,7 +58,7 @@ class MainContainer extends Component {
             lastDate: '',
             r0: '1',
             simNum: '150',
-            percExceedence: 0,
+            percExceedenceList: [],
             showConfBounds: false,
             showActual: false,
             graphW: 0,
@@ -78,6 +78,7 @@ class MainContainer extends Component {
         const [seriesMin, seriesMax] = getRange(series);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
+        // iterate through SeriesList
         // mutates series
         const simsOver = this.updateThreshold(
             series,
@@ -87,11 +88,17 @@ class MainContainer extends Component {
             )        
         const percExceedence = simsOver / series.length;
 
+        // send these sims to brush after it's been colored
+        // include in SeriesList loop
+        // if (firstIndex of SeriesList)
         const allTimeSeries = Array.from(series)
+        // shouldn't happen twice
         const allTimeDates = Array.from(dates)
 
+        // take out of loop so not redundant
         const idxMin = timeDay.count(firstDate, this.state.dateRange[0]);
         const idxMax = timeDay.count(firstDate, this.state.dateRange[1]);
+       // include in loop
         const newDates = Array.from(allTimeDates.slice(idxMin, idxMax));
         const filteredSeries = series.map( s => {
             const newS = {...s}
@@ -99,15 +106,18 @@ class MainContainer extends Component {
             return newS
         })
         
+        // out of loop
         const yAxisLabel = `Number of ${stat.name} per Day`;
         const graphW = this.graphEl.clientWidth;
         const graphH = this.graphEl.clientHeight;
+
+        const percExceedenceList = [percExceedence]
 
         this.setState({
             dataset,
             dates: newDates,
             allTimeDates,
-            series: filteredSeries,
+            // series: filteredSeries,
             seriesList: [filteredSeries],
             allTimeSeries,
             seriesMax,
@@ -116,7 +126,7 @@ class MainContainer extends Component {
             yAxisLabel,
             firstDate,
             lastDate,
-            percExceedence,
+            percExceedenceList,
             graphW,
             graphH
         }, () => {
@@ -128,74 +138,70 @@ class MainContainer extends Component {
 
     componentDidUpdate(prevProp, prevState) {
         if (this.state.stat !== prevState.stat ||
-            this.state.scenario !== prevState.scenario ||
+            this.state.scenarioList !== prevState.scenarioList ||
             this.state.severity !== prevState.severity ||
             this.state.dateRange !== prevState.dateRange) {
 
-            const { dataset, stat, scenario, severity } = this.state;
-            const newSeries = Array.from(
-                dataset[scenario.key][severity.key].series[stat.key]
-                );
+            const filteredSeriesList = []
+            const percExceedenceList = []
+            let brushSeries
+            
+            const { dataset, stat, scenarioList, severity } = this.state;
             // filter series and dates by dateRange
             const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
             const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
-
             const filteredDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
-            const filteredSeriesForStatThreshold = newSeries.map( s => {
-                const newS = {...s}
-                newS.vals = s.vals.slice(idxMin, idxMax)
-                return newS
-            });
-            const [seriesMin, seriesMax] = getRange(filteredSeriesForStatThreshold);
-
-             // update dateThreshold before updating statThreshold?
-            const statThreshold = Math.ceil(seriesMax / 1.2);
             const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
             const dateThreshold = filteredDates[dateThresholdIdx]
+            let statThreshold = 0
+            let sliderMin = 100000000000
+            let sliderMax = 0
 
-            const simsOver = this.updateThreshold(
-                newSeries,
-                statThreshold,
-                this.state.allTimeDates,
-                dateThreshold
-            )
+            for (let i = 0; i < scenarioList.length; i++) {
+                const newSeries = Array.from(
+                    dataset[scenarioList[i].key][severity.key].series[stat.key]
+                    );
+                const filteredSeriesForStatThreshold = newSeries.map( s => {
+                    const newS = {...s}
+                    newS.vals = s.vals.slice(idxMin, idxMax)
+                    return newS
+                });
+                const [seriesMin, seriesMax] = getRange(filteredSeriesForStatThreshold);
+                if (seriesMin < sliderMin) sliderMin = seriesMin
+                if (seriesMax > sliderMax) sliderMax = seriesMax
+                // update dateThreshold before updating statThreshold?
+                if (i === 0) statThreshold = Math.ceil(seriesMax / 1.2);
 
-            const percExceedence = simsOver / newSeries.length;
+                const simsOver = this.updateThreshold(
+                    newSeries,
+                    statThreshold,
+                    this.state.allTimeDates,
+                    dateThreshold
+                )
+                if (i === 0) brushSeries = newSeries
 
-            const filteredSeries = newSeries.map( s => {
-                const newS = {...s}
-                newS.vals = s.vals.slice(idxMin, idxMax)
-                return newS
-            })
+                const percExceedence = simsOver / newSeries.length;
+                percExceedenceList.push(percExceedence)
 
-            // add if series is new, remove if otherwise
-            let newSeriesList = Array.from(this.state.seriesList);
-            // todo: fix this workaround, issues setting equality between arrays
-            const sumSeries = newSeriesList[0][0].vals.reduce((sum, a) => sum + a, 0);
-            const sumNew = filteredSeries[0].vals.reduce((sum, a) => sum + a, 0);
-            const isEqual = sumSeries === sumNew;
+                const filteredSeries = newSeries.map( s => {
+                    const newS = {...s}
+                    newS.vals = s.vals.slice(idxMin, idxMax)
+                    return newS
+                })
+                filteredSeriesList.push(filteredSeries)
 
-            console.log('active scenario', this.state.scenario)
-            console.log('newSeriesList', newSeriesList)
-            console.log('filteredSeries', filteredSeries)
-            console.log('isEqual', isEqual)
-
-            if (isEqual) {
-                newSeriesList = [filteredSeries];
-            } else {
-                newSeriesList.push(filteredSeries);
             }
 
             this.setState({
-                series: filteredSeries,
-                seriesList: newSeriesList,
-                allTimeSeries: newSeries,
+                // series: filteredSeries,
+                seriesList: filteredSeriesList,
+                allTimeSeries: brushSeries,
                 dates: filteredDates,
                 statThreshold,
                 dateThreshold,
-                seriesMin,
-                seriesMax,
-                percExceedence
+                seriesMin : sliderMin,
+                seriesMax : sliderMax,
+                percExceedenceList
             }, () => {
                 console.log('componentDidUpdate')
                 console.log('seriesList', this.state.seriesList)
@@ -257,41 +263,46 @@ class MainContainer extends Component {
         this.setState({severity: i});
     };
 
-    handleStatSliderChange = (i) => {
+    handleStatSliderChange = (thresh) => {
         const { dates, dateThreshold, allTimeDates } = this.state;
         // const rounded = Math.ceil(i / 100) * 100;
-        const copy = Array.from(this.state.series);
-        // const simsOver = this.updateThreshold(copy, i, dates, dateThreshold);
-        const simsOver = this.updateThreshold(copy, i, dates, dateThreshold);
-        const allSeriesCopy = Array.from(this.state.allTimeSeries)
-        // this.updateThreshold(allSeriesCopy, i, allTimeDates, dateThreshold)
-        this.updateThreshold(allSeriesCopy, i, allTimeDates, dateThreshold)
-        
-        const percExceedence = simsOver / copy.length;
+        const copyList = Array.from(this.state.seriesList);
+        const allSeriesCopy = Array.from(this.state.allTimeSeries);
+        this.updateThreshold(allSeriesCopy, thresh, allTimeDates, dateThreshold);
+        const percExceedenceList = [];
+
+        for (let i = 0; i < copyList.length; i++) {
+            const simsOver = this.updateThreshold(copyList[i], thresh, dates, dateThreshold);
+            const percExceedence = simsOver / copyList[i].length;
+            percExceedenceList.push(percExceedence);
+        }
 
         this.setState({
-            series: copy,
+            seriesList: copyList,
             allTimeSeries: allSeriesCopy,
-            statThreshold: +i,
-            percExceedence
+            statThreshold: +thresh,
+            percExceedenceList
         });
     };
 
-    handleDateSliderChange = (i) => {
+    handleDateSliderChange = (thresh) => {
         const { statThreshold, dates, allTimeDates } = this.state;
-        const copy = Array.from(this.state.series);
-        // const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
-        const simsOver = this.updateThreshold(copy, statThreshold, dates, i);
-        const allSeriesCopy = Array.from(this.state.allTimeSeries)
-        // this.updateThreshold(allSeriesCopy, statThreshold, allTimeDates, i);
-        this.updateThreshold(allSeriesCopy, statThreshold, allTimeDates, i);
-        const percExceedence = simsOver / copy.length;
+        const copyList = Array.from(this.state.seriesList);
+        const allSeriesCopy = Array.from(this.state.allTimeSeries);
+        this.updateThreshold(allSeriesCopy, statThreshold, allTimeDates, thresh);
+        const percExceedenceList = [];
 
+        for (let i = 0; i < copyList.length; i++) {
+            const simsOver = this.updateThreshold(copyList[i], statThreshold, dates, thresh);
+            const percExceedence = simsOver / copyList[i].length;
+            percExceedenceList.push(percExceedence);
+        }
+    
         this.setState({
-            series: copy,
+            seriesList: copyList,
             allTimeSeries: allSeriesCopy,
-            dateThreshold: i,
-            percExceedence
+            dateThreshold: thresh,
+            percExceedenceList
         })
     }
 
@@ -373,7 +384,7 @@ class MainContainer extends Component {
                                         simNum={this.state.simNum}
                                         showConfBounds={this.state.showConfBounds}
                                         showActual={this.state.showActual}
-                                        series={this.state.series}
+                                        // series={this.state.series}
                                         seriesList={this.state.seriesList}
                                         dates={this.state.dates}
                                         statThreshold={this.state.statThreshold}

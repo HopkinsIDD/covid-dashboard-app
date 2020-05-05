@@ -87,7 +87,11 @@ class Graph extends Component {
         // move this lineGenerator update in from calculateSimPaths
         // and use scales passed in from GraphContainer
         lineGenerator.x((d,i) => xScale(dates[i]))
-        lineGenerator.y(d => yScale(d))
+        lineGenerator.y(d => {
+            // console.log(d)
+            // console.log(yScale(d))
+            return yScale(d)
+        })
         // const updatedScales = this.calculateSimPaths(series, dates);
         // generate simPaths from lineGenerator
         const simPaths = series.map( (d,i) => {
