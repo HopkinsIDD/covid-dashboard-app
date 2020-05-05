@@ -68,16 +68,18 @@ class GraphContainer extends Component {
   componentDidUpdate(prevProp, prevState) {
 
       const { scenarioList, seriesList, dates, height } = this.props;
-      
+      const newChildren = [];
       if (prevProp.scenarioList !== this.props.scenarioList) {
           console.log('componentDidUpdate Scenario List')
+          console.log('seriesList updated is ', prevProp.seriesList !== this.props.seriesList)
       }
 
-      const newChildren = [];
+      
       // technically both scenarioList and seriesList need to update
       // but seriesList is updated later so using it to enter componentDidUpdate
-      if (prevProp.seriesList !== this.props.seriesList) {
+      else if (prevProp.seriesList !== this.props.seriesList) {
           console.log('componentDidUpdate Series List')
+          console.log('scenarioList updated is ', prevProp.scenarioList !== this.props.scenarioList)
           const adjWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
           // need to adjust scale by length of scenario list
           // break these out into X and Y (X out of the loop, Y in?)
@@ -90,7 +92,7 @@ class GraphContainer extends Component {
               }
               child.graph.push(
                   <Graph
-                      key={i}
+                      key={`graph${i+1}`}
                       stat={this.props.stat}
                       geoid={this.props.geoid}
                       scenario={this.props.scenarioList[i]}
@@ -148,17 +150,20 @@ class GraphContainer extends Component {
                   {this.props.yAxisLabel}
               </div>
               <div className="row">
-                  {children.map( (child, i) => {
-                      return (
-                          <div key={`${child.key}-label`}>
-                              <ThresholdLabel
-                                  statThreshold={this.props.statThreshold}
-                                  dateThreshold={this.props.dateThreshold}
-                                  percExceedence={this.props.percExceedenceList[i]}
-                              />
-                          </div>
-                      )
-                  })}
+                <div className="col-3"></div>
+                <div className="col-6">
+                    {children.map( (child, i) => {
+                        return (
+                            <div key={`${child.key}-label`}>
+                                <ThresholdLabel
+                                    statThreshold={this.props.statThreshold}
+                                    dateThreshold={this.props.dateThreshold}
+                                    percExceedence={this.props.percExceedenceList[i]}
+                                />
+                            </div>
+                        )
+                    })}
+                </div>
               </div>
               <div className="row">
                   {this.state.scaleDomains &&

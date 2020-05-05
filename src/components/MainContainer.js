@@ -342,6 +342,9 @@ class MainContainer extends Component {
     };
 
     render() {
+        const scenarioTitleList = this.state.scenarioList.map( scenario => {
+            return scenario.name.replace('_', ' ');
+        })
         const scenarioTitle = this.state.scenario.name.replace('_', ' ');
         return (
             <div className="main-container">

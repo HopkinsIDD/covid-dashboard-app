@@ -37,6 +37,7 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        console.log(this.props)
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             console.log('in only series diff update')
