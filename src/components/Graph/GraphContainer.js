@@ -59,7 +59,11 @@ class GraphContainer extends Component {
   }
 
   componenDidUpdate(prevProp, prevState) {
+      console.log(this.props)
       const { scenarioList } = this.props;
+      if (prevProp.scenarioList !== this.props.scenarioList) {
+          console.log('componentDidUpdate Scenario List')
+      }
       if (prevProp.series !== this.props.series) {
           console.log('componentDidUpdate Series Only')
       }
@@ -119,6 +123,7 @@ class GraphContainer extends Component {
   }
 
   render() {
+      console.log(this.props)
       const { children } = this.state;
       return (
                

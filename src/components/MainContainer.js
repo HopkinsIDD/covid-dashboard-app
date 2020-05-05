@@ -175,10 +175,10 @@ class MainContainer extends Component {
             const sumNew = filteredSeries[0].vals.reduce((sum, a) => sum + a, 0);
             const isEqual = sumSeries === sumNew;
 
-            // console.log('active scenario', this.state.scenario)
-            // console.log('newSeriesList', newSeriesList)
-            // console.log('filteredSeries', filteredSeries)
-            // console.log('isEqual', isEqual)
+            console.log('active scenario', this.state.scenario)
+            console.log('newSeriesList', newSeriesList)
+            console.log('filteredSeries', filteredSeries)
+            console.log('isEqual', isEqual)
 
             if (isEqual) {
                 newSeriesList = [filteredSeries];
@@ -203,7 +203,7 @@ class MainContainer extends Component {
         }
     };
 
-    updateThreshold(series, statThreshold, dates, dateThreshold) {
+    updateThreshold = (series, statThreshold, dates, dateThreshold) => {
         // update 'over' flag to true if sim peak surpasses statThreshold
         // returns numSims 'over' threshold
         // first find index of dates at dateThreshold
