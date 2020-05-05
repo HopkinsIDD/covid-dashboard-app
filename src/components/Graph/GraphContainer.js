@@ -121,24 +121,6 @@ class GraphContainer extends Component {
       }
   }
 
-//   getXScale = (dates, width) => {
-//       const timeDomain = extent(dates);
-//       const xScale = scaleUtc().range([margin.left, width - margin.right])
-//                                .domain(timeDomain);
-//       return xScale
-//   }
-
-//   getYScale = (seriesList, height) => {
-//       let scaleMaxVal = 0
-//       for (let i = 0; i < seriesList.length; i++) {
-//           const seriesMaxVal = max(seriesList[i], sims => max(sims.vals));
-//           if (seriesMaxVal > scaleMaxVal) scaleMaxVal = seriesMaxVal
-//       }
-//       const yScale = scaleLinear().range([height - margin.bottom, margin.top])
-//                                   .domain([0, scaleMaxVal]).nice();
-//       return yScale
-//   }
-
   getScales = (seriesList, dates, width, height) => {
       // calculate scale domains
       const timeDomain = extent(dates);
