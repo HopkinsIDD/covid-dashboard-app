@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-// import Graph from '../Graph/Graph'
-// import Axis from './Axis'
-import { scaleLinear, scaleUtc } from 'd3-scale'
+import Axis from './Axis'
+// import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line } from 'd3-shape'
-import { max, extent } from 'd3-array'
+// import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { transition } from 'd3-transition'
@@ -41,7 +40,7 @@ class Graph extends Component {
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             // console.log('in only series diff update')
             const { series, dates, statThreshold, dateThreshold } = this.props;
-            const { xScale, yScale, lineGenerator, width, height } = prevState;
+            const { xScale, yScale, lineGenerator } = prevState;
             //TODO: update based on resizing width and height
 
             this.updateSimPaths(series, dates, lineGenerator, true);
@@ -52,7 +51,7 @@ class Graph extends Component {
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
             // console.log('in only series diff update')
             const { series, dates, statThreshold, dateThreshold } = this.props;
-            const { xScale, yScale, lineGenerator, width, height } = prevState;
+            const { xScale, yScale, lineGenerator } = prevState;
             //TODO: update based on resizing width and height
 
             this.updateSimPaths(series, dates, lineGenerator, false);
@@ -125,7 +124,7 @@ class Graph extends Component {
             if (brushed) {
                 simPathsNode.selectAll('.simPath')
                     .data(series)
-                    .attr("d", d => updatedScales.lineGenerator(d.vals))
+                    .attr("d", d => lineGenerator(d.vals))
                     .attr("stroke", (d,i) => series[i].over ? red : green )
                     .on("end", () => {
                         // set new vals to state
@@ -144,7 +143,7 @@ class Graph extends Component {
                     .transition()
                     .duration(1000)
                     .ease(easeCubicOut)
-                    .attr("d", d => updatedScales.lineGenerator(d.vals))
+                    .attr("d", d => lineGenerator(d.vals))
                     .attr("stroke", (d,i) => series[i].over ? red : green )
                     .on("end", () => {
                         // set new vals to state

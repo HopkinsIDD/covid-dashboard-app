@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Graph from '../Graph/Graph';
 import Axis from './Axis';
+import ThresholdLabel from '../Graph/ThresholdLabel';
 import { scaleLinear, scaleUtc } from 'd3-scale';
 import { max, extent } from 'd3-array';
 import { margin } from '../../utils/constants';
@@ -10,8 +11,8 @@ class GraphContainer extends Component {
   constructor(props) {
       super(props);
       this.state = {
-          children = [],
-          scales = [],
+          children: [],
+          scales: {},
       }
   }
 
@@ -110,6 +111,7 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
+      console.log(this.state)
       return (            
           <div className="graph-wrapper">
               <div className="y-axis-label titleNarrow">
@@ -131,14 +133,21 @@ class GraphContainer extends Component {
               <div className="row">
                 <svg >
                   <Axis 
-                    width={this.state.width}
-                    height={this.state.height}
+                    width={this.props.width}
+                    height={this.props.height}
                     orientation={'left'}
                     scale={this.state.scales.yScale}
                     x={margin.left}
                     y={0}
                   />
-                {children.map(child => {child.graph})}
+                    {children.map(child => {
+                        return (
+                            <g key={`${child.key}-graph`}>
+                                {child.graph}
+                            </g>
+                        )
+                        
+                    })}
                 </svg>
               
               </div>

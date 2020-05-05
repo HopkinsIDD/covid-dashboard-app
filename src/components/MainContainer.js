@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import Graph from './Graph/Graph';
+// import Graph from './Graph/Graph';
+import GraphContainer from './Graph/GraphContainer';
 import Brush from './Filters/Brush';
-import ThresholdLabel from './Graph/ThresholdLabel';
+// import ThresholdLabel from './Graph/ThresholdLabel';
 import Legend from './Graph/Legend';
 import Buttons from './Filters/Buttons';
 import Scenarios from './Filters/Scenarios';
@@ -338,27 +339,25 @@ class MainContainer extends Component {
                                 className="graph"
                                 ref={ (graphEl) => { this.graphEl = graphEl } }
                                 >
-                                <ThresholdLabel
-                                    statThreshold={this.state.statThreshold}
-                                    dateThreshold={this.state.dateThreshold}
-                                    percExceedence={this.state.percExceedence}
-                                />
                                 {this.state.dataLoaded &&
                                 <div>
-                                    <Graph 
+                                    <GraphContainer 
                                         stat={this.state.stat}
                                         geoid={this.state.geoid}
                                         yAxisLabel={this.state.yAxisLabel}
                                         scenario={this.state.scenario}
+                                        scenarioList={this.state.scenarioList}
                                         severity={this.state.severity}
                                         r0={this.state.r0}
                                         simNum={this.state.simNum}
                                         showConfBounds={this.state.showConfBounds}
                                         showActual={this.state.showActual}
                                         series={this.state.series}
+                                        seriesList={this.state.seriesList}
                                         dates={this.state.dates}
                                         statThreshold={this.state.statThreshold}
                                         dateThreshold={this.state.dateThreshold}
+                                        percExceedence={this.state.percExceedence}
                                         dateRange={this.state.dateRange}
                                         brushActive={this.state.brushActive}
                                         width={this.state.graphW}
