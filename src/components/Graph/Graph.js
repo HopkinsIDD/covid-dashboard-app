@@ -44,7 +44,7 @@ class Graph extends Component {
     }
     
     componentDidMount() {
-        // console.log(this.state.series)
+        console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
 
         if (this.xAxisRef.current) {
