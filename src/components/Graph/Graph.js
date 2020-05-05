@@ -61,25 +61,6 @@ class Graph extends Component {
         }
     }
 
-    // calculateSimPaths = (series, dates) => {
-    //     // console.log('in calculate sims')
-    //     // draw the sims first here (without transitioning)
-    //     const { xScale, yScale, lineGenerator, width, height } = this.state;
-    //     // calculate scale domains
-    //     const timeDomain = extent(dates);
-    //     const maxVal = max(series, sims => max(sims.vals))
-    //     // set scale ranges to width and height of container
-    //     xScale.range([margin.left, width - margin.right])
-    //     yScale.range([height - margin.bottom, margin.top])
-    //     // set scale domains and lineGenerator domains
-    //     xScale.domain(timeDomain);
-    //     yScale.domain([0, maxVal]).nice();
-    //     lineGenerator.x((d,i) => xScale(dates[i]))
-    //     lineGenerator.y(d => yScale(d))
-
-    //     return { xScale, yScale, lineGenerator }
-    // }
-
     drawSimPaths = (series, dates) => {
         const { lineGenerator } = this.state;
         const { xScale, yScale } = this.props;
@@ -161,8 +142,7 @@ class Graph extends Component {
                             simPaths: simPaths,
                         })
                     })
-            }
-            
+            } 
         }
     }
 
@@ -294,10 +274,11 @@ class Graph extends Component {
                     </g>
                     <g>
                         <Axis 
+                            ref={this.axisRef}
                             width={this.state.width}
                             height={this.state.height}
                             orientation={'bottom'}
-                            scale={this.state.xScale}
+                            scale={this.props.xScale}
                             x={0}
                             y={this.state.height - margin.bottom}
                         />

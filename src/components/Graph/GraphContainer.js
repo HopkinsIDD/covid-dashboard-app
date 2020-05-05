@@ -104,6 +104,7 @@ class GraphContainer extends Component {
                       statThreshold={this.props.statThreshold}
                       dateThreshold={this.props.dateThreshold}
                       dateRange={this.props.dateRange}
+                      brushActive={this.props.brushActive}
                       width={adjWidth}
                       height={this.props.height}
                       x={i * adjWidth}
