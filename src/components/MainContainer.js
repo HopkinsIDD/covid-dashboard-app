@@ -202,19 +202,24 @@ class MainContainer extends Component {
         }
     };
 
-    updateThreshold(series, statThreshold, dates, dateThreshold) {
+    updateThreshold = (series, statThreshold, dates, dateThreshold) => {
         // update 'over' flag to true if sim peak surpasses statThreshold
         // returns numSims 'over' threshold
         // first find index of dates at dateThreshold
         const dateIndex = dates.indexOf(dateThreshold);
+        console.log('statThreshold', statThreshold)
+        console.log('dateThreshold', dateThreshold)
+        console.log('dateIndex', dateIndex)
 
         let simsOver = 0;
         Object.values(series).map(sim => {
             const maxIdx = maxIndex(sim.vals)
             const dateAtMax = dates[maxIdx]
+            console.log(sim.vals[dateIndex])
             // we need to keep track of whether simval at dateThreshold is over statThreshold
             // as well as whether the max is over statThreshold and occured in the past
-            if (sim.vals[dateIndex] > statThreshold || (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
+            if (sim.vals[dateIndex] > statThreshold) {
+                //|| (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
                 simsOver = simsOver + 1;
                 return sim.over = true;
             } else {
@@ -223,6 +228,22 @@ class MainContainer extends Component {
         })
         return simsOver;
     }
+
+    // // update 'over' flag to true if sim peak surpasses statThreshold	
+    //     // returns numSims 'over' threshold	
+    //     let simsOver = 0;	
+    //     Object.values(series).map(sim => {	
+    //       const simPeak = Math.max.apply(null, sim.vals);	
+    //       const simPeakDate = dates[sim.vals.indexOf(simPeak)];	
+
+    //       if (simPeak > statThreshold && simPeakDate < dateThreshold) {	
+    //           simsOver = simsOver + 1;	
+    //           return sim.over = true;	
+    //       } else {	
+    //           return sim.over = false;	
+    //       };	
+    //     })	
+    //     return simsOver;
 
     handleButtonClick = (i) => {
         const yAxisLabel = `Number of Daily ${i.name}`;
