@@ -48,6 +48,8 @@ class GraphContainer extends Component {
               dateRange={this.props.dateRange}
               width={this.props.width}
               height={this.props.height}
+              x={0}
+              y={0}
               xScale={scales.xScale}
               yScale={scales.yScale}
           />
@@ -62,7 +64,7 @@ class GraphContainer extends Component {
   componentDidUpdate(prevProp, prevState) {
       console.log(this.props)
 
-      const { scenarioList } = this.props;
+      const { scenarioList, series, dates, height } = this.props;
       if (prevProp.scenarioList !== this.props.scenarioList) {
           console.log('componentDidUpdate Scenario List')
       }
@@ -75,6 +77,8 @@ class GraphContainer extends Component {
       if (prevProp.seriesList !== this.props.seriesList) {
           console.log('componentDidUpdate Series List')
           const adjWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
+          // need to adjust scale by length of scenario list
+          const scales = this.getScales(series, dates, adjWidth, height);
 
           for (let i = 0; i < scenarioList.length; i++) {
               const child = {
@@ -99,8 +103,10 @@ class GraphContainer extends Component {
                       dateRange={this.props.dateRange}
                       width={adjWidth}
                       height={this.props.height}
-                      xScale={this.state.scales.xScale}
-                      yScale={this.state.scales.yScale}
+                      x={i * adjWidth}
+                      y={0}
+                      xScale={scales.xScale}
+                      yScale={scales.yScale}
                   />
               )
               newChildren.push(child);
