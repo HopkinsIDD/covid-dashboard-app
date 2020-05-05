@@ -164,13 +164,13 @@ class GraphContainer extends Component {
                   {this.props.yAxisLabel}
               </div>
               <div className="row">
-                  {children.map(child => {
+                  {children.map( (child, i) => {
                       return (
                           <div key={`${child.key}-label`}>
                               <ThresholdLabel
                                   statThreshold={this.props.statThreshold}
                                   dateThreshold={this.props.dateThreshold}
-                                  percExceedence={this.props.percExceedence}
+                                  percExceedence={this.props.percExceedenceList[i]}
                               />
                           </div>
                       )

@@ -389,7 +389,7 @@ class MainContainer extends Component {
                                         dates={this.state.dates}
                                         statThreshold={this.state.statThreshold}
                                         dateThreshold={this.state.dateThreshold}
-                                        percExceedence={this.state.percExceedence}
+                                        percExceedenceList={this.state.percExceedenceList}
                                         dateRange={this.state.dateRange}
                                         brushActive={this.state.brushActive}
                                         width={this.state.graphW}
