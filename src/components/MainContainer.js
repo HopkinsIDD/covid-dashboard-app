@@ -130,7 +130,8 @@ class MainContainer extends Component {
         if (this.state.stat !== prevState.stat ||
             this.state.scenario !== prevState.scenario ||
             this.state.severity !== prevState.severity ||
-            this.state.dateRange !== prevState.dateRange) {
+            this.state.dateRange !== prevState.dateRange ||
+            this.state.dataset !== prevState.dataset) {
 
             const { dataset, stat, scenario, severity } = this.state;
             const newSeries = Array.from(
@@ -224,6 +225,9 @@ class MainContainer extends Component {
         })
         return simsOver;
     }
+    handleUpload = (i) => {
+        this.setState({dataset: i})
+    }
 
     handleButtonClick = (i) => {
         const yAxisLabel = `Number of Daily ${i.name}`;
@@ -296,7 +300,6 @@ class MainContainer extends Component {
     }
 
     handleBrushRange = (i) => {
-        // console.log(i)
         this.setState({
             dateRange: i
         });
@@ -339,6 +342,7 @@ class MainContainer extends Component {
                         <div className="col-9">
                             <Search 
                                 stat={this.state.stat}
+                                onFileUpload={this.handleUpload}
                             />
                             <Buttons
                                 stat={this.state.stat}
