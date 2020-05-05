@@ -60,6 +60,7 @@ class GraphContainer extends Component {
 
   componenDidUpdate(prevProp, prevState) {
       console.log(this.props)
+
       const { scenarioList } = this.props;
       if (prevProp.scenarioList !== this.props.scenarioList) {
           console.log('componentDidUpdate Scenario List')
@@ -123,13 +124,14 @@ class GraphContainer extends Component {
   }
 
   render() {
-      console.log(this.props)
       const { children } = this.state;
+    //   console.log(this.props.scenario.name)
       return (
                
           <div className="graph-wrapper">
               <div className="y-axis-label titleNarrow">
-                  {this.props.yAxisLabel}
+                  {/* {this.props.yAxisLabel} */}
+                  {this.props.scenario.name}
               </div>
               <div className="row">
                   {children.map(child => {
