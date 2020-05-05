@@ -17,35 +17,43 @@ class GraphContainer extends Component {
   }
 
   componentDidMount() {
-      const { width, height, series, dates, scenario } = this.props;
+      const { width, height, series, dates, scenarioList } = this.props;
       const scales = this.getScales(series, dates, width, height);
-
-      const child = {
-          'key': scenario.key,
-          'graph': [],
-      }
-      child.graph.push(
-          <Graph
-              key={this.props.scenario}
-              stat={this.props.stat}
-              geoid={this.props.geoid}
-              scenario={this.props.scenarioList}
-              severity={this.props.severity}
-              r0={this.props.r0}
-              simNum={this.props.simNum}
-              showConfBounds={this.props.showConfBounds}
-              showActual={this.props.showActual}
-              series={this.props.series}
-              dates={this.props.dates}
-              statThreshold={this.props.statThreshold}
-              dateThreshold={this.props.dateThreshold}
-              dateRange={this.props.dateRange}
-              width={this.props.width}
-              height={this.props.height}
-              xScale={scales.xScale}
-              yScale={scales.yScale}
-          />
-      )
+      console.log('componentDidMount')
+      const adjWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
+    //   const child = {
+    //       'key': scenario.key,
+    //       'graph': [],
+    //   }
+     let child = {}
+      for (let i = 0; i < scenarioList.length; i++) {
+        child = {
+            'key': scenarioList[i].key,
+            'graph': [],
+        }
+        child.graph.push(
+            <Graph
+                key={i}
+                stat={this.props.stat}
+                geoid={this.props.geoid}
+                scenario={this.props.scenarioList[i]}
+                severity={this.props.severity}
+                r0={this.props.r0}
+                simNum={this.props.simNum}
+                showConfBounds={this.props.showConfBounds}
+                showActual={this.props.showActual}
+                series={this.props.seriesList[i]}
+                dates={this.props.dates}
+                statThreshold={this.props.statThreshold}
+                dateThreshold={this.props.dateThreshold}
+                dateRange={this.props.dateRange}
+                width={adjWidth}
+                height={this.props.height}
+                xScale={this.state.scales.xScale}
+                yScale={this.state.scales.yScale}
+            />
+        )
+    }
       this.setState({
           scales,
           children: [child]
