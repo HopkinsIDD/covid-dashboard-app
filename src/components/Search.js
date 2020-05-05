@@ -1,49 +1,7 @@
 import React, { Component } from 'react';
 import { COUNTIES } from '../utils/constants.js';
-import InputGroup from 'react-bootstrap/InputGroup';
-import FormControl from 'react-bootstrap/FormControl';
-// import axios from 'axios'
-
-// TODO: currently using refs for query binding, but may change to this.state.value
-// https://reactjs.org/docs/refs-and-the-dom.html
-// need to save submitted input to state
-// Bootstrap filtered table: https://www.w3schools.com/Bootstrap/bootstrap_filters.asp
-const Suggestions = (props) => {
-    const options = props.counties.map(r => (
-        <li key={r.GEOID}>{r.NAME}, {r.USPS}</li>
-    ))
-    return <ul className="suggest-dropdown">{options}</ul>
-}
 
 class Search extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            query: "",
-            counties: [],
-            geoid: "",
-        };
-    }
-
-    getCountyNames = (props) => {
-        let filtered = [];
-        const input = props.toUpperCase()
-        for (let i = 0; i < COUNTIES.length; i++) {
-            if (COUNTIES[i].NAME.toUpperCase().indexOf(input) > -1) {
-                filtered.push(COUNTIES[i])
-            }
-        }
-        
-        this.setState({
-            counties: filtered,
-        })
-        // axios.get().then(({ data }) => {
-        //     this.setState({
-        //         county: data.data
-        //     })
-        // })
-    }
-
     handleInputChange = () => {
         this.setState({
             query: this.search.value
@@ -57,24 +15,54 @@ class Search extends Component {
 
     render() {
         return (
-            <div>
-                <InputGroup className="mb-3 search-bar">
-                    <InputGroup.Prepend>
-                        <InputGroup.Text
-                            id="inputGroup-sizing-default">
-                            Daily New Infections in
-                        </InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <FormControl
-                        aria-label="Default"
-                        placeholder="Search for your county"
-                        ref={input => this.search = input}
-                        onChange={this.handleInputChange}
-                        aria-describedby="inputGroup-sizing-default"
-                    />
-                </InputGroup>
-                <Suggestions counties={this.state.counties} />
-            </div>
+            <div className="dropdown">
+                <div className="row">
+                    <div className="col-9">
+                        <div
+                            className="btn dropdown-toggle search-bar"
+                            type="button" 
+                            id="dropdown-menu" 
+                            data-toggle="dropdown" 
+                            aria-haspopup="true" 
+                            aria-expanded="false">
+                            Search for your county
+                        </div>
+                        <div
+                            className="dropdown-menu"
+                            aria-labelledby="dropdown-menu">
+                            {COUNTIES.map(county => {
+                                return (
+                                    <button
+                                        className="dropdown-item filter-label"
+                                        type="button" 
+                                        onClick={() => this.handleClick(county)} 
+                                        key={county.geoid}>
+                                        {county.name}
+                                    </button>
+                                )
+                                })}
+                        </div>
+                    </div>
+                    <div className="col-3">
+                        <form>
+                            <div class="custom-file filter-label">
+                                <input
+                                    type="file"
+                                    class="custom-file-input"
+                                    placeholder="Upload File"
+                                    id="upload">
+                                </input>
+                                <label
+                                    class="custom-file-label"
+                                    for="upload">
+                                    Upload File
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>            
         )
     }
 }

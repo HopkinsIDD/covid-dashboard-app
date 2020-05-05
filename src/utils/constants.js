@@ -29,17 +29,17 @@ export const LEVELS = [
 ];
 
 export const COUNTIES = [
-    {'GEOID': '06067', 'NAME': 'Sacramento County', 'USPS': 'CA'},
-    {'GEOID': '06081', 'NAME': 'San Mateo County', 'USPS': 'CA'},
-    {'GEOID': '06085', 'NAME': 'Santa Clara County', 'USPS': 'CA'},
-    {'GEOID': '06071', 'NAME': 'San Bernardino County', 'USPS': 'CA'},
-    {'GEOID': '06073', 'NAME': 'San Diego County', 'USPS': 'CA'},
-    {'GEOID': '10001', 'NAME': 'Lee County', 'USPS': 'AL'},
-    {'GEOID': '10201', 'NAME': 'Tuskaloosa County', 'USPS': 'AL'},    
-    {'GEOID': '10301', 'NAME': 'DeKalb County', 'USPS': 'AL'},
-    {'GEOID': '10401', 'NAME': 'Jefferson County', 'USPS': 'AL'},
-    {'GEOID': '10501', 'NAME': 'Clay County', 'USPS': 'AL'},
-    {'GEOID': '10601', 'NAME': 'Coffee County', 'USPS': 'AL'},
+    {'geoid': '06067', 'name': 'Sacramento County', 'usps': 'CA'},
+    {'geoid': '06081', 'name': 'San Mateo County', 'usps': 'CA'},
+    {'geoid': '06085', 'name': 'Santa Clara County', 'usps': 'CA'},
+    {'geoid': '06071', 'name': 'San Bernardino County', 'usps': 'CA'},
+    {'geoid': '06073', 'name': 'San Diego County', 'usps': 'CA'},
+    {'geoid': '10001', 'name': 'Lee County', 'usps': 'AL'},
+    {'geoid': '10201', 'name': 'Tuskaloosa County', 'usps': 'AL'},    
+    {'geoid': '10301', 'name': 'DeKalb County', 'usps': 'AL'},
+    {'geoid': '10401', 'name': 'Jefferson County', 'usps': 'AL'},
+    {'geoid': '10501', 'name': 'Clay County', 'usps': 'AL'},
+    {'geoid': '10601', 'name': 'Coffee County', 'usps': 'AL'},
 ];
 
 export const COLORS = {
