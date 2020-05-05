@@ -384,7 +384,6 @@ class MainContainer extends Component {
                                         brushActive={this.state.brushActive}
                                         width={this.state.graphW}
                                         height={this.state.graphH}
-                                        dataLoaded={this.state.dataLoaded}
                                     /> 
                                     <Brush
                                         series={this.state.allTimeSeries}

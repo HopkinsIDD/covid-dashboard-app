@@ -139,15 +139,18 @@ class GraphContainer extends Component {
                   })}
               </div>
               <div className="row">
-                <svg >
-                  {/* <Axis 
+                <svg 
+                    width={this.props.width} 
+                    height={this.props.height} 
+                >
+                  <Axis 
                     width={this.props.width}
                     height={this.props.height}
                     orientation={'left'}
                     scale={this.state.scales.yScale}
                     x={margin.left}
                     y={0}
-                  /> */}
+                  />
                     {children.map(child => {
                         return (
                             <g key={`${child.key}-graph`}>

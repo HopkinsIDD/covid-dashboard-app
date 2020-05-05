@@ -212,8 +212,8 @@ class Graph extends Component {
         return (
             // <div className="graph-area">
                 <g 
-                    width={this.state.width} 
-                    height={this.state.height} 
+                    // width={this.state.width} 
+                    // height={this.state.height} 
                     ref={this.simPathsRef}
                 >
                     <g>
