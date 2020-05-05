@@ -137,8 +137,7 @@ class GraphContainer extends Component {
                
           <div className="graph-wrapper">
               <div className="y-axis-label titleNarrow">
-                  {/* {this.props.yAxisLabel} */}
-                  {this.props.scenario.name}
+                  {this.props.yAxisLabel}
               </div>
               <div className="row">
                   {children.map(child => {
