@@ -11,10 +11,12 @@ class Axis extends Component {
   }
 
   componentDidMount() {
+    console.log('componentDidMount', this.props.orientation)
     this.drawAxis();
   }
 
   componentDidUpdate() {
+    console.log('componentDidUpdate', this.props.orientation)
     this.updateAxis();
   }
 
@@ -24,6 +26,8 @@ class Axis extends Component {
         .tickFormat(d => addCommas(d));
 
       if (this.axisRef.current) {
+        console.log('do we get in this loop')
+        console.log(this.props.scale.domain())
         select(this.axisRef.current).call(this.axis)
       }
     } else {

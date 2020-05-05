@@ -13,9 +13,10 @@ class GraphContainer extends Component {
       this.state = {
           children: [],
           // we need to define scales here in order to send to the yAxis
+          scaleDomains: false,
           scales: {
-              xScale: scaleUtc().range([margin.left, this.props.width - margin.right]),
-              yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top])
+            //   xScale: scaleUtc().range([margin.left, this.props.width - margin.right]),
+            //   yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top])
           }
       }
   }
@@ -58,7 +59,8 @@ class GraphContainer extends Component {
         console.log(child)
         this.setState({
             scales,
-            children: [child]
+            children: [child],
+            scaleDomains: true
         })
       }
   }
@@ -156,7 +158,6 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
-    //   console.log(this.props.scenario.name)
       return (
                
           <div className="graph-wrapper">
@@ -177,27 +178,29 @@ class GraphContainer extends Component {
                   })}
               </div>
               <div className="row">
-                <svg 
-                    width={this.props.width} 
-                    height={this.props.height} 
-                >
-                  <Axis 
-                    width={this.props.width}
-                    height={this.props.height}
-                    orientation={'left'}
-                    scale={this.state.scales.yScale}
-                    x={margin.left}
-                    y={0}
-                  />
-                    {children.map(child => {
-                        return (
-                            <g key={`${child.key}-graph`}>
-                                {child.graph}
-                            </g>
-                        )
-                        
-                    })}
-                </svg>
+                  {this.state.scaleDomains &&
+                  <svg 
+                  width={this.props.width} 
+                  height={this.props.height} 
+                    >
+                        <Axis 
+                        width={this.props.width}
+                        height={this.props.height}
+                        orientation={'left'}
+                        scale={this.state.scales.yScale}
+                        x={margin.left}
+                        y={0}
+                        />
+                        {children.map(child => {
+                            return (
+                                <g key={`${child.key}-graph`}>
+                                    {child.graph}
+                                </g>
+                            )
+                            
+                        })}
+                    </svg>
+                  }
               </div>
           </div>
       )
