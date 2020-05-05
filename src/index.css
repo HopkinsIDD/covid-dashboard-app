@@ -95,6 +95,11 @@ ul {
   font-weight: bold;
 }
 
+.legend-wrapper {
+  margin-left: 10%;
+  padding-top: 8px;
+}
+
 .legend {
   font-size: 9px;
   text-align: end;

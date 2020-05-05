@@ -10,7 +10,7 @@ function ThresholdLabel(props) {
     const date = getReadableDate(props.dateThreshold);
 
     return (
-        <p className="filter-label threshold-label callout">
+        <p className={props.classProps}>
             <span className="bold">{chance}%</span>
             &nbsp;chance daily infections exceed&nbsp;
             <span className="bold">{val}</span>

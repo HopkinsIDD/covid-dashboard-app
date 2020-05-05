@@ -351,24 +351,67 @@ class MainContainer extends Component {
                 <div className="container no-margin">
                     <div className="row">
                         <div className="col-9">
-                            <Buttons
-                                stat={this.state.stat}
-                                onButtonClick={this.handleButtonClick}
-                                />
-                            <p></p>
-
-                            {/* temp title row + legend */}
                             <div className="row">
-                                <div className="col-3"></div>
-                                <div className="col-6">
-                                    <p className="filter-label scenario-title">
-                                        {scenarioTitle}
-                                    </p>
-                                </div>
+                                <Buttons
+                                    stat={this.state.stat}
+                                    onButtonClick={this.handleButtonClick}
+                                />
                                 <div className="col-3">
                                     <Legend />
                                 </div>
                             </div>
+                            
+                            <p></p>
+
+                            {/* temp title row + legend */}
+                            
+                                {
+                                    (scenarioTitleList.length === 1) ?
+                                    <div className="row">
+                                        <div className="col-3"></div>
+                                        <div className="col-6">
+                                            <p className="filter-label scenario-title">
+                                                {scenarioTitleList[0]}
+                                            </p>
+                                        </div>
+                                        {/* <div className="col-3">
+                                            <Legend />
+                                        </div> */}
+                                    </div>
+                                    :
+                                    <div className="row">
+                                        <div className="col-6">
+                                             <p className="filter-label scenario-title">
+                                                {scenarioTitleList[0]}
+                                            </p>
+                                        </div>
+                                        <div className="col-6">
+                                            <p className="filter-label scenario-title">
+                                                {scenarioTitleList[1]}
+                                            </p>
+                                        </div>
+                                        {/* <div className="col-3">
+                                            <Legend />
+                                        </div> */}
+                                    </div>
+                                }
+                                {/* {scenarioTitleList.map((scenarioTitle, i) => {
+                                    return ((scenarioTitleList.length) > 1 ? 
+                                        <div className="col-3"></div>
+                                        <div className="col-6">
+                                            <p className="filter-label scenario-title">
+                                                {scenarioTitle}
+                                            </p>
+                                        </div> :
+                                        <div className="col-3"></div>
+                                        <div className="col-6">
+                                            <p className="filter-label scenario-title">
+                                                {scenarioTitle}
+                                            </p>
+                                        </div>
+                                )} )} */ }
+
+                                
 
                             <div
                                 className="graph"

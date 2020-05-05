@@ -150,20 +150,32 @@ class GraphContainer extends Component {
                   {this.props.yAxisLabel}
               </div>
               <div className="row">
-                <div className="col-3"></div>
-                <div className="col-6">
                     {children.map( (child, i) => {
                         return (
-                            <div key={`${child.key}-label`}>
+                            (this.props.scenarioList && this.props.scenarioList.length === 2) ?
+                            // <div
+                                // key={`${child.key}-label`}>
                                 <ThresholdLabel
+                                    key={`${child.key}-label`}
+                                    classProps={'col-6 filter-label threshold-label callout'}
                                     statThreshold={this.props.statThreshold}
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}
                                 />
-                            </div>
+                            // </div>
+                            :
+                            // <div
+                                // key={`${child.key}-label`}>
+                                <ThresholdLabel
+                                    key={`${child.key}-label`}
+                                    classProps={'col-12 filter-label threshold-label callout'}
+                                    statThreshold={this.props.statThreshold}
+                                    dateThreshold={this.props.dateThreshold}
+                                    percExceedence={this.props.percExceedenceList[i]}
+                                />
+                            // </div>
                         )
                     })}
-                </div>
               </div>
               <div className="row">
                   {this.state.scaleDomains &&
