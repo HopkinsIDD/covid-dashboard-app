@@ -38,7 +38,7 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.props.keyVal,'ComponentDidUpdate')
+        // console.log(this.props.keyVal,'ComponentDidUpdate')
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             console.log(this.props.keyVal, 'in only series diff update + brushing')
@@ -314,7 +314,6 @@ class Graph extends Component {
                             scale={this.props.xScale}
                             x={0}
                             y={this.state.height - margin.bottom}
-                            transition={!this.props.scenarioChange}
                         />
                     </g>
                 </g>

@@ -14,7 +14,6 @@ class GraphContainer extends Component {
           children: [],
           scales: {},
           scaleDomains: false,
-          scenarioChange: false,
           graphWidth: 0
       }
   }
@@ -117,7 +116,6 @@ class GraphContainer extends Component {
                             y={0}
                             xScale={scales.xScale}
                             yScale={scales.yScale}
-                            scenarioChange={scenarioChange}
                         />
                     )
                     newChildren.push(child);
@@ -126,13 +124,11 @@ class GraphContainer extends Component {
                   scales,
                   graphWidth,
                   children: newChildren,
-                  scenarioChange
                 })
             } 
             // seriesList has updated AND scenarioList has NOT changed  
             else {
                 console.log('componentDidUpdate Series List - no scenarioList change');
-                const scenarioChange = false;
                 for (let i = 0; i < scenarioList.length; i++) {
                     const child = {
                         'key': scenarioList[i].key,
@@ -162,7 +158,6 @@ class GraphContainer extends Component {
                             y={0}
                             xScale={scales.xScale}
                             yScale={scales.yScale}
-                            scenarioChange={scenarioChange}
                         />
                     )
                     newChildren.push(child);
@@ -171,7 +166,6 @@ class GraphContainer extends Component {
                   scales,
                   graphWidth,
                   children: newChildren,
-                  scenarioChange
                 })
             }
                 
@@ -179,8 +173,6 @@ class GraphContainer extends Component {
       if (prevProp.seriesList !== this.props.seriesList && prevProp.seriesList.length === this.props.seriesList.length) {
           console.log('componentDidUpdate Series List')
           console.log('prev SeriesList is', prevProp.seriesList.length, 'next SeriesList is', this.props.seriesList.length)
-        
-
       }
   }
 
@@ -246,7 +238,6 @@ class GraphContainer extends Component {
                         scale={this.state.scales.yScale}
                         x={margin.left}
                         y={0}
-                        transition={!this.state.scenarioChange}
                         />
                         {children.map(child => {
                             return (

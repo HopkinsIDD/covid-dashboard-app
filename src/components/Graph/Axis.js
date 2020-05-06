@@ -39,11 +39,10 @@ class Axis extends Component {
   }
 
   updateAxis = () => {
-    console.log('componentDidUpdate', this.props.keyVal)
+    // console.log('componentDidUpdate', this.props.keyVal)
     if (this.axisRef.current) {
       // console.log(this.props.scale.domain())
       const axisNode = select(this.axisRef.current)
-      // console.log(this.props.orientation, 'axis transition is', this.props.transition)
       this.axis.scale(this.props.scale)
         // console.log(axisNode)
         if (this.props.orientation === 'left') {
@@ -55,22 +54,10 @@ class Axis extends Component {
             .call(g => g.select(".domain").remove());
         } else {
           // update x axis
-          if (this.props.transition) {
             axisNode
               .transition()
               .duration(1000)
               .call(this.axis);
-          } else {
-            // console.log(this.props.orientation, 'graphWidth', this.props.width)
-            // console.log(this.props.orientation, 'ticks', this.props.width / 60)
-
-            this.axis = axisBottom().scale(this.props.scale)
-              .tickFormat(timeFormat('%b-%d'))
-              .ticks(this.props.width / 60)
-              .tickSizeOuter(0);
-
-              axisNode.call(this.axis).call(g => g.select(".domain").remove());
-          }
         }
       }
     }
