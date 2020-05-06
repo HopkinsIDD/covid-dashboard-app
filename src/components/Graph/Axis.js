@@ -43,7 +43,7 @@ class Axis extends Component {
     if (this.axisRef.current) {
       // console.log(this.props.scale.domain())
       const axisNode = select(this.axisRef.current)
-      console.log('transition is', this.props.transition)
+      console.log(this.props.orientation, 'axis transition is', this.props.transition)
       this.axis.scale(this.props.scale)
         // console.log(axisNode)
         if (this.props.orientation === 'left') {
