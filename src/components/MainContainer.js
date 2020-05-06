@@ -352,11 +352,13 @@ class MainContainer extends Component {
                     <div className="row">
                         <div className="col-9">
                             <div className="row">
+                            <div className="col-7">
                                 <Buttons
                                     stat={this.state.stat}
                                     onButtonClick={this.handleButtonClick}
                                 />
-                                <div className="col-3">
+                                </div>
+                                <div className="col-5">
                                     <Legend />
                                 </div>
                             </div>
