@@ -8,14 +8,13 @@ class Scenarios extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currScenario: {},
-            scenariosObj: SCENARIOS
+            scenarios: SCENARIOS
         }
     }
 
     componentDidMount() {
         console.log('scenarios componentDidMount')
-        const obj = Array.from(this.state.scenariosObj)
+        const obj = Array.from(this.state.scenarios)
 
         // update checked attribute for active scenario
         obj.map(scenario => {
@@ -29,8 +28,7 @@ class Scenarios extends Component {
         obj.map(scenario => {return scenario.disabled = false})
 
         this.setState({
-            scenariosObj: obj,
-            currScenario: this.props.scenario
+            scenarios: obj,
         })
     }
 
@@ -39,7 +37,7 @@ class Scenarios extends Component {
         if (prevProp.scenarioList !== this.props.scenarioList ||
             prevProp.scenario !== this.props.scenario) {
             const keys = Object.values(scenarioList).map(scen => scen.key);
-            const obj = Array.from(this.state.scenariosObj)
+            const obj = Array.from(this.state.scenarios)
 
             // update checked attribute for active scenario
             obj.map(scenario => {
@@ -63,24 +61,26 @@ class Scenarios extends Component {
             }
 
             this.setState({
-                scenariosObj: obj
+                scenarios: obj
             })
         }
     }
 
     handleClick = (event) => {
-        const { scenario, scenarioList } = this.props;
-        if (scenarioList.length === 1 && event.key === scenario.key) {
+        const { scenarioList } = this.props;
+        const scenarioKeys = scenarioList.map(scenario => scenario.key);
+
+        // prevent user from deselecting all scenarios
+        if (scenarioList.length === 1 && scenarioKeys.includes(event.key)) {
             return;
         } else {
-            console.log('handleClick', event)
             this.props.onScenarioClick(event);
         }
     }
 
     render() {
         return (
-            this.state.scenariosObj.map(scenario => {
+            this.state.scenarios.map(scenario => {
                 return (
                     <div
                         className="form-check"
