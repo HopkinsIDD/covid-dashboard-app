@@ -2,7 +2,7 @@
 // key: use this to key into dataset
 // name: display name for visualization
 
-export const margin = { top: 20, right: 10, bottom: 30, left: 80 };
+export const margin = { yAxis: 60, top: 10, right: 0, bottom: 30, left: 80 };
 export const red = '#d31d30';
 export const green = '#4ddaba';
 export const blue = '#1f90db';

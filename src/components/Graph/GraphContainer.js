@@ -236,7 +236,6 @@ class GraphContainer extends Component {
               <div className="row">
                   {this.state.scaleDomains &&
                   <svg 
-                //   width={this.props.width} 
                   width={this.props.width}
                   height={this.props.height} 
                     >

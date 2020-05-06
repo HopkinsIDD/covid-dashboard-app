@@ -224,12 +224,23 @@ class Graph extends Component {
                     ref={this.simPathsRef}
                 >
                     <g>
+                        
                         <rect 
                             x={margin.left}
                             y={margin.top}
                             width={this.state.width - margin.left - margin.right}
                             height={this.state.height - margin.bottom - margin.top}
                             fill={'#f6f5f5'}
+                        />
+                        <rect
+                            x={0}
+                            y={0}
+                            width={this.state.width}
+                            height={this.state.height}
+                            // fill={'#ff0000'}
+                            fillOpacity={0}
+                            stroke={'#ff0000'}
+                            strokeWidth='2'
                         />
                         {
                         // visible simPaths
