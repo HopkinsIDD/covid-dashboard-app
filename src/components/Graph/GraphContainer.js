@@ -15,23 +15,24 @@ class GraphContainer extends Component {
           scales: {},
           scaleDomains: false,
           scenarioChange: false,
+          graphWidth: 0
       }
   }
 
   componentDidMount() {
       console.log('ComponentDidMount')
-      const { width, height, seriesList, dates, scenario } = this.props;
+      const { width, height, seriesList, dates, scenarioList } = this.props;
       if (seriesList.length > 0) {
-
-        const scales = this.getScales(seriesList, dates, width, height);
+        const graphWidth = scenarioList.length === 2 ? width / 2 : width;
+        const scales = this.getScales(seriesList, dates, graphWidth, height);
         const child = {
-            'key': scenario.key,
+            'key': scenarioList[0].key,
             'graph': [],
         }
         
         child.graph.push(
             <Graph
-                key={this.props.scenario}
+                key={scenarioList[0].key}
                 stat={this.props.stat}
                 geoid={this.props.geoid}
                 scenario={this.props.scenario}
@@ -45,7 +46,7 @@ class GraphContainer extends Component {
                 statThreshold={this.props.statThreshold}
                 dateThreshold={this.props.dateThreshold}
                 dateRange={this.props.dateRange}
-                width={this.props.width}
+                width={graphWidth}
                 height={this.props.height}
                 x={0}
                 y={0}
@@ -58,6 +59,7 @@ class GraphContainer extends Component {
             scales,
             children: [child],
             scaleDomains: true,
+            graphWidth
         })
       }
   }
@@ -74,10 +76,10 @@ class GraphContainer extends Component {
       // if the seriesList has changed, we want to remove existing graphs before drawing / updating
       if (prevProp.seriesList !== this.props.seriesList) {
             
-            const adjWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
+            const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
             // need to adjust scale by length of scenario list
             // break these out into X and Y (X out of the loop, Y in?)
-            const scales = this.getScales(seriesList, dates, adjWidth, height);
+            const scales = this.getScales(seriesList, dates, graphWidth, height);
 
             // seriesList has updated AND scenarioList has changed
             if (prevProp.seriesList.length !== this.props.seriesList.length) {
@@ -105,9 +107,9 @@ class GraphContainer extends Component {
                             dateThreshold={this.props.dateThreshold}
                             dateRange={this.props.dateRange}
                             brushActive={this.props.brushActive}
-                            width={adjWidth}
+                            width={graphWidth}
                             height={this.props.height}
-                            x={i * adjWidth}
+                            x={i * graphWidth}
                             y={0}
                             xScale={scales.xScale}
                             yScale={scales.yScale}
@@ -118,6 +120,7 @@ class GraphContainer extends Component {
                 }
                 this.setState({
                   scales,
+                  graphWidth,
                   children: newChildren,
                   scenarioChange
                 })
@@ -148,9 +151,9 @@ class GraphContainer extends Component {
                             dateThreshold={this.props.dateThreshold}
                             dateRange={this.props.dateRange}
                             brushActive={this.props.brushActive}
-                            width={adjWidth}
+                            width={this.state.graphWidth}
                             height={this.props.height}
-                            x={i * adjWidth}
+                            x={i * this.state.graphWidth}
                             y={0}
                             xScale={scales.xScale}
                             yScale={scales.yScale}
@@ -161,6 +164,7 @@ class GraphContainer extends Component {
                 }
                 this.setState({
                   scales,
+                  graphWidth,
                   children: newChildren,
                   scenarioChange
                 })
@@ -195,8 +199,8 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
-      const { scenarioList, width } = this.props;
-      const adjWidth = scenarioList.length === 2 ? width / 2 : width;
+    //   const { scenarioList, width } = this.props;
+    //   const adjWidth = scenarioList.length === 2 ? width / 2 : width;
       return (
                
           <div className="graph-wrapper">
@@ -228,11 +232,12 @@ class GraphContainer extends Component {
               <div className="row">
                   {this.state.scaleDomains &&
                   <svg 
-                  width={this.props.width} 
+                //   width={this.props.width} 
+                  width={this.props.width}
                   height={this.props.height} 
                     >
                         <Axis 
-                        width={adjWidth}
+                        width={this.state.graphWidth}
                         height={this.props.height}
                         orientation={'left'}
                         scale={this.state.scales.yScale}

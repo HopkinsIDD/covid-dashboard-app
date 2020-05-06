@@ -254,8 +254,8 @@ class MainContainer extends Component {
             scenario: newScenario,
             scenarioList: copy,
         }, () => {
-            console.log('handleScenario scenario', newScenario)
-            console.log('handleScenario scenarioList', copy)
+            // console.log('handleScenario scenario', newScenario)
+            // console.log('handleScenario scenarioList', copy)
         })        
     };
 
@@ -425,7 +425,7 @@ class MainContainer extends Component {
                                         stat={this.state.stat}
                                         geoid={this.state.geoid}
                                         yAxisLabel={this.state.yAxisLabel}
-                                        scenario={this.state.scenario}
+                                        // scenario={this.state.scenario}
                                         scenarioList={this.state.scenarioList}
                                         severity={this.state.severity}
                                         r0={this.state.r0}
