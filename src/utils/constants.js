@@ -7,6 +7,7 @@ export const red = '#d31d30';
 export const green = '#4ddaba';
 export const blue = '#1f90db';
 export const gray = '#9b9b9b';
+export const lightgray = '#d0d0d0';
 
 export const SCENARIOS = [
     {'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled'},
@@ -41,10 +42,3 @@ export const COUNTIES = [
     {'GEOID': '10501', 'NAME': 'Clay County', 'USPS': 'AL'},
     {'GEOID': '10601', 'NAME': 'Coffee County', 'USPS': 'AL'},
 ];
-
-export const COLORS = {
-    'red': '#d31d30',
-    'green': '#4ddaba',
-    'blue': '#1f90db',
-    'gray': '#9b9b9b'
-}

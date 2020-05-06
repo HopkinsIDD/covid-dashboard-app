@@ -6,7 +6,7 @@ import { line } from 'd3-shape'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { transition } from 'd3-transition'
-import { margin, red, green, blue, gray } from '../../utils/constants'
+import { margin, red, green, blue, gray, lightgray } from '../../utils/constants'
 
 class Graph extends Component {
     constructor(props) {
@@ -143,6 +143,22 @@ class Graph extends Component {
                             width: width
                         })
                     })
+                    simPathsNode.selectAll('.simPath-hover')
+                    .data(series)
+                        .attr("d", d => lineGenerator(d.vals))
+                    .on("end", () => {
+                        console.log('updated hover paths')
+                        // set new vals to state
+                        // this.setState({ 
+                        //     series: series,
+                        //     dates: dates,
+                        //     xScale: this.props.xScale,
+                        //     yScale: this.props.yScale,
+                        //     lineGenerator: lineGenerator,
+                        //     simPaths: simPaths,
+                        //     width: width
+                        // })
+                    })
             } else {
                 simPathsNode.selectAll('.simPath')
                     .data(series)
@@ -162,6 +178,22 @@ class Graph extends Component {
                             simPaths: simPaths,
                             width
                         })
+                    })
+                    simPathsNode.selectAll('.simPath-hover')
+                    .data(series)
+                    .attr("d", d => lineGenerator(d.vals))
+                    .on("end", () => {
+                        console.log('updated hover paths')
+                        // set new vals to state
+                        // this.setState({ 
+                        //     series: series,
+                        //     dates: dates,
+                        //     xScale: this.props.xScale,
+                        //     yScale: this.props.yScale,
+                        //     lineGenerator: lineGenerator,
+                        //     simPaths: simPaths,
+                        //     width: width
+                        // })
                     })
             } 
         }
@@ -260,7 +292,6 @@ class Graph extends Component {
                             />
                         })}
                         {// highlight simPaths
-                        this.state.hoveredSimPathId &&
                         this.state.simPaths.map( (simPath, i) => {
                             const simIsHovered = (i === this.state.hoveredSimPathId)
                             return <path
@@ -269,9 +300,9 @@ class Graph extends Component {
                                 id={`simPath-${i}-hover`}
                                 className={`simPath-hover`}
                                 fill='none' 
-                                stroke={simIsHovered ? blue : gray}
+                                stroke={simIsHovered ? blue : lightgray}
                                 strokeWidth={simIsHovered ? '2' : '1'}
-                                strokeOpacity={simIsHovered && this.state.hoveredSimPathId ? 1 : 0.5}
+                                strokeOpacity={this.state.hoveredSimPathId ? 1 : 0}
                                 onMouseMove={(e) => this.handleMouseMove(e, i)}
                                 onMouseEnter={(e) => this.handleMouseEnter(e, i)}
                                 onMouseLeave={(e) => this.handleMouseLeave(e, i)}
