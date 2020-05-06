@@ -32,7 +32,8 @@ class GraphContainer extends Component {
         
         child.graph.push(
             <Graph
-                key={scenarioList[0].key}
+                key={`${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`}
+                keyVal={`${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`}
                 stat={this.props.stat}
                 geoid={this.props.geoid}
                 scenario={this.props.scenario}
@@ -75,8 +76,9 @@ class GraphContainer extends Component {
       // scenarioList updates happen then are immediately followed by seriesList update so can't rely on scenarioList check
       // if the seriesList has changed, we want to remove existing graphs before drawing / updating
       if (prevProp.seriesList !== this.props.seriesList) {
-            
+            console.log('seriesList is', seriesList.length)
             const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
+            console.log('graphWidth is', graphWidth)
             // need to adjust scale by length of scenario list
             // break these out into X and Y (X out of the loop, Y in?)
             const scales = this.getScales(seriesList, dates, graphWidth, height);
@@ -84,6 +86,7 @@ class GraphContainer extends Component {
             // seriesList has updated AND scenarioList has changed
             if (prevProp.seriesList.length !== this.props.seriesList.length) {
                 console.log('componentDidUpdate Series List - scenarioList change');
+                console.log('graphWidth is', graphWidth)
                 const scenarioChange = true;
                 for (let i = 0; i < scenarioList.length; i++) {
                     const child = {
@@ -92,7 +95,8 @@ class GraphContainer extends Component {
                     }
                     child.graph.push(
                         <Graph
-                            key={`graph${i+1}`}
+                            key={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
+                            keyVal={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
                             stat={this.props.stat}
                             geoid={this.props.geoid}
                             scenario={this.props.scenarioList[i]}
@@ -136,7 +140,8 @@ class GraphContainer extends Component {
                     }
                     child.graph.push(
                         <Graph
-                            key={`graph${i+1}`}
+                            key={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
+                            keyVal={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
                             stat={this.props.stat}
                             geoid={this.props.geoid}
                             scenario={this.props.scenarioList[i]}
@@ -174,8 +179,7 @@ class GraphContainer extends Component {
       if (prevProp.seriesList !== this.props.seriesList && prevProp.seriesList.length === this.props.seriesList.length) {
           console.log('componentDidUpdate Series List')
           console.log('prev SeriesList is', prevProp.seriesList.length, 'next SeriesList is', this.props.seriesList.length)
-          
-
+        
 
       }
   }

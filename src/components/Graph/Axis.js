@@ -39,7 +39,7 @@ class Axis extends Component {
   }
 
   updateAxis = () => {
-    // console.log('componentDidUpdate', this.props.orientation)
+    console.log('componentDidUpdate', this.props.keyVal)
     if (this.axisRef.current) {
       // console.log(this.props.scale.domain())
       const axisNode = select(this.axisRef.current)
@@ -61,8 +61,8 @@ class Axis extends Component {
               .duration(1000)
               .call(this.axis);
           } else {
-            console.log('graphWidth', this.props.width)
-            console.log('ticks', this.props.width / 60)
+            console.log(this.props.orientation, 'graphWidth', this.props.width)
+            console.log(this.props.orientation, 'ticks', this.props.width / 60)
 
             this.axis = axisBottom().scale(this.props.scale)
               .tickFormat(timeFormat('%b-%d'))

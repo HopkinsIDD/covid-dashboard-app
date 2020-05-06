@@ -31,43 +31,45 @@ class Graph extends Component {
     }
     
     componentDidMount() {
-        console.log('ComponentDidMount')
-        console.log(this.state.series)
+        console.log(this.props.keyVal, 'ComponentDidMount')
+        // console.log('ComponentDidMount')
+        // console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log(this.props)
+        console.log(this.props.keyVal,'ComponentDidUpdate')
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
-            console.log('in only series diff update')
-            const { series, dates, statThreshold, dateThreshold } = this.props;
+            console.log(this.props.keyVal, 'in only series diff update + brushing')
+            const { series, dates, statThreshold, dateThreshold, width } = this.props;
             const { xScale, yScale, lineGenerator } = prevState;
             //TODO: update based on resizing width and height
 
-            this.updateSimPaths(series, dates, lineGenerator, true);
+            this.updateSimPaths(series, dates, lineGenerator, true, width);
             this.updateStatThresholdLine(statThreshold, yScale);
             this.updateDateThresholdLine(dateThreshold, xScale);
         }
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
-            // console.log('in only series diff update')
-            const { series, dates, statThreshold, dateThreshold, scenarioChange } = this.props;
+            console.log(this.props.keyVal, 'in only series diff update')
+            const { series, dates, statThreshold, dateThreshold, scenarioChange, width } = this.props;
             const { xScale, yScale, lineGenerator } = prevState;
             //TODO: update based on resizing width and height
             
             if (scenarioChange) {
-                console.log('in series diff update and scenario change')
+                console.log(this.props.keyVal, 'in series diff update and scenario change')
                 // remove graphs and redraw them
                 if (this.simPathsRef.current) {
                     // select the simsNode and remove existing sims, or the whole graph??
-                    const simPathsNode = select(this.simPathsRef.current);
+                    // const simPathsNode = select(this.simPathsRef.current);
                     // simPathsNode.selectAll('rect').remove();
                 }
 
             } else {
+                console.log(this.props.keyVal, 'in series diff update and NO scenario change')
                 // update existing graphs
-                this.updateSimPaths(series, dates, lineGenerator, false);
+                this.updateSimPaths(series, dates, lineGenerator, false, width);
                 this.updateStatThresholdLine(statThreshold, yScale);
                 this.updateDateThresholdLine(dateThreshold, xScale);
             }
@@ -107,7 +109,7 @@ class Graph extends Component {
         })
     }
 
-    updateSimPaths = (series, dates, lineGenerator, brushed) => {
+    updateSimPaths = (series, dates, lineGenerator, brushed, width) => {
         //Animate simPath color but don't change data
         if (this.simPathsRef.current) {
                 
@@ -138,6 +140,7 @@ class Graph extends Component {
                             yScale: this.props.yScale,
                             lineGenerator: lineGenerator,
                             simPaths: simPaths,
+                            width: width
                         })
                     })
             } else {
@@ -157,6 +160,7 @@ class Graph extends Component {
                             yScale: this.props.yScale,
                             lineGenerator: lineGenerator,
                             simPaths: simPaths,
+                            width
                         })
                     })
             } 
@@ -266,7 +270,7 @@ class Graph extends Component {
                             <line
                                 x1={margin.left}
                                 y1={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
-                                x2={this.props.width - margin.right}
+                                x2={this.state.width - margin.right}
                                 y2={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
                                 stroke={gray}
                                 className={'statThreshold'}
@@ -291,6 +295,7 @@ class Graph extends Component {
                     </g>
                     <g>
                         <Axis 
+                            keyVal={this.props.keyVal}
                             ref={this.axisRef}
                             width={this.state.width}
                             height={this.state.height}

@@ -64,6 +64,7 @@ class MainContainer extends Component {
             graphW: 0,
             graphH: 0,
             brushActive: false,
+            scenarioClickCounter: 0,
         };
     };
 
@@ -203,8 +204,8 @@ class MainContainer extends Component {
                 seriesMax : sliderMax,
                 percExceedenceList
             }, () => {
-                console.log('componentDidUpdate')
-                console.log('seriesList', this.state.seriesList)
+                // console.log('componentDidUpdate')
+                // console.log('seriesList', this.state.seriesList)
             })
         }
     };
@@ -249,10 +250,12 @@ class MainContainer extends Component {
             // reset current scenario
             newScenario = copy[0];
         }
+        const scenarioClkCntr = this.state.scenarioClickCounter + 1;
 
         this.setState({
             scenario: newScenario,
             scenarioList: copy,
+            scenarioClickCounter: scenarioClkCntr
         }, () => {
             // console.log('handleScenario scenario', newScenario)
             // console.log('handleScenario scenarioList', copy)
@@ -442,6 +445,7 @@ class MainContainer extends Component {
                                         brushActive={this.state.brushActive}
                                         width={this.state.graphW}
                                         height={this.state.graphH}
+                                        scenarioClickCounter={this.state.scenarioClickCounter}
                                     /> 
                                     <Brush
                                         series={this.state.allTimeSeries}
