@@ -28,10 +28,11 @@ export const LEVELS = [
     {'id': 3, 'key': 'low', 'name': '0.25% IFR, 2.5% hospitalization rate'},
 ];
 
+// public county model files on github
+const baseUrl = 'https://raw.githubusercontent.com/';
 export const COUNTIES = [
-    {'geoid': '06085', 'name': 'Santa Clara County', 'usps': 'CA'},
-    {'geoid': '06073', 'name': 'San Diego County', 'usps': 'CA'},
-    {'geoid': '10001', 'name': 'Lee County', 'usps': 'AL'},
+    {'geoid': '06085', 'name': 'Santa Clara County', 'usps': 'CA', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
+    {'geoid': '10001', 'name': 'Lee County', 'usps': 'AL', 'path': baseUrl + 'HopkinsIDD/COVIDScenarioPipeline/master/sample_data/geoid-params.csv'},
 ];
 
 export const COLORS = {
