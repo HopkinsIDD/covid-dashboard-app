@@ -38,10 +38,11 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log(this.props.keyVal,'ComponentDidUpdate')
+        // console.log('ComponentDidUpdate', this.props.keyVal)
+        // console.log('series has changed is', this.props.series !== prevProps.series)
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
-            console.log(this.props.keyVal, 'in only series diff update + brushing')
+            console.log('brushing is TRUE, series diff', this.props.keyVal)
             const { series, dates, statThreshold, dateThreshold, width } = this.props;
             const { xScale, yScale, lineGenerator } = prevState;
             //TODO: update based on resizing width and height
@@ -52,31 +53,15 @@ class Graph extends Component {
         }
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
-            console.log(this.props.keyVal, 'in only series diff update')
+            console.log('brushing is FALSE, series diff', this.props.keyVal)
             const { series, dates, statThreshold, dateThreshold, scenarioChange, width } = this.props;
             const { xScale, yScale, lineGenerator } = prevState;
             //TODO: update based on resizing width and height
             
-            if (scenarioChange) {
-                console.log(this.props.keyVal, 'in series diff update and scenario change')
-                // remove graphs and redraw them
-                if (this.simPathsRef.current) {
-                    // select the simsNode and remove existing sims, or the whole graph??
-                    // const simPathsNode = select(this.simPathsRef.current);
-                    // simPathsNode.selectAll('rect').remove();
-                }
 
-            } else {
-                console.log(this.props.keyVal, 'in series diff update and NO scenario change')
-                // update existing graphs
-                this.updateSimPaths(series, dates, lineGenerator, false, width);
-                this.updateStatThresholdLine(statThreshold, yScale);
-                this.updateDateThresholdLine(dateThreshold, xScale);
-            }
-
-            // this.updateSimPaths(series, dates, lineGenerator, false);
-            // this.updateStatThresholdLine(statThreshold, yScale);
-            // this.updateDateThresholdLine(dateThreshold, xScale);
+            this.updateSimPaths(series, dates, lineGenerator, false, width);
+            this.updateStatThresholdLine(statThreshold, yScale);
+            this.updateDateThresholdLine(dateThreshold, xScale);
         }
     }
 
@@ -144,21 +129,8 @@ class Graph extends Component {
                         })
                     })
                     simPathsNode.selectAll('.simPath-hover')
-                    .data(series)
+                        .data(series)
                         .attr("d", d => lineGenerator(d.vals))
-                    .on("end", () => {
-                        console.log('updated hover paths')
-                        // set new vals to state
-                        // this.setState({ 
-                        //     series: series,
-                        //     dates: dates,
-                        //     xScale: this.props.xScale,
-                        //     yScale: this.props.yScale,
-                        //     lineGenerator: lineGenerator,
-                        //     simPaths: simPaths,
-                        //     width: width
-                        // })
-                    })
             } else {
                 simPathsNode.selectAll('.simPath')
                     .data(series)
@@ -180,21 +152,8 @@ class Graph extends Component {
                         })
                     })
                     simPathsNode.selectAll('.simPath-hover')
-                    .data(series)
-                    .attr("d", d => lineGenerator(d.vals))
-                    .on("end", () => {
-                        console.log('updated hover paths')
-                        // set new vals to state
-                        // this.setState({ 
-                        //     series: series,
-                        //     dates: dates,
-                        //     xScale: this.props.xScale,
-                        //     yScale: this.props.yScale,
-                        //     lineGenerator: lineGenerator,
-                        //     simPaths: simPaths,
-                        //     width: width
-                        // })
-                    })
+                        .data(series)
+                        .attr("d", d => lineGenerator(d.vals))
             } 
         }
     }

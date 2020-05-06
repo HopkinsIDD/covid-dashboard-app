@@ -71,109 +71,60 @@ class GraphContainer extends Component {
     
       // technically both scenarioList and seriesList need to update
       // but seriesList is updated later so using it to enter componentDidUpdate
-      // the way to check if scenarioList has changed is by comparing lengths of seriesList
       // scenarioList updates happen then are immediately followed by seriesList update so can't rely on scenarioList check
       // if the seriesList has changed, we want to remove existing graphs before drawing / updating
+      // the way to solve this is by keeping track of scenarioChange click events and putting those in the graph keys
+      // so that when the click events increment the keys change and the graph component remounts
       if (prevProp.seriesList !== this.props.seriesList) {
-            console.log('seriesList is', seriesList.length)
+            console.log('seriesList change, seriesList is', seriesList.length)
             const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
             console.log('graphWidth is', graphWidth)
             // need to adjust scale by length of scenario list
             // break these out into X and Y (X out of the loop, Y in?)
             const scales = this.getScales(seriesList, dates, graphWidth, height);
 
-            // seriesList has updated AND scenarioList has changed
-            if (prevProp.seriesList.length !== this.props.seriesList.length) {
-                console.log('componentDidUpdate Series List - scenarioList change');
-                console.log('graphWidth is', graphWidth)
-                const scenarioChange = true;
-                for (let i = 0; i < scenarioList.length; i++) {
-                    const child = {
-                        'key': scenarioList[i].key,
-                        'graph': [],
-                    }
-                    child.graph.push(
-                        <Graph
-                            key={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
-                            keyVal={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
-                            stat={this.props.stat}
-                            geoid={this.props.geoid}
-                            scenario={this.props.scenarioList[i]}
-                            severity={this.props.severity}
-                            r0={this.props.r0}
-                            simNum={this.props.simNum}
-                            showConfBounds={this.props.showConfBounds}
-                            showActual={this.props.showActual}
-                            series={this.props.seriesList[i]}
-                            dates={this.props.dates}
-                            statThreshold={this.props.statThreshold}
-                            dateThreshold={this.props.dateThreshold}
-                            dateRange={this.props.dateRange}
-                            brushActive={this.props.brushActive}
-                            width={graphWidth}
-                            height={this.props.height}
-                            x={i * graphWidth}
-                            y={0}
-                            xScale={scales.xScale}
-                            yScale={scales.yScale}
-                        />
-                    )
-                    newChildren.push(child);
+            // console.log('componentDidUpdate Series List - scenarioList change');
+            console.log('graphWidth is', graphWidth)
+            const scenarioChange = true;
+            for (let i = 0; i < scenarioList.length; i++) {
+                const child = {
+                    'key': scenarioList[i].key,
+                    'graph': [],
                 }
-                this.setState({
-                  scales,
-                  graphWidth,
-                  children: newChildren,
-                })
-            } 
-            // seriesList has updated AND scenarioList has NOT changed  
-            else {
-                console.log('componentDidUpdate Series List - no scenarioList change');
-                for (let i = 0; i < scenarioList.length; i++) {
-                    const child = {
-                        'key': scenarioList[i].key,
-                        'graph': [],
-                    }
-                    child.graph.push(
-                        <Graph
-                            key={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
-                            keyVal={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
-                            stat={this.props.stat}
-                            geoid={this.props.geoid}
-                            scenario={this.props.scenarioList[i]}
-                            severity={this.props.severity}
-                            r0={this.props.r0}
-                            simNum={this.props.simNum}
-                            showConfBounds={this.props.showConfBounds}
-                            showActual={this.props.showActual}
-                            series={this.props.seriesList[i]}
-                            dates={this.props.dates}
-                            statThreshold={this.props.statThreshold}
-                            dateThreshold={this.props.dateThreshold}
-                            dateRange={this.props.dateRange}
-                            brushActive={this.props.brushActive}
-                            width={this.state.graphWidth}
-                            height={this.props.height}
-                            x={i * this.state.graphWidth}
-                            y={0}
-                            xScale={scales.xScale}
-                            yScale={scales.yScale}
-                        />
-                    )
-                    newChildren.push(child);
-                }
-                this.setState({
-                  scales,
-                  graphWidth,
-                  children: newChildren,
-                })
+                child.graph.push(
+                    <Graph
+                        key={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
+                        keyVal={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
+                        stat={this.props.stat}
+                        geoid={this.props.geoid}
+                        scenario={this.props.scenarioList[i]}
+                        severity={this.props.severity}
+                        r0={this.props.r0}
+                        simNum={this.props.simNum}
+                        showConfBounds={this.props.showConfBounds}
+                        showActual={this.props.showActual}
+                        series={this.props.seriesList[i]}
+                        dates={this.props.dates}
+                        statThreshold={this.props.statThreshold}
+                        dateThreshold={this.props.dateThreshold}
+                        dateRange={this.props.dateRange}
+                        brushActive={this.props.brushActive}
+                        width={graphWidth}
+                        height={this.props.height}
+                        x={i * graphWidth}
+                        y={0}
+                        xScale={scales.xScale}
+                        yScale={scales.yScale}
+                    />
+                )
+                newChildren.push(child);
             }
-                
-      }
-      if (prevProp.seriesList !== this.props.seriesList && prevProp.seriesList.length === this.props.seriesList.length) {
-          console.log('componentDidUpdate Series List')
-          console.log('prev SeriesList is', prevProp.seriesList.length, 'next SeriesList is', this.props.seriesList.length)
-      }
+            this.setState({
+                scales,
+                graphWidth,
+                children: newChildren,
+            })        
+        }
   }
 
   getScales = (seriesList, dates, width, height) => {
