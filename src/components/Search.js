@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import axios from 'axios';
 import { COUNTIES } from '../utils/constants.js';
 
 class Search extends Component {
@@ -6,11 +7,24 @@ class Search extends Component {
         super(props);
         this.state = {
             fileName: '',
+            countyName: '',
         }
     }
 
-    handleSearchClick = (event) => {
-        console.log('event', event)
+    handleCountySelect = (event) => {
+        axios.get(event.path)
+            .catch(error => {
+                console.log('error', error);
+            })
+            .then(response => {
+                // console.log('event', event)
+                // console.log('response', response)
+                const json = response.data;
+                this.props.onCountySelect(json);
+                this.setState({
+                    'countyName': event.name + ', ' + event.usps
+                })
+            });
     }
 
     handleUpload = (event) => {
@@ -52,7 +66,8 @@ class Search extends Component {
     }
 
     render() {
-        const { fileName } = this.state;
+        const { fileName, countyName } = this.state;
+        const countyLabel = countyName === '' ? 'Search for your county' : countyName;
         const uploadLabel = fileName === '' ? 'Upload File' : fileName;
         
         return (
@@ -66,7 +81,7 @@ class Search extends Component {
                             data-toggle="dropdown" 
                             aria-haspopup="true" 
                             aria-expanded="false">
-                            Search for your county
+                            {countyLabel}
                         </div>
                         <div
                             className="dropdown-menu"
@@ -76,9 +91,9 @@ class Search extends Component {
                                     <button
                                         className="dropdown-item filter-label"
                                         type="button" 
-                                        onClick={() => this.handleSearchClick(county)} 
+                                        onClick={() => this.handleCountySelect(county)} 
                                         key={county.geoid}>
-                                        {county.name}
+                                        {county.name}, {county.usps}
                                     </button>
                                 )
                                 })}

@@ -225,6 +225,13 @@ class MainContainer extends Component {
         })
         return simsOver;
     }
+
+    handleCountySelect = (i) => {
+        console.log('main', i)
+        // uncomment when public model files are hooked up
+        // this.setState({dataset: i})
+    }
+    
     handleUpload = (i) => {
         this.setState({dataset: i})
     }
@@ -340,6 +347,7 @@ class MainContainer extends Component {
                             <Search 
                                 stat={this.state.stat}
                                 onFileUpload={this.handleUpload}
+                                onCountySelect={this.handleCountySelect}
                             />
                             <Buttons
                                 stat={this.state.stat}
