@@ -37,7 +37,7 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.props)
+        // console.log(this.props)
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             console.log('in only series diff update')
@@ -52,13 +52,29 @@ class Graph extends Component {
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
             // console.log('in only series diff update')
-            const { series, dates, statThreshold, dateThreshold } = this.props;
+            const { series, dates, statThreshold, dateThreshold, scenarioChange } = this.props;
             const { xScale, yScale, lineGenerator } = prevState;
             //TODO: update based on resizing width and height
+            
+            if (scenarioChange) {
+                console.log('in series diff update and scenario change')
+                // remove graphs and redraw them
+                if (this.simPathsRef.current) {
+                    // select the simsNode and remove existing sims, or the whole graph??
+                    const simPathsNode = select(this.simPathsRef.current);
+                    // simPathsNode.selectAll('rect').remove();
+                }
 
-            this.updateSimPaths(series, dates, lineGenerator, false);
-            this.updateStatThresholdLine(statThreshold, yScale);
-            this.updateDateThresholdLine(dateThreshold, xScale);
+            } else {
+                // update existing graphs
+                this.updateSimPaths(series, dates, lineGenerator, false);
+                this.updateStatThresholdLine(statThreshold, yScale);
+                this.updateDateThresholdLine(dateThreshold, xScale);
+            }
+
+            // this.updateSimPaths(series, dates, lineGenerator, false);
+            // this.updateStatThresholdLine(statThreshold, yScale);
+            // this.updateDateThresholdLine(dateThreshold, xScale);
         }
     }
 
@@ -282,6 +298,7 @@ class Graph extends Component {
                             scale={this.props.xScale}
                             x={0}
                             y={this.state.height - margin.bottom}
+                            transition={!this.props.scenarioChange}
                         />
                     </g>
                 </g>

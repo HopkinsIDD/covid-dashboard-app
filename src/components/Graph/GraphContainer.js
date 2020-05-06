@@ -12,12 +12,9 @@ class GraphContainer extends Component {
       super(props);
       this.state = {
           children: [],
-          // we need to define scales here in order to send to the yAxis
+          scales: {},
           scaleDomains: false,
-          scales: {
-            //   xScale: scaleUtc().range([margin.left, this.props.width - margin.right]),
-            //   yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top])
-          }
+          scenarioChange: false,
       }
   }
 
@@ -60,7 +57,7 @@ class GraphContainer extends Component {
         this.setState({
             scales,
             children: [child],
-            scaleDomains: true
+            scaleDomains: true,
         })
       }
   }
@@ -69,58 +66,113 @@ class GraphContainer extends Component {
 
       const { scenarioList, seriesList, dates, height } = this.props;
       const newChildren = [];
-      if (prevProp.scenarioList !== this.props.scenarioList) {
-          console.log('componentDidUpdate Scenario List')
-          console.log('seriesList updated is ', prevProp.seriesList !== this.props.seriesList)
-      }
-
-      
+    
       // technically both scenarioList and seriesList need to update
       // but seriesList is updated later so using it to enter componentDidUpdate
-      else if (prevProp.seriesList !== this.props.seriesList) {
-          console.log('componentDidUpdate Series List')
-          console.log('scenarioList updated is ', prevProp.scenarioList !== this.props.scenarioList)
-          const adjWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
-          // need to adjust scale by length of scenario list
-          // break these out into X and Y (X out of the loop, Y in?)
-          const scales = this.getScales(seriesList, dates, adjWidth, height);
+      // the way to check if scenarioList has changed is by comparing lengths of seriesList
+      // scenarioList updates happen then are immediately followed by seriesList update so can't rely on scenarioList check
+      // if the seriesList has changed, we want to remove existing graphs before drawing / updating
+      if (prevProp.seriesList !== this.props.seriesList) {
+            
+            const adjWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
+            // need to adjust scale by length of scenario list
+            // break these out into X and Y (X out of the loop, Y in?)
+            const scales = this.getScales(seriesList, dates, adjWidth, height);
 
-          for (let i = 0; i < scenarioList.length; i++) {
-              const child = {
-                  'key': scenarioList[i].key,
-                  'graph': [],
-              }
-              child.graph.push(
-                  <Graph
-                      key={`graph${i+1}`}
-                      stat={this.props.stat}
-                      geoid={this.props.geoid}
-                      scenario={this.props.scenarioList[i]}
-                      severity={this.props.severity}
-                      r0={this.props.r0}
-                      simNum={this.props.simNum}
-                      showConfBounds={this.props.showConfBounds}
-                      showActual={this.props.showActual}
-                      series={this.props.seriesList[i]}
-                      dates={this.props.dates}
-                      statThreshold={this.props.statThreshold}
-                      dateThreshold={this.props.dateThreshold}
-                      dateRange={this.props.dateRange}
-                      brushActive={this.props.brushActive}
-                      width={adjWidth}
-                      height={this.props.height}
-                      x={i * adjWidth}
-                      y={0}
-                      xScale={scales.xScale}
-                      yScale={scales.yScale}
-                  />
-              )
-              newChildren.push(child);
-          }
-          this.setState({
-            scales,
-            children: newChildren,
-          })
+            // seriesList has updated AND scenarioList has changed
+            if (prevProp.seriesList.length !== this.props.seriesList.length) {
+                console.log('componentDidUpdate Series List - scenarioList change');
+                const scenarioChange = true;
+                for (let i = 0; i < scenarioList.length; i++) {
+                    const child = {
+                        'key': scenarioList[i].key,
+                        'graph': [],
+                    }
+                    child.graph.push(
+                        <Graph
+                            key={`graph${i+1}`}
+                            stat={this.props.stat}
+                            geoid={this.props.geoid}
+                            scenario={this.props.scenarioList[i]}
+                            severity={this.props.severity}
+                            r0={this.props.r0}
+                            simNum={this.props.simNum}
+                            showConfBounds={this.props.showConfBounds}
+                            showActual={this.props.showActual}
+                            series={this.props.seriesList[i]}
+                            dates={this.props.dates}
+                            statThreshold={this.props.statThreshold}
+                            dateThreshold={this.props.dateThreshold}
+                            dateRange={this.props.dateRange}
+                            brushActive={this.props.brushActive}
+                            width={adjWidth}
+                            height={this.props.height}
+                            x={i * adjWidth}
+                            y={0}
+                            xScale={scales.xScale}
+                            yScale={scales.yScale}
+                            scenarioChange={scenarioChange}
+                        />
+                    )
+                    newChildren.push(child);
+                }
+                this.setState({
+                  scales,
+                  children: newChildren,
+                  scenarioChange
+                })
+            } 
+            // seriesList has updated AND scenarioList has NOT changed  
+            else {
+                console.log('componentDidUpdate Series List - no scenarioList change');
+                const scenarioChange = false;
+                for (let i = 0; i < scenarioList.length; i++) {
+                    const child = {
+                        'key': scenarioList[i].key,
+                        'graph': [],
+                    }
+                    child.graph.push(
+                        <Graph
+                            key={`graph${i+1}`}
+                            stat={this.props.stat}
+                            geoid={this.props.geoid}
+                            scenario={this.props.scenarioList[i]}
+                            severity={this.props.severity}
+                            r0={this.props.r0}
+                            simNum={this.props.simNum}
+                            showConfBounds={this.props.showConfBounds}
+                            showActual={this.props.showActual}
+                            series={this.props.seriesList[i]}
+                            dates={this.props.dates}
+                            statThreshold={this.props.statThreshold}
+                            dateThreshold={this.props.dateThreshold}
+                            dateRange={this.props.dateRange}
+                            brushActive={this.props.brushActive}
+                            width={adjWidth}
+                            height={this.props.height}
+                            x={i * adjWidth}
+                            y={0}
+                            xScale={scales.xScale}
+                            yScale={scales.yScale}
+                            scenarioChange={scenarioChange}
+                        />
+                    )
+                    newChildren.push(child);
+                }
+                this.setState({
+                  scales,
+                  children: newChildren,
+                  scenarioChange
+                })
+            }
+                
+      }
+      if (prevProp.seriesList !== this.props.seriesList && prevProp.seriesList.length === this.props.seriesList.length) {
+          console.log('componentDidUpdate Series List')
+          console.log('prev SeriesList is', prevProp.seriesList.length, 'next SeriesList is', this.props.seriesList.length)
+          
+
+
       }
   }
 
@@ -143,6 +195,8 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
+      const { scenarioList, width } = this.props;
+      const adjWidth = scenarioList.length === 2 ? width / 2 : width;
       return (
                
           <div className="graph-wrapper">
@@ -153,8 +207,6 @@ class GraphContainer extends Component {
                     {children.map( (child, i) => {
                         return (
                             (this.props.scenarioList && this.props.scenarioList.length === 2) ?
-                            // <div
-                                // key={`${child.key}-label`}>
                                 <ThresholdLabel
                                     key={`${child.key}-label`}
                                     classProps={'col-6 filter-label threshold-label callout'}
@@ -162,10 +214,7 @@ class GraphContainer extends Component {
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}
                                 />
-                            // </div>
                             :
-                            // <div
-                                // key={`${child.key}-label`}>
                                 <ThresholdLabel
                                     key={`${child.key}-label`}
                                     classProps={'col-12 filter-label threshold-label callout'}
@@ -173,7 +222,6 @@ class GraphContainer extends Component {
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}
                                 />
-                            // </div>
                         )
                     })}
               </div>
@@ -184,12 +232,13 @@ class GraphContainer extends Component {
                   height={this.props.height} 
                     >
                         <Axis 
-                        width={this.props.width}
+                        width={adjWidth}
                         height={this.props.height}
                         orientation={'left'}
                         scale={this.state.scales.yScale}
                         x={margin.left}
                         y={0}
+                        transition={!this.state.scenarioChange}
                         />
                         {children.map(child => {
                             return (
