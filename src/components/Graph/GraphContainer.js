@@ -145,13 +145,8 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
-      const scenarioTitleList = this.props.scenarioList.map( scenario => {
-        return scenario.name.replace('_', ' ');
-    })
-    //   const { scenarioList, width } = this.props;
-    //   const adjWidth = scenarioList.length === 2 ? width / 2 : width;
+      const { scenarioList } = this.props;
       return (
-               
           <div className="graph-wrapper">
               <div className="col-1"></div>
               <div className="y-axis-label titleNarrow">
@@ -159,15 +154,16 @@ class GraphContainer extends Component {
               </div>
               <div className="resetRow graph-title-row">
                 <div style={{'width': `${margin.yAxis}px`}}></div>
-                {scenarioTitleList.map((scenarioTitle, i) => {
-                    return (this.props.scenarioList && scenarioTitleList.length > 1) ? 
-                            <div style={{'width': `${this.props.width - margin.right}px`}}>
+                {scenarioList.map((scenario, i) => {
+                    const scenarioTitle = scenario.name.replace('_', ' ');
+                    return (this.props.scenarioList && scenarioList.length > 1) ? 
+                            <div key={scenario.key} style={{'width': `${this.props.width - margin.right}px`}}>
                                 <p className="scenario-title titleNarrow">
                                     {scenarioTitle}
                                 </p>
                             </div>
                          :
-                            <div style={{'width': `${this.props.width - margin.right}px`}}>
+                            <div key={scenario.key} style={{'width': `${this.props.width - margin.right}px`}}>
                                 <p className="scenario-title titleNarrow">
                                     {scenarioTitle}
                                 </p>
