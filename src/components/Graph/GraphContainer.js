@@ -78,13 +78,12 @@ class GraphContainer extends Component {
       if (prevProp.seriesList !== this.props.seriesList) {
             console.log('seriesList change, seriesList is', seriesList.length)
             const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
-            console.log('graphWidth is', graphWidth)
+            // console.log('graphWidth is', graphWidth)
             // need to adjust scale by length of scenario list
             // break these out into X and Y (X out of the loop, Y in?)
             const scales = this.getScales(seriesList, dates, graphWidth, height);
 
             // console.log('componentDidUpdate Series List - scenarioList change');
-            console.log('graphWidth is', graphWidth)
             const scenarioChange = true;
             for (let i = 0; i < scenarioList.length; i++) {
                 const child = {

@@ -38,30 +38,40 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log('ComponentDidUpdate', this.props.keyVal)
-        // console.log('series has changed is', this.props.series !== prevProps.series)
+        console.log('ComponentDidUpdate', this.props.keyVal)
+        console.log('series has changed is', this.props.series !== prevProps.series)
+        console.log('statThreshold has changed is', this.props.statThreshold !== prevProps.statThreshold)
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             console.log('brushing is TRUE, series diff', this.props.keyVal)
-            const { series, dates, statThreshold, dateThreshold, width } = this.props;
-            const { xScale, yScale, lineGenerator } = prevState;
+            const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
+            const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
 
             this.updateSimPaths(series, dates, lineGenerator, true, width);
-            this.updateStatThresholdLine(statThreshold, yScale);
-            this.updateDateThresholdLine(dateThreshold, xScale);
+            // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
         }
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
             console.log('brushing is FALSE, series diff', this.props.keyVal)
-            const { series, dates, statThreshold, dateThreshold, scenarioChange, width } = this.props;
-            const { xScale, yScale, lineGenerator } = prevState;
+            const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
+            const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
             
 
             this.updateSimPaths(series, dates, lineGenerator, false, width);
-            this.updateStatThresholdLine(statThreshold, yScale);
-            this.updateDateThresholdLine(dateThreshold, xScale);
+            // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
+        }
+
+        if (!this.props.brushActive && (this.props.statThreshold !== prevProps.statThreshold || this.props.dateThreshold !== prevProps.dateThreshold)) {
+            console.log('threshold diff', this.props.keyVal)
+            const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
+            const { lineGenerator } = prevState;
+            //TODO: update based on resizing width and height
+            
+
+            this.updateSimPaths(series, dates, lineGenerator, true, width);
+            // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
         }
     }
 
@@ -158,33 +168,40 @@ class Graph extends Component {
         }
     }
 
-    updateStatThresholdLine = (statThreshold, yScale) => {
-        // Update statThreshold Line
+    updateThresholdIndicators = (statThreshold, dateThreshold, xScale, yScale) => {
+        // this.updateStatThresholdLine(statThreshold, yScale);
+        // this.updateDateThresholdLine(dateThreshold, xScale);
+        // this.updateThresholdCircle(statThreshold, dateThreshold, xScale, yScale);
         if (this.thresholdRef.current) {
             const thresholdNode = select(this.thresholdRef.current)
+            thresholdNode.selectAll('.thresholdCircle')
+                .transition()
+                .duration(500)
+                .attr("cx", xScale(dateThreshold))
+                .attr("cy", yScale(statThreshold))
+                .ease(easeCubicOut)
+                .on("end", () => {
+                    console.log('circleThreshold transition ended')
+                    // this.setState({ dateThreshold })
+                })
             thresholdNode.selectAll('.statThreshold')
                 .transition()
-                .duration(100)
+                .duration(500)
                 .attr("y1", yScale(statThreshold))
                 .attr("y2", yScale(statThreshold))
                 .ease(easeCubicOut)
                 .on("end", () => {
+                    console.log('statThreshold transition ended')
                     this.setState({ statThreshold })
                 })
-        }
-    }
-
-    updateDateThresholdLine = (dateThreshold, xScale) => {
-        // Update dateThreshold Line
-        if (this.thresholdRef.current) {
-            const thresholdNode = select(this.thresholdRef.current)
             thresholdNode.selectAll('.dateThreshold')
                 .transition()
-                .duration(100)
+                .duration(500)
                 .attr("x1", xScale(dateThreshold))
                 .attr("x2", xScale(dateThreshold))
                 .ease(easeCubicOut)
                 .on("end", () => {
+                    console.log('dateThreshold transition ended')
                     this.setState({ dateThreshold })
                 })
         }
@@ -270,27 +287,28 @@ class Graph extends Component {
                         <g ref={this.thresholdRef}>
                             <line
                                 x1={margin.left}
-                                y1={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
-                                x2={this.state.width - margin.right}
-                                y2={this.state.yScale(this.props.statThreshold) < margin.top ? margin.top : this.state.yScale(this.props.statThreshold)}
+                                y1={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
+                                x2={this.props.width - margin.right}
+                                y2={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
                                 stroke={gray}
                                 className={'statThreshold'}
                                 strokeDasharray="4 2"
                             ></line>
                             <line
-                                x1={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
+                                x1={this.props.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.props.xScale(this.props.dateThreshold)}
                                 y1={margin.top}
-                                x2={this.state.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.state.xScale(this.props.dateThreshold)}
+                                x2={this.props.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.props.xScale(this.props.dateThreshold)}
                                 y2={this.props.height - margin.bottom}
                                 stroke={gray}
                                 className={'dateThreshold'}
                                 strokeDasharray="4 2"
                             ></line>
                             <circle
-                                cx={this.state.xScale(this.props.dateThreshold)}
-                                cy={this.state.yScale(this.props.statThreshold)}
+                                cx={this.props.xScale(this.props.dateThreshold)}
+                                cy={this.props.yScale(this.props.statThreshold)}
                                 r={4}
                                 fill={gray}
+                                className={'thresholdCircle'}
                             ></circle>
                         </g>
                     </g>
