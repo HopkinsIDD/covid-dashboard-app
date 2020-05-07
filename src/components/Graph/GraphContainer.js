@@ -145,6 +145,9 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
+      const scenarioTitleList = this.props.scenarioList.map( scenario => {
+        return scenario.name.replace('_', ' ');
+    })
     //   const { scenarioList, width } = this.props;
     //   const adjWidth = scenarioList.length === 2 ? width / 2 : width;
       return (
@@ -154,22 +157,40 @@ class GraphContainer extends Component {
               <div className="y-axis-label titleNarrow">
                   {this.props.yAxisLabel}
               </div>
-              <div className="row resetRow">
-                  {/* <div className="col-1"></div> */}
+              <div className="resetRow graph-title-row">
+                <div style={{'width': `${margin.yAxis}px`}}></div>
+                {scenarioTitleList.map((scenarioTitle, i) => {
+                    return (this.props.scenarioList && scenarioTitleList.length > 1) ? 
+                            <div style={{'width': `${this.props.width - margin.right}px`}}>
+                                <p className="scenario-title titleNarrow">
+                                    {scenarioTitle}
+                                </p>
+                            </div>
+                         :
+                            <div style={{'width': `${this.props.width - margin.right}px`}}>
+                                <p className="scenario-title titleNarrow">
+                                    {scenarioTitle}
+                                </p>
+                            </div>
+                } )}
+            </div>
+              <div className="resetRow graph-title-row callout-row">
+                <div style={{'width': `${margin.yAxis}px`}}></div>
                     {children.map( (child, i) => {
                         return (
                             (this.props.scenarioList && this.props.scenarioList.length === 2) ?
                                 <ThresholdLabel
                                     key={`${child.key}-label`}
-                                    classProps={'col-5 filter-label threshold-label callout'}
+                                    classProps={'filter-label threshold-label callout'}
                                     statThreshold={this.props.statThreshold}
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}
                                 />
                             :
+
                                 <ThresholdLabel
                                     key={`${child.key}-label`}
-                                    classProps={'col-11 filter-label threshold-label callout'}
+                                    classProps={'filter-label threshold-label callout'}
                                     statThreshold={this.props.statThreshold}
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}

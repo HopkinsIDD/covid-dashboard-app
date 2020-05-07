@@ -37,6 +37,7 @@ code {
 
 .callout {
   font-family: 'Roboto Mono', monospace;
+  padding-right: 20px;
 }
 
 ul {
@@ -79,6 +80,7 @@ ul {
 .scenario-title {
   text-align: center;
   margin-bottom: 0px;
+  font-size: 1rem;
 }
 
 .filter-label {
@@ -139,6 +141,17 @@ ul {
   position: relative;
 }
 
+.graph-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.callout-row {
+  min-height: 41px;
+}
+
 .resetRow {
   margin-right: 0px !important;
   margin-left: 0px !important;
@@ -149,8 +162,8 @@ ul {
   bottom: 0;
   left: 0;
   /* margin-left: -5px; */
-  margin-bottom: 15%;
-  font-size: 0.85rem;
+  margin-bottom: 12%;
+  font-size: 1rem;
   pointer-events: none;
   /* font-weight: bold; */
   -webkit-transform: rotate(270deg);

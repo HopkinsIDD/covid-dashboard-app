@@ -341,10 +341,10 @@ class MainContainer extends Component {
     };
 
     render() {
-        const scenarioTitleList = this.state.scenarioList.map( scenario => {
-            return scenario.name.replace('_', ' ');
-        })
-        const scenarioTitle = this.state.scenario.name.replace('_', ' ');
+        // const scenarioTitleList = this.state.scenarioList.map( scenario => {
+        //     return scenario.name.replace('_', ' ');
+        // })
+        // const scenarioTitle = this.state.scenario.name.replace('_', ' ');
         return (
             <div className="main-container">
                 <div className="container no-margin">
@@ -364,58 +364,8 @@ class MainContainer extends Component {
                             
                             <p></p>
 
-                            {/* temp title row + legend */}
-                            
-                                {
-                                    (scenarioTitleList.length === 1) ?
-                                    <div className="row">
-                                        <div className="col-3"></div>
-                                        <div className="col-6">
-                                            <p className="filter-label scenario-title">
-                                                {scenarioTitleList[0]}
-                                            </p>
-                                        </div>
-                                        {/* <div className="col-3">
-                                            <Legend />
-                                        </div> */}
-                                    </div>
-                                    :
-                                    <div className="row">
-                                        <div className="col-6">
-                                             <p className="filter-label scenario-title">
-                                                {scenarioTitleList[0]}
-                                            </p>
-                                        </div>
-                                        <div className="col-6">
-                                            <p className="filter-label scenario-title">
-                                                {scenarioTitleList[1]}
-                                            </p>
-                                        </div>
-                                        {/* <div className="col-3">
-                                            <Legend />
-                                        </div> */}
-                                    </div>
-                                }
-                                {/* {scenarioTitleList.map((scenarioTitle, i) => {
-                                    return ((scenarioTitleList.length) > 1 ? 
-                                        <div className="col-3"></div>
-                                        <div className="col-6">
-                                            <p className="filter-label scenario-title">
-                                                {scenarioTitle}
-                                            </p>
-                                        </div> :
-                                        <div className="col-3"></div>
-                                        <div className="col-6">
-                                            <p className="filter-label scenario-title">
-                                                {scenarioTitle}
-                                            </p>
-                                        </div>
-                                )} )} */ }
-
-                                
-
                             <div
-                                className="graph"
+                                className="graph resetRow"
                                 ref={ (graphEl) => { this.graphEl = graphEl } }
                                 >
                                 {this.state.dataLoaded &&
