@@ -9,13 +9,14 @@ import Severity from './Filters/Severity';
 import Sliders from './Filters/Sliders';
 // import Overlays from './Filters/Overlays';
 import { getRange } from '../utils/utils'
-import { utcParse } from 'd3-time-format'
+import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { max, maxIndex } from 'd3-array';
 import { margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
 
 const parseDate = utcParse('%Y-%m-%d')
+const formatDate = timeFormat('%Y-%m-%d')
 
 class MainContainer extends Component {
     constructor(props) {
@@ -81,7 +82,7 @@ class MainContainer extends Component {
 
         // iterate through SeriesList
         // mutates series
-        const simsOver = this.updateThreshold(
+        const simsOver = this.updateThresholdIterate(
             series,
             statThreshold,
             dates,
@@ -174,7 +175,7 @@ class MainContainer extends Component {
                 // update dateThreshold before updating statThreshold?
                 if (i === 0) statThreshold = Math.ceil(seriesMax / 1.2);
 
-                const simsOver = this.updateThreshold(
+                const simsOver = this.updateThresholdIterate(
                     newSeries,
                     statThreshold,
                     this.state.allTimeDates,
@@ -211,6 +212,26 @@ class MainContainer extends Component {
         }
     };
 
+    updateThresholdIterate = (series, statThreshold, dates, dateThreshold) => {
+        const dateIndex = dates.findIndex( date => formatDate(date) === formatDate(dateThreshold));
+        // console.log('dateThreshold', dateThreshold)
+        // console.log('dateIndex', dateIndex)
+        let simsOver = 0;
+        Object.values(series).map((sim, simIdx) => {
+            let simOver = false;
+            for (let i = 0; i < dateIndex; i++) {
+                if (sim.vals[i] > statThreshold){
+                    simsOver = simsOver + 1;
+                    simOver = true;
+                    break;
+                }
+            }
+            // console.log(`sim ${simIdx} is over is ${simOver}`)
+            simOver ? sim.over = true : sim.over = false
+        })
+        return simsOver;
+    }
+
     updateThreshold = (series, statThreshold, dates, dateThreshold) => {
         // update 'over' flag to true if sim peak surpasses statThreshold
         // returns numSims 'over' threshold
@@ -222,13 +243,15 @@ class MainContainer extends Component {
 
         let simsOver = 0;
         Object.values(series).map(sim => {
+            // calculate max once, use to find maxIndex
+            const maxVal = max(sim.vals)
             const maxIdx = maxIndex(sim.vals)
             const dateAtMax = dates[maxIdx]
             // console.log(sim.vals[dateIndex])
             // we need to keep track of whether simval at dateThreshold is over statThreshold
             // as well as whether the max is over statThreshold and occured in the past
             if (sim.vals[dateIndex] > statThreshold
-                || (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
+                || (dateAtMax < dateThreshold && maxVal > statThreshold)) {
                 simsOver = simsOver + 1;
                 return sim.over = true;
             } else {
@@ -284,11 +307,11 @@ class MainContainer extends Component {
         // const rounded = Math.ceil(i / 100) * 100;
         const copyList = Array.from(this.state.seriesList);
         const allSeriesCopy = Array.from(this.state.allTimeSeries);
-        this.updateThreshold(allSeriesCopy, thresh, allTimeDates, dateThreshold);
+        this.updateThresholdIterate(allSeriesCopy, thresh, allTimeDates, dateThreshold);
         const percExceedenceList = [];
 
         for (let i = 0; i < copyList.length; i++) {
-            const simsOver = this.updateThreshold(copyList[i], thresh, dates, dateThreshold);
+            const simsOver = this.updateThresholdIterate(copyList[i], thresh, dates, dateThreshold);
             const percExceedence = simsOver / copyList[i].length;
             percExceedenceList.push(percExceedence);
         }
@@ -305,11 +328,11 @@ class MainContainer extends Component {
         const { statThreshold, dates, allTimeDates } = this.state;
         const copyList = Array.from(this.state.seriesList);
         const allSeriesCopy = Array.from(this.state.allTimeSeries);
-        this.updateThreshold(allSeriesCopy, statThreshold, allTimeDates, thresh);
+        this.updateThresholdIterate(allSeriesCopy, statThreshold, allTimeDates, thresh);
         const percExceedenceList = [];
 
         for (let i = 0; i < copyList.length; i++) {
-            const simsOver = this.updateThreshold(copyList[i], statThreshold, dates, thresh);
+            const simsOver = this.updateThresholdIterate(copyList[i], statThreshold, dates, thresh);
             const percExceedence = simsOver / copyList[i].length;
             percExceedenceList.push(percExceedence);
         }
@@ -372,13 +395,13 @@ class MainContainer extends Component {
                                 onCountySelect={this.handleCountySelect}
                             />
                             <div className="row">
-                            <div className="col-7">
+                            <div className="col-9">
                                 <Buttons
                                     stat={this.state.stat}
                                     onButtonClick={this.handleButtonClick}
                                 />
                                 </div>
-                                <div className="col-5">
+                                <div className="col-3">
                                     <Legend />
                                 </div>
                             </div>

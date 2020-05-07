@@ -181,6 +181,7 @@ class GraphContainer extends Component {
                                     statThreshold={this.props.statThreshold}
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}
+                                    label={this.props.stat.name.toLowerCase()}
                                 />
                             :
 
@@ -190,6 +191,7 @@ class GraphContainer extends Component {
                                     statThreshold={this.props.statThreshold}
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}
+                                    label={this.props.stat.name.toLowerCase()}
                                 />
                         )
                     })}
