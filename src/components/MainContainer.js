@@ -216,19 +216,19 @@ class MainContainer extends Component {
         // returns numSims 'over' threshold
         // first find index of dates at dateThreshold
         const dateIndex = dates.indexOf(dateThreshold);
-        console.log('statThreshold', statThreshold)
-        console.log('dateThreshold', dateThreshold)
-        console.log('dateIndex', dateIndex)
+        // console.log('statThreshold', statThreshold)
+        // console.log('dateThreshold', dateThreshold)
+        // console.log('dateIndex', dateIndex)
 
         let simsOver = 0;
         Object.values(series).map(sim => {
             const maxIdx = maxIndex(sim.vals)
             const dateAtMax = dates[maxIdx]
-            console.log(sim.vals[dateIndex])
+            // console.log(sim.vals[dateIndex])
             // we need to keep track of whether simval at dateThreshold is over statThreshold
             // as well as whether the max is over statThreshold and occured in the past
-            if (sim.vals[dateIndex] > statThreshold) {
-                //|| (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
+            if (sim.vals[dateIndex] > statThreshold
+                || (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
                 simsOver = simsOver + 1;
                 return sim.over = true;
             } else {

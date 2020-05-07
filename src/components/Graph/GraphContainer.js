@@ -19,7 +19,7 @@ class GraphContainer extends Component {
   }
 
   componentDidMount() {
-      console.log('ComponentDidMount')
+    //   console.log('ComponentDidMount')
       const { width, height, seriesList, dates, scenarioList } = this.props;
       if (seriesList.length > 0) {
         const graphWidth = scenarioList.length === 2 ? width / 2 : width;
@@ -54,7 +54,7 @@ class GraphContainer extends Component {
                 yScale={scales.yScale}
             />
         )
-        console.log(child)
+        // console.log(child)
         this.setState({
             scales,
             children: [child],
@@ -76,7 +76,7 @@ class GraphContainer extends Component {
       // the way to solve this is by keeping track of scenarioChange click events and putting those in the graph keys
       // so that when the click events increment the keys change and the graph component remounts
       if (prevProp.seriesList !== this.props.seriesList) {
-            console.log('seriesList change, seriesList is', seriesList.length)
+            // console.log('seriesList change, seriesList is', seriesList.length)
             const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
             // console.log('graphWidth is', graphWidth)
             // need to adjust scale by length of scenario list

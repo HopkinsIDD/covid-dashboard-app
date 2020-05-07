@@ -31,7 +31,7 @@ class Graph extends Component {
     }
     
     componentDidMount() {
-        console.log(this.state.series)
+        // console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
     }
 
@@ -41,7 +41,7 @@ class Graph extends Component {
         // console.log('statThreshold has changed is', this.props.statThreshold !== prevProps.statThreshold)
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
-            console.log('brushing is TRUE, series diff', this.props.keyVal)
+            // console.log('brushing is TRUE, series diff', this.props.keyVal)
             const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
             const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
@@ -51,7 +51,7 @@ class Graph extends Component {
         }
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
-            console.log('brushing is FALSE, series diff', this.props.keyVal)
+            // console.log('brushing is FALSE, series diff', this.props.keyVal)
             const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
             const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
@@ -65,7 +65,7 @@ class Graph extends Component {
             this.props.stat === prevProps.stat &&
             this.props.severity === prevProps.severity &&
             (this.props.statThreshold !== prevProps.statThreshold || this.props.dateThreshold !== prevProps.dateThreshold)) {
-            console.log('threshold diff', this.props.keyVal)
+            // console.log('threshold diff', this.props.keyVal)
             const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
             const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
