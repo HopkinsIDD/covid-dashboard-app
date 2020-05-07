@@ -158,16 +158,16 @@ class GraphContainer extends Component {
                   {this.props.yAxisLabel}
               </div>
               <div className="resetRow graph-title-row">
-                <div style={{'width': `${margin.yAxis}px`}}></div>
+                <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                 {scenarioTitleList.map((scenarioTitle, i) => {
                     return (this.props.scenarioList && scenarioTitleList.length > 1) ? 
-                            <div style={{'width': `${this.props.width - margin.right}px`}}>
+                            <div style={{ width: this.props.width - margin.right}}>
                                 <p className="scenario-title titleNarrow">
                                     {scenarioTitle}
                                 </p>
                             </div>
                          :
-                            <div style={{'width': `${this.props.width - margin.right}px`}}>
+                            <div style={{ width: this.props.width - margin.right}}>
                                 <p className="scenario-title titleNarrow">
                                     {scenarioTitle}
                                 </p>
@@ -175,7 +175,7 @@ class GraphContainer extends Component {
                 } )}
             </div>
               <div className="resetRow graph-title-row callout-row">
-                <div style={{'width': `${margin.yAxis}px`}}></div>
+                <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                     {children.map( (child, i) => {
                         return (
                             (this.props.scenarioList && this.props.scenarioList.length === 2) ?
