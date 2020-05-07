@@ -238,27 +238,22 @@ class MainContainer extends Component {
     };
 
     handleScenarioClick = (i) => {
-        const copy = Array.from(this.state.scenarioList);
-        const scenarioKeys = Object.values(copy).map(scenario => scenario.key);
-
-        // add if new scenario is selected otherwise remove
-        let newScenario = i;
-        if (!scenarioKeys.includes(i.key)) {
-            copy.push(i);
-        } else {
-            copy.splice(copy.indexOf(i.key), 1);
-            // reset current scenario
-            newScenario = copy[0];
-        }
+        let newScenarios = Array.from(this.state.scenarioList);
+        const scenarioKeys = Object.values(newScenarios).map(scenario => scenario.key);
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
 
+        // new scenario being selected
+        if (!scenarioKeys.includes(i.key)) {
+            newScenarios.push(i);
+        // scenario being turned off
+        } else {
+            if (this.state.scenarioList.length > 1) {
+                newScenarios = newScenarios.filter(scenario => scenario.key !== i.key);
+            } 
+        }
         this.setState({
-            scenario: newScenario,
-            scenarioList: copy,
+            scenarioList: newScenarios,
             scenarioClickCounter: scenarioClkCntr
-        }, () => {
-            // console.log('handleScenario scenario', newScenario)
-            // console.log('handleScenario scenarioList', copy)
         })        
     };
 
