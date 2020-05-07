@@ -12,7 +12,7 @@ function ThresholdLabel(props) {
     return (
         <p className={props.classProps}>
             <span className="bold">{chance}%</span>
-            &nbsp;chance daily infections exceed&nbsp;
+            &nbsp;{`chance daily ${props.label} exceed`}&nbsp;
             <span className="bold">{val}</span>
             &nbsp;by&nbsp;
             <span className="bold">{date}</span>
