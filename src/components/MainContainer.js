@@ -222,13 +222,15 @@ class MainContainer extends Component {
 
         let simsOver = 0;
         Object.values(series).map(sim => {
+            // calculate max once, use to find maxIndex
+            const maxVal = max(sim.vals)
             const maxIdx = maxIndex(sim.vals)
             const dateAtMax = dates[maxIdx]
             // console.log(sim.vals[dateIndex])
             // we need to keep track of whether simval at dateThreshold is over statThreshold
             // as well as whether the max is over statThreshold and occured in the past
             if (sim.vals[dateIndex] > statThreshold
-                || (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
+                || (dateAtMax < dateThreshold && maxVal > statThreshold)) {
                 simsOver = simsOver + 1;
                 return sim.over = true;
             } else {
@@ -372,13 +374,13 @@ class MainContainer extends Component {
                                 onCountySelect={this.handleCountySelect}
                             />
                             <div className="row">
-                            <div className="col-7">
+                            <div className="col-9">
                                 <Buttons
                                     stat={this.state.stat}
                                     onButtonClick={this.handleButtonClick}
                                 />
                                 </div>
-                                <div className="col-5">
+                                <div className="col-3">
                                     <Legend />
                                 </div>
                             </div>
