@@ -225,7 +225,7 @@ class Graph extends Component {
     experimentalMouseMove = (event) => {
         // console.log(clientPoint(event.target))
         // event.preventDefault();
-        console.log(event)
+        // console.log(event)
         // const mouse = clientPoint(event.target);
         // console.log(mouse)
         // const xm = this.state.xScale.invert(mouse[0]);
