@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
-import Graph from './Graph/Graph';
-import Brush from './Filters/Brush';
-import ThresholdLabel from './Graph/ThresholdLabel';
-import Legend from './Graph/Legend';
-import Buttons from './Filters/Buttons';
-import Scenarios from './Filters/Scenarios';
-import Severity from './Filters/Severity';
-import Sliders from './Filters/Sliders';
-// import Overlays from './Filters/Overlays';
+import Search from './Search'
+import Graph from './Graph/Graph'
+import Brush from './Filters/Brush'
+import ThresholdLabel from './Graph/ThresholdLabel'
+import Legend from './Graph/Legend'
+import Buttons from './Filters/Buttons'
+import Scenarios from './Filters/Scenarios'
+import Severity from './Filters/Severity'
+import Sliders from './Filters/Sliders'
+// import Overlays from './Filters/Overlays'
 import { getRange } from '../utils/utils'
 import { utcParse } from 'd3-time-format'
 import { timeDay } from 'd3-time'
-import { max, maxIndex } from 'd3-array';
-const dataset = require('../store/geo06085.json');
+import { max, maxIndex } from 'd3-array'
+const dataset = require('../store/geo06085.json')
 
 const parseDate = utcParse('%Y-%m-%d')
 
@@ -129,7 +130,8 @@ class MainContainer extends Component {
         if (this.state.stat !== prevState.stat ||
             this.state.scenario !== prevState.scenario ||
             this.state.severity !== prevState.severity ||
-            this.state.dateRange !== prevState.dateRange) {
+            this.state.dateRange !== prevState.dateRange ||
+            this.state.dataset !== prevState.dataset) {
 
             const { dataset, stat, scenario, severity } = this.state;
             const newSeries = Array.from(
@@ -229,21 +231,15 @@ class MainContainer extends Component {
         return simsOver;
     }
 
-    // // update 'over' flag to true if sim peak surpasses statThreshold	
-    //     // returns numSims 'over' threshold	
-    //     let simsOver = 0;	
-    //     Object.values(series).map(sim => {	
-    //       const simPeak = Math.max.apply(null, sim.vals);	
-    //       const simPeakDate = dates[sim.vals.indexOf(simPeak)];	
-
-    //       if (simPeak > statThreshold && simPeakDate < dateThreshold) {	
-    //           simsOver = simsOver + 1;	
-    //           return sim.over = true;	
-    //       } else {	
-    //           return sim.over = false;	
-    //       };	
-    //     })	
-    //     return simsOver;
+    handleCountySelect = (i) => {
+        console.log('main', i)
+        // uncomment when public model files are hooked up
+        // this.setState({dataset: i})
+    }
+    
+    handleUpload = (i) => {
+        this.setState({dataset: i})
+    }
 
     handleButtonClick = (i) => {
         const yAxisLabel = `Number of Daily ${i.name}`;
@@ -267,9 +263,6 @@ class MainContainer extends Component {
         this.setState({
             scenario: newScenario,
             scenarioList: copy,
-        }, () => {
-            console.log('handleScenario scenario', newScenario)
-            console.log('handleScenario scenarioList', copy)
         })        
     };
 
@@ -316,7 +309,6 @@ class MainContainer extends Component {
     }
 
     handleBrushRange = (i) => {
-        // console.log(i)
         this.setState({
             dateRange: i
         });
@@ -357,13 +349,17 @@ class MainContainer extends Component {
                 <div className="container no-margin">
                     <div className="row">
                         <div className="col-9">
+                            <Search 
+                                stat={this.state.stat}
+                                onFileUpload={this.handleUpload}
+                                onCountySelect={this.handleCountySelect}
+                            />
                             <Buttons
                                 stat={this.state.stat}
                                 onButtonClick={this.handleButtonClick}
                                 />
                             <p></p>
 
-                            {/* temp title row + legend */}
                             <div className="row">
                                 <div className="col-3"></div>
                                 <div className="col-6">
@@ -424,10 +420,13 @@ class MainContainer extends Component {
                                 }
                             </div>
                         </div>
-                        <div className="col-3">
+                        <div className="col-3 filters">
                             <h5>Scenarios
                                 <div className="tooltip">&nbsp;&#9432;
-                                    <span className="tooltip-text">There are 3 intervention scenarios for model simulations for comparison.</span>
+                                    <span className="tooltip-text">
+                                    There are 3 intervention scenarios for model
+                                    simulations for comparison.
+                                    </span>
                                 </div>
                             </h5>
                             
@@ -447,7 +446,11 @@ class MainContainer extends Component {
                             <h5>Parameters</h5>
                             <div className="param-header">Severity
                                 <div className="tooltip">&nbsp;&#9432;
-                                    <span className="tooltip-text">There are three levels of severity (high, medium, low) based on Infection-fatality-ratio (IFR) and hospitalization rate.</span>
+                                    <span className="tooltip-text">
+                                    There are three levels of severity (high, medium, 
+                                    low) based on Infection-fatality-ratio (IFR) and 
+                                    hospitalization rate.
+                                    </span>
                                 </div>
                             </div>
                             <Severity 

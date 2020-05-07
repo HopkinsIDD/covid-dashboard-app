@@ -9,9 +9,9 @@ export const blue = '#1f90db';
 export const gray = '#9b9b9b';
 
 export const SCENARIOS = [
-    {'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled'},
-    {'id': 2, 'key': 'USA_Lockdown1918', 'name': 'USA_Lockdown1918'},
-    {'id': 3, 'key': 'USA_LockdownUK', 'name': 'USA_LockdownUK'},
+    {'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled', 'checked': false, 'disabled': false},
+    {'id': 2, 'key': 'USA_Lockdown1918', 'name': 'USA_Lockdown1918', 'checked': false, 'disabled': false},
+    {'id': 3, 'key': 'USA_LockdownUK', 'name': 'USA_LockdownUK', 'checked': false, 'disabled': false},
 ];
 
 export const STATS = [
@@ -28,18 +28,11 @@ export const LEVELS = [
     {'id': 3, 'key': 'low', 'name': '0.25% IFR, 2.5% hospitalization rate'},
 ];
 
+// public county model files on github
+const baseUrl = 'https://raw.githubusercontent.com/';
 export const COUNTIES = [
-    {'GEOID': '06067', 'NAME': 'Sacramento County', 'USPS': 'CA'},
-    {'GEOID': '06081', 'NAME': 'San Mateo County', 'USPS': 'CA'},
-    {'GEOID': '06085', 'NAME': 'Santa Clara County', 'USPS': 'CA'},
-    {'GEOID': '06071', 'NAME': 'San Bernardino County', 'USPS': 'CA'},
-    {'GEOID': '06073', 'NAME': 'San Diego County', 'USPS': 'CA'},
-    {'GEOID': '10001', 'NAME': 'Lee County', 'USPS': 'AL'},
-    {'GEOID': '10201', 'NAME': 'Tuskaloosa County', 'USPS': 'AL'},    
-    {'GEOID': '10301', 'NAME': 'DeKalb County', 'USPS': 'AL'},
-    {'GEOID': '10401', 'NAME': 'Jefferson County', 'USPS': 'AL'},
-    {'GEOID': '10501', 'NAME': 'Clay County', 'USPS': 'AL'},
-    {'GEOID': '10601', 'NAME': 'Coffee County', 'USPS': 'AL'},
+    {'geoid': '06085', 'name': 'Santa Clara County', 'usps': 'CA', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
+    {'geoid': '10001', 'name': 'Lee County', 'usps': 'AL', 'path': baseUrl + 'HopkinsIDD/COVIDScenarioPipeline/master/sample_data/geoid-params.csv'},
 ];
 
 export const COLORS = {
