@@ -84,7 +84,7 @@ class GraphContainer extends Component {
             const scales = this.getScales(seriesList, dates, graphWidth, height);
 
             // console.log('componentDidUpdate Series List - scenarioList change');
-            const scenarioChange = true;
+            // const scenarioChange = true;
             for (let i = 0; i < scenarioList.length; i++) {
                 const child = {
                     'key': scenarioList[i].key,

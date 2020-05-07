@@ -3,9 +3,8 @@ import Axis from './Axis'
 // import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line } from 'd3-shape'
 // import { max, extent } from 'd3-array'
-import { select, clientPoint } from 'd3-selection'
+import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
-import { transition } from 'd3-transition'
 import { margin, red, green, blue, gray, lightgray } from '../../utils/constants'
 
 class Graph extends Component {
@@ -42,7 +41,7 @@ class Graph extends Component {
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             // console.log('brushing is TRUE, series diff', this.props.keyVal)
-            const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
+            const { series, dates, width } = this.props;
             const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
 
@@ -52,7 +51,7 @@ class Graph extends Component {
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
             // console.log('brushing is FALSE, series diff', this.props.keyVal)
-            const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
+            const { series, dates, width } = this.props;
             const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
             
@@ -66,7 +65,7 @@ class Graph extends Component {
             this.props.severity === prevProps.severity &&
             (this.props.statThreshold !== prevProps.statThreshold || this.props.dateThreshold !== prevProps.dateThreshold)) {
             // console.log('threshold diff', this.props.keyVal)
-            const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
+            const { series, dates, width } = this.props;
             const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
             
@@ -90,7 +89,7 @@ class Graph extends Component {
         })
         // const updatedScales = this.calculateSimPaths(series, dates);
         // generate simPaths from lineGenerator
-        const simPaths = series.map( (d,i) => {
+        const simPaths = series.map( (d) => {
             // console.log(i, typeof(d.vals))
             return lineGenerator(d.vals)
         })
@@ -114,7 +113,7 @@ class Graph extends Component {
             lineGenerator.y(d => this.props.yScale(d))
           
             // generate simPaths from lineGenerator
-            const simPaths = series.map( (d,i) => {
+            const simPaths = series.map( (d) => {
                 // console.log(i, typeof(d.vals))
                 return lineGenerator(d.vals)
             })
@@ -218,7 +217,7 @@ class Graph extends Component {
         this.setState({ hoveredSimPathId: index })
     }
 
-    handleMouseLeave = (event, index) => {
+    handleMouseLeave = () => {
         this.setState({ hoveredSimPathId: null })
     }
 
@@ -266,7 +265,7 @@ class Graph extends Component {
                             width={this.state.width - margin.left - margin.right}
                             height={this.state.height - margin.bottom - margin.top}
                             fill={'#f6f5f5'}
-                            onMouseEnter={(e) => console.log('entered')}
+                            onMouseEnter={() => console.log('entered')}
                             onMouseMove={(e) => this.experimentalMouseMove(e)}
                         />
                         {

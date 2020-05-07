@@ -59,14 +59,14 @@ class Brush extends Component {
     if (this.props.series !== prevProps.series) {
 
       const { series, dates } = this.props;
-      const { xScale, yScale, lineGenerator, width, height } = prevState;
+      const { lineGenerator } = prevState;
 
       if (this.simPathsRef.current) {
         // update scale and data
         const updatedScales = this.calculateSimPaths(series, dates)
       
         // generate simPaths from lineGenerator
-        const simPaths = series.map( (d,i) => {
+        const simPaths = series.map( (d) => {
             // console.log(i, typeof(d.vals))
             return lineGenerator(d.vals)
         })
@@ -105,10 +105,10 @@ class Brush extends Component {
   }
 
   drawSimPaths = (series, dates) => {
-    const { xScale, yScale, lineGenerator, width, height } = this.state;
+    const { lineGenerator } = this.state;
     const updatedScales = this.calculateSimPaths(series, dates);
     // generate simPaths from lineGenerator
-    const simPaths = series.map( (d,i) => {
+    const simPaths = series.map( (d) => {
         // console.log(i, typeof(d.vals))
         return lineGenerator(d.vals)
     })

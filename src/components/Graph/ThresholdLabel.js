@@ -1,5 +1,5 @@
 import React from 'react';
-import { addCommas, readableDate } from '../../utils/utils.js';
+import { addCommas } from '../../utils/utils.js';
 import { timeFormat } from 'd3-time-format';
 
 const getReadableDate = timeFormat('%b %d, %Y');
