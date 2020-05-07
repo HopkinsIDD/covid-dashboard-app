@@ -139,12 +139,17 @@ ul {
   position: relative;
 }
 
+.resetRow {
+  margin-right: 0px !important;
+  margin-left: 0px !important;
+}
+
 .y-axis-label {
   position: absolute;
   bottom: 0;
   left: 0;
-  margin-left: -5px;
-  margin-bottom: 20%;
+  /* margin-left: -5px; */
+  margin-bottom: 15%;
   font-size: 0.85rem;
   pointer-events: none;
   /* font-weight: bold; */

@@ -168,7 +168,11 @@ class Brush extends Component {
   render() {
     return (
       <div className='brush-wrapper'>
-        <svg width={this.state.width} height={this.state.height}>
+        <svg 
+          width={this.state.width} 
+          height={this.state.height} 
+          transform={`translate(${this.props.x},${this.props.y})`}
+        >
           <g>
             <g ref={this.xAxisRef}  transform={`translate(0, ${this.state.height - margin.bottom})`} />
             <g ref={this.simPathsRef}>

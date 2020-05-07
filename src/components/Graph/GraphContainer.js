@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Graph from '../Graph/Graph';
 import Axis from './Axis';
 import ThresholdLabel from '../Graph/ThresholdLabel';
@@ -150,16 +150,18 @@ class GraphContainer extends Component {
       return (
                
           <div className="graph-wrapper">
+              <div className="col-1"></div>
               <div className="y-axis-label titleNarrow">
                   {this.props.yAxisLabel}
               </div>
-              <div className="row">
+              <div className="row resetRow">
+                  {/* <div className="col-1"></div> */}
                     {children.map( (child, i) => {
                         return (
                             (this.props.scenarioList && this.props.scenarioList.length === 2) ?
                                 <ThresholdLabel
                                     key={`${child.key}-label`}
-                                    classProps={'col-6 filter-label threshold-label callout'}
+                                    classProps={'col-5 filter-label threshold-label callout'}
                                     statThreshold={this.props.statThreshold}
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}
@@ -167,28 +169,34 @@ class GraphContainer extends Component {
                             :
                                 <ThresholdLabel
                                     key={`${child.key}-label`}
-                                    classProps={'col-12 filter-label threshold-label callout'}
+                                    classProps={'col-11 filter-label threshold-label callout'}
                                     statThreshold={this.props.statThreshold}
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}
                                 />
                         )
                     })}
-              </div>
-              <div className="row">
+                </div>
+                <div className="row resetRow">
                   {this.state.scaleDomains &&
-                  <svg 
-                  width={this.props.width}
-                  height={this.props.height} 
-                    >
+                  <Fragment>
+                        <svg 
+                            width={margin.yAxis}
+                            height={this.props.height} 
+                        >
                         <Axis 
-                        width={this.state.graphWidth}
-                        height={this.props.height}
-                        orientation={'left'}
-                        scale={this.state.scales.yScale}
-                        x={margin.left}
-                        y={0}
+                            width={this.state.graphWidth}
+                            height={this.props.height}
+                            orientation={'left'}
+                            scale={this.state.scales.yScale}
+                            x={margin.yAxis}
+                            y={0}
                         />
+                        </svg>
+                        <svg 
+                            width={this.props.width}
+                            height={this.props.height} 
+                        >
                         {children.map(child => {
                             return (
                                 <g key={`${child.key}-graph`}>
@@ -198,8 +206,9 @@ class GraphContainer extends Component {
                             
                         })}
                     </svg>
-                  }
-              </div>
+                </Fragment>
+                }
+                </div>
           </div>
       )
   }

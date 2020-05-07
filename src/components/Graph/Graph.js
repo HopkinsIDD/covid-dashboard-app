@@ -3,7 +3,7 @@ import Axis from './Axis'
 // import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line } from 'd3-shape'
 // import { max, extent } from 'd3-array'
-import { select } from 'd3-selection'
+import { select, clientPoint } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { transition } from 'd3-transition'
 import { margin, red, green, blue, gray, lightgray } from '../../utils/constants'
@@ -65,6 +65,7 @@ class Graph extends Component {
 
         if (!this.props.brushActive &&
             this.props.stat === prevProps.stat &&
+            this.props.severity === prevProps.severity &&
             (this.props.statThreshold !== prevProps.statThreshold || this.props.dateThreshold !== prevProps.dateThreshold)) {
             console.log('threshold diff', this.props.keyVal)
             const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
@@ -223,6 +224,23 @@ class Graph extends Component {
         this.setState({ hoveredSimPathId: null })
     }
 
+    experimentalMouseMove = (event) => {
+        // console.log(clientPoint(event.target))
+        // event.preventDefault();
+        console.log(event)
+        // const mouse = clientPoint(event.target);
+        // console.log(mouse)
+        // const xm = this.state.xScale.invert(mouse[0]);
+        // const ym = this.state.yScale.invert(mouse[1]);
+        // const i1 = d3.bisectLeft(data.dates, xm, 1);
+        // const i0 = i1 - 1;
+        // const i = xm - data.dates[i0] > data.dates[i1] - xm ? i1 : i0;
+        // const s = d3.least(data.series, d => Math.abs(d.values[i] - ym));
+        // path.attr("stroke", d => d === s ? null : "#ddd").filter(d => d === s).raise();
+        // dot.attr("transform", `translate(${x(data.dates[i])},${y(s.values[i])})`);
+        // dot.select("text").text(s.name);   
+    }
+
     render() {
 
         return (
@@ -233,24 +251,25 @@ class Graph extends Component {
                     transform={`translate(${this.props.x}, ${this.props.y})`}
                     ref={this.simPathsRef}
                 >
-                    <g>
-                        
+                    <g> 
+                        { // debug graph red outline
+                        /* <rect
+                            x={0}
+                            y={0}
+                            width={this.state.width}
+                            height={this.state.height}
+                            fillOpacity={0}
+                            stroke={'#ff0000'}
+                            strokeWidth='2'
+                        /> */}
                         <rect 
                             x={margin.left}
                             y={margin.top}
                             width={this.state.width - margin.left - margin.right}
                             height={this.state.height - margin.bottom - margin.top}
                             fill={'#f6f5f5'}
-                        />
-                        <rect
-                            x={0}
-                            y={0}
-                            width={this.state.width}
-                            height={this.state.height}
-                            // fill={'#ff0000'}
-                            fillOpacity={0}
-                            stroke={'#ff0000'}
-                            strokeWidth='2'
+                            onMouseEnter={(e) => console.log('entered')}
+                            onMouseMove={(e) => this.experimentalMouseMove(e)}
                         />
                         {
                         // visible simPaths

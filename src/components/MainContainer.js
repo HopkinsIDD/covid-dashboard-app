@@ -13,6 +13,7 @@ import { getRange } from '../utils/utils'
 import { utcParse } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { max, maxIndex } from 'd3-array';
+import { margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
 
 const parseDate = utcParse('%Y-%m-%d')
@@ -109,7 +110,7 @@ class MainContainer extends Component {
         
         // out of loop
         const yAxisLabel = `Number of ${stat.name} per Day`;
-        const graphW = this.graphEl.clientWidth;
+        const graphW = this.graphEl.clientWidth - margin.yAxis;
         const graphH = this.graphEl.clientHeight;
 
         const percExceedenceList = [percExceedence]
@@ -447,6 +448,8 @@ class MainContainer extends Component {
                                         dates={this.state.allTimeDates}
                                         width={this.state.graphW}
                                         height={80}
+                                        x={margin.yAxis}
+                                        y={0}
                                         dateRange={this.state.dateRange}
                                         dateThreshold={this.state.dateThreshold}
                                         statThreshold={this.state.statThreshold}
