@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+<<<<<<< HEAD
 // import Graph from './Graph/Graph';
 import GraphContainer from './Graph/GraphContainer';
 import Brush from './Filters/Brush';
@@ -15,6 +16,23 @@ import { timeDay } from 'd3-time'
 import { max, maxIndex } from 'd3-array';
 import { margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
+=======
+import Search from './Search'
+import Graph from './Graph/Graph'
+import Brush from './Filters/Brush'
+import ThresholdLabel from './Graph/ThresholdLabel'
+import Legend from './Graph/Legend'
+import Buttons from './Filters/Buttons'
+import Scenarios from './Filters/Scenarios'
+import Severity from './Filters/Severity'
+import Sliders from './Filters/Sliders'
+// import Overlays from './Filters/Overlays'
+import { getRange } from '../utils/utils'
+import { utcParse } from 'd3-time-format'
+import { timeDay } from 'd3-time'
+import { max, maxIndex } from 'd3-array'
+const dataset = require('../store/geo06085.json')
+>>>>>>> master
 
 const parseDate = utcParse('%Y-%m-%d')
 
@@ -142,7 +160,8 @@ class MainContainer extends Component {
         if (this.state.stat !== prevState.stat ||
             this.state.scenarioList !== prevState.scenarioList ||
             this.state.severity !== prevState.severity ||
-            this.state.dateRange !== prevState.dateRange) {
+            this.state.dateRange !== prevState.dateRange ||
+            this.state.dataset !== prevState.dataset) {
 
             const filteredSeriesList = []
             const percExceedenceList = []
@@ -216,14 +235,19 @@ class MainContainer extends Component {
         // returns numSims 'over' threshold
         // first find index of dates at dateThreshold
         const dateIndex = dates.indexOf(dateThreshold);
+        console.log('statThreshold', statThreshold)
+        console.log('dateThreshold', dateThreshold)
+        console.log('dateIndex', dateIndex)
 
         let simsOver = 0;
         Object.values(series).map(sim => {
             const maxIdx = maxIndex(sim.vals)
             const dateAtMax = dates[maxIdx]
+            console.log(sim.vals[dateIndex])
             // we need to keep track of whether simval at dateThreshold is over statThreshold
             // as well as whether the max is over statThreshold and occured in the past
-            if (sim.vals[dateIndex] > statThreshold || (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
+            if (sim.vals[dateIndex] > statThreshold) {
+                //|| (dateAtMax < dates[dateIndex] && max(sim.vals) > statThreshold)) {
                 simsOver = simsOver + 1;
                 return sim.over = true;
             } else {
@@ -231,6 +255,16 @@ class MainContainer extends Component {
             }
         })
         return simsOver;
+    }
+
+    handleCountySelect = (i) => {
+        console.log('main', i)
+        // uncomment when public model files are hooked up
+        // this.setState({dataset: i})
+    }
+    
+    handleUpload = (i) => {
+        this.setState({dataset: i})
     }
 
     handleButtonClick = (i) => {
@@ -255,6 +289,8 @@ class MainContainer extends Component {
         this.setState({
             scenarioList: newScenarios,
             scenarioClickCounter: scenarioClkCntr
+            // scenario: newScenario,
+            // scenarioList: copy,
         })        
     };
 
@@ -306,7 +342,6 @@ class MainContainer extends Component {
     }
 
     handleBrushRange = (i) => {
-        // console.log(i)
         this.setState({
             dateRange: i
         });
@@ -350,6 +385,17 @@ class MainContainer extends Component {
                 <div className="container no-margin">
                     <div className="row">
                         <div className="col-9">
+                            <Search 
+                                stat={this.state.stat}
+                                onFileUpload={this.handleUpload}
+                                onCountySelect={this.handleCountySelect}
+                            />
+                            <Buttons
+                                stat={this.state.stat}
+                                onButtonClick={this.handleButtonClick}
+                                />
+                            <p></p>
+
                             <div className="row">
                             <div className="col-7">
                                 <Buttons
@@ -411,10 +457,13 @@ class MainContainer extends Component {
                                 }
                             </div>
                         </div>
-                        <div className="col-3">
+                        <div className="col-3 filters">
                             <h5>Scenarios
                                 <div className="tooltip">&nbsp;&#9432;
-                                    <span className="tooltip-text">There are 3 intervention scenarios for model simulations for comparison.</span>
+                                    <span className="tooltip-text">
+                                    There are 3 intervention scenarios for model
+                                    simulations for comparison.
+                                    </span>
                                 </div>
                             </h5>
                             
@@ -434,7 +483,11 @@ class MainContainer extends Component {
                             <h5>Parameters</h5>
                             <div className="param-header">Severity
                                 <div className="tooltip">&nbsp;&#9432;
-                                    <span className="tooltip-text">There are three levels of severity (high, medium, low) based on Infection-fatality-ratio (IFR) and hospitalization rate.</span>
+                                    <span className="tooltip-text">
+                                    There are three levels of severity (high, medium, 
+                                    low) based on Infection-fatality-ratio (IFR) and 
+                                    hospitalization rate.
+                                    </span>
                                 </div>
                             </div>
                             <Severity 

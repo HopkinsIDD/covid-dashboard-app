@@ -31,9 +31,7 @@ class Graph extends Component {
     }
     
     componentDidMount() {
-        console.log(this.props.keyVal, 'ComponentDidMount')
-        // console.log('ComponentDidMount')
-        // console.log(this.state.series)
+        console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
     }
 
