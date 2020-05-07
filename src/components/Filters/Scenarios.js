@@ -76,7 +76,7 @@ class Scenarios extends Component {
 
     render() {
         return (
-            this.state.scenarios.map(scenario => {
+            this.state.scenariosObj.map(scenario => {
                 return (
                     <div
                         className="form-check"

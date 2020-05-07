@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-<<<<<<< HEAD
-// import Graph from './Graph/Graph';
 import GraphContainer from './Graph/GraphContainer';
+import Search from './Search'
 import Brush from './Filters/Brush';
-// import ThresholdLabel from './Graph/ThresholdLabel';
 import Legend from './Graph/Legend';
 import Buttons from './Filters/Buttons';
 import Scenarios from './Filters/Scenarios';
@@ -16,23 +14,6 @@ import { timeDay } from 'd3-time'
 import { max, maxIndex } from 'd3-array';
 import { margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
-=======
-import Search from './Search'
-import Graph from './Graph/Graph'
-import Brush from './Filters/Brush'
-import ThresholdLabel from './Graph/ThresholdLabel'
-import Legend from './Graph/Legend'
-import Buttons from './Filters/Buttons'
-import Scenarios from './Filters/Scenarios'
-import Severity from './Filters/Severity'
-import Sliders from './Filters/Sliders'
-// import Overlays from './Filters/Overlays'
-import { getRange } from '../utils/utils'
-import { utcParse } from 'd3-time-format'
-import { timeDay } from 'd3-time'
-import { max, maxIndex } from 'd3-array'
-const dataset = require('../store/geo06085.json')
->>>>>>> master
 
 const parseDate = utcParse('%Y-%m-%d')
 
@@ -407,7 +388,6 @@ class MainContainer extends Component {
                                     <Legend />
                                 </div>
                             </div>
-                            
                             <p></p>
 
                             <div
