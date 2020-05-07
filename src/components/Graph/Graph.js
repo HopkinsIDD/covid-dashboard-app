@@ -38,9 +38,9 @@ class Graph extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log('ComponentDidUpdate', this.props.keyVal)
-        console.log('series has changed is', this.props.series !== prevProps.series)
-        console.log('statThreshold has changed is', this.props.statThreshold !== prevProps.statThreshold)
+        // console.log('ComponentDidUpdate', this.props.keyVal)
+        // console.log('series has changed is', this.props.series !== prevProps.series)
+        // console.log('statThreshold has changed is', this.props.statThreshold !== prevProps.statThreshold)
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             console.log('brushing is TRUE, series diff', this.props.keyVal)
@@ -63,7 +63,9 @@ class Graph extends Component {
             // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
         }
 
-        if (!this.props.brushActive && (this.props.statThreshold !== prevProps.statThreshold || this.props.dateThreshold !== prevProps.dateThreshold)) {
+        if (!this.props.brushActive &&
+            this.props.stat === prevProps.stat &&
+            (this.props.statThreshold !== prevProps.statThreshold || this.props.dateThreshold !== prevProps.dateThreshold)) {
             console.log('threshold diff', this.props.keyVal)
             const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
             const { lineGenerator } = prevState;
