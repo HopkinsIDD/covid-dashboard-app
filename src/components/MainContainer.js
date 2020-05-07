@@ -371,12 +371,6 @@ class MainContainer extends Component {
                                 onFileUpload={this.handleUpload}
                                 onCountySelect={this.handleCountySelect}
                             />
-                            <Buttons
-                                stat={this.state.stat}
-                                onButtonClick={this.handleButtonClick}
-                                />
-                            <p></p>
-
                             <div className="row">
                             <div className="col-7">
                                 <Buttons
