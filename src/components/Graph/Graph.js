@@ -39,10 +39,19 @@ class Graph extends Component {
         // console.log('ComponentDidUpdate', this.props.keyVal)
         // console.log('series has changed is', this.props.series !== prevProps.series)
         // console.log('statThreshold has changed is', this.props.statThreshold !== prevProps.statThreshold)
+        console.log(this.props.width, this.props.height)
+        if (this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
+            console.log('componentDidUpdate width height change');
+            const { series, dates, width } = this.props;
+            const { lineGenerator } = prevState;
+            //TODO: update based on resizing width and height
+
+            this.updateSimPaths(series, dates, lineGenerator, true, width);
+        }
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             // console.log('brushing is TRUE, series diff', this.props.keyVal)
-            const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
+            const { series, dates, width} = this.props;
             const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
 
@@ -52,7 +61,7 @@ class Graph extends Component {
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
             // console.log('brushing is FALSE, series diff', this.props.keyVal)
-            const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
+            const { series, dates, width } = this.props;
             const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
             
@@ -66,7 +75,7 @@ class Graph extends Component {
             this.props.severity === prevProps.severity &&
             (this.props.statThreshold !== prevProps.statThreshold || this.props.dateThreshold !== prevProps.dateThreshold)) {
             // console.log('threshold diff', this.props.keyVal)
-            const { series, dates, statThreshold, dateThreshold, width, xScale, yScale } = this.props;
+            const { series, dates, width } = this.props;
             const { lineGenerator } = prevState;
             //TODO: update based on resizing width and height
             
@@ -244,8 +253,8 @@ class Graph extends Component {
         return (
             // <div className="graph-area">
                 <g 
-                    width={this.state.width} 
-                    height={this.state.height}
+                    width={this.props.width} 
+                    height={this.props.height}
                     transform={`translate(${this.props.x}, ${this.props.y})`}
                     ref={this.simPathsRef}
                 >
@@ -254,8 +263,8 @@ class Graph extends Component {
                         /* <rect
                             x={0}
                             y={0}
-                            width={this.state.width}
-                            height={this.state.height}
+                            width={this.props.width}
+                            height={this.props.height}
                             fillOpacity={0}
                             stroke={'#ff0000'}
                             strokeWidth='2'
@@ -263,8 +272,8 @@ class Graph extends Component {
                         <rect 
                             x={margin.left}
                             y={margin.top}
-                            width={this.state.width - margin.left - margin.right}
-                            height={this.state.height - margin.bottom - margin.top}
+                            width={this.props.width - margin.left - margin.right}
+                            height={this.props.height - margin.bottom - margin.top}
                             fill={'#f6f5f5'}
                             onMouseEnter={(e) => console.log('entered')}
                             onMouseMove={(e) => this.experimentalMouseMove(e)}
@@ -335,12 +344,12 @@ class Graph extends Component {
                         <Axis 
                             keyVal={this.props.keyVal}
                             ref={this.axisRef}
-                            width={this.state.width}
-                            height={this.state.height}
+                            width={this.props.width}
+                            height={this.props.height}
                             orientation={'bottom'}
                             scale={this.props.xScale}
                             x={0}
-                            y={this.state.height - margin.bottom}
+                            y={this.props.height - margin.bottom}
                         />
                     </g>
                 </g>

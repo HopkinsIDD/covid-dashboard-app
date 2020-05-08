@@ -37,7 +37,6 @@ code {
 
 .callout {
   font-family: 'Roboto Mono', monospace;
-  padding: 0px 40px;
 }
 
 ul {
@@ -97,6 +96,7 @@ ul {
 
 .threshold-label {
   text-align: center;
+  padding: 0px 40px;
 }
 
 .bold {
