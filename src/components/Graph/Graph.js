@@ -37,15 +37,12 @@ class Graph extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         // console.log('ComponentDidUpdate', this.props.keyVal)
-        // console.log('series has changed is', this.props.series !== prevProps.series)
-        // console.log('statThreshold has changed is', this.props.statThreshold !== prevProps.statThreshold)
-        // console.log(this.props.width, this.props.height)
-        if (this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
-            console.log('componentDidUpdate width height change');
+        if (this.props.xScale !== prevProps.xScale || this.props.yScale !== prevProps.yScale) {
+            // console.log('componentDidUpdate scale changed')
             const { series, dates, width } = this.props;
             const { lineGenerator } = prevState;
 
-            this.updateSimPaths(series, dates, lineGenerator, true, width);
+            this.updateSimPaths(series, dates, lineGenerator, false, width);
         }
 
         if (this.props.series !== prevProps.series && this.props.brushActive) {

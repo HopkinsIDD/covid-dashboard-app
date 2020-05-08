@@ -14,7 +14,7 @@ class Axis extends Component {
     this.drawAxis();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
     this.updateAxis();
   }
 
@@ -39,7 +39,7 @@ class Axis extends Component {
   }
 
   updateAxis = () => {
-    // console.log('componentDidUpdate', this.props.keyVal)
+    console.log('componentDidUpdate', this.props.width, this.props.height)
     if (this.axisRef.current) {
       // console.log(this.props.scale.domain())
       const axisNode = select(this.axisRef.current)
