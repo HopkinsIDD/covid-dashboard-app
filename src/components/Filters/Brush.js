@@ -4,6 +4,7 @@ import { scaleLinear, scaleUtc } from 'd3-scale'
 import { select } from 'd3-selection'
 import { line } from 'd3-shape'
 import { timeFormat } from 'd3-time-format'
+import { timeDay, timeYear } from 'd3-time'
 import { brushX } from 'd3-brush'
 import { event } from 'd3-selection'
 import { max, extent } from 'd3-array'
@@ -108,11 +109,6 @@ class Brush extends Component {
       const xAxisNode = select(this.xAxisRef.current)
       xAxisNode.call(this.xAxis);
     }
-    // this.xAxis.scale(this.state.xScale);
-    // if (this.xAxisYearRef.current) {
-    //   const xAxisNode = select(this.xAxisYearRef.current)
-    //   xAxisNode.call(this.xAxisYear);
-    // }
   }
 
   setupBrush = (lineGenerator, series, dates, width, height) => {
@@ -130,18 +126,21 @@ class Brush extends Component {
     })
 
     this.xAxis = axisBottom().scale(updatedScales.xScale)
-      .tickFormat(timeFormat('%b'))
+      .tickFormat((date,i) => {
+        // console.log(timeYear(date))
+        // console.log(i, date)
+        // console.log(timeDay.offset(date, -31))
+        // console.log(" ")
+        if (timeYear(date) < timeDay.offset(date, -31)) {
+          return timeFormat('%b')(date);
+        } else {
+          return timeFormat('%Y')(date);
+        }
+      })
       .ticks(this.state.width / 80).tickSizeOuter(0);
     if (this.xAxisRef.current) {
       select(this.xAxisRef.current).call(this.xAxis)
     }
-
-    // this.xAxisYear = axisBottom().scale(updatedScales.xScale)
-    //   .tickFormat(timeFormat('%Y'))
-    //   .ticks(2).tickSizeOuter(0);
-    // if (this.xAxisYearRef.current) {
-    //   select(this.xAxisYearRef.current).call(this.xAxisYear)
-    // }
 
     if (this.brushRef.current) {
       const brushRefNode = select(this.brushRef.current)
