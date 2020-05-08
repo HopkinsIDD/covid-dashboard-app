@@ -97,7 +97,6 @@ class GraphContainer extends Component {
         // need to adjust scale by length of scenario list
         // break these out into X and Y (X out of the loop, Y in?)
         const scales = this.getScales(seriesList, dates, graphWidth, graphHeight);
-
         this.updateGraphChildren(newChildren, scenarioList, graphWidth, graphHeight, scales);
     }
 }
@@ -165,29 +164,25 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
-      const scenarioTitleList = this.props.scenarioList.map( scenario => {
-        return scenario.name.replace('_', ' ');
-    })
-    //   const { scenarioList, width } = this.props;
-    //   const adjWidth = scenarioList.length === 2 ? width / 2 : width;
+      const { scenarioList } = this.props;
       return (
-               
           <div className="graph-wrapper">
               <div className="col-1"></div>
               <div className="y-axis-label titleNarrow">
                   {this.props.yAxisLabel}
               </div>
               <div className="resetRow graph-title-row">
-                <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
-                {scenarioTitleList.map((scenarioTitle, i) => {
-                    return (this.props.scenarioList && scenarioTitleList.length > 1) ? 
-                            <div style={{ width: this.props.width - margin.right}}>
+              <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
+                {scenarioList.map((scenario, i) => {
+                    const scenarioTitle = scenario.name.replace('_', ' ');
+                    return (this.props.scenarioList && scenarioList.length > 1) ? 
+                            <div key={scenario.key} style={{ width: this.props.width - margin.right}}>
                                 <p className="scenario-title titleNarrow">
                                     {scenarioTitle}
                                 </p>
                             </div>
                          :
-                            <div style={{ width: this.props.width - margin.right}}>
+                            <div key={scenario.key} style={{ width: this.props.width - margin.right}}>
                                 <p className="scenario-title titleNarrow">
                                     {scenarioTitle}
                                 </p>

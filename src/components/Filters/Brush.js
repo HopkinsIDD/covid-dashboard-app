@@ -120,7 +120,7 @@ class Brush extends Component {
         return updatedScales.yScale(d)
     })
     // generate simPaths from lineGenerator
-    const simPaths = series.map( (d,i) => {
+    const simPaths = series.map( (d) => {
         // console.log(i, typeof(d.vals))
         return lineGenerator(d.vals)
     })

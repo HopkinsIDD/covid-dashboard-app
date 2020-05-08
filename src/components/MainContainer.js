@@ -5,14 +5,15 @@ import Brush from './Filters/Brush';
 import Legend from './Graph/Legend';
 import Buttons from './Filters/Buttons';
 import Scenarios from './Filters/Scenarios';
-import Severity from './Filters/Severity';
+import SeverityContainer from './Filters/SeverityContainer';
 import Sliders from './Filters/Sliders';
 // import Overlays from './Filters/Overlays';
+import _ from 'lodash';
 import { getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { max, maxIndex } from 'd3-array';
-import { margin } from '../utils/constants';
+import { STATS, SCENARIOS, LEVELS, margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
 
 const parseDate = utcParse('%Y-%m-%d')
@@ -30,26 +31,12 @@ class MainContainer extends Component {
             dates: [],
             allTimeDates: [],
             yAxisLabel: '',
-            stat: {
-                'id': 1,
-                'name': 'Infections',
-                'key': 'incidI'
-            },
+            stat: STATS[0],
             geoid: '06085',
-            scenario: {
-                'id': 1,
-                'key': 'USA_Uncontrolled',
-                'name': 'USA_Uncontrolled'
-            },
-            scenarioList: [{
-                'id': 1,
-                'key': 'USA_Uncontrolled',
-                'name': 'USA_Uncontrolled'
-            }],
-            severity: {
-                'id': 1,
-                'key': 'high',
-                'name': '1% IFR, 10% hospitalization rate'}, 
+            scenario: SCENARIOS[0],
+            scenarioList: [SCENARIOS[0]],           
+            severity: _.cloneDeep(LEVELS[0]), 
+            severityList: [_.cloneDeep(LEVELS[0])],
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
@@ -77,13 +64,16 @@ class MainContainer extends Component {
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
         const dates = initialData.dates.map( d => parseDate(d));
-        const firstDate = dates[0]; //.toISOString().split('T')[0];
-        const lastDate = dates[dates.length - 1]; //.toISOString().split('T')[0];
+        const firstDate = dates[0];
+        const lastDate = dates[dates.length - 1];
         const [seriesMin, seriesMax] = getRange(series);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
+        // add scenario to severity list
+        const sevList = _.cloneDeep(this.state.severityList);
+        sevList[0].scenario = scenario.key;
+
         // iterate through SeriesList
-        // mutates series
         const simsOver = this.updateThresholdIterate(
             series,
             statThreshold,
@@ -122,8 +112,8 @@ class MainContainer extends Component {
             dataset,
             dates: newDates,
             allTimeDates,
-            // series: filteredSeries,
             seriesList: [filteredSeries],
+            severityList: sevList,
             allTimeSeries,
             seriesMax,
             seriesMin,
@@ -144,15 +134,16 @@ class MainContainer extends Component {
     componentDidUpdate(prevProp, prevState) {
         if (this.state.stat !== prevState.stat ||
             this.state.scenarioList !== prevState.scenarioList ||
-            this.state.severity !== prevState.severity ||
+            this.state.severityList !== prevState.severityList ||
             this.state.dateRange !== prevState.dateRange ||
             this.state.dataset !== prevState.dataset) {
+            console.log('componentDidUpdate')
 
             const filteredSeriesList = []
             const percExceedenceList = []
             let brushSeries
             
-            const { dataset, stat, scenarioList, severity } = this.state;
+            const { dataset, stat, severityList, scenarioList } = this.state;
             // filter series and dates by dateRange
             const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
             const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
@@ -165,13 +156,14 @@ class MainContainer extends Component {
 
             for (let i = 0; i < scenarioList.length; i++) {
                 const newSeries = Array.from(
-                    dataset[scenarioList[i].key][severity.key].series[stat.key]
+                    dataset[scenarioList[i].key][severityList[i].key].series[stat.key]
                     );
                 const filteredSeriesForStatThreshold = newSeries.map( s => {
                     const newS = {...s}
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 });
+
                 const [seriesMin, seriesMax] = getRange(filteredSeriesForStatThreshold);
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
@@ -195,11 +187,8 @@ class MainContainer extends Component {
                     return newS
                 })
                 filteredSeriesList.push(filteredSeries)
-
             }
-
             this.setState({
-                // series: filteredSeries,
                 seriesList: filteredSeriesList,
                 allTimeSeries: brushSeries,
                 dates: filteredDates,
@@ -208,9 +197,6 @@ class MainContainer extends Component {
                 seriesMin : sliderMin,
                 seriesMax : sliderMax,
                 percExceedenceList
-            }, () => {
-                // console.log('componentDidUpdate')
-                // console.log('seriesList', this.state.seriesList)
             })
         }
     };
@@ -222,7 +208,7 @@ class MainContainer extends Component {
     updateGraphDimensions = () => {
         const graphW = this.graphEl.clientWidth - margin.yAxis;
         const graphH = this.graphEl.clientHeight;
-        console.log('updating graph dimensions', graphW, graphH)
+        // console.log('updating graph dimensions', graphW, graphH)
         this.setState({ graphW, graphH });
       }
 
@@ -231,7 +217,7 @@ class MainContainer extends Component {
         // console.log('dateThreshold', dateThreshold)
         // console.log('dateIndex', dateIndex)
         let simsOver = 0;
-        Object.values(series).map((sim, simIdx) => {
+        Object.values(series).forEach((sim, simIdx) => {
             let simOver = false;
             for (let i = 0; i < dateIndex; i++) {
                 if (sim.vals[i] > statThreshold){
@@ -292,28 +278,39 @@ class MainContainer extends Component {
 
     handleScenarioClick = (i) => {
         let newScenarios = Array.from(this.state.scenarioList);
-        const scenarioKeys = Object.values(newScenarios).map(scenario => scenario.key);
+        let newSevs = _.cloneDeep(this.state.severityList);
+        const scenarioKeys = Object.values(newScenarios).map(s => s.key);
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
 
-        // new scenario being selected
+        // new scenario being selectede
         if (!scenarioKeys.includes(i.key)) {
+            // return high sev as default
+            const defaultSev = _.cloneDeep(LEVELS[0]); 
+            defaultSev.scenario = i.key;
+            newSevs.push(defaultSev)
             newScenarios.push(i);
         // scenario being turned off
         } else {
             if (this.state.scenarioList.length > 1) {
+                newSevs = newSevs.filter(sev => sev.scenario !== i.key)
                 newScenarios = newScenarios.filter(scenario => scenario.key !== i.key);
             } 
         }
         this.setState({
             scenarioList: newScenarios,
-            scenarioClickCounter: scenarioClkCntr
-            // scenario: newScenario,
-            // scenarioList: copy,
+            scenarioClickCounter: scenarioClkCntr,
+            severityList: newSevs
         })        
     };
 
-    handleSeverityClick = (i) => {
-        this.setState({severity: i});
+    handleSeveritiesClick = (i) => {
+        let newSevList = _.cloneDeep(this.state.severityList);
+        newSevList.forEach(sev => {
+            if (sev.scenario === i.scenario) {
+                return sev.key = i.key;
+            }
+        })
+        this.setState({severityList: newSevList});
     };
 
     handleStatSliderChange = (thresh) => {
@@ -394,10 +391,6 @@ class MainContainer extends Component {
     };
 
     render() {
-        // const scenarioTitleList = this.state.scenarioList.map( scenario => {
-        //     return scenario.name.replace('_', ' ');
-        // })
-        // const scenarioTitle = this.state.scenario.name.replace('_', ' ');
         return (
             <div className="main-container">
                 <div className="container no-margin">
@@ -431,14 +424,12 @@ class MainContainer extends Component {
                                         stat={this.state.stat}
                                         geoid={this.state.geoid}
                                         yAxisLabel={this.state.yAxisLabel}
-                                        // scenario={this.state.scenario}
                                         scenarioList={this.state.scenarioList}
                                         severity={this.state.severity}
                                         r0={this.state.r0}
                                         simNum={this.state.simNum}
                                         showConfBounds={this.state.showConfBounds}
                                         showActual={this.state.showActual}
-                                        // series={this.state.series}
                                         seriesList={this.state.seriesList}
                                         dates={this.state.dates}
                                         statThreshold={this.state.statThreshold}
@@ -492,18 +483,10 @@ class MainContainer extends Component {
                                 onActualClick={this.handleActualClick}
                             />                         */}
                             <h5>Parameters</h5>
-                            <div className="param-header">Severity
-                                <div className="tooltip">&nbsp;&#9432;
-                                    <span className="tooltip-text">
-                                    There are three levels of severity (high, medium, 
-                                    low) based on Infection-fatality-ratio (IFR) and 
-                                    hospitalization rate.
-                                    </span>
-                                </div>
-                            </div>
-                            <Severity 
-                                severity={this.state.severity}
-                                onSeverityClick={this.handleSeverityClick}
+                            <SeverityContainer
+                                severityList={this.state.severityList}
+                                scenarioList={this.state.scenarioList}
+                                onSeveritiesClick={this.handleSeveritiesClick}
                             />
                             <p></p>
                             <h5>Thresholds</h5>

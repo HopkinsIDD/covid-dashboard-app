@@ -5,14 +5,12 @@ class Scenarios extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            currScenario: {},
-            scenariosObj: SCENARIOS,
-            value: this.props.scenario.name,
+            scenarios: SCENARIOS,
         }
     }
 
     componentDidMount() {
-        const obj = Array.from(this.state.scenariosObj)
+        const obj = Array.from(this.state.scenarios)
 
         // update checked attribute for active scenario
         obj.map(scenario => {
@@ -76,17 +74,15 @@ class Scenarios extends Component {
 
     render() {
         return (
-            this.state.scenariosObj.map(scenario => {
+            this.state.scenarios.map(scenario => {
                 return (
                     <div
                         className="form-check"
-                        value={scenario.key}
                         key={scenario.key}>
                         <input
                             className={"form-check-input"}
                             type="checkbox"
                             id="scenario"
-                            value={scenario.key}
                             onChange={() => this.handleClick(scenario)}
                             disabled={scenario.disabled}
                             checked={scenario.checked}

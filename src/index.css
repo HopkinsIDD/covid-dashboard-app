@@ -164,7 +164,8 @@ ul {
 
 .param-header {
   color: #808080;
-  font-size: 15px;
+  font-size: 14px;
+  margin-top: 0.8rem;
   margin-bottom: 0.25rem;
 }
 

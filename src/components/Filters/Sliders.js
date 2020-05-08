@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { addCommas, readableDate } from '../../utils/utils.js';
+import { addCommas } from '../../utils/utils.js';
 import { timeFormat } from 'd3-time-format';
 import { timeDay }  from 'd3-time';
 
