@@ -41,12 +41,14 @@ class MainContainer extends Component {
             scenarioList: [{
                 'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled', 'checked': false, 'disabled': false
             }],
-            severity: {
-                'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'
-            }, 
-            severityList: [{
-                'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'
-            }],
+            // severity: {
+            //     'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'
+            // }, 
+            // severityList: [{
+            //     'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'
+            // }],            
+            severity: Array.from(LEVELS)[0], 
+            severityList: [Array.from(LEVELS)[0]],
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
@@ -80,11 +82,11 @@ class MainContainer extends Component {
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
         // add scenario to severity list
-        console.log('LEVELS', LEVELS[0])
-        console.log('before severityList', this.state.severityList)
+        // console.log('LEVELS', LEVELS[0])
+        console.log('before severityList', this.state.severityList[0])
         const sevList = Array.from(this.state.severityList);
         sevList[0].scenario = scenario.key;
-        console.log('after severityList', sevList)
+        console.log('after severityList', sevList[0])
 
         // iterate through SeriesList
         const simsOver = this.updateThresholdIterate(
@@ -144,75 +146,75 @@ class MainContainer extends Component {
         })
     };
 
-    // componentDidUpdate(prevProp, prevState) {
-    //     if (this.state.stat !== prevState.stat ||
-    //         this.state.scenarioList !== prevState.scenarioList ||
-    //         this.state.severityList !== prevState.severityList ||
-    //         this.state.dateRange !== prevState.dateRange ||
-    //         this.state.dataset !== prevState.dataset) {
-    //         console.log('componentDidUpdate')
+    componentDidUpdate(prevProp, prevState) {
+        if (this.state.stat !== prevState.stat ||
+            this.state.scenarioList !== prevState.scenarioList ||
+            this.state.severityList !== prevState.severityList ||
+            this.state.dateRange !== prevState.dateRange ||
+            this.state.dataset !== prevState.dataset) {
+            console.log('componentDidUpdate')
 
-    //         const filteredSeriesList = []
-    //         const percExceedenceList = []
-    //         let brushSeries
+            const filteredSeriesList = []
+            const percExceedenceList = []
+            let brushSeries
             
-    //         const { dataset, stat, severityList, scenarioList } = this.state;
-    //         // filter series and dates by dateRange
-    //         const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
-    //         const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
-    //         const filteredDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
-    //         const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
-    //         const dateThreshold = filteredDates[dateThresholdIdx]
-    //         let statThreshold = 0
-    //         let sliderMin = 100000000000
-    //         let sliderMax = 0
+            const { dataset, stat, severityList, scenarioList } = this.state;
+            // filter series and dates by dateRange
+            const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
+            const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
+            const filteredDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
+            const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
+            const dateThreshold = filteredDates[dateThresholdIdx]
+            let statThreshold = 0
+            let sliderMin = 100000000000
+            let sliderMax = 0
 
-    //         for (let i = 0; i < scenarioList.length; i++) {
-    //             const newSeries = Array.from(
-    //                 dataset[scenarioList[i].key][severityList[i].key].series[stat.key]
-    //                 );
-    //             const filteredSeriesForStatThreshold = newSeries.map( s => {
-    //                 const newS = {...s}
-    //                 newS.vals = s.vals.slice(idxMin, idxMax)
-    //                 return newS
-    //             });
+            for (let i = 0; i < scenarioList.length; i++) {
+                const newSeries = Array.from(
+                    dataset[scenarioList[i].key][severityList[i].key].series[stat.key]
+                    );
+                const filteredSeriesForStatThreshold = newSeries.map( s => {
+                    const newS = {...s}
+                    newS.vals = s.vals.slice(idxMin, idxMax)
+                    return newS
+                });
 
-    //             const [seriesMin, seriesMax] = getRange(filteredSeriesForStatThreshold);
-    //             if (seriesMin < sliderMin) sliderMin = seriesMin
-    //             if (seriesMax > sliderMax) sliderMax = seriesMax
-    //             // update dateThreshold before updating statThreshold?
-    //             if (i === 0) statThreshold = Math.ceil(seriesMax / 1.2);
+                const [seriesMin, seriesMax] = getRange(filteredSeriesForStatThreshold);
+                if (seriesMin < sliderMin) sliderMin = seriesMin
+                if (seriesMax > sliderMax) sliderMax = seriesMax
+                // update dateThreshold before updating statThreshold?
+                if (i === 0) statThreshold = Math.ceil(seriesMax / 1.2);
 
-    //             const simsOver = this.updateThresholdIterate(
-    //                 newSeries,
-    //                 statThreshold,
-    //                 this.state.allTimeDates,
-    //                 dateThreshold
-    //             )
-    //             if (i === 0) brushSeries = newSeries
+                const simsOver = this.updateThresholdIterate(
+                    newSeries,
+                    statThreshold,
+                    this.state.allTimeDates,
+                    dateThreshold
+                )
+                if (i === 0) brushSeries = newSeries
 
-    //             const percExceedence = simsOver / newSeries.length;
-    //             percExceedenceList.push(percExceedence)
+                const percExceedence = simsOver / newSeries.length;
+                percExceedenceList.push(percExceedence)
 
-    //             const filteredSeries = newSeries.map( s => {
-    //                 const newS = {...s}
-    //                 newS.vals = s.vals.slice(idxMin, idxMax)
-    //                 return newS
-    //             })
-    //             filteredSeriesList.push(filteredSeries)
-    //         }
-    //         this.setState({
-    //             seriesList: filteredSeriesList,
-    //             allTimeSeries: brushSeries,
-    //             dates: filteredDates,
-    //             statThreshold,
-    //             dateThreshold,
-    //             seriesMin : sliderMin,
-    //             seriesMax : sliderMax,
-    //             percExceedenceList
-    //         })
-    //     }
-    // };
+                const filteredSeries = newSeries.map( s => {
+                    const newS = {...s}
+                    newS.vals = s.vals.slice(idxMin, idxMax)
+                    return newS
+                })
+                filteredSeriesList.push(filteredSeries)
+            }
+            this.setState({
+                seriesList: filteredSeriesList,
+                allTimeSeries: brushSeries,
+                dates: filteredDates,
+                statThreshold,
+                dateThreshold,
+                seriesMin : sliderMin,
+                seriesMax : sliderMax,
+                percExceedenceList
+            })
+        }
+    };
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateGraphDimensions)
@@ -324,23 +326,22 @@ class MainContainer extends Component {
     //     })        
     // };
 
-    // handleSeveritiesClick = (i) => {
-    //     console.log('main handleSeveritiesClick', i) 
-    //     // how is this getting updated already??
-    //     // why is high not getting clicked? not triggering Severity onChange
-    //     console.log('before sevList', this.state.severityList) 
-    //     let newSevList = Array.from(this.state.severityList);
-    //     // newSevList.map(sev => {
-    //     //     if (sev.scenario === i.scenario) {
-    //     //         return sev.key = i.key;
-    //     //     }
-    //     // })
+    handleSeveritiesClick = (i) => {
+        console.log('main handleSeveritiesClick', i) 
+        // how is this getting updated already??
+        // why is high not getting clicked? not triggering Severity onChange
+        console.log('before sevList', this.state.severityList[0]) 
+        let newSevList = Array.from(this.state.severityList);
+        newSevList.forEach(sev => {
+            if (sev.scenario === i.scenario) {
+                return sev.key = i.key;
+            }
+        })
 
-    //     console.log('main', i) 
-    //     console.log('after sevList', newSevList) 
+        console.log('after sevList', newSevList[0]) 
 
-    //     this.setState({severityList: newSevList});
-    // };
+        this.setState({severityList: newSevList});
+    };
 
     handleStatSliderChange = (thresh) => {
         const { dates, dateThreshold, allTimeDates } = this.state;
@@ -420,6 +421,7 @@ class MainContainer extends Component {
     };
 
     render() {
+        // console.log('render', this.state.severityList[0])
         // const scenarioTitleList = this.state.scenarioList.map( scenario => {
         //     return scenario.name.replace('_', ' ');
         // })
@@ -516,11 +518,11 @@ class MainContainer extends Component {
                                 onActualClick={this.handleActualClick}
                             />                         */}
                             <h5>Parameters</h5>
-                            {/* <SeverityContainer
+                            <SeverityContainer
                                 severityList={this.state.severityList}
                                 scenarioList={this.state.scenarioList}
                                 onSeveritiesClick={this.handleSeveritiesClick}
-                            /> */}
+                            />
                             <p></p>
                             <h5>Thresholds</h5>
                             {this.state.dataLoaded &&
