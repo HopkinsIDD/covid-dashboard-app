@@ -71,6 +71,8 @@ class MainContainer extends Component {
 
     componentDidMount() {
         console.log('componentDidMount')
+        window.addEventListener('resize', this.updateGraphDimensions)
+        this.updateGraphDimensions()
         const { scenario, severity, stat } = this.state;
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
@@ -110,8 +112,9 @@ class MainContainer extends Component {
         
         // out of loop
         const yAxisLabel = `Number of ${stat.name} per Day`;
-        const graphW = this.graphEl.clientWidth - margin.yAxis;
-        const graphH = this.graphEl.clientHeight;
+
+        // const graphW = this.graphEl.clientWidth - margin.yAxis;
+        // const graphH = this.graphEl.clientHeight;
 
         const percExceedenceList = [percExceedence]
 
@@ -129,8 +132,8 @@ class MainContainer extends Component {
             firstDate,
             lastDate,
             percExceedenceList,
-            graphW,
-            graphH
+            // graphW,
+            // graphH
         }, () => {
             this.setState({
                 dataLoaded: true
@@ -211,6 +214,17 @@ class MainContainer extends Component {
             })
         }
     };
+
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.updateGraphDimensions)
+    }
+
+    updateGraphDimensions = () => {
+        const graphW = this.graphEl.clientWidth - margin.yAxis;
+        const graphH = this.graphEl.clientHeight;
+        console.log('updating graph dimensions', graphW, graphH)
+        this.setState({ graphW, graphH });
+      }
 
     updateThresholdIterate = (series, statThreshold, dates, dateThreshold) => {
         const dateIndex = dates.findIndex( date => formatDate(date) === formatDate(dateThreshold));

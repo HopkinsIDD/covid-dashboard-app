@@ -14,7 +14,8 @@ class GraphContainer extends Component {
           children: [],
           scales: {},
           scaleDomains: false,
-          graphWidth: 0
+          graphWidth: 0,
+          graphHeight: 0,
       }
   }
 
@@ -23,6 +24,7 @@ class GraphContainer extends Component {
       const { width, height, seriesList, dates, scenarioList } = this.props;
       if (seriesList.length > 0) {
         const graphWidth = scenarioList.length === 2 ? width / 2 : width;
+        const graphHeight = height;
         const scales = this.getScales(seriesList, dates, graphWidth, height);
         const child = {
             'key': scenarioList[0].key,
@@ -47,7 +49,7 @@ class GraphContainer extends Component {
                 dateThreshold={this.props.dateThreshold}
                 dateRange={this.props.dateRange}
                 width={graphWidth}
-                height={this.props.height}
+                height={graphHeight}
                 x={0}
                 y={0}
                 xScale={scales.xScale}
@@ -59,7 +61,8 @@ class GraphContainer extends Component {
             scales,
             children: [child],
             scaleDomains: true,
-            graphWidth
+            graphWidth,
+            graphHeight
         })
       }
   }
@@ -68,6 +71,17 @@ class GraphContainer extends Component {
 
       const { scenarioList, seriesList, dates, height } = this.props;
       const newChildren = [];
+
+      if (prevProp.width !== this.props.width || prevProp.height !== this.props.height) {
+        console.log('componentDidUpdate width');
+        const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
+        const graphHeight = height;
+        // console.log('graphWidth is', graphWidth)
+        // need to adjust scale by length of scenario list
+        // break these out into X and Y (X out of the loop, Y in?)
+        const scales = this.getScales(seriesList, dates, graphWidth, graphHeight);
+        this.updateGraphChildren(newChildren, scenarioList, graphWidth, graphHeight, scales);
+      }
     
       // technically both scenarioList and seriesList need to update
       // but seriesList is updated later so using it to enter componentDidUpdate
@@ -76,55 +90,60 @@ class GraphContainer extends Component {
       // the way to solve this is by keeping track of scenarioChange click events and putting those in the graph keys
       // so that when the click events increment the keys change and the graph component remounts
       if (prevProp.seriesList !== this.props.seriesList) {
-            // console.log('seriesList change, seriesList is', seriesList.length)
-            const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
-            // console.log('graphWidth is', graphWidth)
-            // need to adjust scale by length of scenario list
-            // break these out into X and Y (X out of the loop, Y in?)
-            const scales = this.getScales(seriesList, dates, graphWidth, height);
+        // console.log('seriesList change, seriesList is', seriesList.length)
+        const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
+        const graphHeight = height;
+        // console.log('graphWidth is', graphWidth)
+        // need to adjust scale by length of scenario list
+        // break these out into X and Y (X out of the loop, Y in?)
+        const scales = this.getScales(seriesList, dates, graphWidth, graphHeight);
+        this.updateGraphChildren(newChildren, scenarioList, graphWidth, graphHeight, scales);
+    }
+}
 
-            // console.log('componentDidUpdate Series List - scenarioList change');
-            // const scenarioChange = true;
-            for (let i = 0; i < scenarioList.length; i++) {
-                const child = {
-                    'key': scenarioList[i].key,
-                    'graph': [],
-                }
-                child.graph.push(
-                    <Graph
-                        key={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
-                        keyVal={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
-                        stat={this.props.stat}
-                        geoid={this.props.geoid}
-                        scenario={this.props.scenarioList[i]}
-                        severity={this.props.severity}
-                        r0={this.props.r0}
-                        simNum={this.props.simNum}
-                        showConfBounds={this.props.showConfBounds}
-                        showActual={this.props.showActual}
-                        series={this.props.seriesList[i]}
-                        dates={this.props.dates}
-                        statThreshold={this.props.statThreshold}
-                        dateThreshold={this.props.dateThreshold}
-                        dateRange={this.props.dateRange}
-                        brushActive={this.props.brushActive}
-                        width={graphWidth}
-                        height={this.props.height}
-                        x={i * graphWidth}
-                        y={0}
-                        xScale={scales.xScale}
-                        yScale={scales.yScale}
-                    />
-                )
-                newChildren.push(child);
+  updateGraphChildren = (newChildren, scenarioList, graphWidth, graphHeight, scales) => {
+        // console.log('componentDidUpdate Series List - scenarioList change');
+        for (let i = 0; i < scenarioList.length; i++) {
+            const child = {
+                'key': scenarioList[i].key,
+                'graph': [],
             }
-            this.setState({
-                scales,
-                graphWidth,
-                children: newChildren,
-            })        
+            child.graph.push(
+                <Graph
+                    key={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
+                    keyVal={`${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`}
+                    stat={this.props.stat}
+                    geoid={this.props.geoid}
+                    scenario={this.props.scenarioList[i]}
+                    severity={this.props.severity}
+                    r0={this.props.r0}
+                    simNum={this.props.simNum}
+                    showConfBounds={this.props.showConfBounds}
+                    showActual={this.props.showActual}
+                    series={this.props.seriesList[i]}
+                    dates={this.props.dates}
+                    statThreshold={this.props.statThreshold}
+                    dateThreshold={this.props.dateThreshold}
+                    dateRange={this.props.dateRange}
+                    brushActive={this.props.brushActive}
+                    width={graphWidth}
+                    height={graphHeight}
+                    x={i * graphWidth}
+                    y={0}
+                    xScale={scales.xScale}
+                    yScale={scales.yScale}
+                />
+            )
+            newChildren.push(child);
         }
-  }
+        this.setState({
+            scales,
+            graphWidth,
+            graphHeight,
+            children: newChildren,
+        })        
+    }
+
 
   getScales = (seriesList, dates, width, height) => {
       // calculate scale domains
@@ -153,17 +172,17 @@ class GraphContainer extends Component {
                   {this.props.yAxisLabel}
               </div>
               <div className="resetRow graph-title-row">
-                <div style={{'width': `${margin.yAxis}px`}}></div>
+              <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                 {scenarioList.map((scenario, i) => {
                     const scenarioTitle = scenario.name.replace('_', ' ');
                     return (this.props.scenarioList && scenarioList.length > 1) ? 
-                            <div key={scenario.key} style={{'width': `${this.props.width - margin.right}px`}}>
+                            <div key={scenario.key} style={{ width: this.props.width - margin.right}}>
                                 <p className="scenario-title titleNarrow">
                                     {scenarioTitle}
                                 </p>
                             </div>
                          :
-                            <div key={scenario.key} style={{'width': `${this.props.width - margin.right}px`}}>
+                            <div key={scenario.key} style={{ width: this.props.width - margin.right}}>
                                 <p className="scenario-title titleNarrow">
                                     {scenarioTitle}
                                 </p>
@@ -171,7 +190,7 @@ class GraphContainer extends Component {
                 } )}
             </div>
               <div className="resetRow graph-title-row callout-row">
-                <div style={{'width': `${margin.yAxis}px`}}></div>
+                <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                     {children.map( (child, i) => {
                         return (
                             (this.props.scenarioList && this.props.scenarioList.length === 2) ?
