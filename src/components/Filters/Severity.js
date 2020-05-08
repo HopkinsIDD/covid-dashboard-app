@@ -2,15 +2,19 @@ import React, { Component } from 'react';
 import { LEVELS } from '../../utils/constants.js';
 
 class Severity extends Component {
-    handleChange = (i) => {
-        this.props.onSeverityClick(i);
+    handleChange = (item) => {
+        item.scenario = this.props.scenario.key; 
+        console.log('in severity', item)
+        this.props.onSeverityClick(item);
     }
 
     render() {
+        const { severity } = this.props;
         return (
             <div>
                 {LEVELS.map(level => {
-                    const isActive = (level.key === this.props.severity.key) ? 'checked' : '';
+                    /* console.log(this.props.scenario, level.key, level.key===severity.key) */
+                    const isActive = (level.key === severity.key) ? 'checked' : '';
                     return (
                         <div className="form-check" key={level.id}>
                             <input
