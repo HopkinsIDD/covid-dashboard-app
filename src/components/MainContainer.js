@@ -57,6 +57,9 @@ class MainContainer extends Component {
 
     componentDidMount() {
         console.log('componentDidMount')
+
+        console.log('LEVELS', LEVELS)
+
         window.addEventListener('resize', this.updateGraphDimensions)
         this.updateGraphDimensions()
         const { scenario, severity, stat } = this.state;
@@ -69,8 +72,8 @@ class MainContainer extends Component {
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
         // add scenario to severity list
-        console.log(LEVELS)
-        console.log(LEVELS[0])
+        console.log('LEVELS', LEVELS)
+        console.log('LEVELS[0]', LEVELS[0])
         console.log('this.state.severityList', this.state.severityList)
 
         const sevList = Array.from(this.state.severityList);
@@ -315,8 +318,7 @@ class MainContainer extends Component {
     };
 
     handleSeveritiesClick = (i) => {
-        debugger;
-        console.log('main', i) 
+        console.log('main handleSeveritiesClick', i) 
         // how is this getting updated already??
         // why is high not getting clicked? not triggering Severity onChange
         console.log('before sevList', this.state.severityList) 
@@ -411,6 +413,7 @@ class MainContainer extends Component {
     };
 
     render() {
+        console.log('main render', LEVELS[0])
         // const scenarioTitleList = this.state.scenarioList.map( scenario => {
         //     return scenario.name.replace('_', ' ');
         // })
