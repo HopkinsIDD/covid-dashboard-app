@@ -36,7 +36,6 @@ class SeverityContainer extends Component {
 
         if (prevProp.scenarioList !== scenarioList ||
             prevProp.severityList !== severityList ) {
-            console.log('severityContainer didUpdate')
 
             for (let i = 0; i < scenarioList.length; i++) {
                 const keyVal = `${severityList[i].key}_${scenarioList[i].key}`;
@@ -62,7 +61,6 @@ class SeverityContainer extends Component {
     }
 
     handleSeverityClick = (i) => {
-        console.log('in SevContainer', i)
         this.props.onSeveritiesClick(i);
     }
 

@@ -8,11 +8,12 @@ import Scenarios from './Filters/Scenarios';
 import SeverityContainer from './Filters/SeverityContainer';
 import Sliders from './Filters/Sliders';
 // import Overlays from './Filters/Overlays';
+import _ from 'lodash';
 import { getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { max, maxIndex } from 'd3-array';
-import { STATS, LEVELS, margin } from '../utils/constants';
+import { STATS, SCENARIOS, LEVELS, margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
 
 const parseDate = utcParse('%Y-%m-%d')
@@ -32,23 +33,10 @@ class MainContainer extends Component {
             yAxisLabel: '',
             stat: STATS[0],
             geoid: '06085',
-            // todo: ideally, these should reference constants SCENARIO[0] and LEVELS[0] but 
-            // there is some pre-rendering mutation happening that is mind-boggling
-            // even when it is a deep copy via Array.from() 
-            scenario: {
-                'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled', 'checked': false, 'disabled': false
-            },
-            scenarioList: [{
-                'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled', 'checked': false, 'disabled': false
-            }],
-            // severity: {
-            //     'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'
-            // }, 
-            // severityList: [{
-            //     'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'
-            // }],            
-            severity: Array.from(LEVELS)[0], 
-            severityList: [Array.from(LEVELS)[0]],
+            scenario: SCENARIOS[0],
+            scenarioList: [SCENARIOS[0]],           
+            severity: _.cloneDeep(LEVELS[0]), 
+            severityList: [_.cloneDeep(LEVELS[0])],
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
@@ -76,17 +64,14 @@ class MainContainer extends Component {
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
         const dates = initialData.dates.map( d => parseDate(d));
-        const firstDate = dates[0]; //.toISOString().split('T')[0];
-        const lastDate = dates[dates.length - 1]; //.toISOString().split('T')[0];
+        const firstDate = dates[0];
+        const lastDate = dates[dates.length - 1];
         const [seriesMin, seriesMax] = getRange(series);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
         // add scenario to severity list
-        // console.log('LEVELS', LEVELS[0])
-        console.log('before severityList', this.state.severityList[0])
-        const sevList = Array.from(this.state.severityList);
+        const sevList = _.cloneDeep(this.state.severityList);
         sevList[0].scenario = scenario.key;
-        console.log('after severityList', sevList[0])
 
         // iterate through SeriesList
         const simsOver = this.updateThresholdIterate(
@@ -291,55 +276,40 @@ class MainContainer extends Component {
         this.setState({stat: i, yAxisLabel})
     };
 
-    // handleScenarioClick = (i) => {
-    //     console.log('handleScenarioClick') 
-    //     // debugger;
-    //     let newScenarios = Array.from(this.state.scenarioList);
-    //     // console.log(this.state.severityList)
-    //     let newSevs = Array.from(this.state.severityList);
-    //     const scenarioKeys = Object.values(newScenarios).map(s => s.key);
-    //     const scenarioClkCntr = this.state.scenarioClickCounter + 1;
+    handleScenarioClick = (i) => {
+        let newScenarios = Array.from(this.state.scenarioList);
+        let newSevs = _.cloneDeep(this.state.severityList);
+        const scenarioKeys = Object.values(newScenarios).map(s => s.key);
+        const scenarioClkCntr = this.state.scenarioClickCounter + 1;
 
-    //     // new scenario being selectede
-    //     if (!scenarioKeys.includes(i.key)) {
-    //         // relies on LEVELS not being mutated!!
-    //         // const newSev = LEVELS[0]; // return high sev as default
-    //         // newSev.scenario = i.key;
-    //         // newSevs.push(newSev)
-    //         // debugger;
-    //         newScenarios.push(i);
-    //     // scenario being turned off
-    //     } else {
-    //         if (this.state.scenarioList.length > 1) {
-    //             newSevs = newScenarios[0].key === i.key ? newSevs[1] : newSevs[0];
-    //             //could prob use the same logic below 
-    //             newScenarios = newScenarios.filter(scenario => scenario.key !== i.key);
-    //         } 
-    //     }
-    //     this.setState({
-    //         scenarioList: newScenarios,
-    //         scenarioClickCounter: scenarioClkCntr,
-    //         severityList: newSevs
-    //     }, () => {
-    //        console.log('scenario', newScenarios) 
-    //        console.log('sev', newSevs) 
-    //     })        
-    // };
+        // new scenario being selectede
+        if (!scenarioKeys.includes(i.key)) {
+            // return high sev as default
+            const defaultSev = _.cloneDeep(LEVELS[0]); 
+            defaultSev.scenario = i.key;
+            newSevs.push(defaultSev)
+            newScenarios.push(i);
+        // scenario being turned off
+        } else {
+            if (this.state.scenarioList.length > 1) {
+                newSevs = newSevs.filter(sev => sev.scenario !== i.key)
+                newScenarios = newScenarios.filter(scenario => scenario.key !== i.key);
+            } 
+        }
+        this.setState({
+            scenarioList: newScenarios,
+            scenarioClickCounter: scenarioClkCntr,
+            severityList: newSevs
+        })        
+    };
 
     handleSeveritiesClick = (i) => {
-        console.log('main handleSeveritiesClick', i) 
-        // how is this getting updated already??
-        // why is high not getting clicked? not triggering Severity onChange
-        console.log('before sevList', this.state.severityList[0]) 
-        let newSevList = Array.from(this.state.severityList);
+        let newSevList = _.cloneDeep(this.state.severityList);
         newSevList.forEach(sev => {
             if (sev.scenario === i.scenario) {
                 return sev.key = i.key;
             }
         })
-
-        console.log('after sevList', newSevList[0]) 
-
         this.setState({severityList: newSevList});
     };
 
@@ -421,11 +391,6 @@ class MainContainer extends Component {
     };
 
     render() {
-        // console.log('render', this.state.severityList[0])
-        // const scenarioTitleList = this.state.scenarioList.map( scenario => {
-        //     return scenario.name.replace('_', ' ');
-        // })
-        // const scenarioTitle = this.state.scenario.name.replace('_', ' ');
         return (
             <div className="main-container">
                 <div className="container no-margin">
