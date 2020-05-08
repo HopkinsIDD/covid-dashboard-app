@@ -217,7 +217,7 @@ class MainContainer extends Component {
         // console.log('dateThreshold', dateThreshold)
         // console.log('dateIndex', dateIndex)
         let simsOver = 0;
-        Object.values(series).map((sim, simIdx) => {
+        Object.values(series).forEach((sim, simIdx) => {
             let simOver = false;
             for (let i = 0; i < dateIndex; i++) {
                 if (sim.vals[i] > statThreshold){
