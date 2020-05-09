@@ -60,6 +60,10 @@ code {
   font-family: 'PT Sans Narrow', sans-serif;
 }
 
+.title-active {
+  font-weight: bold;
+}
+
 .callout {
   font-family: 'Roboto Mono', monospace;
 }

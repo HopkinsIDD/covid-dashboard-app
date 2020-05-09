@@ -37,6 +37,7 @@ class MainContainer extends Component {
             scenarioList: [SCENARIOS[0]],           
             severity: _.cloneDeep(LEVELS[0]), 
             severityList: [_.cloneDeep(LEVELS[0])],
+            scenarioHovered: '',
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
@@ -313,6 +314,18 @@ class MainContainer extends Component {
         this.setState({severityList: newSevList});
     };
 
+    handleSeveritiesHover = (i) => {
+        this.setState({
+            scenarioHovered: i,
+        })
+    }
+
+    handleSeveritiesHoverLeave = () => {
+        this.setState({
+            scenarioHovered: '',
+        })
+    }
+
     handleStatSliderChange = (thresh) => {
         const { dates, dateThreshold, allTimeDates } = this.state;
         // const rounded = Math.ceil(i / 100) * 100;
@@ -440,6 +453,7 @@ class MainContainer extends Component {
                                         width={this.state.graphW}
                                         height={this.state.graphH}
                                         scenarioClickCounter={this.state.scenarioClickCounter}
+                                        scenarioHovered={this.state.scenarioHovered}
                                     /> 
                                     <Brush
                                         series={this.state.allTimeSeries}
@@ -468,8 +482,7 @@ class MainContainer extends Component {
                                     </span>
                                 </div>
                             </h5>
-                            <span className="subtitle">Select up to 2</span>
-                            
+                            <span className="subtitle">(select up to 2)</span>                            
                             <Scenarios 
                                 scenario={this.state.scenario}
                                 scenarioList={this.state.scenarioList}
@@ -488,6 +501,8 @@ class MainContainer extends Component {
                                 severityList={this.state.severityList}
                                 scenarioList={this.state.scenarioList}
                                 onSeveritiesClick={this.handleSeveritiesClick}
+                                onSeveritiesHover={this.handleSeveritiesHover}
+                                onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
                             />
                             <p></p>
                             <h5>Thresholds</h5>

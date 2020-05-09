@@ -16,13 +16,17 @@ class SeverityContainer extends Component {
             'key': keyVal,
             'scenario': scenarioList[0],
             'severity': [],
+            'sevCount': 1,
         }
         child.severity.push(
             <Severity 
                 key={keyVal}
                 severity={severityList[0]}
                 scenario={scenarioList[0]}
+                sevCount={severityList.length}
                 onSeverityClick={this.handleSeverityClick}
+                onSeverityHover={this.handleSeverityHover}
+                onSeverityHoverLeave={this.handleSeverityHoverLeave}
             />        
         )
         this.setState({
@@ -49,7 +53,10 @@ class SeverityContainer extends Component {
                         key={keyVal}
                         severity={severityList[i]}
                         scenario={scenarioList[i]}
+                        sevCount={severityList.length}
                         onSeverityClick={this.handleSeverityClick}
+                        onSeverityHover={this.handleSeverityHover}
+                        onSeverityHoverLeave={this.handleSeverityHoverLeave}
                     />
                 )
                 newChildren.push(child);
@@ -64,28 +71,22 @@ class SeverityContainer extends Component {
         this.props.onSeveritiesClick(i);
     }
 
+    handleSeverityHover = (i) => {
+        this.props.onSeveritiesHover(i);
+    }
+
+    handleSeverityHoverLeave = () => {
+        this.props.onSeveritiesHoverLeave();
+    }
+
     render() {
         const { children } = this.state;
-        const { scenarioList } = this.props;
         return (
             <div>
                 {children.map(child => {
-                    const title = scenarioList.length === 2 ?
-                        ('Severity for ' + child.scenario.name.replace('_',' ')) : 'Severity';
                     return (
                         <div key={child.key}>
-                            <div className="param-header">{title}
-                                <div className="tooltip">&nbsp;&#9432;
-                                    <span className="tooltip-text">
-                                    There are three levels of severity (high, medium, 
-                                    low) based on Infection-fatality-ratio (IFR) and 
-                                    hospitalization rate.
-                                    </span>
-                                </div>
-                            </div>
-                            <div key={child.key}>
-                                {child.severity}
-                            </div>
+                            {child.severity}
                         </div>
                     )
                 })}

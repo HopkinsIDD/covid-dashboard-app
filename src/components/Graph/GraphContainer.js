@@ -164,7 +164,7 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
-      const { scenarioList } = this.props;
+      const { scenarioList, scenarioHovered } = this.props;
       return (
           <div className="graph-wrapper">
               <div className="col-1"></div>
@@ -175,9 +175,10 @@ class GraphContainer extends Component {
               <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                 {scenarioList.map((scenario, i) => {
                     const scenarioTitle = scenario.name.replace('_', ' ');
+                    const isActive = scenario.name === scenarioHovered ? ' title-active' : '';
                     return (this.props.scenarioList && scenarioList.length > 1) ? 
                             <div key={scenario.key} style={{ width: this.props.width - margin.right}}>
-                                <p className="scenario-title titleNarrow">
+                                <p className={"scenario-title titleNarrow" + isActive}>
                                     {scenarioTitle}
                                 </p>
                             </div>
