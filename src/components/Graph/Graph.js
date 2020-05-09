@@ -36,14 +36,7 @@ class Graph extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         // console.log('ComponentDidUpdate', this.props.keyVal)
-        if (this.props.xScale !== prevProps.xScale || this.props.yScale !== prevProps.yScale) {
-            // console.log('componentDidUpdate scale changed')
-            const { series, dates, width } = this.props;
-            const { lineGenerator } = prevState;
-
-            this.updateSimPaths(series, dates, lineGenerator, false, width);
-        }
-
+        
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             // console.log('brushing is TRUE, series diff', this.props.keyVal)
             const { series, dates, width} = this.props;
@@ -70,9 +63,18 @@ class Graph extends Component {
             const { series, dates, width } = this.props;
             const { lineGenerator } = prevState;
             
-            this.updateSimPaths(series, dates, lineGenerator, true, width);
+            this.updateSimPaths(series, dates, lineGenerator, false, width);
             // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
         }
+
+        if (!this.props.brushActive && (this.props.xScale !== prevProps.xScale || this.props.yScale !== prevProps.yScale)) {
+            // console.log('componentDidUpdate scale changed')
+            const { series, dates, width } = this.props;
+            const { lineGenerator } = prevState;
+
+            this.updateSimPaths(series, dates, lineGenerator, false, width);
+        }
+
     }
 
     drawSimPaths = (series, dates) => {
