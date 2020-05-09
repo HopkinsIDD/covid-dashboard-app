@@ -113,6 +113,16 @@ ul {
   font-size: 1rem;
 }
 
+.scenario-header {
+  margin-bottom: -0.5rem;
+}
+
+.subtitle {
+  font-size: 13px;
+  font-style: italic;
+  color: gray;
+}
+
 .filter-label {
   font-size: 13px;
   margin-bottom: 0px;

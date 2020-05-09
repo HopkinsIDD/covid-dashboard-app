@@ -460,7 +460,7 @@ class MainContainer extends Component {
                             </div>
                         </div>
                         <div className="col-3 filters">
-                            <h5>Scenarios
+                            <h5 className="scenario-header">Scenarios
                                 <div className="tooltip">&nbsp;&#9432;
                                     <span className="tooltip-text">
                                     There are 3 intervention scenarios for model
@@ -468,6 +468,7 @@ class MainContainer extends Component {
                                     </span>
                                 </div>
                             </h5>
+                            <span className="subtitle">Select up to 2</span>
                             
                             <Scenarios 
                                 scenario={this.state.scenario}
