@@ -14,21 +14,28 @@ class Severity extends Component {
     render() {
         const { severity, scenario } = this.props;
         return ( 
-            <div>
+            <div
+                onMouseEnter={this.handleMouseEnter}
+                onMouseLeave={this.handleMouseLeave}>
                 {LEVELS.map(level => {
                     const isActive = (severity.key === level.key
                         && severity.scenario === scenario.key) ? 'checked' : '';
                     return (
-                        <div className="form-check" key={level.id}>
+                        <div
+                            className="form-check"
+                            key={level.id}>
                             <input
                                 className="form-check-input"
                                 type="radio"
-                                name={`sev-${scenario.key}`}
+                                name={`${level.key}-${scenario.key}`}
+                                id={`${level.key}-${scenario.key}`}
                                 onChange={() => this.handleChange(level)} 
                                 checked={isActive}
                                 />
-                            <label className="form-check-label filter-label">
-                            {level.name}
+                            <label
+                                className="form-check-label filter-label"
+                                htmlFor={`${level.key}-${scenario.key}`}>
+                                {level.name}
                             </label>
                         </div>
                     )

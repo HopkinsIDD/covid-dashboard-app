@@ -82,7 +82,7 @@ class Scenarios extends Component {
                         <input
                             className={"form-check-input"}
                             type="checkbox"
-                            id="scenario"
+                            id={scenario.key}
                             onChange={() => this.handleClick(scenario)}
                             disabled={scenario.disabled}
                             checked={scenario.checked}
@@ -90,7 +90,7 @@ class Scenarios extends Component {
                         </input>
                         <label
                             className="form-check-label filter-label"
-                            htmlFor="scenario"
+                            htmlFor={scenario.key}
                             >
                             {scenario.name.replace('_',' ')}
                         </label>
