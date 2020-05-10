@@ -39,6 +39,39 @@ code {
     monospace;
 }
 
+ul {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+li {
+  display: inline;
+}
+
+li a {
+  font-size: 18px;
+  color: lightgray;
+  text-align: center;
+  padding: 6px;
+  text-decoration: none;
+}
+
+li a:not(.active):hover {
+  color: #4ddaba;
+  text-decoration: none;
+}
+
+a:hover {
+  color: white;
+  text-decoration: none;
+}
+
+.active {
+  color: white;
+  font-weight: bold;
+}
+
 .siteTitle {
   font-size: 3rem;
 }
