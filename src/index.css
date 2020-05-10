@@ -115,7 +115,12 @@ ul {
 }
 
 .dropdown-menu {
-  width: 40%;
+  width: 60%;
+  margin: 0px;
+}
+
+.dropdown-toggle::after {
+  content: none;
 }
 
 .search-bar {
@@ -125,9 +130,19 @@ ul {
   text-align: left;
   border-color: rgba(0, 0, 0, 0.12);
   box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 2px;
-  padding-left: 1rem;
+  padding-left: 0.8rem;
   padding-bottom: .3rem;
   padding-top: .3rem;
+}
+
+.magnifying-glass {
+  fill: currentColor;
+  width: 1em;
+  height: 1em;
+  margin-right: 2%;
+  display: inline-block;
+  font-size: 1.5rem;
+  -moz-user-select: none;
 }
 
 .btn-stat {
@@ -137,6 +152,10 @@ ul {
 }
 
 .btn-active {
+  background-color: #e9ecef;
+}
+
+.btn-active:hover {
   background-color: #e9ecef;
 }
 

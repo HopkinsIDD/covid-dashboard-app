@@ -24,7 +24,10 @@ export const LEVELS = [
 ];
 
 // public county model files on github
-const baseUrl = 'https://raw.githubusercontent.com/';
+// const baseUrl = 'https://raw.githubusercontent.com/';
 export const COUNTIES = [
-    {'geoid': '06085', 'name': 'North Pole County', 'usps': 'AK', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
+    {'geoid': '06085', 'name': 'Dorne County', 'usps': 'ES', 'path': '../store/geo06085.json'},
+    {'geoid': '01081', 'name': 'Highgarden County', 'usps': 'TW', 'path': '../store/geo01081.json'},
+    {'geoid': '25017', 'name': 'Winterfell County', 'usps': 'NR', 'path': '../store/geo25017.json'},
+    // {'geoid': '06085', 'name': 'Dorne', 'usps': 'CA', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
 ];

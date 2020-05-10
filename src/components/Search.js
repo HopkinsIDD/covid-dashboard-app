@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+// import axios from 'axios';
 import { COUNTIES } from '../utils/constants.js';
+import { ReactComponent as MagnifyingGlass } from '../assets/search.svg';
+
 
 class Search extends Component {
     constructor(props) {
@@ -12,19 +14,28 @@ class Search extends Component {
     }
 
     handleCountySelect = (event) => {
-        axios.get(event.path)
-            .catch(error => {
-                console.log('error', error);
-            })
-            .then(response => {
-                // console.log('event', event)
-                // console.log('response', response)
-                const json = response.data;
-                this.props.onCountySelect(json);
-                this.setState({
-                    'countyName': event.name + ', ' + event.usps
-                })
-            });
+        const dataset = require(`../store/geo${event.geoid}.json`);
+        this.props.onCountySelect(dataset);
+        // console.log('event.name', event.name)
+        // console.log('dataset', dataset)
+        this.setState({
+            'countyName': event.name + ', ' + event.usps
+        })
+
+        // use for when files are on public internet
+        // axios.get(event.path)
+        //     .catch(error => {
+        //         console.log('error', error);
+        //     })
+        //     .then(response => {
+        //         // console.log('event', event)
+        //         // console.log('response', response)
+        //         const json = response.data;
+        //         this.props.onCountySelect(json);
+        //         this.setState({
+        //             'countyName': event.name + ', ' + event.usps
+        //         })
+        //     });
     }
 
     handleUpload = (event) => {
@@ -65,6 +76,7 @@ class Search extends Component {
         }
     }
 
+
     render() {
         const { fileName, countyName } = this.state;
         const countyLabel = countyName === '' ? 'Search for your county' : countyName;
@@ -81,15 +93,17 @@ class Search extends Component {
                             data-toggle="dropdown" 
                             aria-haspopup="true" 
                             aria-expanded="false">
+                            <MagnifyingGlass />
                             {countyLabel}
                         </div>
                         <div
                             className="dropdown-menu"
                             aria-labelledby="dropdown-menu">
                             {COUNTIES.map(county => {
+                                const isActive = this.props.geoid === county.geoid ? ' btn-active' : '';
                                 return (
                                     <button
-                                        className="dropdown-item filter-label"
+                                        className={"dropdown-item filter-label" + isActive}
                                         type="button" 
                                         onClick={() => this.handleCountySelect(county)} 
                                         key={county.geoid}>
