@@ -9,12 +9,6 @@ export const blue = '#1f90db';
 export const gray = '#9b9b9b';
 export const lightgray = '#d0d0d0';
 
-export const SCENARIOS = [
-    {'id': 1, 'key': 'USA_Uncontrolled', 'name': 'USA_Uncontrolled', 'checked': false, 'disabled': false},
-    {'id': 2, 'key': 'USA_Lockdown1918', 'name': 'USA_Lockdown1918', 'checked': false, 'disabled': false},
-    {'id': 3, 'key': 'USA_LockdownUK', 'name': 'USA_LockdownUK', 'checked': false, 'disabled': false},
-];
-
 export const STATS = [
     {'id': 1, 'key': 'incidI', 'name': 'Infections'},
     {'id': 2, 'key': 'incidH', 'name': 'Hospitalizations'},
@@ -24,14 +18,13 @@ export const STATS = [
 ];
 
 export const LEVELS = [
-    {'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospitalization rate'}, 
-    {'id': 2, 'key': 'med', 'name': '0.5% IFR, 5% hospitalization rate'},
-    {'id': 3, 'key': 'low', 'name': '0.25% IFR, 2.5% hospitalization rate'},
+    {'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospital rate'}, 
+    {'id': 2, 'key': 'med', 'name': '0.5% IFR, 5% hospital rate'},
+    {'id': 3, 'key': 'low', 'name': '0.25% IFR, 2.5% hospital rate'},
 ];
 
 // public county model files on github
 const baseUrl = 'https://raw.githubusercontent.com/';
 export const COUNTIES = [
-    {'geoid': '06085', 'name': 'Santa Clara County', 'usps': 'CA', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
-    {'geoid': '10001', 'name': 'Lee County', 'usps': 'AL', 'path': baseUrl + 'HopkinsIDD/COVIDScenarioPipeline/master/sample_data/geoid-params.csv'},
+    {'geoid': '06085', 'name': 'North Pole County', 'usps': 'AK', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
 ];

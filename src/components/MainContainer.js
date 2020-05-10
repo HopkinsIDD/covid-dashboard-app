@@ -9,11 +9,11 @@ import SeverityContainer from './Filters/SeverityContainer';
 import Sliders from './Filters/Sliders';
 // import Overlays from './Filters/Overlays';
 import _ from 'lodash';
-import { getRange } from '../utils/utils'
+import { buildScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { max, maxIndex } from 'd3-array';
-import { STATS, SCENARIOS, LEVELS, margin } from '../utils/constants';
+import { STATS, LEVELS, margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
 
 const parseDate = utcParse('%Y-%m-%d')
@@ -33,8 +33,9 @@ class MainContainer extends Component {
             yAxisLabel: '',
             stat: STATS[0],
             geoid: '06085',
-            scenario: SCENARIOS[0],
-            scenarioList: [SCENARIOS[0]],           
+            SCENARIOS: [],
+            scenario: {},
+            scenarioList: [],           
             severity: _.cloneDeep(LEVELS[0]), 
             severityList: [_.cloneDeep(LEVELS[0])],
             scenarioHovered: '',
@@ -61,7 +62,14 @@ class MainContainer extends Component {
         console.log('componentDidMount')
         window.addEventListener('resize', this.updateGraphDimensions)
         this.updateGraphDimensions()
-        const { scenario, severity, stat } = this.state;
+        
+        // build scenarios for selected geoID
+        const SCENARIOS = buildScenarios(dataset); // constant for geoID
+        const scenario = SCENARIOS[0];      // initial scenario view
+        const scenarioList = [scenario];    // updated based on selection
+
+        // instantiate initial dataset
+        const { severity, stat } = this.state;
         const initialData = dataset[scenario.key][severity.key];
         const series = initialData.series[stat.key];
         const dates = initialData.dates.map( d => parseDate(d));
@@ -111,6 +119,9 @@ class MainContainer extends Component {
 
         this.setState({
             dataset,
+            SCENARIOS,
+            scenario,
+            scenarioList,
             dates: newDates,
             allTimeDates,
             seriesList: [filteredSeries],
@@ -483,11 +494,14 @@ class MainContainer extends Component {
                                 </div>
                             </h5>
                             <span className="subtitle">(select up to 2)</span>                            
+                            {this.state.dataLoaded &&
                             <Scenarios 
+                                SCENARIOS={this.state.SCENARIOS}
                                 scenario={this.state.scenario}
                                 scenarioList={this.state.scenarioList}
                                 onScenarioClick={this.handleScenarioClick}
                             />
+                            }
                             <p></p>
                             {/* <h5>Overlays</h5>
                             <Overlays 
@@ -497,6 +511,7 @@ class MainContainer extends Component {
                                 onActualClick={this.handleActualClick}
                             />                         */}
                             <h5>Parameters</h5>
+                            {this.state.dataLoaded &&
                             <SeverityContainer
                                 severityList={this.state.severityList}
                                 scenarioList={this.state.scenarioList}
@@ -504,6 +519,7 @@ class MainContainer extends Component {
                                 onSeveritiesHover={this.handleSeveritiesHover}
                                 onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
                             />
+                            }
                             <p></p>
                             <h5>Thresholds</h5>
                             {this.state.dataLoaded &&

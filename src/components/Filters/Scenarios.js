@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
-import { SCENARIOS } from '../../utils/constants.js';
 
 class Scenarios extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            scenarios: SCENARIOS,
+            scenarios: [],
         }
     }
 
     componentDidMount() {
-        const obj = Array.from(this.state.scenarios)
+        const obj = Array.from(this.props.SCENARIOS);
 
         // update checked attribute for active scenario
         obj.map(scenario => {

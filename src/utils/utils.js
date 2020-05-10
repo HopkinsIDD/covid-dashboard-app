@@ -1,5 +1,22 @@
 import { extent, max } from 'd3-array'
 ///////////////// UTILS ///////////////////
+
+export function buildScenarios(dataset) {
+  const keys = Object.keys(dataset); 
+  const scenarioArray = []; 
+  for (let i = 0; i < keys.length; i++) {
+    const obj = {}; 
+    obj.id = i;
+    obj.key = keys[i];
+    obj.name = keys[i];
+    obj.checked = false;
+    obj.disabled = false;
+
+    scenarioArray.push(obj);
+  }
+  return scenarioArray;
+}
+
 export function addCommas(x) {
   var parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -20,23 +37,3 @@ export function getRange(series) {
   return [minPeak, maxPeak];
 };
 
-// export function readableDate(date) {
-//   // takes date Obj returns Month Day, Year
-
-//   const dateArray = date.toDateString().split(' ').slice(1);
-//   const day = dateArray[1];
-//   const newDay = day[0] === '0' ? day.slice(1) : day;
-  
-//   return dateArray[0] + ' ' + newDay + ', ' + dateArray[2];
-// }
-
-
-    // export function calcSimsOver(series) {
-    //     let simsOver = 0;
-    //     Object.values(series).map(sim => {
-    //       if (sim.over === true) {
-    //           simsOver = simsOver + 1;
-    //       } ;
-    //     });
-    //     return simsOver;
-    // };
