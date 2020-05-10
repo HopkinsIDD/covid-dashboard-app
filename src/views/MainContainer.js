@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
-import GraphContainer from './Graph/GraphContainer';
-import Search from './Search'
-import Brush from './Filters/Brush';
-import Legend from './Graph/Legend';
-import Buttons from './Filters/Buttons';
-import Scenarios from './Filters/Scenarios';
-import SeverityContainer from './Filters/SeverityContainer';
-import Sliders from './Filters/Sliders';
+import GraphContainer from '../components/Graph/GraphContainer';
+import Search from '../components/Search'
+import Brush from '../components/Filters/Brush';
+import Legend from '../components/Graph/Legend';
+import Buttons from '../components/Filters/Buttons';
+import Scenarios from '../components/Filters/Scenarios';
+import SeverityContainer from '../components/Filters/SeverityContainer';
+import Sliders from '../components/Filters/Sliders';
 // import Overlays from './Filters/Overlays';
 import _ from 'lodash';
 import { buildScenarios, getRange } from '../utils/utils'
@@ -275,8 +275,7 @@ class MainContainer extends Component {
 
     handleCountySelect = (i) => {
         console.log('main', i)
-        // uncomment when public model files are hooked up
-        // this.setState({dataset: i})
+        this.setState({dataset: i})
     }
     
     handleUpload = (i) => {
@@ -422,6 +421,7 @@ class MainContainer extends Component {
                         <div className="col-9">
                             <Search 
                                 stat={this.state.stat}
+                                geoid={this.state.geoid}
                                 onFileUpload={this.handleUpload}
                                 onCountySelect={this.handleCountySelect}
                             />
