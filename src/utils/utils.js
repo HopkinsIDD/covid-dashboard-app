@@ -1,4 +1,4 @@
-import { extent, max } from 'd3-array'
+import { extent } from 'd3-array'
 ///////////////// UTILS ///////////////////
 
 export function buildScenarios(dataset) {

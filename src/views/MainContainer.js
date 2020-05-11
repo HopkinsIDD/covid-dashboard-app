@@ -7,7 +7,7 @@ import Buttons from '../components/Filters/Buttons';
 import Scenarios from '../components/Filters/Scenarios';
 import SeverityContainer from '../components/Filters/SeverityContainer';
 import Sliders from '../components/Filters/Sliders';
-// import Overlays from './Filters/Overlays';
+import Overlays from '../components/Filters/Overlays';
 import _ from 'lodash';
 import { buildScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
@@ -50,6 +50,8 @@ class MainContainer extends Component {
             simNum: '150',
             percExceedenceList: [],
             showConfBounds: false,
+            confBounds: {},
+            confBoundsList: [{}],
             showActual: false,
             graphW: 0,
             graphH: 0,
@@ -75,14 +77,17 @@ class MainContainer extends Component {
         const dates = dataset[scenario.key].dates.map( d => parseDate(d));
         const firstDate = dates[0];
         const lastDate = dates[dates.length - 1];
- 
+        
         const seriesPeaks = series.map(sim => sim.max);
         const [seriesMin, seriesMax] = getRange(series, seriesPeaks);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
-
+        
         // add scenario to severity list
         const sevList = _.cloneDeep(this.state.severityList);
         sevList[0].scenario = scenario.key;
+
+        // instantiate confidence bounds
+        const confBounds = dataset[scenario.key][severity.key][stat.key].conf;
 
         // iterate through SeriesList
         const simsOver = this.updateThresholdIterate(
@@ -118,7 +123,6 @@ class MainContainer extends Component {
         // const graphH = this.graphEl.clientHeight;
 
         const percExceedenceList = [percExceedence]
-
         this.setState({
             dataset,
             SCENARIOS,
@@ -136,6 +140,7 @@ class MainContainer extends Component {
             firstDate,
             lastDate,
             percExceedenceList,
+            confBoundsList: [confBounds],
             // graphW,
             // graphH
         }, () => {
@@ -155,6 +160,7 @@ class MainContainer extends Component {
 
             const filteredSeriesList = []
             const percExceedenceList = []
+            const confBoundsList = [];
             let brushSeries
             
             const { dataset, stat, severityList, scenarioList } = this.state;
@@ -205,6 +211,10 @@ class MainContainer extends Component {
                     return newS
                 })
                 filteredSeriesList.push(filteredSeries)
+                
+                // build confidence bounds list
+                const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
+                confBoundsList.push(confBounds);
             }
             this.setState({
                 seriesList: filteredSeriesList,
@@ -214,7 +224,8 @@ class MainContainer extends Component {
                 dateThreshold,
                 seriesMin : sliderMin,
                 seriesMax : sliderMax,
-                percExceedenceList
+                percExceedenceList,
+                confBoundsList
             })
         }
     };
@@ -408,13 +419,13 @@ class MainContainer extends Component {
         this.setState({r0: i});
     };
 
-    handleConfClick = (i) => {
+    handleConfClick = () => {
         this.setState(prevState => ({
             showConfBounds: !prevState.showConfBounds
         }));
     };
 
-    handleActualClick = (i) => {
+    handleActualClick = () => {
         this.setState(prevState => ({
             showActual: !prevState.showActual
         }));
@@ -460,6 +471,7 @@ class MainContainer extends Component {
                                         r0={this.state.r0}
                                         simNum={this.state.simNum}
                                         showConfBounds={this.state.showConfBounds}
+                                        confBoundsList={this.state.confBoundsList}
                                         showActual={this.state.showActual}
                                         seriesList={this.state.seriesList}
                                         dates={this.state.dates}
@@ -509,15 +521,15 @@ class MainContainer extends Component {
                                 onScenarioClick={this.handleScenarioClick}
                             />
                             }
-                            <p></p>
-                            {/* <h5>Overlays</h5>
+                            <p></p>                   
+                            <h5>Parameters</h5>
                             <Overlays 
                                 showConfBounds={this.state.showConfBounds}
-                                showActual={this.state.showActual}
+                                // showActual={this.state.showActual}
                                 onConfClick={this.handleConfClick}
-                                onActualClick={this.handleActualClick}
-                            />                         */}
-                            <h5>Parameters</h5>
+                                // onActualClick={this.handleActualClick}
+                            /> 
+                            <p></p>                   
                             {this.state.dataLoaded &&
                             <SeverityContainer
                                 severityList={this.state.severityList}
