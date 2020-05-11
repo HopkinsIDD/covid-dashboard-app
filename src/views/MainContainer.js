@@ -14,7 +14,7 @@ import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { maxIndex } from 'd3-array';
 import { STATS, LEVELS, margin } from '../utils/constants';
-const dataset = require('../store/geo06085_new.json');
+const dataset = require('../store/geo06085.json');
 
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
@@ -62,7 +62,7 @@ class MainContainer extends Component {
 
     componentDidMount() {
         console.log('componentDidMount')
-        console.log('dataset', dataset)
+        // console.log('dataset', dataset)
         window.addEventListener('resize', this.updateGraphDimensions)
         this.updateGraphDimensions()
         
@@ -108,7 +108,6 @@ class MainContainer extends Component {
         // take out of loop so not redundant
         const idxMin = timeDay.count(firstDate, this.state.dateRange[0]);
         const idxMax = timeDay.count(firstDate, this.state.dateRange[1]);
-       // include in loop
         const newDates = Array.from(allTimeDates.slice(idxMin, idxMax));
         const filteredSeries = series.map( s => {
             const newS = {...s}
@@ -116,13 +115,9 @@ class MainContainer extends Component {
             return newS
         })
         
-        // out of loop
         const yAxisLabel = `Number of ${stat.name} per Day`;
-
-        // const graphW = this.graphEl.clientWidth - margin.yAxis;
-        // const graphH = this.graphEl.clientHeight;
-
         const percExceedenceList = [percExceedence]
+
         this.setState({
             dataset,
             SCENARIOS,
@@ -292,8 +287,24 @@ class MainContainer extends Component {
     }
 
     handleCountySelect = (i) => {
-        console.log('main', i)
-        this.setState({dataset: i})
+        const dataset = require(`../store/geo${i.geoid}.json`);
+
+        // re-initialize scenarios
+        const SCENARIOS = buildScenarios(dataset); 
+        const scenario = SCENARIOS[0];
+        const scenarioList = [scenario]; 
+
+        // re-initialize severity
+        const severityList = [_.cloneDeep(LEVELS[0])];
+        severityList[0].scenario = scenario.key;
+
+        this.setState({
+            dataset,
+            geoid: i.geoid,
+            SCENARIOS,
+            scenarioList,
+            severityList
+        })
     }
     
     handleUpload = (i) => {
@@ -311,7 +322,7 @@ class MainContainer extends Component {
         const scenarioKeys = Object.values(newScenarios).map(s => s.key);
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
 
-        // new scenario being selectede
+        // new scenario being selected
         if (!scenarioKeys.includes(i.key)) {
             // return high sev as default
             const defaultSev = _.cloneDeep(LEVELS[0]); 

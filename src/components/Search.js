@@ -14,10 +14,7 @@ class Search extends Component {
     }
 
     handleCountySelect = (event) => {
-        const dataset = require(`../store/geo${event.geoid}.json`);
-        this.props.onCountySelect(dataset);
-        // console.log('event.name', event.name)
-        // console.log('dataset', dataset)
+        this.props.onCountySelect(event);
         this.setState({
             'countyName': event.name + ', ' + event.usps
         })

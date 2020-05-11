@@ -27,11 +27,13 @@ class Scenarios extends Component {
 
     componentDidUpdate(prevProp) {
         const { scenarioList } = this.props;
-        if (prevProp.scenarioList !== this.props.scenarioList ||
+        if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
+            prevProp.scenarioList !== this.props.scenarioList ||
             prevProp.scenario !== this.props.scenario) {
-            const keys = Object.values(scenarioList).map(scen => scen.key);
-            const obj = Array.from(this.state.scenarios)
 
+            const keys = Object.values(scenarioList).map(scen => scen.key);
+            const obj = Array.from(this.props.SCENARIOS);
+            
             // update checked attribute for active scenario
             obj.map(scenario => {
                 if (keys.includes(scenario.key)) {
