@@ -12,9 +12,9 @@ import _ from 'lodash';
 import { buildScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
-import { max, maxIndex } from 'd3-array';
+import { maxIndex } from 'd3-array';
 import { STATS, LEVELS, margin } from '../utils/constants';
-const dataset = require('../store/geo06085.json');
+const dataset = require('../store/geo06085_new.json');
 
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
@@ -60,6 +60,7 @@ class MainContainer extends Component {
 
     componentDidMount() {
         console.log('componentDidMount')
+        console.log('dataset', dataset)
         window.addEventListener('resize', this.updateGraphDimensions)
         this.updateGraphDimensions()
         
@@ -68,14 +69,15 @@ class MainContainer extends Component {
         const scenario = SCENARIOS[0];      // initial scenario view
         const scenarioList = [scenario];    // updated based on selection
 
-        // instantiate initial dataset
+        // instantiate initial series and dates
         const { severity, stat } = this.state;
-        const initialData = dataset[scenario.key][severity.key];
-        const series = initialData.series[stat.key];
-        const dates = initialData.dates.map( d => parseDate(d));
+        const series = dataset[scenario.key][severity.key][stat.key].sims;
+        const dates = dataset[scenario.key].dates.map( d => parseDate(d));
         const firstDate = dates[0];
         const lastDate = dates[dates.length - 1];
-        const [seriesMin, seriesMax] = getRange(series);
+ 
+        const seriesPeaks = series.map(sim => sim.max);
+        const [seriesMin, seriesMax] = getRange(series, seriesPeaks);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
         // add scenario to severity list
@@ -168,7 +170,7 @@ class MainContainer extends Component {
 
             for (let i = 0; i < scenarioList.length; i++) {
                 const newSeries = Array.from(
-                    dataset[scenarioList[i].key][severityList[i].key].series[stat.key]
+                    dataset[scenarioList[i].key][severityList[i].key][stat.key].sims
                     );
                 const filteredSeriesForStatThreshold = newSeries.map( s => {
                     const newS = {...s}
@@ -176,7 +178,11 @@ class MainContainer extends Component {
                     return newS
                 });
 
-                const [seriesMin, seriesMax] = getRange(filteredSeriesForStatThreshold);
+                const seriesPeaks = filteredSeriesForStatThreshold.map(sim => sim.max);
+                const [seriesMin, seriesMax] = getRange(
+                    filteredSeriesForStatThreshold,
+                    seriesPeaks
+                    );
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
                 // update dateThreshold before updating statThreshold?
@@ -225,7 +231,9 @@ class MainContainer extends Component {
       }
 
     updateThresholdIterate = (series, statThreshold, dates, dateThreshold) => {
-        const dateIndex = dates.findIndex( date => formatDate(date) === formatDate(dateThreshold));
+        const dateIndex = dates.findIndex(
+            date => formatDate(date) === formatDate(dateThreshold)
+            );
         // console.log('dateThreshold', dateThreshold)
         // console.log('dateIndex', dateIndex)
         let simsOver = 0;
@@ -256,14 +264,13 @@ class MainContainer extends Component {
         let simsOver = 0;
         Object.values(series).map(sim => {
             // calculate max once, use to find maxIndex
-            const maxVal = max(sim.vals)
             const maxIdx = maxIndex(sim.vals)
             const dateAtMax = dates[maxIdx]
             // console.log(sim.vals[dateIndex])
             // we need to keep track of whether simval at dateThreshold is over statThreshold
             // as well as whether the max is over statThreshold and occured in the past
             if (sim.vals[dateIndex] > statThreshold
-                || (dateAtMax < dateThreshold && maxVal > statThreshold)) {
+                || (dateAtMax < dateThreshold && sim.max > statThreshold)) {
                 simsOver = simsOver + 1;
                 return sim.over = true;
             } else {
