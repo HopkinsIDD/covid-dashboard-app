@@ -1,18 +1,18 @@
 import React, { Component } from 'react'
-import GraphContainer from './Graph/GraphContainer';
-import Search from './Search'
-import Brush from './Filters/Brush';
-import Legend from './Graph/Legend';
-import Buttons from './Filters/Buttons';
-import Scenarios from './Filters/Scenarios';
-import SeverityContainer from './Filters/SeverityContainer';
-import Sliders from './Filters/Sliders';
-// import Overlays from './Filters/Overlays';
+import GraphContainer from '../components/Graph/GraphContainer';
+import Search from '../components/Search'
+import Brush from '../components/Filters/Brush';
+import Legend from '../components/Graph/Legend';
+import Buttons from '../components/Filters/Buttons';
+import Scenarios from '../components/Filters/Scenarios';
+import SeverityContainer from '../components/Filters/SeverityContainer';
+import Sliders from '../components/Filters/Sliders';
+import Overlays from '../components/Filters/Overlays';
 import _ from 'lodash';
 import { buildScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
-import { max, maxIndex } from 'd3-array';
+import { maxIndex } from 'd3-array';
 import { STATS, LEVELS, margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
 
@@ -50,6 +50,8 @@ class MainContainer extends Component {
             simNum: '150',
             percExceedenceList: [],
             showConfBounds: false,
+            confBounds: {},
+            confBoundsList: [{}],
             showActual: false,
             graphW: 0,
             graphH: 0,
@@ -60,6 +62,7 @@ class MainContainer extends Component {
 
     componentDidMount() {
         console.log('componentDidMount')
+        // console.log('dataset', dataset)
         window.addEventListener('resize', this.updateGraphDimensions)
         this.updateGraphDimensions()
         
@@ -68,19 +71,23 @@ class MainContainer extends Component {
         const scenario = SCENARIOS[0];      // initial scenario view
         const scenarioList = [scenario];    // updated based on selection
 
-        // instantiate initial dataset
+        // instantiate initial series and dates
         const { severity, stat } = this.state;
-        const initialData = dataset[scenario.key][severity.key];
-        const series = initialData.series[stat.key];
-        const dates = initialData.dates.map( d => parseDate(d));
+        const series = dataset[scenario.key][severity.key][stat.key].sims;
+        const dates = dataset[scenario.key].dates.map( d => parseDate(d));
         const firstDate = dates[0];
         const lastDate = dates[dates.length - 1];
-        const [seriesMin, seriesMax] = getRange(series);
+        
+        const seriesPeaks = series.map(sim => sim.max);
+        const [seriesMin, seriesMax] = getRange(series, seriesPeaks);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
-
+        
         // add scenario to severity list
         const sevList = _.cloneDeep(this.state.severityList);
         sevList[0].scenario = scenario.key;
+
+        // instantiate confidence bounds
+        const confBounds = dataset[scenario.key][severity.key][stat.key].conf;
 
         // iterate through SeriesList
         const simsOver = this.updateThresholdIterate(
@@ -101,7 +108,6 @@ class MainContainer extends Component {
         // take out of loop so not redundant
         const idxMin = timeDay.count(firstDate, this.state.dateRange[0]);
         const idxMax = timeDay.count(firstDate, this.state.dateRange[1]);
-       // include in loop
         const newDates = Array.from(allTimeDates.slice(idxMin, idxMax));
         const filteredSeries = series.map( s => {
             const newS = {...s}
@@ -109,12 +115,7 @@ class MainContainer extends Component {
             return newS
         })
         
-        // out of loop
         const yAxisLabel = `Number of ${stat.name} per Day`;
-
-        // const graphW = this.graphEl.clientWidth - margin.yAxis;
-        // const graphH = this.graphEl.clientHeight;
-
         const percExceedenceList = [percExceedence]
 
         this.setState({
@@ -134,6 +135,7 @@ class MainContainer extends Component {
             firstDate,
             lastDate,
             percExceedenceList,
+            confBoundsList: [confBounds],
             // graphW,
             // graphH
         }, () => {
@@ -153,6 +155,7 @@ class MainContainer extends Component {
 
             const filteredSeriesList = []
             const percExceedenceList = []
+            const confBoundsList = [];
             let brushSeries
             
             const { dataset, stat, severityList, scenarioList } = this.state;
@@ -168,7 +171,7 @@ class MainContainer extends Component {
 
             for (let i = 0; i < scenarioList.length; i++) {
                 const newSeries = Array.from(
-                    dataset[scenarioList[i].key][severityList[i].key].series[stat.key]
+                    dataset[scenarioList[i].key][severityList[i].key][stat.key].sims
                     );
                 const filteredSeriesForStatThreshold = newSeries.map( s => {
                     const newS = {...s}
@@ -176,7 +179,11 @@ class MainContainer extends Component {
                     return newS
                 });
 
-                const [seriesMin, seriesMax] = getRange(filteredSeriesForStatThreshold);
+                const seriesPeaks = filteredSeriesForStatThreshold.map(sim => sim.max);
+                const [seriesMin, seriesMax] = getRange(
+                    filteredSeriesForStatThreshold,
+                    seriesPeaks
+                    );
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
                 // update dateThreshold before updating statThreshold?
@@ -199,6 +206,10 @@ class MainContainer extends Component {
                     return newS
                 })
                 filteredSeriesList.push(filteredSeries)
+                
+                // build confidence bounds list
+                const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
+                confBoundsList.push(confBounds);
             }
             this.setState({
                 seriesList: filteredSeriesList,
@@ -208,7 +219,8 @@ class MainContainer extends Component {
                 dateThreshold,
                 seriesMin : sliderMin,
                 seriesMax : sliderMax,
-                percExceedenceList
+                percExceedenceList,
+                confBoundsList
             })
         }
     };
@@ -225,7 +237,9 @@ class MainContainer extends Component {
       }
 
     updateThresholdIterate = (series, statThreshold, dates, dateThreshold) => {
-        const dateIndex = dates.findIndex( date => formatDate(date) === formatDate(dateThreshold));
+        const dateIndex = dates.findIndex(
+            date => formatDate(date) === formatDate(dateThreshold)
+            );
         // console.log('dateThreshold', dateThreshold)
         // console.log('dateIndex', dateIndex)
         let simsOver = 0;
@@ -256,14 +270,13 @@ class MainContainer extends Component {
         let simsOver = 0;
         Object.values(series).map(sim => {
             // calculate max once, use to find maxIndex
-            const maxVal = max(sim.vals)
             const maxIdx = maxIndex(sim.vals)
             const dateAtMax = dates[maxIdx]
             // console.log(sim.vals[dateIndex])
             // we need to keep track of whether simval at dateThreshold is over statThreshold
             // as well as whether the max is over statThreshold and occured in the past
             if (sim.vals[dateIndex] > statThreshold
-                || (dateAtMax < dateThreshold && maxVal > statThreshold)) {
+                || (dateAtMax < dateThreshold && sim.max > statThreshold)) {
                 simsOver = simsOver + 1;
                 return sim.over = true;
             } else {
@@ -274,9 +287,24 @@ class MainContainer extends Component {
     }
 
     handleCountySelect = (i) => {
-        console.log('main', i)
-        // uncomment when public model files are hooked up
-        // this.setState({dataset: i})
+        const dataset = require(`../store/geo${i.geoid}.json`);
+
+        // re-initialize scenarios
+        const SCENARIOS = buildScenarios(dataset); 
+        const scenario = SCENARIOS[0];
+        const scenarioList = [scenario]; 
+
+        // re-initialize severity
+        const severityList = [_.cloneDeep(LEVELS[0])];
+        severityList[0].scenario = scenario.key;
+
+        this.setState({
+            dataset,
+            geoid: i.geoid,
+            SCENARIOS,
+            scenarioList,
+            severityList
+        })
     }
     
     handleUpload = (i) => {
@@ -294,7 +322,7 @@ class MainContainer extends Component {
         const scenarioKeys = Object.values(newScenarios).map(s => s.key);
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
 
-        // new scenario being selectede
+        // new scenario being selected
         if (!scenarioKeys.includes(i.key)) {
             // return high sev as default
             const defaultSev = _.cloneDeep(LEVELS[0]); 
@@ -402,13 +430,13 @@ class MainContainer extends Component {
         this.setState({r0: i});
     };
 
-    handleConfClick = (i) => {
+    handleConfClick = () => {
         this.setState(prevState => ({
             showConfBounds: !prevState.showConfBounds
         }));
     };
 
-    handleActualClick = (i) => {
+    handleActualClick = () => {
         this.setState(prevState => ({
             showActual: !prevState.showActual
         }));
@@ -422,6 +450,7 @@ class MainContainer extends Component {
                         <div className="col-9">
                             <Search 
                                 stat={this.state.stat}
+                                geoid={this.state.geoid}
                                 onFileUpload={this.handleUpload}
                                 onCountySelect={this.handleCountySelect}
                             />
@@ -453,6 +482,7 @@ class MainContainer extends Component {
                                         r0={this.state.r0}
                                         simNum={this.state.simNum}
                                         showConfBounds={this.state.showConfBounds}
+                                        confBoundsList={this.state.confBoundsList}
                                         showActual={this.state.showActual}
                                         seriesList={this.state.seriesList}
                                         dates={this.state.dates}
@@ -502,15 +532,15 @@ class MainContainer extends Component {
                                 onScenarioClick={this.handleScenarioClick}
                             />
                             }
-                            <p></p>
-                            {/* <h5>Overlays</h5>
+                            <p></p>                   
+                            <h5>Parameters</h5>
                             <Overlays 
                                 showConfBounds={this.state.showConfBounds}
-                                showActual={this.state.showActual}
+                                // showActual={this.state.showActual}
                                 onConfClick={this.handleConfClick}
-                                onActualClick={this.handleActualClick}
-                            />                         */}
-                            <h5>Parameters</h5>
+                                // onActualClick={this.handleActualClick}
+                            /> 
+                            <p></p>                   
                             {this.state.dataLoaded &&
                             <SeverityContainer
                                 severityList={this.state.severityList}

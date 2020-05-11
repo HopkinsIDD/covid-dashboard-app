@@ -1,4 +1,4 @@
-import { extent, max } from 'd3-array'
+import { extent } from 'd3-array'
 ///////////////// UTILS ///////////////////
 
 export function buildScenarios(dataset) {
@@ -23,12 +23,12 @@ export function addCommas(x) {
   return parts.join(".");
 }
 
-export function getRange(series) {
+export function getRange(series, seriesPeaks) {
   // return range [min, max] of all sims given a series
-  const seriesMaxPeaks = series.map( sim => {
-    return max(sim.vals)
-  });
-  const seriesPeakExtent = extent(seriesMaxPeaks)
+  // const seriesMaxPeaks = series.map( sim => {
+  //   return max(sim.vals)
+  // });
+  const seriesPeakExtent = extent(seriesPeaks)
 
   // take out rounding until display
   const minPeak = Math.ceil(seriesPeakExtent[0] / 100) * 100;

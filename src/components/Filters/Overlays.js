@@ -1,18 +1,13 @@
 import React, { Component } from 'react';
 
 class Overlays extends Component {
-    constructor(props) {
-        super(props);
-        this.handleConfClick = this.handleConfClick.bind(this);
-        this.handleActualClick = this.handleActualClick.bind(this);
-    }
-    
-    handleConfClick(i) {
-        this.props.onConfClick(i);
+
+    handleConfClick = () => {
+        this.props.onConfClick();
     }
 
-    handleActualClick(i) {
-        this.props.onActualClick(i);
+    handleActualClick = () => {
+        this.props.onActualClick();
     }
 
     render() {
@@ -24,12 +19,12 @@ class Overlays extends Component {
                         type="checkbox"
                         value=""
                         id="defaultCheck1"
-                        onClick={this.handleConfClick} />
+                        onClick={(e) => this.handleConfClick(e)} />
                     <label className="form-check-label filter-label" htmlFor="defaultCheck1">
                         Show Confidence Boundaries
                     </label>
                 </div>
-                <div className="form-check">
+                {/* <div className="form-check">
                     <input
                         className="form-check-input"
                         type="checkbox"
@@ -39,7 +34,7 @@ class Overlays extends Component {
                     <label className="form-check-label filter-label" htmlFor="defaultCheck1">
                         Show Actual Infections to Date
                     </label>
-                </div>
+                </div> */}
             </div>
 
         )

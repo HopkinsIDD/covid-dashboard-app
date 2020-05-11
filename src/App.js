@@ -2,9 +2,9 @@ import React from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import './App.css'; 
 import NavBar from './components/NavBar';
-import MainContainer from './components/MainContainer';
-import ScenariosInfo from './components/ScenariosInfo';
-import Methods from './components/Methods';
+import MainContainer from './views/MainContainer';
+import ScenariosInfo from './views/ScenariosInfo';
+import Methods from './views/Methods';
 
 function App() {
   return (
