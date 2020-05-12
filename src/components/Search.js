@@ -16,7 +16,7 @@ class Search extends Component {
     handleCountySelect = (event) => {
         this.props.onCountySelect(event);
         this.setState({
-            'countyName': event.name + ', ' + event.usps
+            countyName: `${event.name}, ${event.usps}`
         })
 
         // use for when files are on public internet
