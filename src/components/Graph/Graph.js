@@ -25,7 +25,8 @@ class Graph extends Component {
             hoveredSimPathId: null,
             areaGenerator: area().curve(curveLinear),
             confBounds: this.props.confBounds,
-            confBoundsAreaPath: []
+            confBoundsAreaPath: [],
+            confBoundsMeanLinePath: []
         };
         
         this.simPathsRef = React.createRef();
@@ -34,15 +35,17 @@ class Graph extends Component {
     }
     
     componentDidMount() {
+        // console.log('ComponentDidMount', this.props.keyVal)
         // console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
+        if (this.state.confBounds && this.state.confBounds.length > 0) this.drawConfBounds(this.state.confBounds, this.state.areaGenerator, this.state.dates);
     }
 
     componentDidUpdate(prevProps, prevState) {
         // console.log('ComponentDidUpdate', this.props.keyVal)
         // confidence bounds overlay
         if (this.props.showConfBounds !== prevProps.showConfBounds && this.props.confBounds) {
-            console.log('showConfBounds is', this.props.showConfBounds)
+            // console.log('showConfBounds is', this.props.showConfBounds)
             if (this.props.confBounds) {
                 // console.log(this.props.confBounds)
                 const { confBounds, dates} = this.props;
@@ -53,7 +56,6 @@ class Graph extends Component {
     
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             // console.log('brushing is TRUE, series diff', this.props.keyVal)
-            // console.log('showConfBounds is', this.props.showConfBounds)
             const { series, dates, width} = this.props;
             const { lineGenerator, areaGenerator } = prevState;
 
@@ -223,6 +225,33 @@ class Graph extends Component {
         }
     }
 
+    drawConfBounds = (confBounds, areaGenerator, dates) => {
+        // update areaGenerator from scale and data
+        areaGenerator
+        .x((d,i) => this.props.xScale(dates[i]))
+        .y0(d => this.props.yScale(d.p10)) // this gets the p10 values
+        .y1(d => this.props.yScale(d.p90)) // this gets the p90 values
+
+        // generate areaPath for confBounds from areaGenerator
+        const confBoundsAreaPath = areaGenerator(confBounds)
+
+        // generate mean line path for confBounds from a confBoundsLineGenerator
+        const confBoundsLineGenerator = line()
+            .x((d,i) => this.props.xScale(dates[i]))
+            .y(d => this.props.yScale(d.p50))
+        const confBoundsMeanLinePath = confBoundsLineGenerator(confBounds)
+
+        // save new values to state (possibly duplicate from simPaths update)
+        this.setState({
+            dates,
+            xScale: this.props.xScale,
+            yScale: this.props.yScale,
+            areaGenerator,
+            confBoundsAreaPath,
+            confBoundsMeanLinePath
+        })
+    }
+
     updateConfBounds = (confBounds, areaGenerator, dates) => {  
         
         if (this.confBoundsRef.current) {
@@ -239,14 +268,14 @@ class Graph extends Component {
             const confBoundsLineGenerator = line()
                 .x((d,i) => this.props.xScale(dates[i]))
                 .y(d => this.props.yScale(d.p50))
-            const confBoundsMeanLine = confBoundsLineGenerator(confBounds)
+            const confBoundsMeanLinePath = confBoundsLineGenerator(confBounds)
 
             // update paths with new data
             const confBoundsNode = select(this.confBoundsRef.current)
             confBoundsNode.selectAll('.confBoundsArea')
                 .attr("d", confBoundsAreaPath)
             confBoundsNode.selectAll('.confBoundsMean')
-                .attr("d", confBoundsMeanLine)
+                .attr("d", confBoundsMeanLinePath)
 
             // save new values to state (possibly duplicate from simPaths update)
             this.setState({
@@ -254,7 +283,8 @@ class Graph extends Component {
                 xScale: this.props.xScale,
                 yScale: this.props.yScale,
                 areaGenerator,
-                confBoundsAreaPath
+                confBoundsAreaPath,
+                confBoundsMeanLinePath
             })
         }
     }
@@ -364,7 +394,7 @@ class Graph extends Component {
                             ></path>
                             <path
                                 className={'confBoundsMean'}
-                                d={this.state.confBoundsMeanPath}
+                                d={this.state.confBoundsMeanLinePath}
                                 stroke={green}
                                 strokeWidth={2}
                                 fillOpacity={0}
