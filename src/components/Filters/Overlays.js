@@ -19,7 +19,7 @@ class Overlays extends Component {
                         type="checkbox"
                         value=""
                         id="defaultCheck1"
-                        onClick={(e) => this.handleConfClick(e)} />
+                        onClick={this.handleConfClick} />
                     <label className="form-check-label filter-label" htmlFor="defaultCheck1">
                         Show Confidence Boundaries
                     </label>
