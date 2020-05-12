@@ -42,7 +42,7 @@ class GraphContainer extends Component {
                 r0={this.props.r0}
                 simNum={this.props.simNum}
                 showConfBounds={this.props.showConfBounds}
-                confBounds={this.props.confBoundsList && this.props.confBoundsList[0]}
+                confBounds={this.props.confBoundsList[0]}
                 showActual={this.props.showActual}
                 series={this.props.seriesList[0]}
                 dates={this.props.dates}
@@ -105,6 +105,7 @@ class GraphContainer extends Component {
 
   updateGraphChildren = (newChildren, scenarioList, graphWidth, graphHeight, scales) => {
         // console.log('componentDidUpdate Series List - scenarioList change');
+        // console.log(this.props.confBoundsList)
         for (let i = 0; i < scenarioList.length; i++) {
             const child = {
                 'key': scenarioList[i].key,
@@ -121,7 +122,7 @@ class GraphContainer extends Component {
                     r0={this.props.r0}
                     simNum={this.props.simNum}
                     showConfBounds={this.props.showConfBounds}
-                    confBounds={this.props.confBoundsList && this.props.confBoundsList[i]}
+                    confBounds={this.props.confBoundsList[i]}
                     showActual={this.props.showActual}
                     series={this.props.seriesList[i]}
                     dates={this.props.dates}
