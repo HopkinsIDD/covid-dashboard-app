@@ -218,30 +218,36 @@ class MainContainer extends Component {
                 
                 // build confidence bounds list and filter by date range selected
                 const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
-                const filteredConfBounds = confBounds.map( cb => {
-                    const newCB = {...cb}
-                    newCB.vals = cb.vals.slice(idxMin, idxMax)
-                    return newCB
-                })
-                // console.log(filteredConfBounds)
 
-                // after filtering, get the confidence bounds into the data structure
-                // we want for D3 - really this should happen upstream in the pre-processing step
-                // desired data structure: [{p10:2, p50:6, p90:13}, {p10:1, p50:6, p90:19}, etc]
-                const newConfBoundsFormat = filteredConfBounds.map( confBound => {
-                    return confBound.vals.map(cb => {
-                        const newObj = {}
-                        newObj[confBound.name] = cb
-                        return newObj
+                // make sure the stat has confidence bounds array
+                if (confBounds && confBounds.length > 0) {
+                    const filteredConfBounds = confBounds.map( cb => {
+                        const newCB = {...cb}
+                        newCB.vals = cb.vals.slice(idxMin, idxMax)
+                        return newCB
                     })
-                })
-                // console.log(newConfBoundsFormat)
-                const newConfBoundsZipped = newConfBoundsFormat[0].map( (d,i) => {
-                    return {...d, ...newConfBoundsFormat[1][i], ...newConfBoundsFormat[2][i]}
-                })
-                // console.log(newConfBoundsZipped)
-                confBoundsList.push(newConfBoundsZipped);
-                // console.log(confBoundsList)
+                    console.log(filteredConfBounds)
+    
+                    // after filtering, get the confidence bounds into the data structure
+                    // we want for D3 - really this should happen upstream in the pre-processing step
+                    // desired data structure: [{p10:2, p50:6, p90:13}, {p10:1, p50:6, p90:19}, etc]
+                    const newConfBoundsFormat = filteredConfBounds.map( confBound => {
+                        return confBound.vals.map(cb => {
+                            const newObj = {}
+                            newObj[confBound.name] = cb
+                            return newObj
+                        })
+                    })
+                    console.log(newConfBoundsFormat)
+                    const newConfBoundsZipped = newConfBoundsFormat[0].map( (d,i) => {
+                        return {...d, ...newConfBoundsFormat[1][i], ...newConfBoundsFormat[2][i]}
+                    })
+                    // console.log(newConfBoundsZipped)
+                    confBoundsList.push(newConfBoundsZipped);
+                    // console.log(confBoundsList)
+                }
+                console.log(confBoundsList)
+                
             }
             this.setState({
                 seriesList: filteredSeriesList,
