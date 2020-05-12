@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Axis from './Axis'
 // import { scaleLinear, scaleUtc } from 'd3-scale'
-import { line } from 'd3-shape'
+import { line, area, curveLinear } from 'd3-shape'
 // import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
@@ -23,10 +23,14 @@ class Graph extends Component {
             lineGenerator: line().defined(d => !isNaN(d)),
             simPaths: [],
             hoveredSimPathId: null,
+            areaGenerator: area().defined(d => !isNaN(d)),
+            confBounds: this.props.confBounds,
+            confBoundsAreaPath: []
         };
         
         this.simPathsRef = React.createRef();
         this.thresholdRef = React.createRef();
+        this.confBoundsRef = React.createRef();
     }
     
     componentDidMount() {
@@ -36,7 +40,14 @@ class Graph extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         // console.log('ComponentDidUpdate', this.props.keyVal)
-        
+        // confidence bounds overlay
+        if (this.props.showConfBounds !== prevProps.showConfBounds && this.props.confBounds) {
+            console.log('showConfBounds is', this.props.showConfBounds)
+            const { confBounds, dates} = this.props;
+            const { areaGenerator } = prevState;
+            this.updateConfBoundsArea(confBounds, areaGenerator, dates)
+        }
+    
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             // console.log('brushing is TRUE, series diff', this.props.keyVal)
             const { series, dates, width} = this.props;
@@ -205,6 +216,45 @@ class Graph extends Component {
         }
     }
 
+    updateConfBoundsArea = (confBounds, areaGenerator, dates) => {
+        // if (this.confBoundsRef.current) {
+            console.log(confBounds)
+            console.log(areaGenerator)
+                
+            // update areaGenerator from new scale and data
+            areaGenerator = area().curve(curveLinear)
+                .x((d,i) => {
+                    console.log(d, i)
+                    return this.props.xScale(dates[i])
+                })
+                .y0(d => {
+                    console.log(d)
+                    return this.props.yScale(d.p10)
+                })
+                .y1(d => {
+                    return this.props.yScale(d.p90)
+                })
+            // areaGenerator.y0(function(d) {
+            //     console.log(d)
+            //     return this.props.yScale(d.p10)
+            // }) // this gets the p10 values
+            // areaGenerator.y1(d => this.props.yScale(d.p90)) // this gets the p90 values
+
+            // generate areaPath for confBounds from areaGenerator
+            const confBoundsAreaPath = areaGenerator(confBounds)
+            console.log(areaGenerator(confBounds))
+
+            // set new vals to state
+            this.setState({ 
+                confBounds,
+                xScale: this.props.xScale,
+                yScale: this.props.yScale,
+                areaGenerator,
+                confBoundsAreaPath
+            })
+        // }
+    }
+
     handleMouseMove = (event, index) => {
         // console.log(index)
         // console.log(clientPoint(event.target, event))
@@ -277,7 +327,7 @@ class Graph extends Component {
                                 fill='none' 
                                 stroke = { this.state.series[i].over ? red : green}
                                 strokeWidth={'1'}
-                                strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
+                                strokeOpacity={ this.state.hoveredSimPathId || this.props.showConfBounds ? 0 : 0.6}
                                 onMouseMove={(e) => this.handleMouseMove(e, i)}
                                 onMouseEnter={(e) => this.handleMouseEnter(e, i)}
                                 onMouseLeave={(e) => this.handleMouseLeave(e, i)}
@@ -294,12 +344,22 @@ class Graph extends Component {
                                 fill='none' 
                                 stroke={simIsHovered ? blue : lightgray}
                                 strokeWidth={simIsHovered ? '2' : '1'}
-                                strokeOpacity={this.state.hoveredSimPathId ? 1 : 0}
+                                strokeOpacity={this.state.hoveredSimPathId || this.props.showConfBounds ? 1 : 0}
                                 onMouseMove={(e) => this.handleMouseMove(e, i)}
                                 onMouseEnter={(e) => this.handleMouseEnter(e, i)}
                                 onMouseLeave={(e) => this.handleMouseLeave(e, i)}
                             />
                         })}
+                        <g ref={this.confBoundsRef}>
+                            {this.props.showConfBounds &&
+                                <path
+                                id={'confBoundsArea'}
+                                d={this.state.confBoundsAreaPath}
+                                fill={green}
+                                fillOpacity={0.3}
+                            />
+                            }
+                        </g>
                         <g ref={this.thresholdRef}>
                             <line
                                 x1={margin.left}
