@@ -221,26 +221,6 @@ class Graph extends Component {
         }
     }
 
-    // drawConfBounds = (confBounds, areaGenerator, dates) => {                
-    //         // draw areaGenerator from scale and data
-    //         areaGenerator
-    //             .x((d,i) => this.props.xScale(dates[i]))
-    //             .y0(d => this.props.yScale(d.p10)) // this gets the p10 values
-    //             .y1(d => this.props.yScale(d.p90)) // this gets the p90 values
-
-    //         // generate areaPath for confBounds from areaGenerator
-    //         const confBoundsAreaPath = areaGenerator(confBounds)
-
-    //         // save new vals to state
-    //         this.setState({ 
-    //             confBounds,
-    //             xScale: this.props.xScale,
-    //             yScale: this.props.yScale,
-    //             areaGenerator,
-    //             confBoundsAreaPath
-    //         })
-    // }
-
     updateConfBounds = (confBounds, areaGenerator, dates) => {  
         
         if (this.confBoundsRef.current) {
