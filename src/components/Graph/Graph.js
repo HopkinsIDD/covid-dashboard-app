@@ -310,17 +310,17 @@ class Graph extends Component {
         point.x = event.clientX;
         point.y = event.clientY;
         point = point.matrixTransform(node.getScreenCTM().inverse());
-        // console.log(point)
-        const xm = this.state.xScale.invert(point.x);
-        const ym = this.state.yScale.invert(point.y);
-        // console.log(xm, ym);
-        const i1 = bisectLeft(this.state.dates, xm, 1);
+        console.log(point)
+        const xm = this.props.xScale.invert(point.x);
+        const ym = this.props.yScale.invert(point.y);
+        console.log(xm, ym);
+        const i1 = bisectLeft(this.props.dates, xm, 1);
         const i0 = i1 - 1;
-        const i = xm - this.state.dates[i0] > this.state.dates[i1] - xm ? i1 : i0;
-        const s = least(this.state.series, d => Math.abs(d.vals[i] - ym));
+        const i = xm - this.props.dates[i0] > this.props.dates[i1] - xm ? i1 : i0;
+        const s = least(this.props.series, d => Math.abs(d.vals[i] - ym));
         // console.log(s)
         if (s) {
-            const hoveredIdx = this.state.series.findIndex( sim => sim.name === s.name)
+            const hoveredIdx = this.props.series.findIndex( sim => sim.name === s.name)
             // console.log(hoveredIdx)
             this.setState({ hoveredSimPathId: hoveredIdx })  
         } 
