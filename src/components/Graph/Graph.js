@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Axis from './Axis'
 // import { scaleLinear, scaleUtc } from 'd3-scale'
-import { line } from 'd3-shape'
+import { line, area, curveLinear } from 'd3-shape'
 // import { max, extent } from 'd3-array'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
@@ -23,35 +23,54 @@ class Graph extends Component {
             lineGenerator: line().defined(d => !isNaN(d)),
             simPaths: [],
             hoveredSimPathId: null,
+            areaGenerator: area().curve(curveLinear),
+            confBounds: this.props.confBounds,
+            confBoundsAreaPath: [],
+            confBoundsMeanLinePath: []
         };
         
         this.simPathsRef = React.createRef();
         this.thresholdRef = React.createRef();
+        this.confBoundsRef = React.createRef();
     }
     
     componentDidMount() {
+        // console.log('ComponentDidMount', this.props.keyVal)
         // console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
+        if (this.state.confBounds && this.state.confBounds.length > 0) this.drawConfBounds(this.state.confBounds, this.state.areaGenerator, this.state.dates);
     }
 
     componentDidUpdate(prevProps, prevState) {
         // console.log('ComponentDidUpdate', this.props.keyVal)
-        
+        // confidence bounds overlay
+        if (this.props.showConfBounds !== prevProps.showConfBounds && this.props.confBounds) {
+            // console.log('showConfBounds is', this.props.showConfBounds)
+            if (this.props.confBounds) {
+                // console.log(this.props.confBounds)
+                const { confBounds, dates} = this.props;
+                const { areaGenerator } = prevState;
+                this.updateConfBounds(confBounds, areaGenerator, dates)
+            }
+        }
+    
         if (this.props.series !== prevProps.series && this.props.brushActive) {
             // console.log('brushing is TRUE, series diff', this.props.keyVal)
             const { series, dates, width} = this.props;
-            const { lineGenerator } = prevState;
+            const { lineGenerator, areaGenerator } = prevState;
 
             this.updateSimPaths(series, dates, lineGenerator, true, width);
+            if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
             // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
         }
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
             // console.log('brushing is FALSE, series diff', this.props.keyVal)
             const { series, dates, width } = this.props;
-            const { lineGenerator } = prevState;
+            const { lineGenerator, areaGenerator } = prevState;
             
             this.updateSimPaths(series, dates, lineGenerator, false, width);
+            if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
             // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
         }
 
@@ -61,18 +80,20 @@ class Graph extends Component {
             (this.props.statThreshold !== prevProps.statThreshold || this.props.dateThreshold !== prevProps.dateThreshold)) {
             // console.log('threshold diff', this.props.keyVal)
             const { series, dates, width } = this.props;
-            const { lineGenerator } = prevState;
+            const { lineGenerator, areaGenerator } = prevState;
             
             this.updateSimPaths(series, dates, lineGenerator, false, width);
+            if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
             // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
         }
 
         if (!this.props.brushActive && (this.props.xScale !== prevProps.xScale || this.props.yScale !== prevProps.yScale)) {
             // console.log('componentDidUpdate scale changed')
             const { series, dates, width } = this.props;
-            const { lineGenerator } = prevState;
+            const { lineGenerator, areaGenerator } = prevState;
 
             this.updateSimPaths(series, dates, lineGenerator, false, width);
+            if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
         }
 
     }
@@ -85,7 +106,6 @@ class Graph extends Component {
         // and use scales passed in from GraphContainer
         lineGenerator.x((d,i) => xScale(dates[i]))
         lineGenerator.y(d => yScale(d))
-        // const updatedScales = this.calculateSimPaths(series, dates);
         // generate simPaths from lineGenerator
         const simPaths = series.map( (d) => {
             // console.log(i, typeof(d.vals))
@@ -205,6 +225,70 @@ class Graph extends Component {
         }
     }
 
+    drawConfBounds = (confBounds, areaGenerator, dates) => {
+        // update areaGenerator from scale and data
+        areaGenerator
+        .x((d,i) => this.props.xScale(dates[i]))
+        .y0(d => this.props.yScale(d.p10)) // this gets the p10 values
+        .y1(d => this.props.yScale(d.p90)) // this gets the p90 values
+
+        // generate areaPath for confBounds from areaGenerator
+        const confBoundsAreaPath = areaGenerator(confBounds)
+
+        // generate mean line path for confBounds from a confBoundsLineGenerator
+        const confBoundsLineGenerator = line()
+            .x((d,i) => this.props.xScale(dates[i]))
+            .y(d => this.props.yScale(d.p50))
+        const confBoundsMeanLinePath = confBoundsLineGenerator(confBounds)
+
+        // save new values to state (possibly duplicate from simPaths update)
+        this.setState({
+            dates,
+            xScale: this.props.xScale,
+            yScale: this.props.yScale,
+            areaGenerator,
+            confBoundsAreaPath,
+            confBoundsMeanLinePath
+        })
+    }
+
+    updateConfBounds = (confBounds, areaGenerator, dates) => {  
+        
+        if (this.confBoundsRef.current) {
+            // update areaGenerator from scale and data
+            areaGenerator
+            .x((d,i) => this.props.xScale(dates[i]))
+            .y0(d => this.props.yScale(d.p10)) // this gets the p10 values
+            .y1(d => this.props.yScale(d.p90)) // this gets the p90 values
+
+            // generate areaPath for confBounds from areaGenerator
+            const confBoundsAreaPath = areaGenerator(confBounds)
+
+            // generate mean line path for confBounds from a confBoundsLineGenerator
+            const confBoundsLineGenerator = line()
+                .x((d,i) => this.props.xScale(dates[i]))
+                .y(d => this.props.yScale(d.p50))
+            const confBoundsMeanLinePath = confBoundsLineGenerator(confBounds)
+
+            // update paths with new data
+            const confBoundsNode = select(this.confBoundsRef.current)
+            confBoundsNode.selectAll('.confBoundsArea')
+                .attr("d", confBoundsAreaPath)
+            confBoundsNode.selectAll('.confBoundsMean')
+                .attr("d", confBoundsMeanLinePath)
+
+            // save new values to state (possibly duplicate from simPaths update)
+            this.setState({
+                dates,
+                xScale: this.props.xScale,
+                yScale: this.props.yScale,
+                areaGenerator,
+                confBoundsAreaPath,
+                confBoundsMeanLinePath
+            })
+        }
+    }
+
     handleMouseMove = (event, index) => {
         // console.log(index)
         // console.log(clientPoint(event.target, event))
@@ -277,7 +361,7 @@ class Graph extends Component {
                                 fill='none' 
                                 stroke = { this.state.series[i].over ? red : green}
                                 strokeWidth={'1'}
-                                strokeOpacity={ this.state.hoveredSimPathId ? 0 : 0.6}
+                                strokeOpacity={ this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 0 : 0.6}
                                 onMouseMove={(e) => this.handleMouseMove(e, i)}
                                 onMouseEnter={(e) => this.handleMouseEnter(e, i)}
                                 onMouseLeave={(e) => this.handleMouseLeave(e, i)}
@@ -294,12 +378,29 @@ class Graph extends Component {
                                 fill='none' 
                                 stroke={simIsHovered ? blue : lightgray}
                                 strokeWidth={simIsHovered ? '2' : '1'}
-                                strokeOpacity={this.state.hoveredSimPathId ? 1 : 0}
+                                strokeOpacity={this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 1 : 0}
                                 onMouseMove={(e) => this.handleMouseMove(e, i)}
                                 onMouseEnter={(e) => this.handleMouseEnter(e, i)}
                                 onMouseLeave={(e) => this.handleMouseLeave(e, i)}
                             />
                         })}
+                        {(this.props.showConfBounds && this.props.confBounds) &&
+                        <g ref={this.confBoundsRef}>
+                            <path
+                                className={'confBoundsArea'}
+                                d={this.state.confBoundsAreaPath}
+                                fill={green}
+                                fillOpacity={0.3}
+                            ></path>
+                            <path
+                                className={'confBoundsMean'}
+                                d={this.state.confBoundsMeanLinePath}
+                                stroke={green}
+                                strokeWidth={2}
+                                fillOpacity={0}
+                            ></path>
+                        </g>
+                         }
                         <g ref={this.thresholdRef}>
                             <line
                                 x1={margin.left}
