@@ -290,9 +290,6 @@ class Graph extends Component {
     }
 
     handleMouseMove = (event, index) => {
-        console.log(event)
-        console.log(index)
-        // console.log(clientPoint(event.target, event))
         this.setState({ hoveredSimPathId: index })
     }
 
@@ -305,7 +302,7 @@ class Graph extends Component {
     }
 
     handleBetterSimMouseHover = (event) => {
-        console.log('mousemove');
+        // console.log('mousemove');
         event.preventDefault();
         const node = document.querySelector('.graphSVG')
         let point = node.createSVGPoint();
