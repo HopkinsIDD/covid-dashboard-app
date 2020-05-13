@@ -310,10 +310,10 @@ class Graph extends Component {
         point.x = event.clientX;
         point.y = event.clientY;
         point = point.matrixTransform(node.getScreenCTM().inverse());
-        console.log(point)
+        // console.log(point)
         const xm = this.props.xScale.invert(point.x);
         const ym = this.props.yScale.invert(point.y);
-        console.log(xm, ym);
+        // console.log(xm, ym);
         const i1 = bisectLeft(this.props.dates, xm, 1);
         const i0 = i1 - 1;
         const i = xm - this.props.dates[i0] > this.props.dates[i1] - xm ? i1 : i0;
