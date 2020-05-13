@@ -319,9 +319,11 @@ class Graph extends Component {
         const i = xm - this.state.dates[i0] > this.state.dates[i1] - xm ? i1 : i0;
         const s = least(this.state.series, d => Math.abs(d.vals[i] - ym));
         // console.log(s)
-        const hoveredIdx = this.state.series.findIndex( sim => sim.name === s.name)
-        // console.log(hoveredIdx)
-        this.setState({ hoveredSimPathId: hoveredIdx })  
+        if (s) {
+            const hoveredIdx = this.state.series.findIndex( sim => sim.name === s.name)
+            // console.log(hoveredIdx)
+            this.setState({ hoveredSimPathId: hoveredIdx })  
+        } 
     }
 
     render() {
