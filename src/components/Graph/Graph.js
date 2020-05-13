@@ -304,7 +304,10 @@ class Graph extends Component {
     handleBetterSimMouseHover = (event) => {
         // console.log('mousemove');
         event.preventDefault();
-        const node = document.querySelector(`#${this.props.keyVal}`)
+        const selector = `.graphSVG_${this.props.keyVal}`
+        console.log(selector)
+        const node = document.querySelector(selector)
+        console.log(node)
         let point = node.createSVGPoint();
         point.x = event.clientX;
         point.y = event.clientY;
@@ -348,7 +351,7 @@ class Graph extends Component {
                             x={margin.left}
                             y={margin.top}
                             className={`graphArea`}
-                            id={this.props.keyVal}
+                            id={`graphArea_${this.props.keyVal}`}
                             width={this.props.width - margin.left - margin.right}
                             height={this.props.height - margin.bottom - margin.top}
                             fill={'#f6f5f5'}

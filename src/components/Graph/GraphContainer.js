@@ -27,7 +27,7 @@ class GraphContainer extends Component {
         const graphHeight = height;
         const scales = this.getScales(seriesList, confBoundsList, dates, graphWidth, height);
         const child = {
-            'key': scenarioList[0].key,
+            'key': `${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`,
             'graph': [],
         }
         
@@ -108,7 +108,7 @@ class GraphContainer extends Component {
         // console.log(this.props.confBoundsList)
         for (let i = 0; i < scenarioList.length; i++) {
             const child = {
-                'key': scenarioList[i].key,
+                'key': `${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`,
                 'graph': [],
             }
             child.graph.push(
@@ -132,7 +132,8 @@ class GraphContainer extends Component {
                     brushActive={this.props.brushActive}
                     width={graphWidth}
                     height={graphHeight}
-                    x={i * graphWidth}
+                    // x={i * graphWidth}
+                    x={0}
                     y={0}
                     xScale={scales.xScale}
                     yScale={scales.yScale}
@@ -242,20 +243,21 @@ class GraphContainer extends Component {
                             y={0}
                         />
                         </svg>
-                        <svg 
-                            width={this.props.width}
-                            height={this.props.height}
-                            className="graphSVG"
-                        >
                         {children.map(child => {
                             return (
+                                <svg 
+                                    key={`graphSVG_${child.key}`}
+                                    width={this.state.graphWidth}
+                                    height={this.state.graphHeight}
+                                    className={`graphSVG_${child.key}`}
+                                >
                                 <g key={`${child.key}-graph`}>
                                     {child.graph}
                                 </g>
+                                </svg>
                             )
-                            
                         })}
-                    </svg>
+            
                 </Fragment>
                 }
                 </div>
