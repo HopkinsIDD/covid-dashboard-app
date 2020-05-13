@@ -244,7 +244,8 @@ class GraphContainer extends Component {
                         </svg>
                         <svg 
                             width={this.props.width}
-                            height={this.props.height} 
+                            height={this.props.height}
+                            className="graphSVG"
                         >
                         {children.map(child => {
                             return (

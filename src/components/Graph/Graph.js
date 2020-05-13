@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import Axis from './Axis'
 // import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line, area, curveLinear } from 'd3-shape'
-// import { max, extent } from 'd3-array'
-import { select } from 'd3-selection'
+import { bisectLeft, least } from 'd3-array'
+import { select, clientPoint } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { margin, red, green, blue, gray, lightgray } from '../../utils/constants'
 
@@ -290,7 +290,8 @@ class Graph extends Component {
     }
 
     handleMouseMove = (event, index) => {
-        // console.log(index)
+        console.log(event)
+        console.log(index)
         // console.log(clientPoint(event.target, event))
         this.setState({ hoveredSimPathId: index })
     }
@@ -303,21 +304,26 @@ class Graph extends Component {
         this.setState({ hoveredSimPathId: null })
     }
 
-    experimentalMouseMove = (event) => {
-        // console.log(clientPoint(event.target))
-        // event.preventDefault();
-        // console.log(event)
-        // const mouse = clientPoint(event.target);
-        // console.log(mouse)
-        // const xm = this.state.xScale.invert(mouse[0]);
-        // const ym = this.state.yScale.invert(mouse[1]);
-        // const i1 = d3.bisectLeft(data.dates, xm, 1);
-        // const i0 = i1 - 1;
-        // const i = xm - data.dates[i0] > data.dates[i1] - xm ? i1 : i0;
-        // const s = d3.least(data.series, d => Math.abs(d.values[i] - ym));
-        // path.attr("stroke", d => d === s ? null : "#ddd").filter(d => d === s).raise();
-        // dot.attr("transform", `translate(${x(data.dates[i])},${y(s.values[i])})`);
-        // dot.select("text").text(s.name);   
+    handleBetterSimMouseHover = (event) => {
+        console.log('mousemove');
+        event.preventDefault();
+        const node = document.querySelector('.graphSVG')
+        let point = node.createSVGPoint();
+        point.x = event.clientX;
+        point.y = event.clientY;
+        point = point.matrixTransform(node.getScreenCTM().inverse());
+        // console.log(point)
+        const xm = this.state.xScale.invert(point.x);
+        const ym = this.state.yScale.invert(point.y);
+        // console.log(xm, ym);
+        const i1 = bisectLeft(this.state.dates, xm, 1);
+        const i0 = i1 - 1;
+        const i = xm - this.state.dates[i0] > this.state.dates[i1] - xm ? i1 : i0;
+        const s = least(this.state.series, d => Math.abs(d.vals[i] - ym));
+        // console.log(s)
+        const hoveredIdx = this.state.series.findIndex( sim => sim.name === s.name)
+        // console.log(hoveredIdx)
+        this.setState({ hoveredSimPathId: hoveredIdx })  
     }
 
     render() {
@@ -344,11 +350,13 @@ class Graph extends Component {
                         <rect 
                             x={margin.left}
                             y={margin.top}
+                            className={`graphArea`}
                             width={this.props.width - margin.left - margin.right}
                             height={this.props.height - margin.bottom - margin.top}
                             fill={'#f6f5f5'}
-                            onMouseEnter={() => console.log('entered')}
-                            onMouseMove={(e) => this.experimentalMouseMove(e)}
+                            // onMouseEnter={() => console.log('entered')}
+                            onMouseMove={(e) => this.handleBetterSimMouseHover(e)}
+                            onMouseLeave={(e, i) => this.handleMouseLeave(e, i)}
                         />
                         {
                         // visible simPaths
@@ -369,6 +377,7 @@ class Graph extends Component {
                         })}
                         {// highlight simPaths
                         this.state.simPaths.map( (simPath, i) => {
+                            // console.log(i)
                             const simIsHovered = (i === this.state.hoveredSimPathId)
                             return <path
                                 d={simPath}
