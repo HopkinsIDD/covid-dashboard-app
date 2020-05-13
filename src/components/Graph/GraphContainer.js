@@ -21,11 +21,11 @@ class GraphContainer extends Component {
 
   componentDidMount() {
     //   console.log('ComponentDidMount')
-      const { width, height, seriesList, dates, scenarioList } = this.props;
+      const { width, height, seriesList, confBoundsList, dates, scenarioList } = this.props;
       if (seriesList.length > 0) {
         const graphWidth = scenarioList.length === 2 ? width / 2 : width;
         const graphHeight = height;
-        const scales = this.getScales(seriesList, dates, graphWidth, height);
+        const scales = this.getScales(seriesList, confBoundsList, dates, graphWidth, height);
         const child = {
             'key': scenarioList[0].key,
             'graph': [],
@@ -70,7 +70,7 @@ class GraphContainer extends Component {
 
   componentDidUpdate(prevProp, prevState) {
 
-      const { scenarioList, seriesList, dates, height } = this.props;
+      const { scenarioList, seriesList, confBoundsList, dates, height } = this.props;
       const newChildren = [];
 
       // this deals with re-scaling and re-drawing graphs on window resize
@@ -81,7 +81,7 @@ class GraphContainer extends Component {
         // console.log('graphWidth is', graphWidth)
         // need to adjust scale by length of scenario list
         // break these out into X and Y (X out of the loop, Y in?)
-        const scales = this.getScales(seriesList, dates, graphWidth, graphHeight);
+        const scales = this.getScales(seriesList, confBoundsList, dates, graphWidth, graphHeight);
         this.updateGraphChildren(newChildren, scenarioList, graphWidth, graphHeight, scales);
       }
 
@@ -98,7 +98,7 @@ class GraphContainer extends Component {
         // console.log('graphWidth is', graphWidth)
         // need to adjust scale by length of scenario list
         // break these out into X and Y (X out of the loop, Y in?)
-        const scales = this.getScales(seriesList, dates, graphWidth, graphHeight);
+        const scales = this.getScales(seriesList, confBoundsList, dates, graphWidth, graphHeight);
         this.updateGraphChildren(newChildren, scenarioList, graphWidth, graphHeight, scales);
     }
 }
@@ -149,13 +149,19 @@ class GraphContainer extends Component {
     }
 
 
-  getScales = (seriesList, dates, width, height) => {
+  getScales = (seriesList, confBoundsList, dates, width, height) => {
       // calculate scale domains
       const timeDomain = extent(dates);
       let scaleMaxVal = 0
       for (let i = 0; i < seriesList.length; i++) {
           const seriesMaxVal = max(seriesList[i], sims => max(sims.vals));
           if (seriesMaxVal > scaleMaxVal) scaleMaxVal = seriesMaxVal
+
+        //   if (confBoundsList && confBoundsList.length > 0) {
+        //       console.log(confBoundsList[i])
+        //     const confBoundMaxVal = max(confBoundsList[i], cb => cb.p90)
+        //     if (confBoundMaxVal > scaleMaxVal) scaleMaxVal = confBoundMaxVal
+        //   }
       }
       // set scale ranges to width and height of container
       const xScale = scaleUtc().range([margin.left, width - margin.right])
