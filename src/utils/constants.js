@@ -29,6 +29,6 @@ export const COUNTIES = [
     {'geoid': '06085', 'name': 'Dorne County', 'usps': 'ES', 'path': '../store/geo06085.json'},
     {'geoid': '01081', 'name': 'Highgarden County', 'usps': 'TW', 'path': '../store/geo01081.json'},
     {'geoid': '25017', 'name': 'Winterfell County', 'usps': 'NR', 'path': '../store/geo25017.json'},
-    {'geoid': '01081', 'name': 'Kings Landing County', 'usps': 'TC', 'path': '../store/geo01081.json'},
+    {'geoid': '36061', 'name': 'Kings Landing County', 'usps': 'TC', 'path': '../store/geo36061.json'},
     // {'geoid': '06085', 'name': 'Dorne', 'usps': 'CA', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
 ];
