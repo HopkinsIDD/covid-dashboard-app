@@ -119,13 +119,8 @@ class MainContainer extends Component {
         // instantiate confidence bounds
         const confBounds = dataset[scenario.key][severity.key][stat.key].conf;
         // console.log(confBounds)
-        const filteredConfBounds = confBounds.map( cb => {
-            const newCB = {...cb}
-            newCB.vals = cb.vals.slice(idxMin, idxMax)
-            return newCB
-        })
-        console.log(idxMin, idxMax)
-        console.log(filteredConfBounds)
+        const filteredConfBounds = confBounds.slice(idxMin, idxMax)
+        // console.log(filteredConfBounds)
 
         this.setState({
             dataset,
@@ -216,37 +211,18 @@ class MainContainer extends Component {
                 })
                 filteredSeriesList.push(filteredSeries)
                 
-                // build confidence bounds list and filter by date range selected
+                // build confidence bounds list
                 const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
 
                 // make sure the stat has confidence bounds array
                 if (confBounds && confBounds.length > 0) {
-                    const filteredConfBounds = confBounds.map( cb => {
-                        const newCB = {...cb}
-                        newCB.vals = cb.vals.slice(idxMin, idxMax)
-                        return newCB
-                    })
-                    console.log(filteredConfBounds)
-    
-                    // after filtering, get the confidence bounds into the data structure
-                    // we want for D3 - really this should happen upstream in the pre-processing step
-                    // desired data structure: [{p10:2, p50:6, p90:13}, {p10:1, p50:6, p90:19}, etc]
-                    const newConfBoundsFormat = filteredConfBounds.map( confBound => {
-                        return confBound.vals.map(cb => {
-                            const newObj = {}
-                            newObj[confBound.name] = cb
-                            return newObj
-                        })
-                    })
-                    console.log(newConfBoundsFormat)
-                    const newConfBoundsZipped = newConfBoundsFormat[0].map( (d,i) => {
-                        return {...d, ...newConfBoundsFormat[1][i], ...newConfBoundsFormat[2][i]}
-                    })
-                    // console.log(newConfBoundsZipped)
-                    confBoundsList.push(newConfBoundsZipped);
+                    // filter by date range selected
+                    const filteredConfBounds = confBounds.slice(idxMin, idxMax)
+                    // console.log(filteredConfBounds)
+                    confBoundsList.push(filteredConfBounds);
                     // console.log(confBoundsList)
                 }
-                console.log(confBoundsList)
+                // console.log(confBoundsList)
                 
             }
             this.setState({
