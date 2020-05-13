@@ -18,9 +18,9 @@ export const STATS = [
 ];
 
 export const LEVELS = [
-    {'id': 1, 'key': 'high', 'name': '1% IFR, 10% hospital rate'}, 
-    {'id': 2, 'key': 'med', 'name': '0.5% IFR, 5% hospital rate'},
-    {'id': 3, 'key': 'low', 'name': '0.25% IFR, 2.5% hospital rate'},
+    {'id': 1, 'key': 'high', 'name': '1% IFR'}, 
+    {'id': 2, 'key': 'med', 'name': '0.5% IFR'},
+    {'id': 3, 'key': 'low', 'name': '0.25% IFR'},
 ];
 
 // public county model files on github
