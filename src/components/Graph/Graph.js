@@ -305,9 +305,7 @@ class Graph extends Component {
         // console.log('mousemove');
         event.preventDefault();
         const selector = `.graphSVG_${this.props.keyVal}`
-        console.log(selector)
         const node = document.querySelector(selector)
-        console.log(node)
         let point = node.createSVGPoint();
         point.x = event.clientX;
         point.y = event.clientY;
