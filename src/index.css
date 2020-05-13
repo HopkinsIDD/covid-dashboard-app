@@ -193,6 +193,10 @@ ul {
   padding: 0px 40px;
 }
 
+.bold {
+  font-weight: bold;
+}
+
 /* .dynamic-label {
   font-weight: bold;
   padding-left: 3px;
