@@ -9,7 +9,7 @@ module.exports = {
         quantiles,
         quantilesFile) {
 
-        console.log('merging quantiles')
+        console.log('... merging quantiles')
         for (let g = 0; g < geoids.length; g ++) {
 
             if (geoids[g] === '06085') {

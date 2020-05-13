@@ -3,7 +3,7 @@ const fs = require('fs');
 module.exports = {
 
     initObj: function initObj(geoids, scenarios, severities, parameters, dates) {
-        // prepare structure of final Object
+        // build structure of final Object
         const obj = {};
 
         for (let g = 0; g < geoids.length; g ++) {
@@ -36,6 +36,7 @@ module.exports = {
 
         let getIdx = Object();
         getIdx['geoid'] = headers.indexOf('geoid')
+        getIdx['sim_num'] = headers.indexOf('sim_num')
 
         for (let i = 0; i < parameters.length; i ++) {
             getIdx[parameters[i]] = headers.indexOf(parameters[i])
@@ -44,11 +45,16 @@ module.exports = {
     },
 
 
-    getDates: function getDates(path) {
+    getDates: function getDates(dir, scenarios) {
+        // parameter dir is entire model package directory
         // return Array of dates 
-        let dates = new Set();
 
+        const files = fs.readdirSync(dir + scenarios[0] + '/',)
+            .filter(file => file !== '.DS_Store');
+
+        let dates = new Set();
         try {
+            const path = dir + scenarios[0] + '/' + files[0]
             const data = fs.readFileSync(path, 'UTF-8');
             const lines = data.split(/\r?\n/);
 
@@ -62,9 +68,8 @@ module.exports = {
                 }
             });
         } catch (err) {
-            console.error(err);
+            console.error(`No scenario directories: ${dir}`);
         }
-        // console.log('dates', Array.from(dates).sort())
         return Array.from(dates).sort();
     },
 
@@ -111,6 +116,39 @@ module.exports = {
             };
         };
         return filesBySev;
+    },
+
+    reduceSims: function reduceSims(fileLength) {
+        // returns int a sim number must be divisible by
+        // in order to be included in final dataset
+        // fileLength is length of files in scenario directory
+        // includes all severities
+
+        if (fileLength < 60) {
+            return 1;
+        } else if (fileLength <= 120) {
+            return 2;
+        } else if (fileLength <= 200) {
+            return 3;
+        } else if (fileLength <= 300) {
+            return 4;
+        } else {
+            return 5;
+        }
+    },
+
+    writeToFile: function writeToFile(parsedObj, geoids) {
+        // each geoid will write to separate JSON file
+
+        console.log('... writing files')
+        for (let g = 0; g < geoids.length; g ++) {
+            const json = JSON.stringify(parsedObj[geoids[g]]);
+            const path = `src/store/geo${geoids[g]}.json`;
+    
+            fs.writeFile(path, json, 'utf8', function(err) {
+                if (err) throw err;
+            });
+        }
     }
 }
 

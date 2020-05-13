@@ -17,12 +17,10 @@ function parseSim(
         const data = fs.readFileSync(path, 'UTF-8');
         const lines = data.split(/\r?\n/);
 
-        // reduce simulations down to 30%
-        // if (simNum % 3 === 0) {
-        if (sim) {
             lines.forEach((line) => {
 
                 const geoid = line.split(',')[getIdx['geoid']];
+                const sim = line.split(',')[getIdx['sim_num']];
 
                 // only include specified geoid
                 if (geoids.includes(geoid)) {
@@ -43,9 +41,9 @@ function parseSim(
                             }
                         }
                     }
+                    
                 }
             });
-        }
 
     } catch (err) {
         console.error(err);
@@ -79,8 +77,8 @@ module.exports = {
 
             const scenarioDir = `${dir}${scenarios[s]}/`;
             const files = fs.readdirSync(scenarioDir)
-                .filter(file => file !== '.DS_Store')
-                .slice(0,3);
+                .filter(file => file !== '.DS_Store');
+                //.slice(0,3);
 
             // get index mapping based on parameters and headers
             let getIdx = {};
@@ -91,20 +89,27 @@ module.exports = {
                 console.log(`No files in directory: ${scenarioDir}`)
             }
 
+            // determine files to discard based on number of files in scenario
+            const reduceInt = utils.reduceSims(files.length);
+
             // parse by sim file
             for (let f = 0; f < files.length; f ++) {
                 const severity = files[f].split('_')[0];
+                // todo: parquet files do not support this
                 const sim = parseInt(files[f].split('_death-')[1].split('.')[0]);
                 console.log(sim, severity)
 
-                parseSim(
-                    scenarioDir + files[f],
-                    result,
-                    geoids,
-                    scenarios[s],
-                    severity,
-                    sim,
-                    getIdx)
+                // reduce simulations down to manageable number
+                if (sim % reduceInt === 0) {
+                    parseSim(
+                        scenarioDir + files[f],
+                        result,
+                        geoids,
+                        scenarios[s],
+                        severity,
+                        sim,
+                        getIdx)
+                }
             }
         };
 
