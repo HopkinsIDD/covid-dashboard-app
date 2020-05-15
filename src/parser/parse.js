@@ -3,25 +3,23 @@ const utils = require('./utils');
 const constants = require('./constants');
 const transform = require('./transform');
 
-function parseSim(
-    path,
-    result, 
-    geoids,
-    scenario,
-    severity,
-    sim,
-    getIdx) {
+function parseSim(path, result, geoids, scenario, severity, getIdx, reduceInt) {
     // returns Object of Array series of sim values by geoID
+    // getIdx: Obj index mapping of selected parameters
+    // reduceInt: int that sim must be divisible by to be included in final set
     
     try {
         const data = fs.readFileSync(path, 'UTF-8');
         const lines = data.split(/\r?\n/);
 
-            lines.forEach((line) => {
-
+            for (let l = 0; l < lines.length; l++) {
+                const line = lines[l];
                 const geoid = line.split(',')[getIdx['geoid']];
                 const sim = line.split(',')[getIdx['sim_num']];
-
+                
+                // reduce eligible sims
+                if (sim % reduceInt > 0) { break; }
+                
                 // only include specified geoid
                 if (geoids.includes(geoid)) {
 
@@ -43,7 +41,7 @@ function parseSim(
                     }
                     
                 }
-            });
+            }
 
     } catch (err) {
         console.error(err);
@@ -52,25 +50,13 @@ function parseSim(
 
 module.exports = {
     parseDirectories: function parseDirectories(
-        dir,
-        geoids,
-        scenarios,
-        severities,
-        parameters,
-        dates
-        ) {
+        dir, geoids, scenarios, severities, parameters, dates) {
         // parses entire model package of multiple scenario directories
         // returns result Object
 
         console.log('start:', new Date()); 
-
         const result = utils.initObj(
-            geoids,
-            scenarios,
-            severities,
-            parameters,
-            dates
-            );
+            geoids, scenarios, severities, parameters, dates);
             
         for (let s = 0; s < scenarios.length; s ++) {
             console.log('-----> parsing scenario...', scenarios[s])
@@ -95,21 +81,12 @@ module.exports = {
             // parse by sim file
             for (let f = 0; f < files.length; f ++) {
                 const severity = files[f].split('_')[0];
-                // todo: parquet files do not support this
-                const sim = parseInt(files[f].split('_death-')[1].split('.')[0]);
-                console.log(sim, severity)
+                const filePath = scenarioDir + files[f];
+                console.log(severity)
 
-                // reduce simulations down to manageable number
-                if (sim % reduceInt === 0) {
-                    parseSim(
-                        scenarioDir + files[f],
-                        result,
-                        geoids,
-                        scenarios[s],
-                        severity,
-                        sim,
-                        getIdx)
-                }
+                parseSim(
+                    filePath, result, geoids, scenarios[s], severity, getIdx, reduceInt
+                    )
             }
         };
 

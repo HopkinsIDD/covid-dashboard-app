@@ -1,19 +1,11 @@
-// TO RUN FILE
-// remove "type": "module" from package.json (receive Error [ERR_REQUIRE_ESM])
-
 // ASSUMPTIONS 
 // one scenario per directory with 3 severity levels 
-// file format looks like "high_death-1.csv"
-// severity is first word, sim number is last word
-// if sim cannot be determined from filename, will need to read every line of every
-// file to check for sim_num and whether or not it can be combed (or track
-// number of scenario/sev and cap it at 20 per say)
+// one simulation per file
+// severity is first word in filename "high_death-0000.csv"
 // sim numbers are evenly distributed - reduction is based on divisibility
-// one sim per file
 
 // TO TEST
-// shorten scenarios and files to run
-// remove reduceSims function
+// shorten scenarios and files to run, remove reduceSims function
 
 const fs = require('fs');
 const parse = require('./parse');
