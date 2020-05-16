@@ -459,9 +459,9 @@ class MainContainer extends Component {
     render() {
         return (
             <div className="main-container">
-                <div className="container no-margin">
+                <div className="container">
                     <div className="row">
-                        <div className="col-9">
+                        <div className="col-10">
                             <Search 
                                 stat={this.state.stat}
                                 geoid={this.state.geoid}
@@ -528,7 +528,7 @@ class MainContainer extends Component {
                                 }
                             </div>
                         </div>
-                        <div className="col-3 filters">
+                        <div className="col-2 filters">
                             <h5 className="scenario-header">Scenarios
                                 <div className="tooltip">&nbsp;&#9432;
                                     <span className="tooltip-text">

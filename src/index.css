@@ -34,9 +34,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+.container {
+  max-width: 2000px;
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.row {
+  flex-wrap: nowrap;
+  margin-right: 0px;
+  margin-left: 0px;
 }
 
 ul {
@@ -89,6 +99,15 @@ a:hover {
   font-family: 'PT Sans', sans-serif;
 }
 
+.nav-subtitle {
+  padding-left: 0px;
+}
+
+.nav-menu {
+  text-align: right;
+  padding-right: 3%;
+}
+
 .titleNarrow {
   font-family: 'PT Sans Narrow', sans-serif;
 }
@@ -102,6 +121,7 @@ a:hover {
 
 .callout {
   font-family: 'Roboto Mono', monospace;
+  padding-left: 0px;
 }
 
 ul {
@@ -109,7 +129,9 @@ ul {
 }
 
 .filters {
-  margin-top: 4%;
+  max-width: 220px;
+  padding-top: 2.8rem;
+  padding-bottom: 2.8rem;
 }
 
 .dropdown {
@@ -162,10 +184,6 @@ ul {
   background-color: #e9ecef;
 }
 
-.main-container {
-  padding-left: 5%;
-}
-
 .scenario-title {
   text-align: center;
   margin-bottom: 0px;
@@ -211,17 +229,16 @@ ul {
   margin-right: 10px;
 }
 
+.slidecontainer {
+  max-width: 170px;
+}
+
 .slider-max {
   text-align: end;
 }
 
 .slider-label {
   margin-top: -6%;
-}
-
-.no-margin {
-  margin-left: 0px;
-  padding-left: 0px;
 }
 
 .graph {
