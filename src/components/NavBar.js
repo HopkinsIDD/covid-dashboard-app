@@ -7,7 +7,7 @@ class NavBar extends Component {
           <div className="App-header">
             <h1 className="titleNarrow siteTitle">COVID-19 Scenario Modeling</h1>
             <div className="row">
-              <div className="col-8">
+              <div className="col-8 nav-subtitle">
                 <h4>Prepared by&nbsp;
                   <a
                     className="customLink"
@@ -16,7 +16,7 @@ class NavBar extends Component {
                   &nbsp;Working Group 
                 </h4>
               </div>
-              <div className="col-4">
+              <div className="col-4 nav-menu">
                 <ul>
                   <li>
                     <NavLink exact={true} activeClassName='active' to="/">
