@@ -476,7 +476,9 @@ class MainContainer extends Component {
                                 />
                                 </div>
                                 <div className="col-3">
-                                    <Legend />
+                                    <Legend 
+                                        showConfBounds={this.state.showConfBounds}
+                                    />
                                 </div>
                             </div>
                             <p></p>

@@ -3,7 +3,7 @@ import Axis from './Axis'
 // import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least } from 'd3-array'
-import { select, clientPoint } from 'd3-selection'
+import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { margin, red, green, blue, gray, lightgray } from '../../utils/constants'
 
