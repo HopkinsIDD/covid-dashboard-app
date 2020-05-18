@@ -30,6 +30,28 @@ module.exports = {
         return obj;
     },
 
+    initStatGeoObj: function initStatGeoObj(states, geoids, parameters) {
+        // build structure of Object for GeoMap data
+        const obj = {};
+
+        for (let st = 0; st < states.length; st ++) {
+            obj[states[st]] = {};
+
+            for (let g = 0; g < geoids.length; g ++) {
+
+                if (geoids[g].slice(0, 2) === states[st]) {
+                    obj[states[st]][geoids[g]] = {};
+
+                    for (let p = 0; p < parameters.length; p ++) {
+                        obj[states[st]][geoids[g]][parameters[p]] = [];
+                    }    
+                }
+            }
+        }
+
+        return obj;
+    },
+
     getIdx: function getIdx(headers, parameters) {
         // build index mapping of selected parameters inside raw data headers
         // assumes header order may change over time
@@ -149,7 +171,7 @@ module.exports = {
                 if (err) throw err;
             });
         }
-    }
+    }    
 }
 
 // const dir = 'src/store/sims/';
