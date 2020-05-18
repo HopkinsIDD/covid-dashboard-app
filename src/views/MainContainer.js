@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import GraphContainer from '../components/Graph/GraphContainer';
+import MapContainer from '../components/Map/MapContainer';
 import Search from '../components/Search'
 import Brush from '../components/Filters/Brush';
 import Legend from '../components/Graph/Legend';
@@ -15,6 +16,9 @@ import { timeDay } from 'd3-time'
 import { maxIndex } from 'd3-array';
 import { STATS, LEVELS, margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
+// TODO: is this file affecting performance?
+const geojson = require('../store/geoByState.json');
+const geojsonStats = require('../store/statsForMap.json')
 
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
@@ -54,6 +58,8 @@ class MainContainer extends Component {
             confBounds: {},
             confBoundsList: [{}],
             showActual: false,
+            countyBoundaries: { "type": "Feature", "properties": {}, "geometry": {} },
+            statsForCounty: {},
             graphW: 0,
             graphH: 0,
             brushActive: false,
@@ -63,7 +69,7 @@ class MainContainer extends Component {
 
     componentDidMount() {
         console.log('componentDidMount')
-        // console.log('dataset', dataset)
+        console.log('dataset', dataset)
         window.addEventListener('resize', this.updateGraphDimensions)
         this.updateGraphDimensions()
         
@@ -118,9 +124,12 @@ class MainContainer extends Component {
 
         // instantiate confidence bounds
         const confBounds = dataset[scenario.key][severity.key][stat.key].conf;
-        // console.log(confBounds)
         const filteredConfBounds = confBounds.slice(idxMin, idxMax)
-        // console.log(filteredConfBounds)
+
+        // instantiates countyBoundaries
+        const state = this.state.geoid.slice(0, 2);
+        const countyBoundaries = geojson[state];
+        const statsForCounty = geojsonStats[state];
 
         this.setState({
             dataset,
@@ -140,6 +149,8 @@ class MainContainer extends Component {
             lastDate,
             percExceedenceList,
             confBoundsList: [filteredConfBounds],
+            countyBoundaries,
+            statsForCounty,
             // graphW,
             // graphH
         }, () => {
@@ -312,12 +323,19 @@ class MainContainer extends Component {
         const severityList = [_.cloneDeep(LEVELS[0])];
         severityList[0].scenario = scenario.key;
 
+        // re-initialize countyBoundaries
+        const state = i.geoid.slice(0, 2);
+        const countyBoundaries = geojson[state];
+        const statsForCounty = geojsonStats[state];
+
         this.setState({
             dataset,
             geoid: i.geoid,
             SCENARIOS,
             scenarioList,
-            severityList
+            severityList,
+            countyBoundaries,
+            statsForCounty
         })
     }
     
@@ -469,16 +487,16 @@ class MainContainer extends Component {
                                 onCountySelect={this.handleCountySelect}
                             />
                             <div className="row">
-                            <div className="col-9">
-                                <Buttons
-                                    stat={this.state.stat}
-                                    onButtonClick={this.handleButtonClick}
-                                />
+                                <div className="col-9">
+                                    <Buttons
+                                        stat={this.state.stat}
+                                        onButtonClick={this.handleButtonClick}
+                                    />
+                                    </div>
+                                    <div className="col-3">
+                                        <Legend />
+                                    </div>
                                 </div>
-                                <div className="col-3">
-                                    <Legend />
-                                </div>
-                            </div>
                             <p></p>
 
                             <div
@@ -527,6 +545,18 @@ class MainContainer extends Component {
                                 </div>
                                 }
                             </div>
+                            {this.state.dataLoaded &&
+                            <div className="map-container">
+                                <MapContainer 
+                                    dataset={this.state.dataset}
+                                    // scenarioList={this.state.scenarioList}
+                                    // geoid={this.state.geoid}
+                                    dateThreshold={this.state.dateThreshold}
+                                    countyBoundaries={this.state.countyBoundaries}
+                                    statsForCounty={this.state.statsForCounty}
+                                />
+                            </div>
+                            }
                         </div>
                         <div className="col-2 filters">
                             <h5 className="scenario-header">Scenarios
