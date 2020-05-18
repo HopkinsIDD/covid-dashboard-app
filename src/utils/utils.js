@@ -37,3 +37,7 @@ export function getRange(series, seriesPeaks) {
   return [minPeak, maxPeak];
 };
 
+export function getDateIdx(firstDate, currentDate) {
+  return (currentDate.getTime() - firstDate.getTime()) / (1000 * 3600 * 24);
+};
+

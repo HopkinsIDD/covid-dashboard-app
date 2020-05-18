@@ -244,6 +244,17 @@ ul {
 .graph {
   /* margin-top: 2%; */
   height: 53vh;
+  margin-bottom: 10rem;
+}
+
+.map-container {
+  text-align: center;
+  padding: 2rem;
+  border: 1px solid red;
+}
+
+.map {
+  border: 1px solid blue;
 }
 
 .slider-menu {
