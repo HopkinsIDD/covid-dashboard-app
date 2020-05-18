@@ -550,7 +550,8 @@ class MainContainer extends Component {
                                 <MapContainer 
                                     dataset={this.state.dataset}
                                     // scenarioList={this.state.scenarioList}
-                                    // geoid={this.state.geoid}
+                                    geoid={this.state.geoid}
+                                    firstDate={this.state.firstDate}
                                     dateThreshold={this.state.dateThreshold}
                                     countyBoundaries={this.state.countyBoundaries}
                                     statsForCounty={this.state.statsForCounty}

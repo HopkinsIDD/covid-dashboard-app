@@ -1,25 +1,70 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
+import { getDateIdx } from '../../utils/utils';
 
 class MapContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
             children: [],
+            parameters: ['incidI', 'incidH', 'incidD']
         }
     }
   
     componentDidMount() {
-        // TODO: which scenario to display?
-        console.log('arrayI')
+        // TODO: which scenario to display? default is first scenario (preprocessed)
+        const children = [];
+        const dateIdx = getDateIdx(this.props.firstDate, this.props.dateThreshold);
+
+        for (let param of this.state.parameters) {
+            const child = {
+                'key': `${param}-map`,
+                'map': [],
+            }
+            child.map.push(
+                <Map
+                    key={`${param}-map`}
+                    stat={param}
+                    dateIdx={dateIdx}
+                    countyBoundaries={this.props.countyBoundaries}
+                    statsForCounty={this.props.statsForCounty}
+                />
+            ) 
+            children.push(child);
+        }
+
+        this.setState({
+            children
+        })
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // TODO: scenarioList may not be in here - depends on behavior we want
-        // for which scenario to plot
-        if (this.props.dataset !== prevProps.dataset ||
-            this.props.scenarioList !== prevProps.scenarioList) {
-            console.log('')
+        if (this.props.geoid !== prevProps.geoid 
+            || this.props.dateThreshold !== prevProps.dateThreshold) {
+
+            const children = [];
+            const dateIdx = getDateIdx(this.props.firstDate, this.props.dateThreshold);
+
+            for (let param of this.state.parameters) {
+                const child = {
+                    'key': `${param}-map`,
+                    'map': [],
+                }
+                child.map.push(
+                    <Map
+                        key={`${param}-map`}
+                        stat={param}
+                        dateIdx={dateIdx}
+                        countyBoundaries={this.props.countyBoundaries}
+                        statsForCounty={this.props.statsForCounty}
+                    />
+                ) 
+                children.push(child);
+            }
+    
+            this.setState({
+                children
+            })   
         }
     }
 
@@ -30,13 +75,14 @@ class MapContainer extends Component {
         return (
             <div>
                 <h1>MapContainer</h1>
-                <div className="map">
-                    <Map
-                        stat="incidI"
-                        dateThreshold={this.props.dateThreshold}
-                        countyBoundaries={this.props.countyBoundaries}
-                        statsForCounty={this.props.statsForCounty}
-                    />
+                <div className="row">
+                    {this.state.children.map(child => {
+                        return (
+                            <div className="col map" key={child.key}>
+                                {child.map}
+                            </div>
+                        )
+                    })}
                 </div>
             </div>
         )
