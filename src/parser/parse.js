@@ -63,8 +63,8 @@ module.exports = {
 
             const scenarioDir = `${dir}${scenarios[s]}/`;
             const files = fs.readdirSync(scenarioDir)
-                .filter(file => file !== '.DS_Store');
-                //.slice(0,3);
+                .filter(file => file !== '.DS_Store') //;
+                .slice(0,3);
 
             // get index mapping based on parameters and headers
             let getIdx = {};
