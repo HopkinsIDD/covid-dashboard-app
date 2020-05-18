@@ -13,6 +13,7 @@
     "d3-brush": "^1.1.5",
     "d3-ease": "^1.0.6",
     "d3-fetch": "^1.1.2",
+    "d3-geo": "^1.12.0",
     "d3-scale": "^3.2.1",
     "d3-selection": "^1.4.1",
     "d3-shape": "^1.3.7",
@@ -52,5 +53,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "main": "index.js",
+  "repository": "git@github.com:HopkinsIDD/covid-dashboard-app.git",
+  "author": "Genevieve Hoffman <genny.hoffman@gmail.com>",
+  "license": "MIT"
 }
