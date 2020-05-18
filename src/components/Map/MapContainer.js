@@ -28,6 +28,8 @@ class MapContainer extends Component {
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
                     statsForCounty={this.props.statsForCounty}
+                    width={this.props.width / this.state.parameters.length}
+                    height={this.props.height}
                 />
             ) 
             children.push(child);
@@ -57,6 +59,8 @@ class MapContainer extends Component {
                         dateIdx={dateIdx}
                         countyBoundaries={this.props.countyBoundaries}
                         statsForCounty={this.props.statsForCounty}
+                        width={this.props.width / this.state.parameters.length}
+                        height={this.props.height}
                     />
                 ) 
                 children.push(child);
