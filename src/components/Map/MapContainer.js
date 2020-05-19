@@ -7,7 +7,8 @@ class MapContainer extends Component {
         super(props);
         this.state = {
             children: [],
-            parameters: ['incidI', 'incidH', 'incidD']
+            parameters: ['incidI', 'incidH', 'incidD'],
+            parameterLabels: ['Infections', 'Hospitalizations', 'Deaths']
         }
     }
   
@@ -16,7 +17,7 @@ class MapContainer extends Component {
         const children = [];
         const dateIdx = getDateIdx(this.props.firstDate, this.props.dateThreshold);
 
-        for (let param of this.state.parameters) {
+        for (let [index, param] of this.state.parameters.entries()) {
             const child = {
                 'key': `${param}-map`,
                 'map': [],
@@ -25,6 +26,7 @@ class MapContainer extends Component {
                 <Map
                     key={`${param}-map`}
                     stat={param}
+                    statLabel={this.state.parameterLabels[index]}
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
                     statsForCounty={this.props.statsForCounty}
@@ -47,7 +49,7 @@ class MapContainer extends Component {
             const children = [];
             const dateIdx = getDateIdx(this.props.firstDate, this.props.dateThreshold);
 
-            for (let param of this.state.parameters) {
+            for (let [index, param] of this.state.parameters.entries()) {
                 const child = {
                     'key': `${param}-map`,
                     'map': [],
@@ -56,6 +58,7 @@ class MapContainer extends Component {
                     <Map
                         key={`${param}-map`}
                         stat={param}
+                        statLabel={this.state.parameterLabels[index]}
                         dateIdx={dateIdx}
                         countyBoundaries={this.props.countyBoundaries}
                         statsForCounty={this.props.statsForCounty}

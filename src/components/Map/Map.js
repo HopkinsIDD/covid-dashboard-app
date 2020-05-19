@@ -15,6 +15,7 @@ class Map extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            minVal: 0,
             maxVal: 0,
             countyBoundaries: {},
             yScale: scaleLinear()
@@ -29,10 +30,11 @@ class Map extends Component {
         // console.log(statsForCounty);
 
         // get max of all values in stat array for colorscale
-        const min = 0;
+        
         const maxVal = max(Object.values(statsForCounty).map( county => {
             return max(county[stat])
         }))
+        const minVal = maxVal * 0.3333;
         // console.log(stat, maxVal)
         
         // iterate over this.props.countyBoundaries to plot up boundaries
@@ -42,14 +44,14 @@ class Map extends Component {
             // console.log(geoid)
             countyBoundaries.features[i].properties[stat] = statsForCounty[geoid][stat]
         }
-        const yScale = scaleLinear().range([this.props.height - (2 * gradientMargin), 0]).domain([0, maxVal])
+        const yScale = scaleLinear().range([(this.props.height - (2 * gradientMargin))/2, 0]).domain([minVal, maxVal])
         this.axis = axisRight().scale(yScale)
         
         if (this.axisRef.current) {
             select(this.axisRef.current).call(this.axis)
         }
         // console.log(countyBoundaries)
-        this.setState({ maxVal, countyBoundaries, yScale })
+        this.setState({ minVal, maxVal, countyBoundaries, yScale })
         // console.log(Object.values(this.props.statsForCounty)[stat])
     }
 
@@ -57,10 +59,10 @@ class Map extends Component {
         const projection = geoConicEqualArea()
             .parallels([34, 40.5])
             .rotate([120, 0])
-            .fitSize([this.props.width - legendW, this.props.height], this.state.countyBoundaries)
+            .fitSize([this.props.width - legendW, this.props.height * 0.75], this.state.countyBoundaries)
 
         const pathGenerator = geoPath().projection(projection)
-	    const ramp = scaleLinear().domain([ 0, this.state.maxVal ]).range([lowColor, highColor])
+	    const ramp = scaleLinear().domain([ this.state.minVal, this.state.maxVal ]).range([lowColor, highColor])
 
         const counties = this.state.countyBoundaries.features.map((d,i) => {
             // console.log(this.props.stat, d.properties[this.props.stat][this.props.dateIdx])
@@ -86,14 +88,14 @@ class Map extends Component {
     render() {
         return (
             <Fragment>
-                <div>{this.props.stat}</div>
-                <svg width={legendW} height={this.props.height}>
-                     {/* debug green svg
-                     <rect
+                <div>{this.props.statLabel}</div>
+                <svg width={legendW} height={this.props.height/2}>
+                     {/* debug green svg */}
+                     {/* <rect
                         x={0}
                         y={0}
                         width={legendW}
-                        height={this.props.height}
+                        height={this.props.height/2}
                         fillOpacity={0}
                         stroke={'#00ff00'}
                         strokeWidth='1'
@@ -115,12 +117,12 @@ class Map extends Component {
                     </defs>
                     <rect
                         width={legendW/4}
-                        height={this.props.height - (2 * gradientMargin)}
-                        transform={`translate(0, ${gradientMargin})`}
+                        height={(this.props.height - (2 * gradientMargin))/ 2}
+                        transform={`translate(0, ${gradientMargin/2})`}
                         style={{ fill: `url(#map-legend-gradient-${this.props.stat}` }}
                     >
                     </rect>
-                    <g ref={this.axisRef}  transform={`translate(${legendW/4}, ${gradientMargin})`} />
+                    <g ref={this.axisRef}  transform={`translate(${legendW/4}, ${gradientMargin/2})`} />
                     {/* <Axis 
                         // keyVal={this.props.keyVal}
                         width={legendW/2}
@@ -131,18 +133,18 @@ class Map extends Component {
                         y={this.props.height - gradientMargin}
                     /> */}
                 </svg>
-                <svg width={this.props.width - legendW} height={this.props.height}>
+                <svg width={this.props.width - legendW} height={this.props.height * 0.75}>
                     <g style={{ stroke: '#00ff00'}}>
-                        {/* debug green svg
+                        {/* debug green svg */}
                         <rect
                             x={0}
                             y={0}
                             width={this.props.width - legendW}
-                            height={this.props.height}
+                            height={this.props.height * 0.75}
                             fillOpacity={0}
                             stroke={'#00ff00'}
                             strokeWidth='1'
-                        />  */}
+                        /> 
                         {this.state.countyBoundaries.features && this.drawCounties()}
                     </g>
                 </svg>
