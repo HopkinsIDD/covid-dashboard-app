@@ -11,12 +11,13 @@ const fs = require('fs');
 const parse = require('./parse');
 const utils = require('./utils');
 const quantile = require('./quantiles');
+// const constants = require('./constants');
 // const geostat = require('./geostat');
 
 function buildDataset(dir, geoids) {
 
     const scenarios = fs.readdirSync(dir)
-        .filter(file => file !== '.DS_Store');
+        .filter(file => file !== '.DS_Store')
         //.slice(0,1); 
 
     // faster to grab dates from the get-go
@@ -30,6 +31,7 @@ function buildDataset(dir, geoids) {
         dates
         );
 
+    // quantiles should be based on all sims
     quantile.addQuantiles(parsedObj, dates);
 
     // build GeoMap data before quantiles are transformed
@@ -39,6 +41,9 @@ function buildDataset(dir, geoids) {
     quantile.transformQuantiles(parsedObj, dates)
 
     utils.writeToFile(parsedObj, geoids);
+
+    // some post-processing to get 6 scenarios
+    utils.combineCaliCounties();
     
     console.log('end:', new Date());
     console.log('parse complete!'); 
@@ -47,6 +52,6 @@ function buildDataset(dir, geoids) {
 const dir = 'src/store/sims/';
 const geoids = ['06085', '06019', '36061', '25017', '01081'];
 
-// todo: geoids should default to all unless specified for testing
+// TODO: geoids should default to all unless specified for testing
+// TODO: don't reduce sims at all
 buildDataset(dir, geoids)
-

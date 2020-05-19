@@ -146,11 +146,41 @@ module.exports = {
             const json = JSON.stringify(parsedObj[geoids[g]]);
             const path = `src/store/geo${geoids[g]}_NEW.json`;
     
-            fs.writeFile(path, json, 'utf8', function(err) {
+            fs.writeFileSync(path, json, 'utf8', function(err) {
                 if (err) throw err;
             });
         }
-    }    
+    },
+
+    combineCaliCounties: function combineCaliCounties() {
+        // Add renamed scenarios of geo06019 to geo06085
+    
+        const geo06019 = require('../store/geo06019_NEW.json');
+        const oldKeys = Object.keys(geo06019);
+        const newKeys = ['USA_Lockdown1945', 'USA_LockdownHK', 'USA_Fatiguing'];
+        
+        // rename scenarios of geo06019
+        for (let i = 0; i < oldKeys.length; i ++) {
+            Object.defineProperty(geo06019, newKeys[i],
+                Object.getOwnPropertyDescriptor(geo06019, oldKeys[i]));
+            delete geo06019[oldKeys[i]];
+        }
+    
+        // add renamed scenarios to geo06085
+        const geo06085 = require('../store/geo06085_NEW.json');
+        for (let key of newKeys) {
+            geo06085[key] = geo06019[key];
+        }
+        
+        const json = JSON.stringify(geo06085);
+        const path = `src/store/geo06085_combined.json`;
+    
+        fs.writeFileSync(path, json, 'utf8', function(err) {
+            if (err) throw err;
+        });
+    
+    }
+    
 }
 
 // const dir = 'src/store/sims/';
