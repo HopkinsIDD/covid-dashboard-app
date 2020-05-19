@@ -1,9 +1,12 @@
 const fs = require('fs');
-const utils = require('./utils');
+
+// Builds json of county boundaries using geoJSON FeatureCollections format
+// Run separately from main.js!
 
 function buildFIPSmap() {
     // writes json Object of format {state_fip: {state_name, state_usps}} from csv
     // https://www.nrcs.usda.gov/wps/portal/nrcs/detail/?cid=nrcs143_013696
+    // one time use: file lives at src/store/state_fips.json
 
     const FIPSmap = {};
 
@@ -39,9 +42,10 @@ function buildFIPSmap() {
 
 function initGeoObj() {
     // initialize Object of FeatureCollections by state
+    // one time use to support populateGeoObj
 
     const geoObj = {};
-    const states = Object.keys(require('../store/state_fips.json'));
+    const states = Object.keys(require('../store/geo/state_fips.json'));
 
     for (let state of states) {
         geoObj[state] = {
@@ -53,62 +57,36 @@ function initGeoObj() {
     return geoObj;
 }
 
-function populateGeoObj() {
-    // writes populated targetObj of FeatureCollections by state to geoByState.json
-
-    const targetObj = initGeoObj();
-    const sourceArray = require('../store/countyBoundaries.json').features;
-
-    for (let geoObj of sourceArray) {
-
-        const state = geoObj.properties.STATE;
-
-        if (state in targetObj){
-            targetObj[state].features.push(geoObj);
-
-        } else {
-            console.log('state', state)
-        }
-    }
-
-    const json = JSON.stringify(targetObj);
-
-    fs.writeFile('src/store/geoByState.json', json, 'utf8', function(err) {
-        if (err) throw err;
-    });
-    
-}
-
 module.exports = {
-    buildGeoMapData: function buildGeoMapData(parsedObj, parameters) {
-    // returns Object of statistic data to join into GeoJSON Boundary Collection
-    // inside MapContainer of react app
-
-    const geoids = Object.keys(parsedObj);
-    const states = [...new Set(geoids.map(geoid => geoid.slice(0, 2)))];
-    const geoObj = utils.initStatGeoObj(states, geoids, parameters);
-
-    for (let geoid of geoids) {
-        // TODO: determine if populating based on first scenario is fine
-        const scenarios = Object.keys(parsedObj[geoid]);
-        const scenario = scenarios.length > 0 ? scenarios[0] : console.log('no scenarios!');
-
-        for (let param of parameters) {
-            // eventually, it will be .high[param].conf.p50 but for grab first sim for now
-            const statArray = parsedObj[geoid][scenario].high[param].sims[0].vals;
-            geoObj[geoid.slice(0, 2)][geoid][param] = statArray;
+    populateGeoObj: function populateGeoObj() {
+        // writes populated targetObj of FeatureCollections by state to geoByState.json
+        // one time use: file lives at src/store/geoByState.json
+    
+        const targetObj = initGeoObj();
+        const sourceArray = require('../store/geo/countyBoundaries.json').features;
+    
+        for (let geoObj of sourceArray) {
+    
+            const state = geoObj.properties.STATE;
+    
+            if (state in targetObj){
+                targetObj[state].features.push(geoObj);
+    
+            } else {
+                console.log('state', state)
+            }
         }
-    }
-    const json = JSON.stringify(geoObj);
-
-    fs.writeFileSync('src/store/statsForMap.json', json, 'utf8', function(err) {
-        if (err) throw err;
-    });
+    
+        const json = JSON.stringify(targetObj);
+    
+        fs.writeFile('src/store/geoMapByState.json', json, 'utf8', function(err) {
+            if (err) throw err;
+        });
     }
 }
 
 // buildFIPSmap()
-populateGeoObj()
+module.exports.populateGeoObj()
 
 // counties for demo (CA, AL, MA, NY)
 const geoids = ['06001', '06003', '06005', '06007', '06009', '06011', '06013', 
