@@ -559,6 +559,7 @@ class MainContainer extends Component {
                             <p></p>                   
                             {this.state.dataLoaded &&
                             <SeverityContainer
+                                stat={this.state.stat}
                                 severityList={this.state.severityList}
                                 scenarioList={this.state.scenarioList}
                                 onSeveritiesClick={this.handleSeveritiesClick}
