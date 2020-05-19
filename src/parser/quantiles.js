@@ -1,65 +1,81 @@
+const constants = require('./constants');
 
 module.exports = {
-    mergeQuantiles: function mergeQuantiles(
-        obj,
-        geoids,
-        scenarios,
-        severities,
-        parameters,
-        quantiles,
-        quantilesFile) {
-
-        console.log('... merging quantiles')
-        for (let g = 0; g < geoids.length; g ++) {
-
-            if (geoids[g] === '06085') {
-
-            for (let s = 0; s < scenarios.length; s ++) {
-
-                // only USA_Lockdown1918 has conf intervals computed 
-                if (scenarios[s] === 'USA_Lockdown1918') {
-                    
-                    for (let v = 0; v < severities.length; v ++) {
-
-                        // only high severity has conf intervals computed 
-                        if (severities[v] === 'high') {
-
-                            for (let p = 0; p < parameters.length; p ++) {
-                                
-                                // only incidI has conf intervals computed 
-                                if (parameters[p] === 'incidI') {
-                                    
-                                    const confArray = []
-                                    let dates = 0;
-                                    // get length of dates from first quantile entry
-                                    if (quantiles.length > 0) {
-                                        dates = quantilesFile[geoids[g]][scenarios[s]][severities[v]][parameters[p]][quantiles[0]].length;
-                                    } else {
-                                        console.log('Quantiles file is empty')
-                                    }
-
-                                    for (let d = 0; d < dates; d ++) {
-
-                                        const confObj = {}
-                                        for (let q = 0; q < quantiles.length; q ++) {
-
-                                            confObj[quantiles[q]] = quantilesFile[geoids[g]][scenarios[s]][severities[v]][parameters[p]][quantiles[q]][d];
-                                        
-                                        }
-                                        confArray.push(confObj);
-                                    }
-                                    // add confArray to overall obj
-                                    obj[geoids[g]][scenarios[s]][severities[v]][parameters[p]]['conf'] = confArray;
-                                }
-
+    addQuantiles: function addQuantiles(parsedObj, dates) {
+        // calculate p10, p50, p90 quantiles and add to parsedObj
+    
+        console.log('... calculating and adding quantiles')
+    
+        const geoids = Object.keys(parsedObj);
+        for (let geoid of geoids) {
+    
+            const scenarios = Object.keys(parsedObj[geoid]);
+            for (let scenario of scenarios) {
+    
+                const severities = constants.severities;
+                for (let sev of severities) {
+    
+                    const parameters = constants.parameters;
+                    for (let param of parameters) {
+    
+                        const confObj = {'p10': [], 'p50': [], 'p90': []};
+                        for (let d = 0; d < dates.length; d ++) {
+    
+                            const simObj = parsedObj[geoid][scenario][sev][param].sims;
+    
+                            const arrayByDay = [];
+                            for (let s = 0; s < simObj.length; s ++) {
+                                arrayByDay.push(simObj[s].vals[d]);
                             }
+    
+                            arrayByDay.sort((a, b) => {return a - b});
+                            const idx10 = Math.round(arrayByDay.length * 0.1);
+                            const idx50 = Math.round(arrayByDay.length * 0.5);
+                            const idx90 = Math.round(arrayByDay.length * 0.9);
+    
+                            confObj['p10'].push(arrayByDay[idx10]);
+                            confObj['p50'].push(arrayByDay[idx50]);
+                            confObj['p90'].push(arrayByDay[idx90]);
                         }
+    
+                        parsedObj[geoid][scenario][sev][param].conf = confObj;
                     }
                 }
             }
         }
+    },
+
+    transformQuantiles: function transformQuantiles(parsedObj, dates) {
+        // transform parsedObj confidence bounds to D3-friendly format
+        // Obj {p10: [], p50: [], p90: []} to Array(479) [{p10: 2, p50: 4, p90: 9}]
+
+        console.log('... transforming quantiles')
+        
+        const geoids = Object.keys(parsedObj);
+        for (let geoid of geoids) {
+    
+            const scenarios = Object.keys(parsedObj[geoid]);
+            for (let scenario of scenarios) {
+    
+                const severities = constants.severities;
+                for (let sev of severities) {
+    
+                    const parameters = constants.parameters;
+                    for (let param of parameters) {
+    
+                        const confArray = [];
+                        for (let d = 0; d < dates.length; d ++) {
+    
+                            const confObj = {};
+                            for (let interval of constants.quantiles) {
+                                confObj[interval] = parsedObj[geoid][scenario][sev][param].conf[interval][d];
+                            }
+                            confArray.push(confObj);
+                        }
+                        parsedObj[geoid][scenario][sev][param].conf = confArray;
+                    }
+                }
+            }
         }
-
-
-    }   
+    }
 }

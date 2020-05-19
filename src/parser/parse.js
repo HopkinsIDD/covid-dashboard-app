@@ -18,7 +18,7 @@ function parseSim(path, result, geoids, scenario, severity, getIdx, reduceInt) {
                 const sim = line.split(',')[getIdx['sim_num']];
                 
                 // reduce eligible sims
-                if (sim % reduceInt > 0) { break; }
+                //if (sim % reduceInt > 0) { break; }
                 
                 // only include specified geoid
                 if (geoids.includes(geoid)) {
@@ -50,11 +50,14 @@ function parseSim(path, result, geoids, scenario, severity, getIdx, reduceInt) {
 
 module.exports = {
     parseDirectories: function parseDirectories(
-        dir, geoids, scenarios, severities, parameters, dates) {
+        dir, geoids, scenarios, dates) {
         // parses entire model package of multiple scenario directories
         // returns result Object
 
         console.log('start:', new Date()); 
+        
+        const severities = constants.severities;
+        const parameters = constants.parameters;
         const result = utils.initObj(
             geoids, scenarios, severities, parameters, dates);
             
@@ -63,8 +66,8 @@ module.exports = {
 
             const scenarioDir = `${dir}${scenarios[s]}/`;
             const files = fs.readdirSync(scenarioDir)
-                .filter(file => file !== '.DS_Store') //;
-                .slice(0,3);
+                .filter(file => file !== '.DS_Store')
+                //.slice(0, 5);
 
             // get index mapping based on parameters and headers
             let getIdx = {};
