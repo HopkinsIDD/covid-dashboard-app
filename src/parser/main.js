@@ -10,20 +10,14 @@
 const fs = require('fs');
 const parse = require('./parse');
 const utils = require('./utils');
-const constants = require('./constants');
-const quant = require('./quantiles');
-const geo = require('./geo');
-const quantilesByGeoID = require('../store/quantilesByGeoID.json');
+const quantile = require('./quantiles');
+// const geostat = require('./geostat');
 
 function buildDataset(dir, geoids) {
 
     const scenarios = fs.readdirSync(dir)
-        .filter(file => file !== '.DS_Store')//;
-        .slice(0,1); 
-        
-    const severities = constants.severities;
-    const parameters = constants.parameters;
-    const quantiles = constants.quantiles;
+        .filter(file => file !== '.DS_Store');
+        //.slice(0,1); 
 
     // faster to grab dates from the get-go
     const dates = utils.getDates(dir, scenarios);
@@ -33,35 +27,25 @@ function buildDataset(dir, geoids) {
         dir,
         geoids,
         scenarios,
-        severities,
-        parameters,
         dates
         );
 
+    quantile.addQuantiles(parsedObj, dates);
+
     // build GeoMap data before quantiles are transformed
-    geo.buildGeoMapData(
-        parsedObj,
-        parameters
-        );
+    // geostat.buildGeoMapData(parsedObj);
 
-    quant.mergeQuantiles(
-        parsedObj,
-        geoids,
-        scenarios,
-        severities,
-        parameters,
-        quantiles,
-        quantilesByGeoID
-        );
+    // transform quantiles
+    quantile.transformQuantiles(parsedObj, dates)
 
-    // utils.writeToFile(parsedObj, geoids);
+    utils.writeToFile(parsedObj, geoids);
     
     console.log('end:', new Date());
     console.log('parse complete!'); 
 }
 
 const dir = 'src/store/sims/';
-const geoids = ['06085', '06019']; //, '36061', '25017', '01081'];
+const geoids = ['06085', '06019', '36061', '25017', '01081'];
 
 // todo: geoids should default to all unless specified for testing
 buildDataset(dir, geoids)
