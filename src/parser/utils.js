@@ -1,4 +1,5 @@
 const fs = require('fs');
+const constants = require('./constants');
 
 module.exports = {
 
@@ -22,28 +23,6 @@ module.exports = {
                             "conf": {}
                         };
             
-                    }    
-                }
-            }
-        }
-
-        return obj;
-    },
-
-    initStatGeoObj: function initStatGeoObj(states, geoids, parameters) {
-        // build structure of Object for GeoMap data
-        const obj = {};
-
-        for (let st = 0; st < states.length; st ++) {
-            obj[states[st]] = {};
-
-            for (let g = 0; g < geoids.length; g ++) {
-
-                if (geoids[g].slice(0, 2) === states[st]) {
-                    obj[states[st]][geoids[g]] = {};
-
-                    for (let p = 0; p < parameters.length; p ++) {
-                        obj[states[st]][geoids[g]][parameters[p]] = [];
                     }    
                 }
             }
@@ -165,7 +144,7 @@ module.exports = {
         console.log('... writing files')
         for (let g = 0; g < geoids.length; g ++) {
             const json = JSON.stringify(parsedObj[geoids[g]]);
-            const path = `src/store/geo${geoids[g]}.json`;
+            const path = `src/store/geo${geoids[g]}_NEW.json`;
     
             fs.writeFile(path, json, 'utf8', function(err) {
                 if (err) throw err;
