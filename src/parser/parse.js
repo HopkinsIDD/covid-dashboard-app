@@ -18,7 +18,7 @@ function parseSim(path, result, geoids, scenario, severity, getIdx, reduceInt) {
                 const sim = line.split(',')[getIdx['sim_num']];
                 
                 // reduce eligible sims
-                if (sim % reduceInt > 0) { break; }
+                //if (sim % reduceInt > 0) { break; }
                 
                 // only include specified geoid
                 if (geoids.includes(geoid)) {
@@ -66,8 +66,8 @@ module.exports = {
 
             const scenarioDir = `${dir}${scenarios[s]}/`;
             const files = fs.readdirSync(scenarioDir)
-                .filter(file => file !== '.DS_Store');
-                //.slice(0,20);
+                .filter(file => file !== '.DS_Store')
+                //.slice(0, 5);
 
             // get index mapping based on parameters and headers
             let getIdx = {};

@@ -3,7 +3,7 @@ const constants = require('./constants');
 module.exports = {
     addQuantiles: function addQuantiles(parsedObj, dates) {
         // calculate p10, p50, p90 quantiles and add to parsedObj
-
+    
         console.log('... calculating and adding quantiles')
     
         const geoids = Object.keys(parsedObj);
@@ -28,14 +28,14 @@ module.exports = {
                                 arrayByDay.push(simObj[s].vals[d]);
                             }
     
-                            const sortedArray = arrayByDay.sort();
-                            const idx10 = Math.round(sortedArray.length * 0.1);
-                            const idx50 = Math.round(sortedArray.length * 0.5);
-                            const idx90 = Math.round(sortedArray.length * 0.9);
+                            arrayByDay.sort((a, b) => {return a - b});
+                            const idx10 = Math.round(arrayByDay.length * 0.1);
+                            const idx50 = Math.round(arrayByDay.length * 0.5);
+                            const idx90 = Math.round(arrayByDay.length * 0.9);
     
-                            confObj['p10'].push(sortedArray[idx10]);
-                            confObj['p50'].push(sortedArray[idx50]);
-                            confObj['p90'].push(sortedArray[idx90]);
+                            confObj['p10'].push(arrayByDay[idx10]);
+                            confObj['p50'].push(arrayByDay[idx50]);
+                            confObj['p90'].push(arrayByDay[idx90]);
                         }
     
                         parsedObj[geoid][scenario][sev][param].conf = confObj;
