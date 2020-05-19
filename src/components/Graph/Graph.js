@@ -442,7 +442,6 @@ class Graph extends Component {
                     <g>
                         <Axis 
                             keyVal={this.props.keyVal}
-                            ref={this.axisRef}
                             width={this.props.width}
                             height={this.props.height}
                             orientation={'bottom'}

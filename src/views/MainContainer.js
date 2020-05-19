@@ -548,7 +548,7 @@ class MainContainer extends Component {
                             {this.state.dataLoaded &&
                             <div className="map-container">
                                 <MapContainer
-                                    width={this.state.graphW - margin.left - margin.right - margin.yAxis}
+                                    width={this.state.graphW - margin.left - margin.right}
                                     height={this.state.graphH}
                                     dataset={this.state.dataset}
                                     // scenarioList={this.state.scenarioList}
