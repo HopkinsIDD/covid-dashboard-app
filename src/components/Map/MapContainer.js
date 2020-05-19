@@ -8,7 +8,8 @@ class MapContainer extends Component {
         this.state = {
             children: [],
             parameters: ['incidI', 'incidH', 'incidD'],
-            parameterLabels: ['Infections', 'Hospitalizations', 'Deaths']
+            parameterLabels: ['Infections', 'Hospitalizations', 'Deaths'],
+            scaleColors: []
         }
     }
   
