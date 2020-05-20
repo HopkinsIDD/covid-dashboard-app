@@ -33,7 +33,7 @@ class Axis extends Component {
       if (this.axisRef.current) {
         select(this.axisRef.current).call(this.axis)
       }
-    } {
+    } else {
       this.axis = axisBottom().scale(this.props.scale)
         .tickFormat(timeFormat('%b-%d'))
         .ticks(this.props.width / 60)
