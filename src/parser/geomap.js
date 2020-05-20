@@ -11,7 +11,8 @@ function buildFIPSmap() {
     const FIPSmap = {};
 
     try {
-        const path = '/Users/lxu213/Documents/covid-dashboard-app/src/store/state_fips.csv';
+        const path = '/Users/genevieve/Documents/WORK/JohnsHopkins/covid-dashboard-app/src/store/state_fips.csv'
+        // const path = '/Users/lxu213/Documents/covid-dashboard-app/src/store/state_fips.csv';
         const data = fs.readFileSync(path, 'UTF-8');
         const lines = data.split(/\r?\n/);
 
@@ -57,6 +58,32 @@ function initGeoObj() {
     return geoObj;
 }
 
+function formatPopulations() {
+    try {
+        const path = '/Users/genevieve/Documents/WORK/JohnsHopkins/covid-dashboard-app/src/store/co-est2019-alldata.csv'
+        // const path = '/Users/lxu213/Documents/covid-dashboard-app/src/store/state_fips.csv';
+        const data = fs.readFileSync(path, 'UTF-8');
+        const lines = data.split(/\r?\n/);
+        const popObject = {}
+
+        lines.forEach((line,index) => {
+            // if (index === 0) console.log(line)
+            if (index > 0) {
+                const splitLine = line.split(',');
+                const geoid = splitLine[3] + splitLine[4];
+                const pop = splitLine[7]
+                // console.log(geoid, pop)
+                popObject[geoid] = pop
+            }
+        })
+
+        return popObject;
+
+    } catch (err) {
+        console.error(err);
+    };
+}
+
 module.exports = {
     populateGeoObj: function populateGeoObj() {
         // writes populated targetObj of FeatureCollections by state to geoByState.json
@@ -64,13 +91,24 @@ module.exports = {
     
         const targetObj = initGeoObj();
         const sourceArray = require('../store/geo/countyBoundaries.json').features;
+        const popObj = formatPopulations();
     
         for (let geoObj of sourceArray) {
     
             const state = geoObj.properties.STATE;
+            const geoid = geoObj.properties.STATE + geoObj.properties.COUNTY;
+            
+            const newProps = {}
+            newProps.type = 'Feature';
+            newProps.properties = {}
+            newProps.properties.geoid = geoid;
+            newProps.properties.population = popObj[geoid];
+            newProps.geometry = {}
+            newProps.geometry.type = 'Polygon';
+            newProps.geometry.coordinates = geoObj.geometry.coordinates;
     
             if (state in targetObj){
-                targetObj[state].features.push(geoObj);
+                targetObj[state].features.push(newProps);
     
             } else {
                 console.log('state', state)
@@ -86,5 +124,6 @@ module.exports = {
 }
 
 // buildFIPSmap()
+// formatPopulations()
 module.exports.populateGeoObj()
 
