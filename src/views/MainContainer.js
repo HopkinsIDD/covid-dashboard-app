@@ -19,7 +19,6 @@ import { maxIndex } from 'd3-array';
 import { STATS, LEVELS, margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
 // TODO: is this file affecting performance?
-const geojson = require('../store/geoMapByState.json');
 const geojsonStats = require('../store/statsForMap.json')
 
 const parseDate = utcParse('%Y-%m-%d')
@@ -61,7 +60,7 @@ class MainContainer extends Component {
             showActual: false,
             summaryStart: new Date(),
             summaryEnd: new Date(),
-            countyBoundaries: { "type": "Feature", "properties": {}, "geometry": {} },
+            countyBoundaries: { "type": "FeatureCollection", "features": []},
             statsForCounty: {},
             graphW: 0,
             graphH: 0,
@@ -135,7 +134,7 @@ class MainContainer extends Component {
 
         // instantiates countyBoundaries
         const state = this.state.geoid.slice(0, 2);
-        const countyBoundaries = geojson[state];
+        const countyBoundaries = require('../store/geoMapByState.json')[state];
         const statsForCounty = geojsonStats[state];
 
         this.setState({
@@ -333,7 +332,7 @@ class MainContainer extends Component {
 
         // re-initialize countyBoundaries
         const state = i.geoid.slice(0, 2);
-        const countyBoundaries = geojson[state];
+        const countyBoundaries = require('../store/geoMapByState.json')[state];
         const statsForCounty = geojsonStats[state];
 
         this.setState({
