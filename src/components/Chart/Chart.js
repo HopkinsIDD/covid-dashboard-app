@@ -83,6 +83,10 @@ class Chart extends Component {
         this.setState({ quantileObj, xScale, yScale, scaleDomains: true })
     }
 
+    handleHighlight = (severity, key) => {
+        console.log(severity, key)
+    }
+
     drawSummaryStats = () => {
         const barWidth = 40;
         const whiskerMargin = 8;
@@ -110,6 +114,7 @@ class Chart extends Component {
                                 x={(i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key)}
                                 y={this.state.yScale(value.median)}
                                 fill={green}
+                                onMouseEnter={(severity, key) => this.handleHighlight(severity, key)}
                             >
                             </rect>
                             <line
