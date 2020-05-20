@@ -19,8 +19,12 @@ import { maxIndex } from 'd3-array';
 import { STATS, LEVELS, margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
 // TODO: is this file affecting performance?
+<<<<<<< HEAD
 // const geojson = require('../store/geoMapByState.json');
 // const geojsonStats = require('../store/statsForMap.json')
+=======
+const geojsonStats = require('../store/statsForMap.json')
+>>>>>>> 05483781fac9b32379afa6a2816c9c568afd8d12
 
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
@@ -61,7 +65,7 @@ class MainContainer extends Component {
             showActual: false,
             summaryStart: new Date(),
             summaryEnd: new Date(),
-            countyBoundaries: { "type": "Feature", "properties": {}, "geometry": {} },
+            countyBoundaries: { "type": "FeatureCollection", "features": []},
             statsForCounty: {},
             graphW: 0,
             graphH: 0,
@@ -134,9 +138,15 @@ class MainContainer extends Component {
         summaryStart.setDate(summaryStart.getDate() - 14); 
 
         // instantiates countyBoundaries
+<<<<<<< HEAD
         // const state = this.state.geoid.slice(0, 2);
         // const countyBoundaries = geojson[state];
         // const statsForCounty = geojsonStats[state];
+=======
+        const state = this.state.geoid.slice(0, 2);
+        const countyBoundaries = require('../store/geoMapByState.json')[state];
+        const statsForCounty = geojsonStats[state];
+>>>>>>> 05483781fac9b32379afa6a2816c9c568afd8d12
 
         this.setState({
             dataset,
@@ -333,8 +343,13 @@ class MainContainer extends Component {
 
         // re-initialize countyBoundaries
         const state = i.geoid.slice(0, 2);
+<<<<<<< HEAD
         // const countyBoundaries = geojson[state];
         // const statsForCounty = geojsonStats[state];
+=======
+        const countyBoundaries = require('../store/geoMapByState.json')[state];
+        const statsForCounty = geojsonStats[state];
+>>>>>>> 05483781fac9b32379afa6a2816c9c568afd8d12
 
         this.setState({
             dataset,
@@ -483,7 +498,7 @@ class MainContainer extends Component {
     };
 
     handleSummaryStart = (date) => {
-        console.log('start', date)        
+        console.log('start', date)
         this.setState({summaryStart: date});
     }
 
@@ -647,6 +662,7 @@ class MainContainer extends Component {
                             />
                             }
                             <DatePicker 
+                                firstDate={this.state.firstDate}
                                 summaryStart={this.state.summaryStart}
                                 summaryEnd={this.state.summaryEnd}
                                 onHandleSummaryStart={this.handleSummaryStart}

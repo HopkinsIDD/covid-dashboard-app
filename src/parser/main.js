@@ -22,8 +22,6 @@ function buildDataset(dir, geoids) {
 
     // faster to grab dates from the get-go
     const dates = utils.getDates(dir, scenarios);
-
-    // TODO: readParquet.js
     const parsedObj = parse.parseDirectories(
         dir,
         geoids,
@@ -34,7 +32,8 @@ function buildDataset(dir, geoids) {
     // quantiles should be based on all sims
     quantile.addQuantiles(parsedObj, dates);
 
-    // TODO: reduce the number of sims to 20
+    // reduce number of sims to ~20 
+    utils.reduceSims(dir, parsedObj);
 
     // build GeoMap data before quantiles are transformed
     // geostat.buildGeoMapData(parsedObj);
@@ -55,5 +54,4 @@ const dir = 'src/store/sims/';
 const geoids = ['06085', '06019', '36061', '25017', '01081'];
 
 // TODO: geoids should default to all unless specified for testing
-// TODO: don't reduce sims at all
 buildDataset(dir, geoids)

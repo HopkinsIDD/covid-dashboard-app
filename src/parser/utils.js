@@ -119,7 +119,7 @@ module.exports = {
         return filesBySev;
     },
 
-    reduceSims: function reduceSims(fileLength) {
+    calcReduceInt: function calcReduceInt(fileLength) {
         // returns int a sim number must be divisible by
         // in order to be included in final dataset
         // fileLength is length of files in scenario directory
@@ -135,6 +135,31 @@ module.exports = {
             return 4;
         } else {
             return 5;
+        }
+    },
+
+    reduceSims: function reduceSims(dir, parsedObj) {
+        // reduce number of sims based on sim files per scenario
+        
+        const geoids = Object.keys(parsedObj);
+        for (let geoid of geoids) {
+    
+            const scenarios = Object.keys(parsedObj[geoid]);
+            for (let scenario of scenarios) {
+
+                const files = fs.readdirSync(`${dir}${scenario}/`)
+                    .filter(file => file !== '.DS_Store');
+                const reduceInt = module.exports.calcReduceInt(files.length);
+                for (let sev of constants.severities) {
+
+                    for (let param of constants.parameters) {
+
+                        const newSims = parsedObj[scenario][sev][param].sims
+                            .filter(sim => sim.name % reduceInt === 0);
+                        parsedObj[scenario][sev][param].sims = newSims;
+                    }
+                }
+            }
         }
     },
 
