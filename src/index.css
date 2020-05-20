@@ -258,7 +258,7 @@ ul {
 }
 
 .slider-menu {
-  margin-top: 5px;
+  margin: 10px 0 20px 0;
 }
 
 .param-header {
@@ -452,4 +452,17 @@ input[type=range]::-moz-focus-outer {
 
 .tooltip:hover .tooltip-text {
   visibility: visible;
+}
+
+.chart-container {
+  margin-top: 10rem;
+  border: 1px solid red;
+}
+
+.chart {
+  border: 1px solid blue;
+} 
+
+.date-picker {
+  max-width: 5rem;
 }

@@ -24,10 +24,10 @@ class Map extends Component {
     }
     componentDidMount() {
         const { stat, dateIdx, countyBoundaries, statsForCounty } = this.props;
-        console.log(stat);
-        console.log(dateIdx);
-        console.log(countyBoundaries);
-        console.log(statsForCounty);
+        // console.log(stat);
+        // console.log(dateIdx);
+        // console.log(countyBoundaries);
+        // console.log(statsForCounty);
 
         // get max of all values in stat array for colorscale
         
@@ -83,8 +83,8 @@ class Map extends Component {
     }
 
     drawLegend = () => {
-        const legendW = 100;
-        const legendH = this.props.height/2;
+        // const legendW = 100;
+        // const legendH = this.props.height/2;
         
     }
 

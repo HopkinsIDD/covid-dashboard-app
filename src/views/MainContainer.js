@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import GraphContainer from '../components/Graph/GraphContainer';
+import ChartContainer from '../components/Chart/ChartContainer';
 import MapContainer from '../components/Map/MapContainer';
 import Search from '../components/Search'
 import Brush from '../components/Filters/Brush';
@@ -9,6 +10,7 @@ import Scenarios from '../components/Filters/Scenarios';
 import SeverityContainer from '../components/Filters/SeverityContainer';
 import Sliders from '../components/Filters/Sliders';
 import Overlays from '../components/Filters/Overlays';
+import DatePicker from '../components/Chart/DatePicker';
 import _ from 'lodash';
 import { buildScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
@@ -46,9 +48,8 @@ class MainContainer extends Component {
             statThreshold: 0,
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
-            dateThreshold: parseDate('2020-05-04'),
-            dateRange: [parseDate('2020-03-01'), parseDate('2020-07-01')],
-            // dateRange: [parseDate('2020-01-31'), parseDate('2021-05-24')],
+            dateThreshold: new Date(),
+            dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             firstDate: '',
             lastDate: '',
             r0: '1',
@@ -58,6 +59,8 @@ class MainContainer extends Component {
             confBounds: {},
             confBoundsList: [{}],
             showActual: false,
+            summaryStart: new Date(),
+            summaryEnd: new Date(),
             countyBoundaries: { "type": "Feature", "properties": {}, "geometry": {} },
             statsForCounty: {},
             graphW: 0,
@@ -126,6 +129,10 @@ class MainContainer extends Component {
         const confBounds = dataset[scenario.key][severity.key][stat.key].conf;
         const filteredConfBounds = confBounds.slice(idxMin, idxMax)
 
+        // instantiate start and end date (past 2 weeks) for summary stats
+        const summaryStart = new Date();
+        summaryStart.setDate(summaryStart.getDate() - 14); 
+
         // instantiates countyBoundaries
         const state = this.state.geoid.slice(0, 2);
         const countyBoundaries = geojson[state];
@@ -151,6 +158,7 @@ class MainContainer extends Component {
             confBoundsList: [filteredConfBounds],
             countyBoundaries,
             statsForCounty,
+            summaryStart,
             // graphW,
             // graphH
         }, () => {
@@ -474,6 +482,18 @@ class MainContainer extends Component {
         }));
     };
 
+    handleSummaryStart = (date) => {
+        console.log('start', date)
+        debugger;
+        
+        this.setState({summaryStart: date});
+    }
+
+    handleSummaryEnd = (date) => {
+        console.log('end', date)
+        this.setState({summaryEnd: date});
+    }
+
     render() {
         return (
             <div className="main-container">
@@ -547,6 +567,16 @@ class MainContainer extends Component {
                             </div>
                             {this.state.dataLoaded &&
                             <div className="map-container">
+                                <ChartContainer 
+                                    dataset={this.state.dataset}
+                                    firstDate={this.state.firstDate}
+                                    summaryStart={this.state.summaryStart}
+                                    summaryEnd={this.state.summaryEnd}
+                                />
+                            </div>
+                            }
+                            {this.state.dataLoaded &&
+                            <div className="map-container">
                                 <MapContainer
                                     width={this.state.graphW - margin.left - margin.right}
                                     height={this.state.graphH}
@@ -616,6 +646,12 @@ class MainContainer extends Component {
                                 // // onReprSliderChange={this.handleReprSliderChange}
                             />
                             }
+                            <DatePicker 
+                                summaryStart={this.state.summaryStart}
+                                summaryEnd={this.state.summaryEnd}
+                                onHandleSummaryStart={this.handleSummaryStart}
+                                onHandleSummaryEnd={this.handleSummaryEnd}
+                            />
                         </div>
                     </div>
                 </div>

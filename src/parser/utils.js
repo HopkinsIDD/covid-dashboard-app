@@ -155,7 +155,7 @@ module.exports = {
     combineCaliCounties: function combineCaliCounties() {
         // Add renamed scenarios of geo06019 to geo06085
     
-        const geo06019 = require('../store/geo06019_NEW.json');
+        const geo06019 = require('../store/geo06019.json');
         const oldKeys = Object.keys(geo06019);
         const newKeys = ['USA_Lockdown1945', 'USA_LockdownHK', 'USA_Fatiguing'];
         
@@ -167,13 +167,13 @@ module.exports = {
         }
     
         // add renamed scenarios to geo06085
-        const geo06085 = require('../store/geo06085_NEW.json');
+        const geo06085 = require('../store/geo06085.json');
         for (let key of newKeys) {
             geo06085[key] = geo06019[key];
         }
         
         const json = JSON.stringify(geo06085);
-        const path = `src/store/geo06085_combined.json`;
+        const path = `src/store/geo06085.json`;
     
         fs.writeFileSync(path, json, 'utf8', function(err) {
             if (err) throw err;
