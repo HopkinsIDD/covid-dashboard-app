@@ -43,10 +43,7 @@ class Map extends Component {
             // console.log(countyBoundaries.features[i].properties)
             const geoid = countyBoundaries.features[i].properties.geoid
             // const geoid = countyBoundaries.features[i].properties.GEO_ID.slice(9)
-<<<<<<< HEAD
-=======
             // console.log(geoid)
->>>>>>> 05483781fac9b32379afa6a2816c9c568afd8d12
             countyBoundaries.features[i].properties[stat] = statsForCounty[geoid][stat]
         }
         const yScale = scaleLinear().range([(this.props.height - (2 * gradientMargin))/2, 0]).domain([minVal, maxVal])
