@@ -5,7 +5,7 @@ import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least } from 'd3-array'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
-import { margin, red, green, blue, gray, lightgray } from '../../utils/constants'
+import { margin, red, green, blue, gray, lightgray, graphBkgd } from '../../utils/constants'
 
 class Graph extends Component {
     constructor(props) {
@@ -354,7 +354,7 @@ class Graph extends Component {
                             id={`graphArea_${this.props.keyVal}`}
                             width={this.props.width - margin.left - margin.right}
                             height={this.props.height - margin.bottom - margin.top}
-                            fill={'#f6f5f5'}
+                            fill={graphBkgd}
                             // onMouseEnter={() => console.log('entered')}
                             onMouseMove={(e) => this.handleBetterSimMouseHover(e)}
                             onMouseLeave={(e, i) => this.handleMouseLeave(e, i)}
