@@ -1,4 +1,5 @@
-import { extent } from 'd3-array'
+import { extent } from 'd3-array';
+import { timeDay } from 'd3-time';
 ///////////////// UTILS ///////////////////
 
 export function buildScenarios(dataset) {
@@ -38,6 +39,6 @@ export function getRange(series, seriesPeaks) {
 };
 
 export function getDateIdx(firstDate, currentDate) {
-  return (currentDate.getTime() - firstDate.getTime()) / (1000 * 3600 * 24);
+  return timeDay.count(firstDate, currentDate);
 };
 

@@ -19,8 +19,8 @@ import { maxIndex } from 'd3-array';
 import { STATS, LEVELS, margin } from '../utils/constants';
 const dataset = require('../store/geo06085.json');
 // TODO: is this file affecting performance?
-const geojson = require('../store/geoMapByState.json');
-const geojsonStats = require('../store/statsForMap.json')
+// const geojson = require('../store/geoMapByState.json');
+// const geojsonStats = require('../store/statsForMap.json')
 
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
@@ -134,9 +134,9 @@ class MainContainer extends Component {
         summaryStart.setDate(summaryStart.getDate() - 14); 
 
         // instantiates countyBoundaries
-        const state = this.state.geoid.slice(0, 2);
-        const countyBoundaries = geojson[state];
-        const statsForCounty = geojsonStats[state];
+        // const state = this.state.geoid.slice(0, 2);
+        // const countyBoundaries = geojson[state];
+        // const statsForCounty = geojsonStats[state];
 
         this.setState({
             dataset,
@@ -156,8 +156,8 @@ class MainContainer extends Component {
             lastDate,
             percExceedenceList,
             confBoundsList: [filteredConfBounds],
-            countyBoundaries,
-            statsForCounty,
+            // countyBoundaries,
+            // statsForCounty,
             summaryStart,
             // graphW,
             // graphH
@@ -333,8 +333,8 @@ class MainContainer extends Component {
 
         // re-initialize countyBoundaries
         const state = i.geoid.slice(0, 2);
-        const countyBoundaries = geojson[state];
-        const statsForCounty = geojsonStats[state];
+        // const countyBoundaries = geojson[state];
+        // const statsForCounty = geojsonStats[state];
 
         this.setState({
             dataset,
@@ -342,8 +342,8 @@ class MainContainer extends Component {
             SCENARIOS,
             scenarioList,
             severityList,
-            countyBoundaries,
-            statsForCounty
+            // countyBoundaries,
+            // statsForCounty
         })
     }
     
@@ -483,9 +483,7 @@ class MainContainer extends Component {
     };
 
     handleSummaryStart = (date) => {
-        console.log('start', date)
-        debugger;
-        
+        console.log('start', date)        
         this.setState({summaryStart: date});
     }
 
@@ -577,7 +575,7 @@ class MainContainer extends Component {
                                 />
                             </div>
                             }
-                            {this.state.dataLoaded &&
+                            {/* {this.state.dataLoaded &&
                             <div className="map-container">
                                 <MapContainer
                                     width={this.state.graphW - margin.left - margin.right}
@@ -591,7 +589,7 @@ class MainContainer extends Component {
                                     statsForCounty={this.state.statsForCounty}
                                 />
                             </div>
-                            }
+                            } */}
                         </div>
                         <div className="col-2 filters">
                             <h5 className="scenario-header">Scenarios

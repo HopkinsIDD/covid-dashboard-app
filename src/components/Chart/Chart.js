@@ -16,7 +16,20 @@ class Chart extends Component {
         }
     }
     componentDidMount() {
-        console.log('componentDidMount')
+        console.log('componentDidMount');
+        this.calculateQuantiles();
+        
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        console.log(this.props.summaryStart, this.props.summaryEnd)
+        if (prevProps.summaryStart !== this.props.summaryStart || prevProps.summaryEnd !== this.props.summaryEnd) {
+            console.log('summary Start or End Changed');
+            this.calculateQuantiles();
+        }
+    }
+
+    calculateQuantiles = () => {
         const { dataset, firstDate, summaryStart, summaryEnd, stat, width, height } = this.props;
         const { severities } = this.state;
         const quantileObj = {}
@@ -24,25 +37,27 @@ class Chart extends Component {
         const scenarios = Object.keys(dataset);
         const startIdx = getDateIdx(firstDate, summaryStart);
         const endIdx = getDateIdx(firstDate, summaryEnd);
+        // console.log(startIdx, endIdx);
         let globalMaxVal = 0;
         // console.log(scenarios)
-        console.log(stat)
+        // console.log(stat)
         quantileObj[stat] = {};
         for (let severity of severities) {
-            console.log(severity)
+            // console.log(severity)
             quantileObj[stat][severity] = {};
             for (let scenario of scenarios) {
-                console.log(scenario)
-                // every Chart has a given severity and stat passed down from ChartContainer
-                // every Chart will contain all scenarios
+                // console.log(scenario)
+                // every Chart has a given stat passed down from ChartContainer
+                // every Chart will contain all scenarios and all severities
                 // startIdx and endIdx specify the time range on which we want to calc quantiles
                 // every sim.vals array will be sliced on this timeRange 
                 // then every day of a simulation will be summed up returning an Array of sim sums 
                 // then d3.quantiles can be applied to the Array to create final desired obj
                 
-                const sumArray = dataset[scenario][severity][stat].sims.map(sim => 
-                    sim.vals.slice(startIdx, endIdx).reduce((a, b) => a + b, 0));
-                console.log(scenario, stat, severity, sumArray)
+                const sumArray = dataset[scenario][severity][stat].sims.map(sim => {
+                    return sim.vals.slice(startIdx, endIdx).reduce((a, b) => a + b, 0)
+                } );
+                // console.log(scenario, stat, severity, sumArray)
                 const minVal = min(sumArray)
                 const maxVal = max(sumArray)
                 const tenth = quantile(sumArray, 0.10)
@@ -69,13 +84,77 @@ class Chart extends Component {
     }
 
     drawSummaryStats = () => {
-
+        const barWidth = 40;
+        const whiskerMargin = 8;
+        return (
+            this.state.severities.map( (severity, i) => {
+            return (
+                <Fragment key={`chart-fragment-${severity}`}>
+                <rect
+                    key={`chart-rect-${severity}`}
+                    width={(this.props.width / this.state.severities.length) - margin.left}
+                    height={this.props.height - margin.top - margin.bottom}
+                    x={margin.left + (i * (this.props.width / this.state.severities.length))}
+                    y={margin.top}
+                    fill={graphBkgd}
+                >
+                </rect>
+                <g key={`chart-group-${severity}`}>
+                    { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
+                    return (
+                        <Fragment key={`chart-fragment-${severity}-${key}`}>
+                            <rect 
+                                key={`bar-${severity}-${key}`}
+                                width={40}
+                                height={this.state.yScale(0) - this.state.yScale(value.median)}
+                                x={(i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key)}
+                                y={this.state.yScale(value.median)}
+                                fill={green}
+                            >
+                            </rect>
+                            <line
+                                key={`vertline-${severity}-${key}`}
+                                x1={(barWidth/2 + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                y1={this.state.yScale(value.ninetyith)}
+                                x2={(barWidth/2 + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                y2={this.state.yScale(value.tenth)}
+                                stroke={gray}
+                                strokeWidth={1}
+                            >
+                            </line>
+                            <line
+                                key={`topline-${severity}-${key}`}
+                                x1={(whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                y1={this.state.yScale(value.ninetyith)}
+                                x2={(barWidth - whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                y2={this.state.yScale(value.ninetyith)}
+                                stroke={gray}
+                                strokeWidth={1}
+                            >
+                            </line>
+                            <line
+                                key={`bottomline-${severity}-${key}`}
+                                x1={(whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                y1={this.state.yScale(value.tenth)}
+                                x2={(barWidth - whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                y2={this.state.yScale(value.tenth)}
+                                stroke={gray}
+                                strokeWidth={1}
+                            >
+                            </line>
+                        </Fragment>
+                    )
+                })
+                }
+                </g>
+                </Fragment>
+            )
+        }))
     }
 
     render() {
         // console.log(this.props.width, this.props.height)
-        const barWidth = 40;
-        const whiskerMargin = 8;
+        
         return (
             <div >
                 <div className="y-axis-label chart-yLabel titleNarrow">
@@ -101,72 +180,7 @@ class Chart extends Component {
                         width={this.props.width}
                         height={this.props.height} 
                         >
-                            {
-                                this.state.severities.map( (severity, i) => {
-                                    return (
-                                        <Fragment key={`chart-fragment-${severity}`}>
-                                        <rect
-                                            key={`chart-rect-${severity}`}
-                                            width={(this.props.width / this.state.severities.length) - margin.left}
-                                            height={this.props.height - margin.top - margin.bottom}
-                                            x={margin.left + (i * (this.props.width / this.state.severities.length))}
-                                            y={margin.top}
-                                            fill={graphBkgd}
-                                        >
-                                        </rect>
-                                        <g key={`chart-group-${severity}`}>
-                                            { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
-                                                console.log(value.median, this.state.yScale(value.median))
-                                            return (
-                                                <Fragment>
-                                                    <rect 
-                                                        key={`bar-${severity}-${key}`}
-                                                        width={40}
-                                                        height={this.state.yScale(0) - this.state.yScale(value.median)}
-                                                        x={(i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key)}
-                                                        y={this.state.yScale(value.median)}
-                                                        fill={green}
-                                                    >
-                                                    </rect>
-                                                    <line
-                                                        key={`vertline-${severity}-${key}`}
-                                                        x1={(barWidth/2 + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
-                                                        y1={this.state.yScale(value.ninetyith)}
-                                                        x2={(barWidth/2 + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
-                                                        y2={this.state.yScale(value.tenth)}
-                                                        stroke={gray}
-                                                        strokeWidth={1}
-                                                    >
-                                                    </line>
-                                                    <line
-                                                        key={`topline-${severity}-${key}`}
-                                                        x1={(whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
-                                                        y1={this.state.yScale(value.ninetyith)}
-                                                        x2={(barWidth - whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
-                                                        y2={this.state.yScale(value.ninetyith)}
-                                                        stroke={gray}
-                                                        strokeWidth={1}
-                                                    >
-                                                    </line>
-                                                    <line
-                                                        key={`bottomline-${severity}-${key}`}
-                                                        x1={(whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
-                                                        y1={this.state.yScale(value.tenth)}
-                                                        x2={(barWidth - whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
-                                                        y2={this.state.yScale(value.tenth)}
-                                                        stroke={gray}
-                                                        strokeWidth={1}
-                                                    >
-                                                    </line>
-                                                </Fragment>
-                                            )
-                                        })
-                                        }
-                                        </g>
-                                        </Fragment>
-                                    )
-                                })
-                            }
+                        {this.drawSummaryStats()}
                         </svg>
                     </Fragment>
                   }

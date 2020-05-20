@@ -9,12 +9,24 @@ class ChartContainer extends Component {
             // TODO: depending on performance, may add more or less
             parameters: ['incidI', 'incidH', 'incidD'],
             // severities: ['high', 'med', 'low'],
-            children: {'incidI': {}, 'incidH': {}, 'incidD': {}}
+            children: {'incidI': {}, 'incidH': {}, 'incidD': {}},
         }
     }
 
     componentDidMount() {
+        this.drawSummaryStatCharts();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.summaryStart !== this.props.summaryStart || prevProps.summaryEnd !== this.props.summaryEnd) {
+            console.log('ComponentDidUpdate Summary Start or End')
+            this.drawSummaryStatCharts();
+        }
+    }
+
+    drawSummaryStatCharts = () => {
         const { children } = this.state;
+        const { summaryStart, summaryEnd } = this.props;
             
         for (let param of this.state.parameters) {
 
@@ -22,7 +34,6 @@ class ChartContainer extends Component {
                 const child = {
                     key: `${param}-chart`,
                     chart: {},
-                    yScale: scaleLinear()
                 }
 
                 child.chart = 
