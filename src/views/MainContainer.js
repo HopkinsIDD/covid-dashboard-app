@@ -567,7 +567,9 @@ class MainContainer extends Component {
                             </div>
                             {this.state.dataLoaded &&
                             <div className="map-container">
-                                <ChartContainer 
+                                <ChartContainer
+                                    width={this.state.graphW - margin.left - margin.right}
+                                    height={this.state.graphH}
                                     dataset={this.state.dataset}
                                     firstDate={this.state.firstDate}
                                     summaryStart={this.state.summaryStart}
