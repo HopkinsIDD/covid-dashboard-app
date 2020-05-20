@@ -27,8 +27,8 @@ class GraphContainer extends Component {
         const graphHeight = height;
         const scales = this.getScales(seriesList, confBoundsList, dates, graphWidth, height);
         const child = {
-            'key': `${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`,
-            'graph': [],
+            key: `${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`,
+            graph: [],
         }
         
         child.graph.push(
@@ -108,8 +108,8 @@ class GraphContainer extends Component {
         // console.log(this.props.confBoundsList)
         for (let i = 0; i < scenarioList.length; i++) {
             const child = {
-                'key': `${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`,
-                'graph': [],
+                key: `${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`,
+                graph: [],
             }
             child.graph.push(
                 <Graph

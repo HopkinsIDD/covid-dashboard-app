@@ -20,8 +20,8 @@ class MapContainer extends Component {
 
         for (let [index, param] of this.state.parameters.entries()) {
             const child = {
-                'key': `${param}-map`,
-                'map': [],
+                key: `${param}-map`,
+                map: [],
             }
             child.map.push(
                 <Map
@@ -52,8 +52,8 @@ class MapContainer extends Component {
 
             for (let [index, param] of this.state.parameters.entries()) {
                 const child = {
-                    'key': `${param}-map`,
-                    'map': [],
+                    key: `${param}-map`,
+                    map: [],
                 }
                 child.map.push(
                     <Map

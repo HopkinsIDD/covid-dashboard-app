@@ -34,6 +34,8 @@ function buildDataset(dir, geoids) {
     // quantiles should be based on all sims
     quantile.addQuantiles(parsedObj, dates);
 
+    // TODO: reduce the number of sims to 20
+
     // build GeoMap data before quantiles are transformed
     // geostat.buildGeoMapData(parsedObj);
 
