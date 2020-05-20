@@ -428,7 +428,7 @@ input[type=range]::-moz-focus-outer {
   position: relative;
   display: inline-block;
   opacity: 1;
-  z-index: 50;
+  z-index: 0;
   cursor: pointer;
 }
 
@@ -464,5 +464,30 @@ input[type=range]::-moz-focus-outer {
 } 
 
 .date-picker {
-  max-width: 5rem;
+  max-width: 7rem;
+  border-radius: 4px;
+  box-shadow: inset 0 2px 2px #e9e9e9;
+  border: 1px solid #aeaeae;
+  line-height: 14px;
+  padding: 6px 10px 5px;
+  margin: 4px 0;
+}
+
+.date-label {
+  color: #808080;
+  font-size: 14px;
+  margin-top: 0.6rem;
+  width: 3rem;
+}
+
+.react-datepicker {
+  margin-left: -140px;
+}
+
+.react-datepicker-popper[data-placement^="top"] .react-datepicker__triangle {
+  margin-left: 140px;
+}
+
+.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle {
+  margin-left: 140px;
 }

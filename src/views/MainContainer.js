@@ -484,7 +484,6 @@ class MainContainer extends Component {
 
     handleSummaryStart = (date) => {
         console.log('start', date)
-        debugger;
         
         this.setState({summaryStart: date});
     }
@@ -647,6 +646,7 @@ class MainContainer extends Component {
                             />
                             }
                             <DatePicker 
+                                firstDate={this.state.firstDate}
                                 summaryStart={this.state.summaryStart}
                                 summaryEnd={this.state.summaryEnd}
                                 onHandleSummaryStart={this.handleSummaryStart}
