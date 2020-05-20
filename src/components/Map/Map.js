@@ -40,10 +40,9 @@ class Map extends Component {
         // iterate over this.props.countyBoundaries to plot up boundaries
         // join each geoid to statsForCounty[geoid][stat][dateIdx]
         for (let i = 0; i < countyBoundaries.features.length; i++) {
-            console.log(countyBoundaries.features[i].properties)
+            // console.log(countyBoundaries.features[i].properties)
             const geoid = countyBoundaries.features[i].properties.geoid
             // const geoid = countyBoundaries.features[i].properties.GEO_ID.slice(9)
-            console.log(geoid)
             countyBoundaries.features[i].properties[stat] = statsForCounty[geoid][stat]
         }
         const yScale = scaleLinear().range([(this.props.height - (2 * gradientMargin))/2, 0]).domain([minVal, maxVal])
@@ -58,7 +57,7 @@ class Map extends Component {
     }
 
     drawCounties = () => {
-        console.log(this.state.countyBoundaries)
+        // console.log(this.state.countyBoundaries)
         const projection = geoConicEqualArea()
             .parallels([34, 40.5])
             .rotate([120, 0])
