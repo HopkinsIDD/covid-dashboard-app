@@ -21,6 +21,7 @@ class Axis extends Component {
   drawAxis = () => {
     if (this.props.orientation === 'left') {
       this.axis = axisLeft().scale(this.props.scale)
+        .ticks(this.props.tickNum ? this.props.tickNum : 10)
         .tickFormat(d => addCommas(d));
 
       if (this.axisRef.current) {
