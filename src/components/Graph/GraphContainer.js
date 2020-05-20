@@ -179,7 +179,7 @@ class GraphContainer extends Component {
       return (
           <div className="graph-wrapper">
               <div className="col-1"></div>
-              <div className="y-axis-label titleNarrow">
+              <div className="y-axis-label titleNarrow graph-yLabel">
                   {this.props.yAxisLabel}
               </div>
               <div className="resetRow graph-title-row">

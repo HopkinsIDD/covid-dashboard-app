@@ -288,12 +288,15 @@ ul {
   margin-left: 0px !important;
 }
 
-.y-axis-label {
+.graph-yLabel {
   position: absolute;
   bottom: 0;
   left: 0;
   /* margin-left: -5px; */
   margin-bottom: 12%;
+}
+
+.y-axis-label {
   font-size: 1rem;
   pointer-events: none;
   /* font-weight: bold; */
@@ -307,6 +310,11 @@ ul {
   -ms-transform-origin: 0 0;
   -o-transform-origin: 0 0;
   transform-origin: 0 0;
+}
+
+.chart-yLabel {
+  position: absolute;
+  margin-top: 7%;
 }
 
 input[type=range] {
