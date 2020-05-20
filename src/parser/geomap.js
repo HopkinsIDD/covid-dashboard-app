@@ -136,5 +136,5 @@ module.exports = {
 
 // buildFIPSmap()
 // formatPopulations()
-module.exports.populateGeoObj()
+// module.exports.populateGeoObj()
 
