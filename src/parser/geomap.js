@@ -97,18 +97,29 @@ module.exports = {
     
             const state = geoObj.properties.STATE;
             const geoid = geoObj.properties.STATE + geoObj.properties.COUNTY;
+            const population = popObj.geoid;
+
+            geoObj.properties.geoid = geoid;
+            geoObj.properties.population = population;
             
-            const newProps = {}
-            newProps.type = 'Feature';
-            newProps.properties = {}
-            newProps.properties.geoid = geoid;
-            newProps.properties.population = popObj[geoid];
-            newProps.geometry = {}
-            newProps.geometry.type = 'Polygon';
-            newProps.geometry.coordinates = geoObj.geometry.coordinates;
+            delete geoObj.properties.GEO_ID;
+            delete geoObj.properties.STATE;
+            delete geoObj.properties.COUNTY;
+            delete geoObj.properties.NAME;
+            delete geoObj.properties.LSAD;
+            delete geoObj.properties.CENSUSAREA;
+            
+            // const newProps = {}
+            // newProps.type = 'Feature';
+            // newProps.properties = {}
+            // newProps.properties.geoid = geoid;
+            // newProps.properties.population = popObj[geoid];
+            // newProps.geometry = {}
+            // newProps.geometry.type = 'Polygon';
+            // newProps.geometry.coordinates = geoObj.geometry.coordinates;
     
             if (state in targetObj){
-                targetObj[state].features.push(newProps);
+                targetObj[state].features.push(geoObj);
     
             } else {
                 console.log('state', state)
