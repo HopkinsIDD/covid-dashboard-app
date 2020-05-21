@@ -136,6 +136,9 @@ class MainContainer extends Component {
         const state = this.state.geoid.slice(0, 2);
         const countyBoundaries = require('../store/geoMapByState.json')[state];
         const statsForCounty = geojsonStats[state];
+        console.log(state)
+        console.log(countyBoundaries)
+        console.log(statsForCounty)
 
         this.setState({
             dataset,
@@ -155,8 +158,8 @@ class MainContainer extends Component {
             lastDate,
             percExceedenceList,
             confBoundsList: [filteredConfBounds],
-            // countyBoundaries,
-            // statsForCounty,
+            countyBoundaries,
+            statsForCounty,
             summaryStart,
             // graphW,
             // graphH
@@ -564,18 +567,6 @@ class MainContainer extends Component {
                             </div>
                             {this.state.dataLoaded &&
                             <div className="map-container">
-                                <ChartContainer
-                                    width={this.state.graphW - margin.left - margin.right}
-                                    height={this.state.graphH}
-                                    dataset={this.state.dataset}
-                                    firstDate={this.state.firstDate}
-                                    summaryStart={this.state.summaryStart}
-                                    summaryEnd={this.state.summaryEnd}
-                                />
-                            </div>
-                            }
-                            {/* {this.state.dataLoaded &&
-                            <div className="map-container">
                                 <MapContainer
                                     width={this.state.graphW - margin.left - margin.right}
                                     height={this.state.graphH}
@@ -588,7 +579,19 @@ class MainContainer extends Component {
                                     statsForCounty={this.state.statsForCounty}
                                 />
                             </div>
-                            } */}
+                            }
+                            {this.state.dataLoaded &&
+                            <div className="map-container">
+                                <ChartContainer
+                                    width={this.state.graphW - margin.left - margin.right}
+                                    height={this.state.graphH}
+                                    dataset={this.state.dataset}
+                                    firstDate={this.state.firstDate}
+                                    summaryStart={this.state.summaryStart}
+                                    summaryEnd={this.state.summaryEnd}
+                                />
+                            </div>
+                            }
                         </div>
                         <div className="col-2 filters">
                             <h5 className="scenario-header">Scenarios

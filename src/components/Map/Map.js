@@ -4,11 +4,13 @@ import { scaleLinear } from 'd3-scale';
 import { max } from 'd3-array';
 import { axisRight } from 'd3-axis';
 import { select } from 'd3-selection';
-// import Axis from '../Graph/Axis';
+import Axis from '../Graph/Axis';
+import { gray } from '../../utils/constants'
+
 
 const legendW = 60;
-const lowColor = '#f9f9f9'
-const highColor = '#e6550d'
+// const lowColor = '#f9f9f9'
+// const highColor = '#e6550d'
 const gradientMargin = 30;
 
 class Map extends Component {
@@ -24,36 +26,47 @@ class Map extends Component {
     }
     componentDidMount() {
         const { stat, dateIdx, countyBoundaries, statsForCounty } = this.props;
-        // console.log(stat);
-        // console.log(dateIdx);
-        // console.log(countyBoundaries);
-        // console.log(statsForCounty);
-
-        // get max of all values in stat array for colorscale
-        
-        const maxVal = max(Object.values(statsForCounty).map( county => {
-            return max(county[stat])
-        }))
-        const minVal = maxVal * 0.3333;
-        // console.log(stat, maxVal)
+        console.log(stat);
+        console.log(dateIdx);
+        console.log(countyBoundaries);
+        console.log(statsForCounty);
+        const normalizedStatsAll = []
         
         // iterate over this.props.countyBoundaries to plot up boundaries
         // join each geoid to statsForCounty[geoid][stat][dateIdx]
         for (let i = 0; i < countyBoundaries.features.length; i++) {
             // console.log(countyBoundaries.features[i].properties)
-            const geoid = countyBoundaries.features[i].properties.geoid
+            const geoid = countyBoundaries.features[i].properties.geoid;
+            const population = countyBoundaries.features[i].properties.population;
             // const geoid = countyBoundaries.features[i].properties.GEO_ID.slice(9)
             // console.log(geoid)
-            countyBoundaries.features[i].properties[stat] = statsForCounty[geoid][stat]
+            const statArray = statsForCounty[geoid][stat]
+            const normalizedStatArray = statArray.map( value => {
+                return (value / population) * 10000
+            })
+            normalizedStatsAll.push(normalizedStatArray)
+            countyBoundaries.features[i].properties[stat] = normalizedStatArray
         }
-        const yScale = scaleLinear().range([(this.props.height - (2 * gradientMargin))/2, 0]).domain([minVal, maxVal])
+        // get max of all values in stat array for colorscale
+        const maxVal = max(Object.values(statsForCounty).map( county => {
+            return max(county[stat])
+        }))
+        const minVal = maxVal * 0.3333;
+
+        const maxValNorm = max(normalizedStatsAll.map( val => {
+            return max(val)
+        }))
+        console.log(maxValNorm)
+        const minValNorm = maxValNorm * 0.3333;
+        // console.log(stat, maxVal)
+        const yScale = scaleLinear().range([(this.props.height - (2 * gradientMargin))/2, 0]).domain([0, maxValNorm])
         this.axis = axisRight().scale(yScale)
         
         if (this.axisRef.current) {
             select(this.axisRef.current).call(this.axis)
         }
-        // console.log(countyBoundaries)
-        this.setState({ minVal, maxVal, countyBoundaries, yScale })
+        console.log(countyBoundaries)
+        this.setState({ minVal, maxVal, countyBoundaries, yScale, minValNorm, maxValNorm })
         // console.log(Object.values(this.props.statsForCounty)[stat])
     }
 
@@ -65,7 +78,7 @@ class Map extends Component {
             .fitSize([this.props.width - legendW, this.props.height * 0.75], this.state.countyBoundaries)
 
         const pathGenerator = geoPath().projection(projection)
-	    const ramp = scaleLinear().domain([ this.state.minVal, this.state.maxVal ]).range([lowColor, highColor])
+	    const ramp = scaleLinear().domain([ 0, this.state.maxValNorm ]).range([this.props.lowColor, this.props.highColor])
 
         const counties = this.state.countyBoundaries.features.map((d,i) => {
             // console.log(this.props.stat, d.properties[this.props.stat][this.props.dateIdx])
@@ -73,7 +86,7 @@ class Map extends Component {
             key={`county-boundary-${i}`}
             d={pathGenerator(d)}
             style={{
-                stroke: 'lightgray',
+                stroke: gray,
                 fill: ramp(d.properties[this.props.stat][this.props.dateIdx]),
                 fillOpacity: 1
             }}
@@ -112,10 +125,10 @@ class Map extends Component {
                             y2="100%"
                             spreadMethod="pad"
                         >
-                            <stop offset="0%" stopColor={highColor} stopOpacity="1"></stop>
+                            <stop offset="0%" stopColor={this.props.highColor} stopOpacity="1"></stop>
                             {/* <stop offset="33%" stopColor="#bae4bc" stopOpacity="1"></stop>
                             <stop offset="66%" stopColor="#7bccc4" stopOpacity="1"></stop> */}
-                            <stop offset="100%" stopColor={lowColor} stopOpacity="1"></stop>
+                            <stop offset="100%" stopColor={this.props.lowColor} stopOpacity="1"></stop>
                         </linearGradient>
                     </defs>
                     <rect
@@ -126,7 +139,7 @@ class Map extends Component {
                     >
                     </rect>
                     <g ref={this.axisRef}  transform={`translate(${legendW/4}, ${gradientMargin/2})`} />
-                    {/* <Axis 
+                    <Axis 
                         // keyVal={this.props.keyVal}
                         width={legendW/2}
                         height={this.props.height - (2 * gradientMargin)}
@@ -134,12 +147,12 @@ class Map extends Component {
                         scale={this.state.yScale}
                         x={legendW/2}
                         y={this.props.height - gradientMargin}
-                    /> */}
+                    />
                 </svg>
                 <svg width={this.props.width - legendW} height={this.props.height * 0.75}>
                     <g style={{ stroke: '#00ff00'}}>
                         {/* debug green svg */}
-                        <rect
+                        {/* <rect
                             x={0}
                             y={0}
                             width={this.props.width - legendW}
@@ -147,7 +160,7 @@ class Map extends Component {
                             fillOpacity={0}
                             stroke={'#00ff00'}
                             strokeWidth='1'
-                        /> 
+                        />  */}
                         {this.state.countyBoundaries.features && this.drawCounties()}
                     </g>
                 </svg>
