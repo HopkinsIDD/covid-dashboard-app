@@ -81,6 +81,7 @@ class ChartContainer extends Component {
                                     ></div>
                                     <div
                                         key={`legend-label-${scenario}`}
+                                        className="titleNarrow"
                                     >{scenario} </div>
                                 </div>
                             )
