@@ -104,7 +104,7 @@ class Map extends Component {
     render() {
         return (
             <Fragment>
-                <div>{this.props.statLabel}</div>
+                <div className='titleNarrow'>{`${this.props.statLabel} per 10K people`}</div>
                 <svg width={legendW} height={this.props.height/2}>
                      {/* debug green svg */}
                      {/* <rect
