@@ -69,7 +69,7 @@ class ChartContainer extends Component {
 
         return (
             <div>
-                <h1>ChartContainer</h1>
+                <h2>Summary Statistics</h2>
                 <div className="row resetRow">
                     <div className="col-7"></div>
                     <div className="col-5 chart-legend">

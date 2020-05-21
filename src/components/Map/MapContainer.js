@@ -89,7 +89,7 @@ class MapContainer extends Component {
         // const scenario = scenarioList.length > 0 ? scenarioList[0] : scenarioList
         return (
             <div>
-                <h1>MapContainer</h1>
+                <h2>Geographic Summary</h2>
                 <div className="row">
                     {this.state.children.map(child => {
                         return (

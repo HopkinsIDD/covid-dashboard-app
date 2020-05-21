@@ -29,7 +29,7 @@ class Chart extends Component {
         this.tooltipRef = React.createRef();
     }
     componentDidMount() {
-        console.log('componentDidMount');
+        // console.log('componentDidMount');
         this.calculateQuantiles();
         
     }
@@ -39,7 +39,7 @@ class Chart extends Component {
         if (prevProps.summaryStart !== this.props.summaryStart || 
             prevProps.summaryEnd !== this.props.summaryEnd ||
             prevProps.dataset !== this.props.dataset) {
-            console.log('summary Start or End or Dataset Changed');
+            // console.log('summary Start or End or Dataset Changed');
             this.calculateQuantiles();
         }
     }
@@ -89,7 +89,7 @@ class Chart extends Component {
             }
         }
         
-        console.log(quantileObj)
+        // console.log(quantileObj)
         // const yScale = scaleLinear().range([height - margin.bottom, margin.top]).domain([0, globalMaxVal]) // 
         // const yScale = scaleLog().range([height - margin.bottom, margin.top]).domain([1, globalMaxVal]) //
         const yScale = scalePow().exponent(0.25).range([height - margin.bottom, margin.chartTop]).domain([0, globalMaxVal])
@@ -98,7 +98,7 @@ class Chart extends Component {
     }
 
     handleHighlightEnter = (severity, key, index) => {
-        console.log(severity, key, index)
+        // console.log(severity, key, index)
         const hoveredRect = {
             'severity': severity,
             'scenario': key,
@@ -107,7 +107,7 @@ class Chart extends Component {
         const { severities, quantileObj }  = this.state;
         const { stat, statLabel, summaryStart, summaryEnd, width } = this.props;
         const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
-        console.log(quantileObj[stat][severity][key])
+        // console.log(quantileObj[stat][severity][key])
 
         const tooltipText = `<b>50%</b> chance of <b>${addCommas(quantileObj[stat][severity][key]['median'])}</b> ${statLabel} ` +
                             `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b> <br><br>` +
@@ -140,11 +140,11 @@ class Chart extends Component {
 
     drawSummaryStats = () => {
         const barWidth = ((this.props.width / this.state.severities.length) / this.props.scenarios.length) - margin.left - margin.right;
-        console.log('barWidth', barWidth)
+        // console.log('barWidth', barWidth)
         const whiskerMargin = barWidth * 0.2;
-        console.log('whiskerMargin', whiskerMargin)
+        // console.log('whiskerMargin', whiskerMargin)
         const rectWidth = (this.props.width / this.state.severities.length) - margin.left
-        console.log('rectWidth', rectWidth)
+        // console.log('rectWidth', rectWidth)
         return (
             this.state.severities.map( (severity, i) => {
             return (
@@ -169,7 +169,7 @@ class Chart extends Component {
                 </text>
                 <g key={`chart-group-${severity}`}>
                     { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
-                        console.log(severity, 'barPos', key, this.state.xScale(key))
+                        // console.log(severity, 'barPos', key, this.state.xScale(key))
                     return (
                         <Fragment key={`chart-fragment-${severity}-${key}`}>
                             <rect 

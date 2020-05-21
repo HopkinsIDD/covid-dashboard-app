@@ -26,10 +26,10 @@ class Map extends Component {
     }
     componentDidMount() {
         const { stat, dateIdx, countyBoundaries, statsForCounty } = this.props;
-        console.log(stat);
-        console.log(dateIdx);
-        console.log(countyBoundaries);
-        console.log(statsForCounty);
+        // console.log(stat);
+        // console.log(dateIdx);
+        // console.log(countyBoundaries);
+        // console.log(statsForCounty);
         const normalizedStatsAll = []
         
         // iterate over this.props.countyBoundaries to plot up boundaries
@@ -56,7 +56,7 @@ class Map extends Component {
         const maxValNorm = max(normalizedStatsAll.map( val => {
             return max(val)
         }))
-        console.log(maxValNorm)
+        // console.log(maxValNorm)
         const minValNorm = maxValNorm * 0.3333;
         // console.log(stat, maxVal)
         const yScale = scaleLinear().range([(this.props.height - (2 * gradientMargin))/2, 0]).domain([0, maxValNorm])
@@ -65,7 +65,7 @@ class Map extends Component {
         if (this.axisRef.current) {
             select(this.axisRef.current).call(this.axis)
         }
-        console.log(countyBoundaries)
+        // console.log(countyBoundaries)
         this.setState({ minVal, maxVal, countyBoundaries, yScale, minValNorm, maxValNorm })
         // console.log(Object.values(this.props.statsForCounty)[stat])
     }

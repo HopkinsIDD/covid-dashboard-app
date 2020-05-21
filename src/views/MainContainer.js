@@ -70,8 +70,8 @@ class MainContainer extends Component {
     };
 
     componentDidMount() {
-        console.log('componentDidMount')
-        console.log('dataset', dataset)
+        // console.log('componentDidMount')
+        // console.log('dataset', dataset)
         window.addEventListener('resize', this.updateGraphDimensions)
         this.updateGraphDimensions()
         
@@ -136,9 +136,9 @@ class MainContainer extends Component {
         const state = this.state.geoid.slice(0, 2);
         const countyBoundaries = require('../store/geoMapByState.json')[state];
         const statsForCounty = geojsonStats[state];
-        console.log(state)
-        console.log(countyBoundaries)
-        console.log(statsForCounty)
+        // console.log(state)
+        // console.log(countyBoundaries)
+        // console.log(statsForCounty)
 
         this.setState({
             dataset,
@@ -176,7 +176,7 @@ class MainContainer extends Component {
             this.state.severityList !== prevState.severityList ||
             this.state.dateRange !== prevState.dateRange ||
             this.state.dataset !== prevState.dataset) {
-            console.log('componentDidUpdate')
+            // console.log('componentDidUpdate')
 
             const filteredSeriesList = []
             const percExceedenceList = []
@@ -498,7 +498,7 @@ class MainContainer extends Component {
         return (
             <div className="main-container">
                 <div className="container">
-                    <div className="row">
+                    <div className="row section-spacer">
                         <div className="col-10">
                             <Search 
                                 stat={this.state.stat}
@@ -565,6 +565,7 @@ class MainContainer extends Component {
                                 </div>
                                 }
                             </div>
+                            <div className="row section-spacer"><p></p><p></p></div>
                             {this.state.dataLoaded &&
                             <div className="map-container">
                                 <MapContainer
@@ -577,19 +578,6 @@ class MainContainer extends Component {
                                     dateThreshold={this.state.dateThreshold}
                                     countyBoundaries={this.state.countyBoundaries}
                                     statsForCounty={this.state.statsForCounty}
-                                />
-                            </div>
-                            }
-                            {this.state.dataLoaded &&
-                            <div className="map-container">
-                                <ChartContainer
-                                    geoid={this.state.geoid}
-                                    width={this.state.graphW - margin.left - margin.right}
-                                    height={this.state.graphH}
-                                    dataset={this.state.dataset}
-                                    firstDate={this.state.firstDate}
-                                    summaryStart={this.state.summaryStart}
-                                    summaryEnd={this.state.summaryEnd}
                                 />
                             </div>
                             }
@@ -649,6 +637,25 @@ class MainContainer extends Component {
                                 // // onReprSliderChange={this.handleReprSliderChange}
                             />
                             }
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-10">
+                            {this.state.dataLoaded &&
+                            <div className="map-container">
+                                <ChartContainer
+                                    geoid={this.state.geoid}
+                                    width={this.state.graphW - margin.left - margin.right}
+                                    height={this.state.graphH}
+                                    dataset={this.state.dataset}
+                                    firstDate={this.state.firstDate}
+                                    summaryStart={this.state.summaryStart}
+                                    summaryEnd={this.state.summaryEnd}
+                                />
+                            </div>
+                            }
+                        </div>
+                        <div className="col-2 filters">
                             <DatePicker 
                                 firstDate={this.state.firstDate}
                                 summaryStart={this.state.summaryStart}
@@ -657,6 +664,7 @@ class MainContainer extends Component {
                                 onHandleSummaryEnd={this.handleSummaryEnd}
                             />
                         </div>
+                            
                     </div>
                 </div>
 

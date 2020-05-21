@@ -250,11 +250,11 @@ ul {
 .map-container {
   text-align: center;
   /* padding: 2rem; */
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 
 .map {
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
 }
 
 .slider-menu {
@@ -516,4 +516,14 @@ input[type=range]::-moz-focus-outer {
 
 .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle {
   margin-left: 140px;
+}
+
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+.section-spacer {
+  margin-bottom: 10vh;
 }
