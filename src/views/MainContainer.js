@@ -503,7 +503,7 @@ class MainContainer extends Component {
                             onCountySelect={this.handleCountySelect}
                         />
                         <Row>
-                            <Col className="gutter-row" offset={18}>
+                            <Col className="gutter-row" span={8} offset={16}>
                                 <Legend />
                             </Col>
                         </Row>
@@ -585,8 +585,7 @@ class MainContainer extends Component {
                     </Col>
 
 
-                    <Col className="gutter-row" span={6}>
-                    {/* <Col className="gutter-row filters" span={6}> */}
+                    <Col className="gutter-row filters" span={6}>
                         <div className="param-header">SCENARIOS</div>
                         {this.state.dataLoaded &&
                         <Scenarios

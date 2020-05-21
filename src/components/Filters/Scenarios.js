@@ -104,8 +104,9 @@ class Scenarios extends Component {
         return (
             <div>
                 <Select
+                    className="selector-box"
                     mode="multiple"
-                    style={{ width: '100%' }}
+                    style={{ width: '70%' }}
                     placeholder="Select 2 Max"
                     defaultValue={[defaultScenario]}
                     maxTagTextLength={12}

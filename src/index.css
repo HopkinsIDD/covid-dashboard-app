@@ -45,7 +45,6 @@ h1, h4 {
 
 .container {
   /* max-width: 2000px;  */
-  padding: 0 0 0 5%;
   margin-left: 5%;
 }
 
@@ -140,9 +139,8 @@ ul {
 }
 
 .filters {
-  max-width: 220px;
   padding-top: 1.8rem;
-  margin-left: 2%;
+  margin-left: 1%;
 }
 
 .dropdown {
@@ -207,6 +205,7 @@ ul {
 
 .conf-bounds {
   margin-top: 16px;
+  padding-left: 12px;
 }
 
 .subtitle {
@@ -515,10 +514,6 @@ input[type=range]::-moz-focus-outer {
   margin-left: 140px;
 }
 
-.ant-select {
+.selector-box {
   min-width: 200px;
-}
-
-.ant-select-selector {
-  max-width: 200px;
 }

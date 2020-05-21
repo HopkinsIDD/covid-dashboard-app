@@ -63,19 +63,31 @@ class Search extends Component {
         //     });
     }
 
-    handleUpload = (event) => {
-        if (event.target.files.length > 0) {
-            const file = event.target.files[0]
-            if (this.validateSize(file) && this.validateType(file)) {
-                const fileReader = new FileReader();
-                fileReader.onload = () => {
-                    const json = JSON.parse(fileReader.result);
-                    this.props.onFileUpload(json);
-                    this.setState({'fileName': file.name})
-                }
-                fileReader.readAsText(file)
-            }
-        }
+    handleUpload = (info) => {
+        // antd uploader doesn't provide data to fileRead
+        // if (info.file.status !== 'uploading') {
+        //     console.log(info.file, info.fileList);
+        //   }
+        //   if (info.file.status === 'done') {
+        //     message.success(`${info.file.name} file uploaded successfully`);
+        //   } else if (info.file.status === 'error') {
+        //     message.error(`${info.file.name} file upload failed.`);
+        //   }
+        
+        // event sent from old bootstrap upload element
+        // if (event.target.files.length > 0) {
+        //     const file = event.target.files[0]
+        //     if (this.validateSize(file) && this.validateType(file)) {
+        //         const fileReader = new FileReader();
+        //         fileReader.onload = () => {
+        //             const json = JSON.parse(fileReader.result);
+        //             this.props.onFileUpload(json);
+        //             this.setState({'fileName': file.name})
+        //         }
+        //         fileReader.readAsText(file)
+        //     }
+        // }
+        console.log('upload')
     }
 
     validateSize = (file) => {
@@ -106,7 +118,25 @@ class Search extends Component {
         const { fileName, countyName } = this.state;
         const countyLabel = countyName === '' ? 'Search for your county' : countyName;
         const uploadLabel = fileName === '' ? 'Upload File' : fileName;
-        
+
+        const props = {
+            name: 'file',
+            action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+            headers: {
+              authorization: 'authorization-text',
+            },
+            onChange(info) {
+              if (info.file.status !== 'uploading') {
+                console.log(info.file, info.fileList);
+              }
+              if (info.file.status === 'done') {
+                message.success(`${info.file.name} file uploaded successfully`);
+              } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} file upload failed.`);
+              }
+            },
+          };
+          
         return (
             <div className="dropdown">
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -121,22 +151,11 @@ class Search extends Component {
                         </Select>
                     </Col>
                     <Col className="gutter-row" span={6}>
-                        <form>
-                            <div className="custom-file filter-label">
-                                <input
-                                    type="file"
-                                    className="custom-file-input"
-                                    placeholder="Upload File"
-                                    id="upload"
-                                    onChange={this.handleUpload}>
-                                </input>
-                                <label
-                                    className="custom-file-label"
-                                    htmlFor="upload">
-                                    {uploadLabel}
-                                </label>
-                            </div>
-                        </form>
+                        {/* <Upload {...props}>
+                            <Button>
+                                <UploadOutlined /> Upload
+                            </Button>
+                        </Upload> */}
                     </Col>
                 </Row>
             </div>            
@@ -147,29 +166,19 @@ class Search extends Component {
 export default Search;
 
 
-// const props = {
-//   name: 'file',
-//   action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-//   headers: {
-//     authorization: 'authorization-text',
-//   },
-//   onChange(info) {
-//     if (info.file.status !== 'uploading') {
-//       console.log(info.file, info.fileList);
-//     }
-//     if (info.file.status === 'done') {
-//       message.success(`${info.file.name} file uploaded successfully`);
-//     } else if (info.file.status === 'error') {
-//       message.error(`${info.file.name} file upload failed.`);
-//     }
-//   },
-// };
-
-// ReactDOM.render(
-//   <Upload {...props}>
-//     <Button>
-//       <UploadOutlined /> Click to Upload
-//     </Button>
-//   </Upload>,
-//   mountNode,
-// );
+// <form>
+//     <div className="custom-file filter-label">
+//         <input
+//             type="file"
+//             className="custom-file-input"
+//             placeholder="Upload File"
+//             id="upload"
+//             onChange={this.handleUpload}>
+//         </input>
+//         <label
+//             className="custom-file-label"
+//             htmlFor="upload">
+//             {uploadLabel}
+//         </label>
+//     </div>
+// </form>
