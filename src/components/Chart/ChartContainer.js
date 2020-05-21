@@ -73,7 +73,7 @@ class ChartContainer extends Component {
                     {
                         scenarios.map( (scenario, index) => {
                             return (
-                                <div className="chart-item">
+                                <div key={`chart-item-${scenario}`} className="chart-item">
                                     <div
                                         key={`legend-box-${scenario}`}
                                         className='legend-box'
