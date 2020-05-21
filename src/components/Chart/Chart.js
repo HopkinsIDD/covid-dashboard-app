@@ -1,9 +1,10 @@
 import React, { Component, Fragment } from 'react'; 
 import { min, max, quantile } from 'd3-array';
 import { scaleLinear, scaleBand, scaleLog, scalePow } from 'd3-scale';
-import { getDateIdx } from '../../utils/utils';
-import { margin } from '../../utils/constants';
+import { timeFormat } from 'd3-time-format';
 import Axis from '../Graph/Axis';
+import { getDateIdx, addCommas } from '../../utils/utils';
+import { margin } from '../../utils/constants';
 import { graphBkgd, green, gray, blue } from '../../utils/constants'
 
 class Chart extends Component {
@@ -16,6 +17,12 @@ class Chart extends Component {
                 'severity': '',
                 'scenario': '',
                 'index': 0
+            },
+            // tooltipText: '',
+            severityMap: {
+                'high': '1% IFR, 10% hospitalization rate',
+                'med': '0.5% IFR, 5% hospitalization rate',
+                'low': '0.25% IFR, 2.5% hospitalization rate'
             }
             // quantileObj: {}
         }
@@ -84,7 +91,7 @@ class Chart extends Component {
         console.log(quantileObj)
         // const yScale = scaleLinear().range([height - margin.bottom, margin.top]).domain([0, globalMaxVal]) // 
         // const yScale = scaleLog().range([height - margin.bottom, margin.top]).domain([1, globalMaxVal]) //
-        const yScale = scalePow().exponent(0.25).range([height - margin.bottom, margin.top]).domain([0, globalMaxVal])
+        const yScale = scalePow().exponent(0.25).range([height - margin.bottom, margin.chartTop]).domain([0, globalMaxVal])
         const xScale = scaleBand().range([margin.left, (width / severities.length) - margin.right]).domain(scenarios).paddingInner(1).paddingOuter(.5);
         this.setState({ quantileObj, xScale, yScale, scaleDomains: true })
     }
@@ -96,8 +103,28 @@ class Chart extends Component {
             'scenario': key,
             'index': index
         }
+        const { severities, quantileObj }  = this.state;
+        const { stat, statLabel, summaryStart, summaryEnd, width } = this.props;
+        const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
+        console.log(quantileObj[stat][severity][key])
+
+        const tooltipText = `<b>50%</b> chance of <b>${addCommas(quantileObj[stat][severity][key]['median'])}</b> ${statLabel} ` +
+                            `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b> <br><br>` +
+                            `<b>90%</b> chance of <b>${addCommas(quantileObj[stat][severity][key]['tenth'])} to ${addCommas(quantileObj[stat][severity][key]['ninetyith'])}</b> ${statLabel} ` +
+                            `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b>`
+        console.log(tooltipText)
         this.setState({ hoveredRect, rectIsHovered: true })
         const tooltip = this.tooltipRef.current;
+        tooltip.innerHTML = tooltipText
+        // (i * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key)
+        if (severity === 'high') {
+            tooltip.style.marginLeft = `${(1 * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key) - 300}px`
+        } else if (severity === 'med') {
+            tooltip.style.marginLeft = `${(2 * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key) - 300}px`
+        } else {
+            tooltip.style.marginLeft = `${(3 * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key) - 300}px`
+        }
+        
 
     }
 
@@ -120,12 +147,21 @@ class Chart extends Component {
                 <rect
                     key={`chart-rect-${severity}`}
                     width={(this.props.width / this.state.severities.length) - margin.left}
-                    height={this.props.height - margin.top - margin.bottom}
+                    height={this.props.height - margin.chartTop - margin.bottom}
                     x={margin.left + (i * (this.props.width / this.state.severities.length))}
-                    y={margin.top}
+                    y={margin.chartTop}
                     fill={graphBkgd}
                 >
                 </rect>
+                <text
+                    key={`bar-label-${severity}`}
+                    x={(margin.left * 7) + (i * (this.props.width / this.state.severities.length))}
+                    y={margin.top}
+                    // className='titleNarrow'
+                    style={{'fontSize': '0.8rem'}}
+                >
+                    {this.state.severityMap[severity]}
+                </text>
                 <g key={`chart-group-${severity}`}>
                     { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
                     return (
@@ -139,8 +175,7 @@ class Chart extends Component {
                                 y={this.state.yScale(value.median)}
                                 fill={green}
                                 stroke={this.state.hoveredRect.severity === severity &&
-                                    this.state.hoveredRect.scenario === key &&
-                                    this.state.hoveredRect.index === j ? blue: green}
+                                    this.state.hoveredRect.scenario === key ? blue: green}
                                 strokeWidth={4}
                                 onMouseEnter={() => this.handleHighlightEnter(severity, key, j)}
                                 onMouseLeave={this.handleHighlightLeave}
@@ -188,14 +223,14 @@ class Chart extends Component {
 
     render() {
         // console.log(this.props.width, this.props.height)
-        const tooltipVisible = this.state.rectIsHovered ? { visibility: 'visible' } : { visibility: 'hidden' }
+        const tooltipVisible = this.state.rectIsHovered ? { visibility: 'visible', width: '200px', position: 'absolute', padding: '10px' } : { visibility: 'hidden' }
         return (
             <div >
                 <div className="y-axis-label chart-yLabel titleNarrow">
-                  {this.props.stat}
+                  {this.props.statLabel}
                   </div>
                   <div className="tooltip">
-                    <span className="tooltip-text" ref={this.tooltipRef} style={tooltipVisible}>Test Test Test</span>
+                    <span className="tooltip-text" ref={this.tooltipRef} style={tooltipVisible}></span>
                   </div>
                   {this.state.scaleDomains &&
                     <Fragment>
@@ -205,7 +240,7 @@ class Chart extends Component {
                         >
                         <Axis 
                             width={this.props.width}
-                            height={this.props.height - margin.top - margin.bottom}
+                            height={this.props.height - margin.chartTop - margin.bottom}
                             orientation={'left'}
                             scale={this.state.yScale}
                             x={margin.yAxis}

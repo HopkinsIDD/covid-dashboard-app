@@ -8,6 +8,7 @@ class ChartContainer extends Component {
         this.state = {
             // TODO: depending on performance, may add more or less
             parameters: ['incidI', 'incidH', 'incidD'],
+            parameterLabels: ['Infections', 'Hospitalizations', 'Deaths'],
             // severities: ['high', 'med', 'low'],
             children: {'incidI': {}, 'incidH': {}, 'incidD': {}},
         }
@@ -28,7 +29,7 @@ class ChartContainer extends Component {
         const { children } = this.state;
         const { summaryStart, summaryEnd } = this.props;
             
-        for (let param of this.state.parameters) {
+        for (let [index, param] of this.state.parameters.entries()) {
 
             // for (let severity of this.state.severities) {
                 const child = {
@@ -45,6 +46,7 @@ class ChartContainer extends Component {
                         summaryEnd={this.props.summaryEnd}
                         // severity={severity}
                         stat={param}
+                        statLabel={this.state.parameterLabels[index]}
                         width={this.props.width}
                         height={this.props.height / this.state.parameters.length}
                     />
