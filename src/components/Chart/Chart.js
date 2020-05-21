@@ -5,7 +5,7 @@ import { timeFormat } from 'd3-time-format';
 import Axis from '../Graph/Axis';
 import { getDateIdx, addCommas } from '../../utils/utils';
 import { margin } from '../../utils/constants';
-import { graphBkgd, green, gray, blue } from '../../utils/constants'
+import { graphBkgd, green, gray, blue, scenarioColors } from '../../utils/constants'
 
 class Chart extends Component {
     constructor(props) {
@@ -173,9 +173,9 @@ class Chart extends Component {
                                 height={this.state.yScale(0) - this.state.yScale(value.median)}
                                 x={(i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key)}
                                 y={this.state.yScale(value.median)}
-                                fill={green}
+                                fill={scenarioColors[j]}
                                 stroke={this.state.hoveredRect.severity === severity &&
-                                    this.state.hoveredRect.scenario === key ? blue: green}
+                                    this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
                                 strokeWidth={4}
                                 onMouseEnter={() => this.handleHighlightEnter(severity, key, j)}
                                 onMouseLeave={this.handleHighlightLeave}

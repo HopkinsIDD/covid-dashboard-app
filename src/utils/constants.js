@@ -9,6 +9,7 @@ export const blue = '#1f90db';
 export const gray = '#9b9b9b';
 export const lightgray = '#d0d0d0';
 export const graphBkgd = '#f6f5f5';
+export const scenarioColors = ['#4ddaba', '#b6f5e7','#19b18e', '#e0fdf7', '#008769', '#acdacf']
 
 export const STATS = [
     {'id': 1, 'key': 'incidI', 'name': 'Infections'},
