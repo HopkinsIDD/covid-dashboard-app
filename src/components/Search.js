@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { Row, Col, Select, Upload, message, Button } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 // import axios from 'axios';
 import { COUNTIES } from '../utils/constants.js';
 import { ReactComponent as MagnifyingGlass } from '../assets/search.svg';
@@ -10,13 +12,39 @@ class Search extends Component {
         this.state = {
             fileName: '',
             countyName: '',
+            children: []
         }
     }
 
+    componentDidMount() {
+        const children = [];
+        const { Option } = Select;
+
+        for (let county of COUNTIES) {
+            const child = {
+                key: `${county.geoid}-county`,
+                button: []
+            } 
+            child.button.push(
+                <Option
+                    key={`${county.geoid}-county`}
+                    value={county.geoid}>
+                    {county.name}
+                </Option>
+            )
+            children.push(child);
+        }
+
+        this.setState({children})
+    }
+
     handleCountySelect = (event) => {
-        this.props.onCountySelect(event);
+
+        const item = COUNTIES.filter(county => county.geoid === event)[0];
+
+        this.props.onCountySelect(item);
         this.setState({
-            countyName: `${event.name}, ${event.usps}`
+            countyName: `${item.name}, ${item.usps}`
         })
 
         // use for when files are on public internet
@@ -81,36 +109,18 @@ class Search extends Component {
         
         return (
             <div className="dropdown">
-                <div className="row">
-                    <div className="col-9">
-                        <div
-                            className="btn dropdown-toggle search-bar"
-                            type="button" 
-                            id="dropdown-menu" 
-                            data-toggle="dropdown" 
-                            aria-haspopup="true" 
-                            aria-expanded="false">
-                            <MagnifyingGlass />
-                            {countyLabel}
-                        </div>
-                        <div
-                            className="dropdown-menu"
-                            aria-labelledby="dropdown-menu">
-                            {COUNTIES.map(county => {
-                                const isActive = this.props.geoid === county.geoid ? ' btn-active' : '';
-                                return (
-                                    <button
-                                        className={"dropdown-item filter-label" + isActive}
-                                        type="button" 
-                                        onClick={() => this.handleCountySelect(county)} 
-                                        key={county.geoid}>
-                                        {county.name}, {county.usps}
-                                    </button>
-                                )
-                                })}
-                        </div>
-                    </div>
-                    <div className="col-3">
+                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                    <Col className="gutter-row" span={18}>
+                        <Select
+                            placeholder={countyLabel}
+                            defaultValue={this.props.geoid}
+                            style={{ width: 600 }}
+                            size="large"
+                            onChange={this.handleCountySelect}>
+                            {this.state.children.map(county => county.button)}
+                        </Select>
+                    </Col>
+                    <Col className="gutter-row" span={6}>
                         <form>
                             <div className="custom-file filter-label">
                                 <input
@@ -127,12 +137,39 @@ class Search extends Component {
                                 </label>
                             </div>
                         </form>
-                    </div>
-                </div>
-
+                    </Col>
+                </Row>
             </div>            
         )
     }
 }
 
 export default Search;
+
+
+// const props = {
+//   name: 'file',
+//   action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+//   headers: {
+//     authorization: 'authorization-text',
+//   },
+//   onChange(info) {
+//     if (info.file.status !== 'uploading') {
+//       console.log(info.file, info.fileList);
+//     }
+//     if (info.file.status === 'done') {
+//       message.success(`${info.file.name} file uploaded successfully`);
+//     } else if (info.file.status === 'error') {
+//       message.error(`${info.file.name} file upload failed.`);
+//     }
+//   },
+// };
+
+// ReactDOM.render(
+//   <Upload {...props}>
+//     <Button>
+//       <UploadOutlined /> Click to Upload
+//     </Button>
+//   </Upload>,
+//   mountNode,
+// );

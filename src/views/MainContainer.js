@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import { Row, Col } from 'antd';
 import GraphContainer from '../components/Graph/GraphContainer';
 import ChartContainer from '../components/Chart/ChartContainer';
 import MapContainer from '../components/Map/MapContainer';
@@ -77,6 +78,7 @@ class MainContainer extends Component {
         
         // build scenarios for selected geoID
         const SCENARIOS = buildScenarios(dataset); // constant for geoID
+
         const scenario = SCENARIOS[0];      // initial scenario view
         const scenarioList = [scenario];    // updated based on selection
 
@@ -355,26 +357,21 @@ class MainContainer extends Component {
         this.setState({stat: i, yAxisLabel})
     };
 
-    handleScenarioClick = (i) => {
-        let newScenarios = Array.from(this.state.scenarioList);
-        let newSevs = _.cloneDeep(this.state.severityList);
-        const scenarioKeys = Object.values(newScenarios).map(s => s.key);
+    handleScenarioClick = (items) => {
+        // items is Array of scenario names
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
+        let newScenarios = [];
+        let newSevs = [];
 
-        // new scenario being selected
-        if (!scenarioKeys.includes(i.key)) {
-            // return high sev as default
+        for (let item of items) {
             const defaultSev = _.cloneDeep(LEVELS[0]); 
-            defaultSev.scenario = i.key;
+            defaultSev.scenario = item;
             newSevs.push(defaultSev)
-            newScenarios.push(i);
-        // scenario being turned off
-        } else {
-            if (this.state.scenarioList.length > 1) {
-                newSevs = newSevs.filter(sev => sev.scenario !== i.key)
-                newScenarios = newScenarios.filter(scenario => scenario.key !== i.key);
-            } 
+
+            const scenario = this.state.SCENARIOS.filter(s => s.key === item)[0];
+            newScenarios.push(scenario);
         }
+
         this.setState({
             scenarioList: newScenarios,
             scenarioClickCounter: scenarioClkCntr,
@@ -482,39 +479,33 @@ class MainContainer extends Component {
     };
 
     handleSummaryStart = (date) => {
-        console.log('start', date)
         this.setState({summaryStart: date});
     }
 
     handleSummaryEnd = (date) => {
-        console.log('end', date)
         this.setState({summaryEnd: date});
     }
 
     render() {
+        // const style = { background: '#0092ff', padding: '8px 0' };
         return (
             <div className="main-container">
                 <div className="container">
-                    <div className="row">
-                        <div className="col-10">
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                        <Col className="gutter-row" span={18}>
+                            {/* <div style={style}>col-6</div> */}
                             <Search 
                                 stat={this.state.stat}
                                 geoid={this.state.geoid}
                                 onFileUpload={this.handleUpload}
                                 onCountySelect={this.handleCountySelect}
                             />
-                            <div className="row">
-                                <div className="col-9">
-                                    <Buttons
-                                        stat={this.state.stat}
-                                        onButtonClick={this.handleButtonClick}
-                                    />
-                                    </div>
-                                    <div className="col-3">
-                                        <Legend />
-                                    </div>
-                                </div>
-                            <p></p>
+                            <Row>
+                                <Col className="gutter-row" offset={18}>
+                                    <Legend />
+                                </Col>
+                            </Row>
+                            <br />
 
                             <div
                                 className="graph resetRow"
@@ -564,14 +555,14 @@ class MainContainer extends Component {
                             </div>
                             {this.state.dataLoaded &&
                             <div className="map-container">
-                                <ChartContainer
+                                {/* <ChartContainer
                                     width={this.state.graphW - margin.left - margin.right}
                                     height={this.state.graphH}
                                     dataset={this.state.dataset}
                                     firstDate={this.state.firstDate}
                                     summaryStart={this.state.summaryStart}
                                     summaryEnd={this.state.summaryEnd}
-                                />
+                                /> */}
                             </div>
                             }
                             {/* {this.state.dataLoaded &&
@@ -589,34 +580,29 @@ class MainContainer extends Component {
                                 />
                             </div>
                             } */}
-                        </div>
-                        <div className="col-2 filters">
-                            <h5 className="scenario-header">Scenarios
-                                <div className="tooltip">&nbsp;&#9432;
-                                    <span className="tooltip-text">
-                                    There are 3 intervention scenarios for model
-                                    simulations for comparison.
-                                    </span>
-                                </div>
-                            </h5>
-                            <span className="subtitle">(select up to 2)</span>                            
+                        </Col>
+
+
+                        <Col className="gutter-row filters" span={6}>
+                            <div className="param-header">SCENARIOS</div>
                             {this.state.dataLoaded &&
-                            <Scenarios 
+                            <Scenarios
                                 SCENARIOS={this.state.SCENARIOS}
                                 scenario={this.state.scenario}
                                 scenarioList={this.state.scenarioList}
                                 onScenarioClick={this.handleScenarioClick}
                             />
                             }
-                            <p></p>                   
-                            <h5>Parameters</h5>
+                            <Buttons
+                                stat={this.state.stat}
+                                onButtonClick={this.handleButtonClick}
+                            />        
                             <Overlays 
                                 showConfBounds={this.state.showConfBounds}
                                 // showActual={this.state.showActual}
                                 onConfClick={this.handleConfClick}
                                 // onActualClick={this.handleActualClick}
                             /> 
-                            <p></p>                   
                             {this.state.dataLoaded &&
                             <SeverityContainer
                                 severityList={this.state.severityList}
@@ -626,8 +612,7 @@ class MainContainer extends Component {
                                 onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
                             />
                             }
-                            <p></p>
-                            <h5>Thresholds</h5>
+                            <br />      
                             {this.state.dataLoaded &&
                             <Sliders 
                                 stat={this.state.stat}
@@ -652,8 +637,8 @@ class MainContainer extends Component {
                                 onHandleSummaryStart={this.handleSummaryStart}
                                 onHandleSummaryEnd={this.handleSummaryEnd}
                             />
-                        </div>
-                    </div>
+                        </Col>
+                    </Row>
                 </div>
 
             </div>
