@@ -468,8 +468,26 @@ input[type=range]::-moz-focus-outer {
 }
 
 .chart {
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
 } 
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 0;
+}
+
+.chart-legend-box {
+  width: '12px';
+  height: '12px';
+}
+
+.chart-item {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  font-size: 0.8rem;
+}
 
 .date-picker {
   max-width: 7rem;

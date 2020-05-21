@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Chart from '../Chart/Chart';
-import { scaleLinear } from 'd3-scale';
+// import { scaleLinear } from 'd3-scale';
+import { scenarioColors } from '../../utils/constants'
 
 class ChartContainer extends Component {
     constructor(props) {
@@ -61,9 +62,32 @@ class ChartContainer extends Component {
 
 
     render() {
+        const scenarios = Object.keys(this.props.dataset);
+
         return (
             <div>
                 <h1>ChartContainer</h1>
+                <div className="row resetRow">
+                    <div className="col-7"></div>
+                    <div className="col-5 chart-legend">
+                    {
+                        scenarios.map( (scenario, index) => {
+                            return (
+                                <div className="chart-item">
+                                    <div
+                                        key={`legend-box-${scenario}`}
+                                        className='legend-box'
+                                        style={{background: scenarioColors[index], width: '12px', height: '12px', marginRight: '5px'}}
+                                    ></div>
+                                    <div
+                                        key={`legend-label-${scenario}`}
+                                    >{scenario} </div>
+                                </div>
+                            )
+                        })
+                    }
+                    </div>
+                </div>
                 <div className="row resetRow">
                     <div className="chart" key={this.state.children['incidH'].key}>
                         {this.state.children['incidI'].chart}
