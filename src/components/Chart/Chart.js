@@ -45,11 +45,10 @@ class Chart extends Component {
     }
 
     calculateQuantiles = () => {
-        const { dataset, firstDate, summaryStart, summaryEnd, stat, width, height } = this.props;
+        const { dataset, firstDate, summaryStart, summaryEnd, stat, width, height, scenarios } = this.props;
         const { severities } = this.state;
         const quantileObj = {}
         
-        const scenarios = Object.keys(dataset);
         const startIdx = getDateIdx(firstDate, summaryStart);
         const endIdx = getDateIdx(firstDate, summaryEnd);
         // console.log(startIdx, endIdx);
@@ -94,7 +93,7 @@ class Chart extends Component {
         // const yScale = scaleLinear().range([height - margin.bottom, margin.top]).domain([0, globalMaxVal]) // 
         // const yScale = scaleLog().range([height - margin.bottom, margin.top]).domain([1, globalMaxVal]) //
         const yScale = scalePow().exponent(0.25).range([height - margin.bottom, margin.chartTop]).domain([0, globalMaxVal])
-        const xScale = scaleBand().range([margin.left, (width / severities.length) - margin.right]).domain(scenarios).paddingInner(1).paddingOuter(.5);
+        const xScale = scaleBand().range([0, (width / severities.length) - margin.left]).domain(scenarios)//.paddingInner(1).paddingOuter(.5);
         this.setState({ quantileObj, xScale, yScale, scaleDomains: true })
     }
 
@@ -120,11 +119,11 @@ class Chart extends Component {
         tooltip.innerHTML = tooltipText
         // (i * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key)
         if (severity === 'high') {
-            tooltip.style.marginLeft = `${(1 * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key) - 300}px`
+            tooltip.style.marginLeft = `${(1 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
         } else if (severity === 'med') {
-            tooltip.style.marginLeft = `${(2 * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key) - 300}px`
+            tooltip.style.marginLeft = `${(2 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
         } else {
-            tooltip.style.marginLeft = `${(3 * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key) - 300}px`
+            tooltip.style.marginLeft = `${(3 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
         }
         
 
@@ -140,8 +139,12 @@ class Chart extends Component {
     }
 
     drawSummaryStats = () => {
-        const barWidth = 40;
-        const whiskerMargin = 8;
+        const barWidth = ((this.props.width / this.state.severities.length) / this.props.scenarios.length) - margin.left - margin.right;
+        console.log('barWidth', barWidth)
+        const whiskerMargin = barWidth * 0.2;
+        console.log('whiskerMargin', whiskerMargin)
+        const rectWidth = (this.props.width / this.state.severities.length) - margin.left
+        console.log('rectWidth', rectWidth)
         return (
             this.state.severities.map( (severity, i) => {
             return (
@@ -149,7 +152,7 @@ class Chart extends Component {
                 <rect
                     key={`chart-rect-${severity}`}
                     width={(this.props.width / this.state.severities.length) - margin.left}
-                    height={this.props.height - margin.chartTop - margin.bottom}
+                    height={this.props.height - margin.chartTop - margin.bottom + 2}
                     x={margin.left + (i * (this.props.width / this.state.severities.length))}
                     y={margin.chartTop}
                     fill={graphBkgd}
@@ -166,14 +169,15 @@ class Chart extends Component {
                 </text>
                 <g key={`chart-group-${severity}`}>
                     { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
+                        console.log(severity, 'barPos', key, this.state.xScale(key))
                     return (
                         <Fragment key={`chart-fragment-${severity}-${key}`}>
                             <rect 
                                 d={value}
                                 key={`bar-${severity}-${key}`}
-                                width={40}
+                                width={barWidth}
                                 height={this.state.yScale(0) - this.state.yScale(value.median)}
-                                x={(i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key)}
+                                x={(margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key)}
                                 y={this.state.yScale(value.median)}
                                 fill={scenarioColors[j]}
                                 stroke={this.state.hoveredRect.severity === severity &&
@@ -185,9 +189,9 @@ class Chart extends Component {
                             </rect>
                             <line
                                 key={`vertline-${severity}-${key}`}
-                                x1={(barWidth/2 + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                x1={(barWidth/2 + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
                                 y1={this.state.yScale(value.ninetyith)}
-                                x2={(barWidth/2 + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                x2={(barWidth/2 + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
                                 y2={this.state.yScale(value.tenth)}
                                 stroke={gray}
                                 strokeWidth={1}
@@ -195,9 +199,9 @@ class Chart extends Component {
                             </line>
                             <line
                                 key={`topline-${severity}-${key}`}
-                                x1={(whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                x1={(whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
                                 y1={this.state.yScale(value.ninetyith)}
-                                x2={(barWidth - whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
                                 y2={this.state.yScale(value.ninetyith)}
                                 stroke={gray}
                                 strokeWidth={1}
@@ -205,9 +209,9 @@ class Chart extends Component {
                             </line>
                             <line
                                 key={`bottomline-${severity}-${key}`}
-                                x1={(whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                x1={(whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
                                 y1={this.state.yScale(value.tenth)}
-                                x2={(barWidth - whiskerMargin + (i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key))}
+                                x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
                                 y2={this.state.yScale(value.tenth)}
                                 stroke={gray}
                                 strokeWidth={1}
