@@ -44,6 +44,7 @@ class ChartContainer extends Component {
                     <Chart
                         key={`${param}-chart`}
                         dataset={this.props.dataset}
+                        scenarios={Object.keys(this.props.dataset)}
                         firstDate={this.props.firstDate}
                         summaryStart={this.props.summaryStart}
                         summaryEnd={this.props.summaryEnd}
