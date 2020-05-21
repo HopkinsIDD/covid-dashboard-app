@@ -34,8 +34,19 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1, h4 {
+  color: white;
+  margin: 0;
+}
+
+.App-header {
+  padding: 1% 5%;
+}
+
 .container {
-  max-width: 2000px;
+  /* max-width: 2000px;  */
+  padding: 0 0 0 5%;
+  margin-left: 5%;
 }
 
 code {
@@ -506,4 +517,8 @@ input[type=range]::-moz-focus-outer {
 
 .ant-select {
   min-width: 200px;
+}
+
+.ant-select-selector {
+  max-width: 200px;
 }
