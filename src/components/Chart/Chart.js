@@ -4,7 +4,7 @@ import { scaleLinear, scaleBand, scaleLog, scalePow } from 'd3-scale';
 import { getDateIdx } from '../../utils/utils';
 import { margin } from '../../utils/constants';
 import Axis from '../Graph/Axis';
-import { graphBkgd, green, gray } from '../../utils/constants'
+import { graphBkgd, green, gray, blue } from '../../utils/constants'
 
 class Chart extends Component {
     constructor(props) {
@@ -12,8 +12,14 @@ class Chart extends Component {
         this.state = {
             severities: ['high', 'med', 'low'],
             scaleDomains: false,
+            hoveredRect: {
+                'severity': '',
+                'scenario': '',
+                'index': 0
+            }
             // quantileObj: {}
         }
+        this.tooltipRef = React.createRef();
     }
     componentDidMount() {
         console.log('componentDidMount');
@@ -83,8 +89,25 @@ class Chart extends Component {
         this.setState({ quantileObj, xScale, yScale, scaleDomains: true })
     }
 
-    handleHighlight = (severity, key) => {
-        console.log(severity, key)
+    handleHighlightEnter = (severity, key, index) => {
+        console.log(severity, key, index)
+        const hoveredRect = {
+            'severity': severity,
+            'scenario': key,
+            'index': index
+        }
+        this.setState({ hoveredRect, rectIsHovered: true })
+        const tooltip = this.tooltipRef.current;
+
+    }
+
+    handleHighlightLeave = () => {
+        const hoveredRect = {
+            'severity': '',
+            'scenario': '',
+            'index': 0
+        }
+        this.setState({ hoveredRect, rectIsHovered: false })
     }
 
     drawSummaryStats = () => {
@@ -108,13 +131,19 @@ class Chart extends Component {
                     return (
                         <Fragment key={`chart-fragment-${severity}-${key}`}>
                             <rect 
+                                d={value}
                                 key={`bar-${severity}-${key}`}
                                 width={40}
                                 height={this.state.yScale(0) - this.state.yScale(value.median)}
                                 x={(i * (this.props.width / this.state.severities.length) - margin.left - margin.right) + this.state.xScale(key)}
                                 y={this.state.yScale(value.median)}
                                 fill={green}
-                                onMouseEnter={(severity, key) => this.handleHighlight(severity, key)}
+                                stroke={this.state.hoveredRect.severity === severity &&
+                                    this.state.hoveredRect.scenario === key &&
+                                    this.state.hoveredRect.index === j ? blue: green}
+                                strokeWidth={4}
+                                onMouseEnter={() => this.handleHighlightEnter(severity, key, j)}
+                                onMouseLeave={this.handleHighlightLeave}
                             >
                             </rect>
                             <line
@@ -159,11 +188,14 @@ class Chart extends Component {
 
     render() {
         // console.log(this.props.width, this.props.height)
-        
+        const tooltipVisible = this.state.rectIsHovered ? { visibility: 'visible' } : { visibility: 'hidden' }
         return (
             <div >
                 <div className="y-axis-label chart-yLabel titleNarrow">
                   {this.props.stat}
+                  </div>
+                  <div className="tooltip">
+                    <span className="tooltip-text" ref={this.tooltipRef} style={tooltipVisible}>Test Test Test</span>
                   </div>
                   {this.state.scaleDomains &&
                     <Fragment>
