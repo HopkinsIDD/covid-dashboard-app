@@ -61,7 +61,6 @@ function initGeoObj() {
 function formatPopulations() {
     try {
         const path = '/Users/genevieve/Documents/WORK/JohnsHopkins/covid-dashboard-app/src/store/co-est2019-alldata.csv'
-        // const path = '/Users/lxu213/Documents/covid-dashboard-app/src/store/state_fips.csv';
         const data = fs.readFileSync(path, 'UTF-8');
         const lines = data.split(/\r?\n/);
         const popObject = {}
@@ -92,12 +91,15 @@ module.exports = {
         const targetObj = initGeoObj();
         const sourceArray = require('../store/geo/countyBoundaries.json').features;
         const popObj = formatPopulations();
+        // console.log(popObj['18093'])
     
         for (let geoObj of sourceArray) {
     
             const state = geoObj.properties.STATE;
             const geoid = geoObj.properties.STATE + geoObj.properties.COUNTY;
-            const population = popObj.geoid;
+            // console.log(geoid)
+            const population = popObj[geoid]; //value needs to be accessed with brackets not dot notation
+            console.log(population)
 
             geoObj.properties.geoid = geoid;
             geoObj.properties.population = population;
@@ -136,5 +138,5 @@ module.exports = {
 
 // buildFIPSmap()
 // formatPopulations()
-// module.exports.populateGeoObj()
+module.exports.populateGeoObj()
 
