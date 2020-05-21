@@ -130,8 +130,8 @@ ul {
 
 .filters {
   max-width: 220px;
-  padding-top: 2.8rem;
-  padding-bottom: 2.8rem;
+  padding-top: 1.8rem;
+  margin-left: 2%;
 }
 
 .dropdown {
@@ -192,6 +192,10 @@ ul {
 
 .scenario-header {
   margin-bottom: -0.5rem;
+}
+
+.conf-bounds {
+  margin-top: 16px;
 }
 
 .subtitle {
@@ -498,4 +502,8 @@ input[type=range]::-moz-focus-outer {
 
 .react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle {
   margin-left: 140px;
+}
+
+.ant-select {
+  min-width: 200px;
 }
