@@ -35,9 +35,11 @@ class Chart extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.props.summaryStart, this.props.summaryEnd)
-        if (prevProps.summaryStart !== this.props.summaryStart || prevProps.summaryEnd !== this.props.summaryEnd) {
-            console.log('summary Start or End Changed');
+        // console.log(this.props.summaryStart, this.props.summaryEnd)
+        if (prevProps.summaryStart !== this.props.summaryStart || 
+            prevProps.summaryEnd !== this.props.summaryEnd ||
+            prevProps.dataset !== this.props.dataset) {
+            console.log('summary Start or End or Dataset Changed');
             this.calculateQuantiles();
         }
     }
@@ -112,7 +114,7 @@ class Chart extends Component {
                             `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b> <br><br>` +
                             `<b>90%</b> chance of <b>${addCommas(quantileObj[stat][severity][key]['tenth'])} to ${addCommas(quantileObj[stat][severity][key]['ninetyith'])}</b> ${statLabel} ` +
                             `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b>`
-        console.log(tooltipText)
+        // console.log(tooltipText)
         this.setState({ hoveredRect, rectIsHovered: true })
         const tooltip = this.tooltipRef.current;
         tooltip.innerHTML = tooltipText

@@ -344,8 +344,8 @@ class MainContainer extends Component {
             SCENARIOS,
             scenarioList,
             severityList,
-            // countyBoundaries,
-            // statsForCounty
+            countyBoundaries,
+            statsForCounty
         })
     }
     
@@ -583,6 +583,7 @@ class MainContainer extends Component {
                             {this.state.dataLoaded &&
                             <div className="map-container">
                                 <ChartContainer
+                                    geoid={this.state.geoid}
                                     width={this.state.graphW - margin.left - margin.right}
                                     height={this.state.graphH}
                                     dataset={this.state.dataset}

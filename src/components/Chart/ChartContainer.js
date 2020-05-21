@@ -20,8 +20,10 @@ class ChartContainer extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.summaryStart !== this.props.summaryStart || prevProps.summaryEnd !== this.props.summaryEnd) {
-            console.log('ComponentDidUpdate Summary Start or End')
+        if (prevProps.summaryStart !== this.props.summaryStart 
+            || prevProps.summaryEnd !== this.props.summaryEnd
+            || prevProps.dataset !== this.props.dataset) {
+            console.log('ComponentDidUpdate Summary Start or End or Dataset')
             this.drawSummaryStatCharts();
         }
     }
