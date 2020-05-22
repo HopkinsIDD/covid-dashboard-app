@@ -6,7 +6,7 @@ function Legend(props) {
         return (
             <div className="legend-container">
                 <p className="legend">
-                    <svg height="1" width="20">
+                    <svg height="4" width="20">
                         <line
                             x1="0"
                             y1="0"
@@ -19,7 +19,7 @@ function Legend(props) {
                     &nbsp;simulation above threshold
                 </p>
                 <p className="legend">
-                    <svg height="1" width="20">
+                    <svg height="4" width="20">
                         <line
                             x1="0"
                             y1="0"

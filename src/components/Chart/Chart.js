@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'; 
 import { min, max, quantile } from 'd3-array';
-import { scaleLinear, scaleBand, scaleLog, scalePow } from 'd3-scale';
+import { scaleBand, scalePow } from 'd3-scale';
 import { getDateIdx } from '../../utils/utils';
 import { margin } from '../../utils/constants';
 import Axis from '../Graph/Axis';
@@ -22,9 +22,9 @@ class Chart extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        console.log(this.props.summaryStart, this.props.summaryEnd)
+        // console.log(this.props.summaryStart, this.props.summaryEnd)
         if (prevProps.summaryStart !== this.props.summaryStart || prevProps.summaryEnd !== this.props.summaryEnd) {
-            console.log('summary Start or End Changed');
+            // console.log('summary Start or End Changed');
             this.calculateQuantiles();
         }
     }
@@ -75,7 +75,7 @@ class Chart extends Component {
             }
         }
         
-        console.log(quantileObj)
+        // console.log(quantileObj)
         // const yScale = scaleLinear().range([height - margin.bottom, margin.top]).domain([0, globalMaxVal]) // 
         // const yScale = scaleLog().range([height - margin.bottom, margin.top]).domain([1, globalMaxVal]) //
         const yScale = scalePow().exponent(0.25).range([height - margin.bottom, margin.top]).domain([0, globalMaxVal])
@@ -84,7 +84,7 @@ class Chart extends Component {
     }
 
     handleHighlight = (severity, key) => {
-        console.log(severity, key)
+        // console.log(severity, key)
     }
 
     drawSummaryStats = () => {

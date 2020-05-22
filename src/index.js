@@ -1,4 +1,3 @@
-import "react-datepicker/dist/react-datepicker.css";
 import 'antd/dist/antd.css';
 import React from 'react';
 import ReactDOM from 'react-dom';
