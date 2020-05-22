@@ -12,6 +12,7 @@ function SummaryLabel(props) {
     return (
         <Fragment>
           <p className={props.classProps}>
+              <span className="bold">{props.scenario}</span>&nbsp;scenario:&nbsp;
               <span className="bold">50%</span>
               &nbsp;{`chance of `}<span className="bold">{addCommas(Math.ceil(props.median))}</span>
               &nbsp;{`${props.label}`}

@@ -95,21 +95,31 @@ class ChartContainer extends Component {
 
     render() {
         const scenarios = Object.keys(this.props.dataset);
+        if (this.state.hoveredScenarioIdx) console.log(scenarios[this.state.hoveredScenarioIdx])
         return (
             <div>
-                <h2>{`${COUNTYNAMES[this.props.geoid]} Summary Statistics`}</h2>
-                <h5>{`${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h5>
+                <h2>{`${COUNTYNAMES[this.props.geoid]} Summary Statistics - ${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h2>
+                {/* <h5>{`${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h5> */}
                 <div className="row resetRow chart-callout">
                     {this.state.rectIsHovered &&
-                    <SummaryLabel 
-                        classProps={'filter-label threshold-label callout'}
-                        summaryStart={this.props.summaryStart}
-                        summaryEnd={this.props.summaryEnd}
-                        label={this.state.statLabel.toLowerCase()}
-                        median={this.state.median}
-                        tenth={this.state.tenth}
-                        ninetyith={this.state.ninetyith}
-                    />
+                        <Fragment>
+                            <div className="col-3">
+                            {/* {scenarios[this.state.hoveredScenarioIdx].replace('_',' ')} */}
+                            </div>
+                            <div className="col-7" style={{ display: 'block !important'}}>
+                                
+                                <SummaryLabel 
+                                    classProps={'filter-label threshold-label callout'}
+                                    summaryStart={this.props.summaryStart}
+                                    summaryEnd={this.props.summaryEnd}
+                                    scenario={scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
+                                    label={this.state.statLabel.toLowerCase()}
+                                    median={this.state.median}
+                                    tenth={this.state.tenth}
+                                    ninetyith={this.state.ninetyith}
+                                />
+                            </div>
+                        </Fragment>
                     }
                 </div>
                 <div className="row resetRow">
