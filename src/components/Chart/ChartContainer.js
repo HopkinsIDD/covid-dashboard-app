@@ -26,7 +26,8 @@ class ChartContainer extends Component {
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.summaryStart !== this.props.summaryStart 
             || prevProps.summaryEnd !== this.props.summaryEnd
-            || prevProps.dataset !== this.props.dataset) {
+            || prevProps.dataset !== this.props.dataset
+            || prevProps.scale !== this.props.scale) {
             console.log('ComponentDidUpdate Summary Start or End or Dataset')
             this.drawSummaryStatCharts();
         }
@@ -59,6 +60,7 @@ class ChartContainer extends Component {
                         height={this.props.height / this.state.parameters.length}
                         handleCalloutInfo={this.handleCalloutInfo}
                         handleCalloutLeave={this.handleCalloutLeave}
+                        scale={this.props.scale}
                     />
                 
                 children[param] = child;

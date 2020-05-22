@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'; 
 import { min, max, quantile } from 'd3-array';
 import { scaleLinear, scaleBand, scaleLog, scalePow } from 'd3-scale';
+import { select } from 'd3-selection';
 import { timeFormat } from 'd3-time-format';
 import Axis from '../Graph/Axis';
 import { getDateIdx, addCommas } from '../../utils/utils';
@@ -27,6 +28,7 @@ class Chart extends Component {
             // quantileObj: {}
         }
         this.tooltipRef = React.createRef();
+        this.chartRef = React.createRef();
     }
     componentDidMount() {
         // console.log('componentDidMount');
@@ -38,7 +40,8 @@ class Chart extends Component {
         // console.log(this.props.summaryStart, this.props.summaryEnd)
         if (prevProps.summaryStart !== this.props.summaryStart || 
             prevProps.summaryEnd !== this.props.summaryEnd ||
-            prevProps.dataset !== this.props.dataset) {
+            prevProps.dataset !== this.props.dataset ||
+            prevProps.scale !== this.props.scale) {
             // console.log('summary Start or End or Dataset Changed');
             this.calculateQuantiles();
         }
@@ -89,10 +92,14 @@ class Chart extends Component {
             }
         }
         
-        // console.log(quantileObj)
-        // const yScale = scaleLinear().range([height - margin.bottom, margin.top]).domain([0, globalMaxVal]) // 
+        console.log(quantileObj)
+        let yScale;
+        if (this.props.scale === 'linear') {
+            yScale = scaleLinear().range([height - margin.bottom, margin.top]).domain([0, globalMaxVal])
+        } else {
+           yScale = scalePow().exponent(0.25).range([height - margin.bottom, margin.chartTop]).domain([0, globalMaxVal])
+        }
         // const yScale = scaleLog().range([height - margin.bottom, margin.top]).domain([1, globalMaxVal]) //
-        const yScale = scalePow().exponent(0.25).range([height - margin.bottom, margin.chartTop]).domain([0, globalMaxVal])
         const xScale = scaleBand().range([0, (width / severities.length) - margin.left]).domain(scenarios)//.paddingInner(1).paddingOuter(.5);
         this.setState({ quantileObj, xScale, yScale, scaleDomains: true })
     }
@@ -109,16 +116,16 @@ class Chart extends Component {
             }
             const { severities, quantileObj }  = this.state;
             const { stat, statLabel, summaryStart, summaryEnd, width } = this.props;
-            const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
+            // const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
             const median = quantileObj[stat][severity][key]['median']
             const tenth = quantileObj[stat][severity][key]['tenth']
             const ninetyith = quantileObj[stat][severity][key]['ninetyith']
             // console.log(quantileObj[stat][severity][key])
 
-            const tooltipText = `<b>50%</b> chance of <b>${addCommas(Math.ceil(median))}</b> ${statLabel} ` +
-                                `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b> <br><br>` +
-                                `<b>90%</b> chance of <b>${addCommas(Math.ceil(tenth))} to ${addCommas(Math.ceil(ninetyith))}</b> ${statLabel} ` +
-                                `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b>`
+            const tooltipText = `<b>50%</b> chance of <b>${addCommas(Math.ceil(median))}</b> ${statLabel}<br><br> ` +
+                                // `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b> <br><br>` +
+                                `<b>90%</b> chance of <b>${addCommas(Math.ceil(tenth))} to ${addCommas(Math.ceil(ninetyith))}</b> ${statLabel} `
+                                // `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b>`
             // console.log(tooltipText)
             const tooltip = this.tooltipRef.current;
             tooltip.innerHTML = tooltipText
@@ -182,6 +189,7 @@ class Chart extends Component {
                             <rect 
                                 d={value}
                                 key={`bar-${severity}-${key}`}
+                                className={'bars'}
                                 width={barWidth}
                                 height={this.state.yScale(0) - this.state.yScale(value.median)}
                                 x={(margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key)}
@@ -234,6 +242,12 @@ class Chart extends Component {
         }))
     }
 
+    updateSummaryStats = () => {
+        if(this.chartRef.current) {
+            const chartNode = select(this.chartRef.current);
+        }
+    }
+
     render() {
         // console.log(this.props.width, this.props.height)
         return (
@@ -242,7 +256,7 @@ class Chart extends Component {
                   {this.props.statLabel}
                   </div>
                   <div className="tooltip">
-                    <span className="tooltip-text" ref={this.tooltipRef} style={this.state.rectIsHovered ? { visibility: 'visible', width: '200px', position: 'absolute', padding: '10px', zIndex: 10 } : { visibility: 'hidden' }}></span>
+                    <span className="tooltip-text" ref={this.tooltipRef} style={this.state.rectIsHovered ? { visibility: 'hidden', width: '135px', position: 'absolute', padding: '10px', zIndex: 10 } : { visibility: 'hidden' }}></span>
                   </div>
                   {this.state.scaleDomains &&
                     <Fragment>
@@ -262,7 +276,8 @@ class Chart extends Component {
                         </svg>
                         <svg 
                         width={this.props.width}
-                        height={this.props.height} 
+                        height={this.props.height}
+                        ref={this.chartRef}
                         >
                         {this.drawSummaryStats()}
                         </svg>

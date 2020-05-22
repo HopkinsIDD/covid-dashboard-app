@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import GraphContainer from '../components/Graph/GraphContainer';
 import ChartContainer from '../components/Chart/ChartContainer';
 import MapContainer from '../components/Map/MapContainer';
@@ -11,6 +11,7 @@ import SeverityContainer from '../components/Filters/SeverityContainer';
 import Sliders from '../components/Filters/Sliders';
 import Overlays from '../components/Filters/Overlays';
 import DatePicker from '../components/Chart/DatePicker';
+import ScaleToggle from '../components/Chart/ScaleToggle';
 import _ from 'lodash';
 import { buildScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
@@ -66,6 +67,7 @@ class MainContainer extends Component {
             graphH: 0,
             brushActive: false,
             scenarioClickCounter: 0,
+            summaryScale: 'power',
         };
     };
 
@@ -494,6 +496,11 @@ class MainContainer extends Component {
         this.setState({summaryEnd: date});
     }
 
+    handleScaleToggle = (scale) => {
+        console.log('scale', scale)
+        this.setState({ summaryScale: scale })
+    }
+
     render() {
         return (
             <div className="main-container">
@@ -651,11 +658,13 @@ class MainContainer extends Component {
                                     firstDate={this.state.firstDate}
                                     summaryStart={this.state.summaryStart}
                                     summaryEnd={this.state.summaryEnd}
+                                    scale={this.state.summaryScale}
                                 />
                             </div>
                             }
                         </div>
                         <div className="col-2 filters">
+                            <Fragment>
                             <DatePicker 
                                 firstDate={this.state.firstDate}
                                 summaryStart={this.state.summaryStart}
@@ -663,6 +672,21 @@ class MainContainer extends Component {
                                 onHandleSummaryStart={this.handleSummaryStart}
                                 onHandleSummaryEnd={this.handleSummaryEnd}
                             />
+                            <div>
+                                <h5>Scale
+                                    <div className="tooltip">&nbsp;&#9432;
+                                    <span className="tooltip-text">
+                                        Toggle between a linear scale of the values or a 
+                                        power scale which reveals more granularity at lower levels
+                                    </span>
+                                    </div>
+                                </h5>
+                                <ScaleToggle
+                                scale={this.state.summaryScale}
+                                onScaleToggle={this.handleScaleToggle}
+                                />
+                            </div>
+                            </Fragment>
                         </div>
                             
                     </div>
