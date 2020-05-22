@@ -1,39 +1,27 @@
 import React, { Component } from 'react';
-import { capitalize } from '../../utils/utils';
-const scales = ['power', 'linear'];
+import { Radio } from 'antd';
 
 class ScaleToggle extends Component {
-  handleChange = (item) => {
-    this.props.onScaleToggle(item);
+  handleChange = (e) => {
+    this.props.onScaleToggle(e.target.value);
   }
 
   render() {
-    const { scale } = this.props;
     return ( 
       <div>
-          {scales.map(scl => {
-              const isActive = (scale === scl) ? 'checked' : '';
-              return (
-                  <div
-                      className="form-check"
-                      key={scl}>
-                      <input
-                          className="form-check-input"
-                          type="radio"
-                          name={`${scl}-scale`}
-                          id={`${scl}-scale`}
-                          onChange={() => this.handleChange(scl)} 
-                          checked={isActive}
-                          />
-                      <label
-                          className="form-check-label filter-label"
-                          htmlFor={`${scl}-scale`}>
-                          {`${capitalize(scl)} Scale`}
-                      </label>
-                  </div>
-              )
-          })}
-      </div>  
+        <div className="param-header">Y-AXIS SCALE</div>
+        <Radio.Group
+          value={this.props.scale} 
+          style={{ width: '80%' }}
+          onChange={this.handleChange}>
+            <Radio.Button value='linear'>Linear</Radio.Button>
+            <Radio.Button value='power'>Power</Radio.Button>
+        </Radio.Group>
+        <div className="filter-description">
+          Toggle between a linear scale or a power scale,
+          which reveals more granularity at lower levels.
+        </div>
+      </div>
     )
   }
 }

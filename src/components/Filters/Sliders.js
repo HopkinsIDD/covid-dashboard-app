@@ -42,10 +42,6 @@ class Sliders extends Component {
         this.props.onDateSliderChange(selectedDate);
     }
 
-    // handleReprChange = (i) => {
-    //     this.props.onReprSliderChange(i);
-    // }
-
     render() {
         const { stat, statThreshold, seriesMin, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
         const roundedStat = Math.ceil(statThreshold / 100) * 100;
@@ -113,33 +109,6 @@ class Sliders extends Component {
                         </p>
                     </div>
                 </div>
-                
-                {/* <div className="slidecontainer">
-                    <label
-                        className="filter-label"
-                        htmlFor="dateThreshold">
-                        Date Threshold: {date}
-                    </label>
-                    <input
-                        id="dateThreshold"
-                        className="filter-label"
-                        type="date"
-                        value={this.props.dateThreshold}
-                        min={this.props.firstDate}
-                        max={this.props.lastDate}
-                        onChange={this.handleDateChange}>
-                    </input>
-                </div> */}
-
-{/*             <p className="param-header">Reproductive Number</p>
-                <div className="slidecontainer">
-                    <input
-                        id="r0" type="range" min="0" max="4"
-                        ref={ref => this.r0Input = ref}
-                        onChange={() => this.handleReprChange(this.r0Input.value)}>
-                    </input>
-                </div> */}
-
             </div>
         )
     }
