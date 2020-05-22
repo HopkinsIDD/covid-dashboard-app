@@ -110,11 +110,14 @@ class Chart extends Component {
             const { severities, quantileObj }  = this.state;
             const { stat, statLabel, summaryStart, summaryEnd, width } = this.props;
             const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
+            const median = quantileObj[stat][severity][key]['median']
+            const tenth = quantileObj[stat][severity][key]['tenth']
+            const ninetyith = quantileObj[stat][severity][key]['ninetyith']
             // console.log(quantileObj[stat][severity][key])
 
-            const tooltipText = `<b>50%</b> chance of <b>${addCommas(quantileObj[stat][severity][key]['median'])}</b> ${statLabel} ` +
+            const tooltipText = `<b>50%</b> chance of <b>${addCommas(Math.ceil(median))}</b> ${statLabel} ` +
                                 `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b> <br><br>` +
-                                `<b>90%</b> chance of <b>${addCommas(quantileObj[stat][severity][key]['tenth'])} to ${addCommas(quantileObj[stat][severity][key]['ninetyith'])}</b> ${statLabel} ` +
+                                `<b>90%</b> chance of <b>${addCommas(Math.ceil(tenth))} to ${addCommas(Math.ceil(ninetyith))}</b> ${statLabel} ` +
                                 `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b>`
             // console.log(tooltipText)
             const tooltip = this.tooltipRef.current;
@@ -128,6 +131,7 @@ class Chart extends Component {
                 tooltip.style.marginLeft = `${(3 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
             }
             this.setState({ hoveredRect, rectIsHovered: true })
+            this.props.handleCalloutInfo( statLabel, median, tenth, ninetyith, true );
         }
     }
 
@@ -138,6 +142,7 @@ class Chart extends Component {
             'index': 0
         }
         this.setState({ hoveredRect, rectIsHovered: false })
+        this.props.handleCalloutLeave();
     }
 
     drawSummaryStats = () => {

@@ -472,10 +472,16 @@ input[type=range]::-moz-focus-outer {
   /* border: 1px solid blue; */
 } 
 
+.chart-callout {
+  display: block !important;
+  min-height: 70px;
+  padding: 10px 0;
+}
+
 .chart-legend {
   display: flex;
   flex-wrap: wrap;
-  padding: 20px 0;
+  margin-bottom: 20px;
 }
 
 .chart-legend-box {
