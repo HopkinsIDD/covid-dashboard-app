@@ -618,7 +618,6 @@ class MainContainer extends Component {
                         </Col>
 
                         <Col className="gutter-row filters" span={6}>
-                            <div className="param-header">DATE RANGE</div>
                             <Fragment>
                                 <DatePicker 
                                     firstDate={this.state.firstDate}
@@ -626,20 +625,10 @@ class MainContainer extends Component {
                                     summaryEnd={this.state.summaryEnd}
                                     onHandleSummaryDates={this.handleSummaryDates}
                                 />
-                                <div>
-                                    <h5>Scale
-                                        <div className="tooltip">&nbsp;&#9432;
-                                        <span className="tooltip-text">
-                                            Toggle between a linear scale of the values or a 
-                                            power scale which reveals more granularity at lower levels
-                                        </span>
-                                        </div>
-                                    </h5>
-                                    <ScaleToggle
-                                        scale={this.state.summaryScale}
-                                        onScaleToggle={this.handleScaleToggle}
-                                    />
-                                </div>
+                                <ScaleToggle
+                                    scale={this.state.summaryScale}
+                                    onScaleToggle={this.handleScaleToggle}
+                                />
                             </Fragment>
                         </Col>
                     </Row>

@@ -21,8 +21,8 @@ class Search extends Component {
                         Intervention Scenario Modeling
                     </div>
                     <div>
-                        Find your county in our public registry or upload 
-                        your private model file to start comparing scenarios.
+                        Find your county in our registry or upload 
+                        a model file to start comparing scenarios.
                     </div>
                 </div>
                 <SearchBar

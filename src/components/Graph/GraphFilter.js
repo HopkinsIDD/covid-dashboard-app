@@ -66,10 +66,6 @@ class GraphFilter extends Component {
                     onSeveritiesHover={this.handleSeveritiesHover}
                     onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
                 />
-                <div className="filter-description">
-                    High, medium, and low severity correspond to 1%, 0.5%, 
-                    and 0.25% infection fatality rate, respectively.
-                </div>
                 <br />      
                 <Sliders 
                     stat={this.props.stat}

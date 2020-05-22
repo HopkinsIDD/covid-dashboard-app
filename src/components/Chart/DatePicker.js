@@ -31,6 +31,7 @@ class Chart extends Component {
         const { RangePicker } = DatePicker;
         return (
             <div>
+                <div className="param-header">DATE RANGE</div>
                 <RangePicker
                     disabledDate={this.disabledDate} 
                     onChange={this.handleChange}
