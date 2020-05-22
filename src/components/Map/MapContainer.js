@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { getDateIdx } from '../../utils/utils';
 
+const lowColors = ['#deebf7', '#e5f5e0', '#fee6ce'] 
+const highColors = ['#3885fa', '#008769', '#e6550d']
+
 class MapContainer extends Component {
     constructor(props) {
         super(props);
@@ -33,6 +36,8 @@ class MapContainer extends Component {
                     statsForCounty={this.props.statsForCounty}
                     width={this.props.width / this.state.parameters.length}
                     height={this.props.height}
+                    lowColor={lowColors[index]}
+                    highColor={highColors[index]}
                 />
             ) 
             children.push(child);
@@ -65,6 +70,8 @@ class MapContainer extends Component {
                         statsForCounty={this.props.statsForCounty}
                         width={this.props.width / this.state.parameters.length}
                         height={this.props.height}
+                        lowColor={lowColors[index]}
+                        highColor={highColors[index]}
                     />
                 ) 
                 children.push(child);
@@ -82,7 +89,7 @@ class MapContainer extends Component {
         // const scenario = scenarioList.length > 0 ? scenarioList[0] : scenarioList
         return (
             <div>
-                <h1>MapContainer</h1>
+                <h2>Geographic Summary</h2>
                 <div className="row">
                     {this.state.children.map(child => {
                         return (

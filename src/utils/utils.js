@@ -42,6 +42,8 @@ export function getDateIdx(firstDate, currentDate) {
   return timeDay.count(firstDate, currentDate);
 };
 
-export function capitalize(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+export function capitalize(s) {
+  if (typeof s !== 'string') return ''
+  return s.charAt(0).toUpperCase() + s.slice(1)
 }
+

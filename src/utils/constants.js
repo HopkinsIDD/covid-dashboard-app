@@ -2,14 +2,14 @@
 // key: use this to key into dataset
 // name: display name for visualization
 
-export const margin = { yAxis: 80, top: 10, right: 10, bottom: 30, left: 10 };
+export const margin = { yAxis: 80, top: 10, right: 10, bottom: 30, left: 10, chartTop: 15 };
 export const red = '#d31d30';
 export const green = '#4ddaba';
 export const blue = '#1f90db';
 export const gray = '#9b9b9b';
 export const lightgray = '#d0d0d0';
-// export const graphBkgd = '#f6f5f5';
 export const graphBkgd = '#f0f2f5';
+export const scenarioColors = ['#4ddaba', '#b6f5e7','#19b18e', '#e0fdf7', '#008769', '#acdacf']
 
 export const STATS = [
     {'id': 1, 'key': 'incidI', 'name': 'Infections'},
@@ -34,3 +34,10 @@ export const COUNTIES = [
     {'geoid': '36061', 'name': 'Kings Landing County', 'usps': 'TC',  'state': '03','path': '../store/geo36061.json'},
     // {'geoid': '06085', 'name': 'Dorne', 'usps': 'CA', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
 ];
+
+export const COUNTYNAMES = {
+    '06085': 'Dorne County',
+    '01081': 'Highgarden County',
+    '25017': 'Winterfell County',
+    '36061': 'Kings Landing County'
+}

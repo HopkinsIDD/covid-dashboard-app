@@ -285,11 +285,11 @@ ul {
 .map-container {
   text-align: center;
   /* padding: 2rem; */
-  border: 1px solid red;
+  /* border: 1px solid red; */
 }
 
 .map {
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
 }
 
 .slider-menu {
@@ -349,7 +349,7 @@ ul {
 
 .chart-yLabel {
   position: absolute;
-  margin-top: 7%;
+  margin-top: 10%;
 }
 
 input[type=range] {
@@ -491,6 +491,7 @@ input[type=range]::-moz-focus-outer {
   margin-left: -60px;
   padding-left: 50%;
   font-size: 12px;
+  pointer-events: none;
 }
 
 .tooltip:hover .tooltip-text {
@@ -503,8 +504,32 @@ input[type=range]::-moz-focus-outer {
 }
 
 .chart {
-  border: 1px solid blue;
+  /* border: 1px solid blue; */
 } 
+
+.chart-callout {
+  /* display: block !important; */
+  min-height: 70px;
+  padding: 10px 0;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.chart-legend-box {
+  width: '12px';
+  height: '12px';
+}
+
+.chart-item {
+  display: flex;
+  align-items: center;
+  margin-left: 20px;
+  font-size: 0.8rem;
+}
 
 .date-picker {
   max-width: 7rem;
@@ -525,4 +550,14 @@ input[type=range]::-moz-focus-outer {
 
 .selector-box {
   min-width: 200px;
+}
+
+.sticky {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+.section-spacer {
+  margin-bottom: 10vh;
 }

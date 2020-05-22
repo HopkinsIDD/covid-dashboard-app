@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
 import _ from 'lodash';
 
@@ -12,6 +12,7 @@ import Search from './Search/Search'
 import Brush from './Filters/Brush';
 import GraphFilter from './Graph/GraphFilter';
 import DatePicker from './Chart/DatePicker';
+import ScaleToggle from './Chart/ScaleToggle';
 
 import { buildScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
@@ -68,12 +69,13 @@ class MainContainer extends Component {
             graphH: 0,
             brushActive: false,
             scenarioClickCounter: 0,
+            summaryScale: 'power',
         };
     };
 
     componentDidMount() {
-        console.log('componentDidMount')
-        console.log('dataset', dataset)
+        // console.log('componentDidMount')
+        // console.log('dataset', dataset)
         window.addEventListener('resize', this.updateGraphDimensions)
         this.updateGraphDimensions()
         
@@ -176,7 +178,7 @@ class MainContainer extends Component {
             this.state.severityList !== prevState.severityList ||
             this.state.dateRange !== prevState.dateRange ||
             this.state.dataset !== prevState.dataset) {
-            console.log('componentDidUpdate')
+            // console.log('componentDidUpdate')
 
             const filteredSeriesList = []
             const percExceedenceList = []
@@ -486,10 +488,16 @@ class MainContainer extends Component {
         });
     }
 
+    handleScaleToggle = (scale) => {
+        console.log('scale', scale)
+        this.setState({ summaryScale: scale })
+    }
+
     render() {
         const { Content } = Layout;
         return (
             <Layout>
+
                 {/* Search Component */}
                 <Search
                     stat={this.state.stat}
@@ -596,12 +604,14 @@ class MainContainer extends Component {
                             {this.state.dataLoaded &&
                             <div className="map-container">
                                 <ChartContainer
+                                    geoid={this.state.geoid}
                                     width={this.state.graphW - margin.left - margin.right}
                                     height={this.state.graphH}
                                     dataset={this.state.dataset}
                                     firstDate={this.state.firstDate}
                                     summaryStart={this.state.summaryStart}
                                     summaryEnd={this.state.summaryEnd}
+                                    scale={this.state.summaryScale}
                                 />
                             </div>
                             }
@@ -609,12 +619,28 @@ class MainContainer extends Component {
 
                         <Col className="gutter-row filters" span={6}>
                             <div className="param-header">DATE RANGE</div>
-                            <DatePicker 
-                                firstDate={this.state.firstDate}
-                                summaryStart={this.state.summaryStart}
-                                summaryEnd={this.state.summaryEnd}
-                                onHandleSummaryDates={this.handleSummaryDates}
-                            />
+                            <Fragment>
+                                <DatePicker 
+                                    firstDate={this.state.firstDate}
+                                    summaryStart={this.state.summaryStart}
+                                    summaryEnd={this.state.summaryEnd}
+                                    onHandleSummaryDates={this.handleSummaryDates}
+                                />
+                                <div>
+                                    <h5>Scale
+                                        <div className="tooltip">&nbsp;&#9432;
+                                        <span className="tooltip-text">
+                                            Toggle between a linear scale of the values or a 
+                                            power scale which reveals more granularity at lower levels
+                                        </span>
+                                        </div>
+                                    </h5>
+                                    <ScaleToggle
+                                        scale={this.state.summaryScale}
+                                        onScaleToggle={this.handleScaleToggle}
+                                    />
+                                </div>
+                            </Fragment>
                         </Col>
                     </Row>
                 </Content>
@@ -627,6 +653,7 @@ class MainContainer extends Component {
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16}>
 
+                            <div className="row section-spacer"><p></p><p></p></div>
                             {this.state.dataLoaded &&
                             <div className="map-container">
                                 <MapContainer
