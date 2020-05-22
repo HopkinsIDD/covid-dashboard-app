@@ -100,13 +100,13 @@ class ChartContainer extends Component {
             <div>
                 <h2>{`${COUNTYNAMES[this.props.geoid]} Summary Statistics - ${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h2>
                 {/* <h5>{`${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h5> */}
-                <div className="row resetRow chart-callout">
+                <div className="row resetRow chart-callout" style={{ display: 'block !important'}}>
                     {this.state.rectIsHovered &&
-                        <Fragment>
-                            <div className="col-3">
-                            {/* {scenarios[this.state.hoveredScenarioIdx].replace('_',' ')} */}
-                            </div>
-                            <div className="col-7" style={{ display: 'block !important'}}>
+                        // <Fragment>
+                        //     <div className="col-2">
+                        //     {/* {scenarios[this.state.hoveredScenarioIdx].replace('_',' ')} */}
+                        //     </div>
+                        //     <div className="col-10" >
                                 
                                 <SummaryLabel 
                                     classProps={'filter-label threshold-label callout'}
@@ -118,8 +118,8 @@ class ChartContainer extends Component {
                                     tenth={this.state.tenth}
                                     ninetyith={this.state.ninetyith}
                                 />
-                            </div>
-                        </Fragment>
+                        //     </div>
+                        // </Fragment>
                     }
                 </div>
                 <div className="row resetRow">

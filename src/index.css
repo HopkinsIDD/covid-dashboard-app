@@ -473,7 +473,7 @@ input[type=range]::-moz-focus-outer {
 } 
 
 .chart-callout {
-  /* display: block !important; */
+  display: block !important;
   min-height: 70px;
   padding: 10px 0;
 }
