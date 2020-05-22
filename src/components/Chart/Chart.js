@@ -139,6 +139,7 @@ class Chart extends Component {
             }
             this.setState({ hoveredRect, rectIsHovered: true })
             this.props.handleCalloutInfo( statLabel, median, tenth, ninetyith, true );
+            this.props.handleScenarioHover( index );
         }
     }
 
@@ -150,6 +151,7 @@ class Chart extends Component {
         }
         this.setState({ hoveredRect, rectIsHovered: false })
         this.props.handleCalloutLeave();
+        this.props.handleScenarioHover( null );
     }
 
     drawSummaryStats = () => {

@@ -5,7 +5,7 @@ import { timeFormat } from 'd3-time-format';
 const getReadableDate = timeFormat('%b %d, %Y');
 
 function SummaryLabel(props) {
-    console.log(props)
+    // console.log(props)
     const startDate = getReadableDate(props.summaryStart);
     const endDate = getReadableDate(props.summaryEnd);
 

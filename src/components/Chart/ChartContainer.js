@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Chart from '../Chart/Chart';
 import SummaryLabel from '../Chart/SummaryLabel';
 // import { scaleLinear } from 'd3-scale';
-import { COUNTYNAMES, scenarioColors } from '../../utils/constants'
+import { COUNTYNAMES, scenarioColors, blue } from '../../utils/constants'
 import { timeFormat } from 'd3-time-format';
 
 const getReadableDate = timeFormat('%b %d, %Y');
@@ -16,6 +16,7 @@ class ChartContainer extends Component {
             parameterLabels: ['Infections', 'Hospitalizations', 'Deaths'],
             // severities: ['high', 'med', 'low'],
             children: {'incidI': {}, 'incidH': {}, 'incidD': {}},
+            hoveredScenarioIdx: null
         }
     }
 
@@ -60,6 +61,7 @@ class ChartContainer extends Component {
                         height={this.props.height / this.state.parameters.length}
                         handleCalloutInfo={this.handleCalloutInfo}
                         handleCalloutLeave={this.handleCalloutLeave}
+                        handleScenarioHover={this.handleScenarioHighlight}
                         scale={this.props.scale}
                     />
                 
@@ -72,13 +74,22 @@ class ChartContainer extends Component {
     }
 
     handleCalloutInfo = (statLabel, median, tenth, ninetyith) => {
-        console.log('handleCalloutEnter rectIsHovered');
-        console.log(statLabel, median, tenth, ninetyith)
+        // console.log('handleCalloutEnter rectIsHovered');
+        // console.log(statLabel, median, tenth, ninetyith)
         this.setState({ statLabel, median, tenth, ninetyith, rectIsHovered: true });
     }
 
     handleCalloutLeave = () => {
         this.setState({ rectIsHovered: false })
+    }
+
+    handleScenarioHighlight = (scenarioIdx) => {
+        console.log(scenarioIdx)
+        if (scenarioIdx !== null) {
+            this.setState({ hoveredScenarioIdx: scenarioIdx })
+        } else {
+            this.setState({ hoveredScenarioIdx: null })
+        }
     }
 
 
@@ -111,12 +122,17 @@ class ChartContainer extends Component {
                                     <div
                                         key={`legend-box-${scenario}`}
                                         className='legend-box'
-                                        style={{background: scenarioColors[index], width: '12px', height: '12px', marginRight: '5px'}}
+                                        style={ {background: scenarioColors[index], 
+                                                border: 'solid',
+                                                borderColor: this.state.hoveredScenarioIdx === index ? blue : scenarioColors[index],
+                                                width: '12px', 
+                                                height: '12px', 
+                                                marginRight: '5px'}}
                                     ></div>
                                     <div
                                         key={`legend-label-${scenario}`}
                                         className="titleNarrow"
-                                    >{scenario} </div>
+                                    >{scenario.replace('_',' ')} </div>
                                 </div>
                             )
                         })
