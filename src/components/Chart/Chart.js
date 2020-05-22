@@ -97,36 +97,38 @@ class Chart extends Component {
         this.setState({ quantileObj, xScale, yScale, scaleDomains: true })
     }
 
-    handleHighlightEnter = (severity, key, index) => {
-        // console.log(severity, key, index)
-        const hoveredRect = {
-            'severity': severity,
-            'scenario': key,
-            'index': index
-        }
-        const { severities, quantileObj }  = this.state;
-        const { stat, statLabel, summaryStart, summaryEnd, width } = this.props;
-        const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
-        // console.log(quantileObj[stat][severity][key])
+    handleHighlightEnter = (event, severity, key, index) => {
+        if (!this.state.rectIsHovered) {
+            console.log('handleHighlightEnter', this.state.rectIsHovered)
+            event.stopPropagation();
+            // console.log(severity, key, index)
+            const hoveredRect = {
+                'severity': severity,
+                'scenario': key,
+                'index': index
+            }
+            const { severities, quantileObj }  = this.state;
+            const { stat, statLabel, summaryStart, summaryEnd, width } = this.props;
+            const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
+            // console.log(quantileObj[stat][severity][key])
 
-        const tooltipText = `<b>50%</b> chance of <b>${addCommas(quantileObj[stat][severity][key]['median'])}</b> ${statLabel} ` +
-                            `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b> <br><br>` +
-                            `<b>90%</b> chance of <b>${addCommas(quantileObj[stat][severity][key]['tenth'])} to ${addCommas(quantileObj[stat][severity][key]['ninetyith'])}</b> ${statLabel} ` +
-                            `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b>`
-        // console.log(tooltipText)
-        this.setState({ hoveredRect, rectIsHovered: true })
-        const tooltip = this.tooltipRef.current;
-        tooltip.innerHTML = tooltipText
-        // (i * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key)
-        if (severity === 'high') {
-            tooltip.style.marginLeft = `${(1 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
-        } else if (severity === 'med') {
-            tooltip.style.marginLeft = `${(2 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
-        } else {
-            tooltip.style.marginLeft = `${(3 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
+            const tooltipText = `<b>50%</b> chance of <b>${addCommas(quantileObj[stat][severity][key]['median'])}</b> ${statLabel} ` +
+                                `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b> <br><br>` +
+                                `<b>90%</b> chance of <b>${addCommas(quantileObj[stat][severity][key]['tenth'])} to ${addCommas(quantileObj[stat][severity][key]['ninetyith'])}</b> ${statLabel} ` +
+                                `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b>`
+            // console.log(tooltipText)
+            const tooltip = this.tooltipRef.current;
+            tooltip.innerHTML = tooltipText
+            // (i * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key)
+            if (severity === 'high') {
+                tooltip.style.marginLeft = `${(1 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
+            } else if (severity === 'med') {
+                tooltip.style.marginLeft = `${(2 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
+            } else {
+                tooltip.style.marginLeft = `${(3 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
+            }
+            this.setState({ hoveredRect, rectIsHovered: true })
         }
-        
-
     }
 
     handleHighlightLeave = () => {
@@ -183,7 +185,7 @@ class Chart extends Component {
                                 stroke={this.state.hoveredRect.severity === severity &&
                                     this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
                                 strokeWidth={4}
-                                onMouseEnter={() => this.handleHighlightEnter(severity, key, j)}
+                                onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
                                 onMouseLeave={this.handleHighlightLeave}
                             >
                             </rect>
@@ -229,14 +231,13 @@ class Chart extends Component {
 
     render() {
         // console.log(this.props.width, this.props.height)
-        const tooltipVisible = this.state.rectIsHovered ? { visibility: 'visible', width: '200px', position: 'absolute', padding: '10px' } : { visibility: 'hidden' }
         return (
             <div >
                 <div className="y-axis-label chart-yLabel titleNarrow">
                   {this.props.statLabel}
                   </div>
                   <div className="tooltip">
-                    <span className="tooltip-text" ref={this.tooltipRef} style={tooltipVisible}></span>
+                    <span className="tooltip-text" ref={this.tooltipRef} style={this.state.rectIsHovered ? { visibility: 'visible', width: '200px', position: 'absolute', padding: '10px', zIndex: 10 } : { visibility: 'hidden' }}></span>
                   </div>
                   {this.state.scaleDomains &&
                     <Fragment>
