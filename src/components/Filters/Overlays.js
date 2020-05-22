@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Row, Col, Switch } from 'antd';
+import { Row, Switch } from 'antd';
 
 class Overlays extends Component {
 

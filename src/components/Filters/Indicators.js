@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Select } from 'antd';
 import { STATS } from '../../utils/constants.js';
 
-class Buttons extends Component {
+class Indicators extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -43,7 +43,7 @@ class Buttons extends Component {
                 <div className="param-header">INDICATOR</div>
                 <Select
                     defaultValue={stat.key}
-                    style={{ width: '80%' }}
+                    style={{ width: '70%' }}
                     onChange={this.handleChange}>
                     {this.state.children.map(child => child.button)}
                 </Select>
@@ -52,4 +52,4 @@ class Buttons extends Component {
     }
 }
 
-export default Buttons
+export default Indicators
