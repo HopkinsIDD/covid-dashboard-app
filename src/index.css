@@ -456,6 +456,7 @@ input[type=range]::-moz-focus-outer {
   margin-left: -60px;
   padding-left: 50%;
   font-size: 12px;
+  pointer-events: none;
 }
 
 .tooltip:hover .tooltip-text {
