@@ -487,160 +487,185 @@ class MainContainer extends Component {
     }
 
     render() {
-        // const { Content } = Layout;
+        const { Content } = Layout;
 
         // const style = { background: '#0092ff', padding: '8px 0' };
         return (
             <Layout>
-                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    <Col className="gutter-row container" span={16}>
-                    {/* <Col className="gutter-row container" span={18}> */}
-                        {/* <div style={style}>col-6</div> */}
-                        <Search 
-                            stat={this.state.stat}
-                            geoid={this.state.geoid}
-                            onFileUpload={this.handleUpload}
-                            onCountySelect={this.handleCountySelect}
-                        />
-                        <Row>
-                            <Col className="gutter-row" span={8} offset={16}>
-                                <Legend />
-                            </Col>
-                        </Row>
-                        <br />
+                <Content style={{ background: 'white', padding: '50px 0' }}>
+                    <div className="content-section">
+                        <div className="content-header">Intervention Scenario Modeling</div>
+                        <div>Find your county in our public registry or upload 
+                        your private model file to start comparing scenarios.</div>
+                    </div>
+                    <Search 
+                        stat={this.state.stat}
+                        geoid={this.state.geoid}
+                        onFileUpload={this.handleUpload}
+                        onCountySelect={this.handleCountySelect}
+                    />
+                    <div className="content-section">
+                        Prepared by the <a className="customLink" 
+                        href="http://www.iddynamics.jhsph.edu/">
+                        Johns Hopkins IDD</a>&nbsp;Working Group.
+                    </div>
+                </Content>
 
-                        <div
-                            className="graph resetRow"
-                            ref={ (graphEl) => { this.graphEl = graphEl } }
-                            >
-                            {this.state.dataLoaded &&
-                            <div>
-                                <GraphContainer 
-                                    stat={this.state.stat}
-                                    geoid={this.state.geoid}
-                                    yAxisLabel={this.state.yAxisLabel}
-                                    scenarioList={this.state.scenarioList}
-                                    severity={this.state.severity}
-                                    r0={this.state.r0}
-                                    simNum={this.state.simNum}
-                                    showConfBounds={this.state.showConfBounds}
-                                    confBoundsList={this.state.confBoundsList}
-                                    showActual={this.state.showActual}
-                                    seriesList={this.state.seriesList}
-                                    dates={this.state.dates}
-                                    statThreshold={this.state.statThreshold}
-                                    dateThreshold={this.state.dateThreshold}
-                                    percExceedenceList={this.state.percExceedenceList}
-                                    dateRange={this.state.dateRange}
-                                    brushActive={this.state.brushActive}
-                                    width={this.state.graphW}
+                <Content style={{ padding: '50px 0' }}>
+                    <div className="content-section">
+                        <div className="content-header">Scenario Comparisons</div>
+                    </div>
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                        <Col className="gutter-row container" span={16}>
+                            <div
+                                className="graph resetRow"
+                                ref={ (graphEl) => { this.graphEl = graphEl } }
+                                >
+                                {this.state.dataLoaded &&
+                                <div>
+                                    <GraphContainer 
+                                        stat={this.state.stat}
+                                        geoid={this.state.geoid}
+                                        yAxisLabel={this.state.yAxisLabel}
+                                        scenarioList={this.state.scenarioList}
+                                        severity={this.state.severity}
+                                        r0={this.state.r0}
+                                        simNum={this.state.simNum}
+                                        showConfBounds={this.state.showConfBounds}
+                                        confBoundsList={this.state.confBoundsList}
+                                        showActual={this.state.showActual}
+                                        seriesList={this.state.seriesList}
+                                        dates={this.state.dates}
+                                        statThreshold={this.state.statThreshold}
+                                        dateThreshold={this.state.dateThreshold}
+                                        percExceedenceList={this.state.percExceedenceList}
+                                        dateRange={this.state.dateRange}
+                                        brushActive={this.state.brushActive}
+                                        width={this.state.graphW}
+                                        height={this.state.graphH}
+                                        scenarioClickCounter={this.state.scenarioClickCounter}
+                                        scenarioHovered={this.state.scenarioHovered}
+                                    /> 
+                                    <Brush
+                                        series={this.state.allTimeSeries}
+                                        dates={this.state.allTimeDates}
+                                        width={this.state.graphW}
+                                        height={80}
+                                        x={margin.yAxis}
+                                        y={0}
+                                        dateRange={this.state.dateRange}
+                                        dateThreshold={this.state.dateThreshold}
+                                        statThreshold={this.state.statThreshold}
+                                        onBrushChange={this.handleBrushRange}
+                                        onBrushStart={this.handleBrushStart}
+                                        onBrushEnd={this.handleBrushEnd}
+                                    />
+                                </div>
+                                }
+                            </div>
+
+                            {/* {this.state.dataLoaded &&
+                            <div className="map-container">
+                                <MapContainer
+                                    width={this.state.graphW - margin.left - margin.right}
                                     height={this.state.graphH}
-                                    scenarioClickCounter={this.state.scenarioClickCounter}
-                                    scenarioHovered={this.state.scenarioHovered}
-                                /> 
-                                <Brush
-                                    series={this.state.allTimeSeries}
-                                    dates={this.state.allTimeDates}
-                                    width={this.state.graphW}
-                                    height={80}
-                                    x={margin.yAxis}
-                                    y={0}
-                                    dateRange={this.state.dateRange}
+                                    dataset={this.state.dataset}
+                                    // scenarioList={this.state.scenarioList}
+                                    geoid={this.state.geoid}
+                                    firstDate={this.state.firstDate}
                                     dateThreshold={this.state.dateThreshold}
-                                    statThreshold={this.state.statThreshold}
-                                    onBrushChange={this.handleBrushRange}
-                                    onBrushStart={this.handleBrushStart}
-                                    onBrushEnd={this.handleBrushEnd}
+                                    countyBoundaries={this.state.countyBoundaries}
+                                    statsForCounty={this.state.statsForCounty}
+                                />
+                            </div>
+                            } */}
+                        </Col>
+
+                        <Col className="gutter-row filters" span={6}>
+                            <Legend />
+                            <div className="param-header">SCENARIOS</div>
+                            {this.state.dataLoaded &&
+                            <Scenarios
+                                SCENARIOS={this.state.SCENARIOS}
+                                scenario={this.state.scenario}
+                                scenarioList={this.state.scenarioList}
+                                onScenarioClick={this.handleScenarioClick}
+                            />
+                            }
+                            <Buttons
+                                stat={this.state.stat}
+                                onButtonClick={this.handleButtonClick}
+                            />        
+                            <Overlays 
+                                showConfBounds={this.state.showConfBounds}
+                                // showActual={this.state.showActual}
+                                onConfClick={this.handleConfClick}
+                                // onActualClick={this.handleActualClick}
+                            /> 
+                            {this.state.dataLoaded &&
+                            <SeverityContainer
+                                severityList={this.state.severityList}
+                                scenarioList={this.state.scenarioList}
+                                onSeveritiesClick={this.handleSeveritiesClick}
+                                onSeveritiesHover={this.handleSeveritiesHover}
+                                onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
+                            />
+                            }
+                            <br />      
+                            {this.state.dataLoaded &&
+                            <Sliders 
+                                stat={this.state.stat}
+                                dates={this.state.dates}
+                                seriesMax={this.state.seriesMax}
+                                seriesMin={this.state.seriesMin}
+                                statThreshold={this.state.statThreshold}
+                                dateThreshold={this.state.dateThreshold}
+                                dateThresholdIdx={this.state.dateThresholdIdx}
+                                firstDate={this.state.firstDate}
+                                lastDate={this.state.lastDate}
+                                dateRange={this.state.dateRange}
+                                onStatSliderChange={this.handleStatSliderChange}
+                                onDateSliderChange={this.handleDateSliderChange}
+                                // // onReprSliderChange={this.handleReprSliderChange}
+                            />
+                            }
+                        </Col>
+                    </Row>
+                </Content>
+
+
+                <Content style={{ background: 'white', padding: '50px 0' }}>
+                    <div className="content-section">
+                        <div className="content-header">Summary Across Scenarios</div>
+                    </div>
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                        <Col className="gutter-row container" span={16}>
+
+                            {this.state.dataLoaded &&
+                            <div className="map-container">
+                                <ChartContainer
+                                    width={this.state.graphW - margin.left - margin.right}
+                                    height={this.state.graphH}
+                                    dataset={this.state.dataset}
+                                    firstDate={this.state.firstDate}
+                                    summaryStart={this.state.summaryStart}
+                                    summaryEnd={this.state.summaryEnd}
                                 />
                             </div>
                             }
-                        </div>
-                        {this.state.dataLoaded &&
-                        <div className="map-container">
-                            {/* <ChartContainer
-                                width={this.state.graphW - margin.left - margin.right}
-                                height={this.state.graphH}
-                                dataset={this.state.dataset}
+                        </Col>
+
+                        <Col className="gutter-row filters" span={6}>
+                            <DatePicker 
                                 firstDate={this.state.firstDate}
                                 summaryStart={this.state.summaryStart}
                                 summaryEnd={this.state.summaryEnd}
-                            /> */}
-                        </div>
-                        }
-                        {/* {this.state.dataLoaded &&
-                        <div className="map-container">
-                            <MapContainer
-                                width={this.state.graphW - margin.left - margin.right}
-                                height={this.state.graphH}
-                                dataset={this.state.dataset}
-                                // scenarioList={this.state.scenarioList}
-                                geoid={this.state.geoid}
-                                firstDate={this.state.firstDate}
-                                dateThreshold={this.state.dateThreshold}
-                                countyBoundaries={this.state.countyBoundaries}
-                                statsForCounty={this.state.statsForCounty}
+                                onHandleSummaryStart={this.handleSummaryStart}
+                                onHandleSummaryEnd={this.handleSummaryEnd}
                             />
-                        </div>
-                        } */}
-                    </Col>
-
-
-                    <Col className="gutter-row filters" span={6}>
-                        <div className="param-header">SCENARIOS</div>
-                        {this.state.dataLoaded &&
-                        <Scenarios
-                            SCENARIOS={this.state.SCENARIOS}
-                            scenario={this.state.scenario}
-                            scenarioList={this.state.scenarioList}
-                            onScenarioClick={this.handleScenarioClick}
-                        />
-                        }
-                        <Buttons
-                            stat={this.state.stat}
-                            onButtonClick={this.handleButtonClick}
-                        />        
-                        <Overlays 
-                            showConfBounds={this.state.showConfBounds}
-                            // showActual={this.state.showActual}
-                            onConfClick={this.handleConfClick}
-                            // onActualClick={this.handleActualClick}
-                        /> 
-                        {this.state.dataLoaded &&
-                        <SeverityContainer
-                            severityList={this.state.severityList}
-                            scenarioList={this.state.scenarioList}
-                            onSeveritiesClick={this.handleSeveritiesClick}
-                            onSeveritiesHover={this.handleSeveritiesHover}
-                            onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
-                        />
-                        }
-                        <br />      
-                        {this.state.dataLoaded &&
-                        <Sliders 
-                            stat={this.state.stat}
-                            dates={this.state.dates}
-                            seriesMax={this.state.seriesMax}
-                            seriesMin={this.state.seriesMin}
-                            statThreshold={this.state.statThreshold}
-                            dateThreshold={this.state.dateThreshold}
-                            dateThresholdIdx={this.state.dateThresholdIdx}
-                            firstDate={this.state.firstDate}
-                            lastDate={this.state.lastDate}
-                            dateRange={this.state.dateRange}
-                            onStatSliderChange={this.handleStatSliderChange}
-                            onDateSliderChange={this.handleDateSliderChange}
-                            // // onReprSliderChange={this.handleReprSliderChange}
-                        />
-                        }
-                        <DatePicker 
-                            firstDate={this.state.firstDate}
-                            summaryStart={this.state.summaryStart}
-                            summaryEnd={this.state.summaryEnd}
-                            onHandleSummaryStart={this.handleSummaryStart}
-                            onHandleSummaryEnd={this.handleSummaryEnd}
-                        />
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
+                </Content>
             </Layout>
         )
     }

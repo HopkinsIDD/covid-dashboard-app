@@ -4,7 +4,7 @@ import { green, red } from '../../utils/constants';
 function Legend(props) {
     if (!props.showConfBounds) {
         return (
-            <div>
+            <div className="legend-container">
                 <p className="legend">
                     <svg height="1" width="20">
                         <line

@@ -59,6 +59,7 @@ class Severity extends Component {
                 <div className="param-header">{title}</div>
                 <Radio.Group
                     value={severity.key} 
+                    style={{ width: '80%' }}
                     onChange={this.handleChange}>
                     {this.state.children.map(child => child.button)}
                 </Radio.Group>

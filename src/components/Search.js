@@ -29,7 +29,7 @@ class Search extends Component {
                 <Option
                     key={`${county.geoid}-county`}
                     value={county.geoid}>
-                    {county.name}
+                    {county.name}, {county.usps}
                 </Option>
             )
             children.push(child);
@@ -115,48 +115,52 @@ class Search extends Component {
 
 
     render() {
-        const { fileName, countyName } = this.state;
-        const countyLabel = countyName === '' ? 'Search for your county' : countyName;
-        const uploadLabel = fileName === '' ? 'Upload File' : fileName;
+        // const { fileName, countyName } = this.state;
+        // const countyLabel = countyName === '' ? 'Search for your county' : countyName;
+        // const uploadLabel = fileName === '' ? 'Upload File' : fileName;
 
-        const props = {
-            name: 'file',
-            action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-            headers: {
-              authorization: 'authorization-text',
-            },
-            onChange(info) {
-              if (info.file.status !== 'uploading') {
-                console.log(info.file, info.fileList);
-              }
-              if (info.file.status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully`);
-              } else if (info.file.status === 'error') {
-                message.error(`${info.file.name} file upload failed.`);
-              }
-            },
-          };
+        // const props = {
+        //     name: 'file',
+        //     action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
+        //     headers: {
+        //       authorization: 'authorization-text',
+        //     },
+        //     onChange(info) {
+        //       if (info.file.status !== 'uploading') {
+        //         console.log(info.file, info.fileList);
+        //       }
+        //       if (info.file.status === 'done') {
+        //         message.success(`${info.file.name} file uploaded successfully`);
+        //       } else if (info.file.status === 'error') {
+        //         message.error(`${info.file.name} file upload failed.`);
+        //       }
+        //     },
+        //   };
           
         return (
             <div className="dropdown">
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    <Col className="gutter-row" span={18}>
+                    <Col className="gutter-row" offset={6} span={18}>
                         <Select
-                            placeholder={countyLabel}
-                            defaultValue={this.props.geoid}
-                            style={{ width: 600 }}
+                            showSearch
+                            placeholder="Select a county"
+                            optionFilterProp="children"
+                            style={{ width: '80%' }}
                             size="large"
-                            onChange={this.handleCountySelect}>
+                            onChange={this.handleCountySelect}
+                            filterOption={(input, option) =>
+                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                            }>
                             {this.state.children.map(county => county.button)}
                         </Select>
                     </Col>
-                    <Col className="gutter-row" span={6}>
+                    {/* <Col className="gutter-row" span={6}> */}
                         {/* <Upload {...props}>
                             <Button>
                                 <UploadOutlined /> Upload
                             </Button>
                         </Upload> */}
-                    </Col>
+                    {/* </Col> */}
                 </Row>
             </div>            
         )
@@ -164,21 +168,3 @@ class Search extends Component {
 }
 
 export default Search;
-
-
-// <form>
-//     <div className="custom-file filter-label">
-//         <input
-//             type="file"
-//             className="custom-file-input"
-//             placeholder="Upload File"
-//             id="upload"
-//             onChange={this.handleUpload}>
-//         </input>
-//         <label
-//             className="custom-file-label"
-//             htmlFor="upload">
-//             {uploadLabel}
-//         </label>
-//     </div>
-// </form>

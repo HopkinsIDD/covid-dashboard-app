@@ -43,7 +43,7 @@ class Buttons extends Component {
                 <div className="param-header">INDICATOR</div>
                 <Select
                     defaultValue={stat.key}
-                    style={{ width: 120 }}
+                    style={{ width: '80%' }}
                     onChange={this.handleChange}>
                     {this.state.children.map(child => child.button)}
                 </Select>
