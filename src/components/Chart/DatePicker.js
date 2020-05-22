@@ -1,62 +1,40 @@
 import React, { Component } from 'react';
-import DatePicker from 'react-datepicker';
+import { DatePicker } from 'antd';
 
 class Chart extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedStart: new Date('2020-01-31'),
+    handleChange = (dates) => {
+
+        let start;
+        let end;
+        if (dates) {
+            start = dates[0]._d;
+            end = dates[1]._d;
+        } else {
+            start = new Date();
+            end = new Date();
+            end.setDate(end.getDate() - 14);
         }
-    };
 
-    componentDidMount() {
-        this.setState({
-            selectedStart: this.props.firstDate,
-        })
-    };
+        this.props.onHandleSummaryDates(start, end);
+    }
 
-    handleStartDate = (date) => {
-        this.props.onHandleSummaryStart(date);
-        this.setState({
-            selectedStart: date,
-        })    
-    };
-
-    handleEndDate = (date) => {
-        this.props.onHandleSummaryEnd(date);
-    };
-
-    isSunday = (date) => {
-        return date.getDay() === 0;
-    };
+    disabledDate = (dateMoment) => {
+        const date = dateMoment._d;
+        return (
+            date < this.props.firstDate || 
+            date > this.props.lastDate ||
+            date.getDay() > 0
+            );
+    }
     
     render() {
+        const { RangePicker } = DatePicker;
         return (
             <div>
-                <div className="filter-label">
-                    <div className="row">
-                        <p className="date-label">START</p>
-                        <DatePicker
-                            className="date-picker"
-                            selected={this.props.summaryStart}
-                            minDate={this.props.firstDate}
-                            maxDate={this.props.lastDate}
-                            filterDate={this.isSunday}
-                            onChange={date => this.handleStartDate(date)}
-                        />
-                    </div>
-                    <div className="row">
-                        <p className="date-label">END</p>
-                        <DatePicker
-                            className="date-picker"
-                            selected={this.props.summaryEnd}
-                            minDate={this.state.selectedStart}
-                            maxDate={this.props.lastDate}
-                            filterDate={this.isSunday}
-                            onChange={date => this.handleEndDate(date)}
-                        />
-                    </div>
-                </div>
+                <RangePicker
+                    disabledDate={this.disabledDate} 
+                    onChange={this.handleChange}
+                />
             </div>
         );
     }
