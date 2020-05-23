@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
-import { getDateIdx } from '../../utils/utils';
+import { getDateIdx, getReadableDate } from '../../utils/utils';
 
 const lowColors = ['#deebf7', '#e5f5e0', '#fee6ce'] 
 const highColors = ['#3885fa', '#008769', '#e6550d']
@@ -89,7 +89,7 @@ class MapContainer extends Component {
         // const scenario = scenarioList.length > 0 ? scenarioList[0] : scenarioList
         return (
             <div>
-                <h2>Geographic Summary</h2>
+                <h2>{`Geographic Summary of ${getReadableDate(this.props.dateThreshold)}`}</h2>
                 <div className="row">
                     {this.state.children.map(child => {
                         return (
