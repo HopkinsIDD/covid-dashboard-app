@@ -62,6 +62,7 @@ class Sliders extends Component {
                         min={seriesMin.toString()}
                         max={seriesMax.toString()}
                         value={statThreshold.toString()}
+                        step={100}
                         ref={ref => this.statInput = ref}
                         onChange={
                             () => {this.handleStatChange(this.statInput.value)}

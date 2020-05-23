@@ -327,7 +327,7 @@ class Graph extends Component {
     }
 
     render() {
-
+        const roundedThreshold = Math.ceil(this.props.statThreshold / 100) * 100;
         return (
             // <div className="graph-area">
                 <g 
@@ -414,9 +414,9 @@ class Graph extends Component {
                         <g ref={this.thresholdRef}>
                             <line
                                 x1={margin.left}
-                                y1={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
+                                y1={this.props.yScale(roundedThreshold) < margin.top ? margin.top : this.props.yScale(roundedThreshold)}
                                 x2={this.props.width - margin.right}
-                                y2={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
+                                y2={this.props.yScale(roundedThreshold) < margin.top ? margin.top : this.props.yScale(roundedThreshold)}
                                 stroke={gray}
                                 className={'statThreshold'}
                                 strokeDasharray="4 2"
@@ -432,7 +432,7 @@ class Graph extends Component {
                             ></line>
                             <circle
                                 cx={this.props.xScale(this.props.dateThreshold)}
-                                cy={this.props.yScale(this.props.statThreshold)}
+                                cy={this.props.yScale(roundedThreshold)}
                                 r={4}
                                 fill={gray}
                                 className={'thresholdCircle'}
