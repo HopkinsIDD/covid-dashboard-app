@@ -62,6 +62,7 @@ class GraphFilter extends Component {
                     onConfClick={this.handleConfClick}
                 /> 
                 <SeverityContainer
+                    stat={this.props.stat}
                     severityList={this.props.severityList}
                     scenarioList={this.props.scenarioList}
                     onSeveritiesClick={this.handleSeveritiesClick}

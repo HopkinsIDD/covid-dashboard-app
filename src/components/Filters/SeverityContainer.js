@@ -81,21 +81,25 @@ class SeverityContainer extends Component {
 
     render() {
         const { children } = this.state;
-        return (
-            <div>
-                {children.map(child => {
-                    return (
-                        <div key={child.key}>
-                            {child.severity}
-                        </div>
-                    )
-                })}
-                <div className="filter-description">
-                    High, medium, and low severity correspond to 1%, 0.5%, 
-                    and 0.25% infection fatality rate, respectively.
+        if (this.props.stat.key !== 'incidI') {
+            return (
+                <div>
+                    {children.map(child => {
+                        return (
+                            <div key={child.key}>
+                                {child.severity}
+                            </div>
+                        )
+                    })}
+                    <div className="filter-description">
+                        High, medium, and low severity correspond to 1%, 0.5%, 
+                        and 0.25% infection fatality rate, respectively.
+                    </div>
                 </div>
-            </div>
-        )
+            )
+        } else {
+            return null;
+        }
     }
 }
 
