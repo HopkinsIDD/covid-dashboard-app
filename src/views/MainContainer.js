@@ -476,9 +476,7 @@ class MainContainer extends Component {
                                 />
                                 </div>
                                 <div className="col-3">
-                                    <Legend 
-                                        showConfBounds={this.state.showConfBounds}
-                                    />
+                                    <Legend />
                                 </div>
                             </div>
                             <p></p>
@@ -559,7 +557,6 @@ class MainContainer extends Component {
                             <p></p>                   
                             {this.state.dataLoaded &&
                             <SeverityContainer
-                                stat={this.state.stat}
                                 severityList={this.state.severityList}
                                 scenarioList={this.state.scenarioList}
                                 onSeveritiesClick={this.handleSeveritiesClick}

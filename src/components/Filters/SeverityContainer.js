@@ -81,22 +81,18 @@ class SeverityContainer extends Component {
 
     render() {
         const { children } = this.state;
-        if (this.props.stat.key !== 'incidI') {
-            return (
-                <div>
-                    {children.map(child => {
-                        return (
-                            <div key={child.key}>
-                                {child.severity}
-                            </div>
-                        )
-                    })}
-                </div>
-                
-            )
-        } else {
-            return null;
-        }
+        return (
+            <div>
+                {children.map(child => {
+                    return (
+                        <div key={child.key}>
+                            {child.severity}
+                        </div>
+                    )
+                })}
+            </div>
+            
+        )
     }
 }
 

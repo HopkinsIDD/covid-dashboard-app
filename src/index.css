@@ -222,13 +222,9 @@ ul {
   background-color: #e9ecef;
 } */
 
-.legend-container {
-  height: 9vh;
-}
-
 .legend {
   font-size: 12px;
-  text-align: start;
+  text-align: end;
   margin-bottom: 0px;
   margin-right: 10px;
 }
