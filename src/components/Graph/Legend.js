@@ -31,7 +31,7 @@ function Legend(props) {
         return (
             <div className="legend-container">
                 <p className="legend">
-                    <svg height="2" width="20">
+                    <svg height="4" width="20">
                         <line
                             x1="0" y1="0" x2="50" y2="0"
                             stroke="#4ddaba"
@@ -51,7 +51,7 @@ function Legend(props) {
                     &nbsp;10%-90% confidence bounds
                 </p>
                 <p className="legend">
-                    <svg height="1" width="20">
+                    <svg height="4" width="20">
                         <line
                             x1="0" y1="0" x2="50" y2="0"
                             stroke="#d0d0d0"

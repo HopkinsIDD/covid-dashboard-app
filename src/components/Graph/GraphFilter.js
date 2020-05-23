@@ -9,7 +9,7 @@ import Sliders from '../Filters/Sliders';
 
 class GraphFilter extends Component {
     handleScenarioClick = (i) => {
-        this.props.onScenarioClick(i);
+        this.props.onScenarioClickGraph(i);
     }
 
     handleButtonClick = (i) => {

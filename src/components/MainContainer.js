@@ -87,7 +87,7 @@ class MainContainer extends Component {
 
         const scenario = SCENARIOS[0];      // initial scenario view
         const scenarioList = [scenario];    // updated based on selection
-        const scenarioListChart = Object.keys(SCENARIOS);
+        const scenarioListChart = SCENARIOS.map(s => s.name);
 
         // instantiate initial series and dates
         const { severity, stat } = this.state;
@@ -364,7 +364,7 @@ class MainContainer extends Component {
         this.setState({stat: i, yAxisLabel})
     };
 
-    handleScenarioClick = (items) => {
+    handleScenarioClickGraph = (items) => {
         // items is Array of scenario names
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
         let newScenarios = [];
@@ -379,12 +379,25 @@ class MainContainer extends Component {
             newScenarios.push(scenario);
         }
 
+        console.log('scenarioList Graph', newScenarios)
         this.setState({
             scenarioList: newScenarios,
             scenarioClickCounter: scenarioClkCntr,
             severityList: newSevs
         })        
     };
+
+    handleScenarioClickChart = (items) => {
+        let scenarioListChart = [];
+        for (let item of items) {
+            scenarioListChart.push(item)
+        }
+
+        console.log('scenarioList Chart', scenarioListChart)
+        this.setState({
+            scenarioListChart
+        })        
+    }
 
     handleSeveritiesClick = (i) => {
         let newSevList = _.cloneDeep(this.state.severityList);
@@ -543,7 +556,7 @@ class MainContainer extends Component {
                                 SCENARIOS={this.state.SCENARIOS}
                                 scenario={this.state.scenario}
                                 scenarioList={this.state.scenarioList}
-                                onScenarioClick={this.handleScenarioClick}
+                                onScenarioClickGraph={this.handleScenarioClickGraph}
                                 stat={this.state.stat}
                                 onButtonClick={this.handleButtonClick}
                                 showConfBounds={this.state.showConfBounds}
@@ -584,6 +597,7 @@ class MainContainer extends Component {
                                     width={this.state.graphW - margin.left - margin.right}
                                     height={this.state.graphH}
                                     dataset={this.state.dataset}
+                                    scenarios={this.state.scenarioListChart}
                                     firstDate={this.state.firstDate}
                                     summaryStart={this.state.summaryStart}
                                     summaryEnd={this.state.summaryEnd}
@@ -595,16 +609,16 @@ class MainContainer extends Component {
 
                         <Col className="gutter-row filters" span={6}>
                             <Fragment>
-                            {/* {this.state.dataLoaded &&
+                            {this.state.dataLoaded &&
                                 <Scenarios 
                                     view="chart"
                                     scenarioListChart={this.state.scenarioListChart}
                                     SCENARIOS={this.state.SCENARIOS}
                                     scenario={this.state.scenario}
                                     scenarioList={this.state.scenarioListChart}
-                                    onScenarioClick={this.handleScenarioClick}
+                                    onScenarioClickChart={this.handleScenarioClickChart}
                                 />
-                                } */}
+                                }
                                 <DatePicker 
                                     firstDate={this.state.firstDate}
                                     summaryStart={this.state.summaryStart}

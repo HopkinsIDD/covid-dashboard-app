@@ -41,8 +41,8 @@ class Chart extends Component {
         if (prevProps.summaryStart !== this.props.summaryStart || 
             prevProps.summaryEnd !== this.props.summaryEnd ||
             prevProps.dataset !== this.props.dataset ||
+            prevProps.scenarios !== this.props.scenarios ||
             prevProps.scale !== this.props.scale) {
-            // console.log('summary Start or End or Dataset Changed');
             this.calculateQuantiles();
         }
     }

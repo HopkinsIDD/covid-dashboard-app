@@ -28,6 +28,7 @@ class ChartContainer extends Component {
         if (prevProps.summaryStart !== this.props.summaryStart 
             || prevProps.summaryEnd !== this.props.summaryEnd
             || prevProps.dataset !== this.props.dataset
+            || prevProps.scenarios !== this.props.scenarios
             || prevProps.scale !== this.props.scale) {
             console.log('ComponentDidUpdate Summary Start or End or Dataset')
             this.drawSummaryStatCharts();
@@ -50,7 +51,7 @@ class ChartContainer extends Component {
                     <Chart
                         key={`${param}-chart`}
                         dataset={this.props.dataset}
-                        scenarios={Object.keys(this.props.dataset)}
+                        scenarios={this.props.scenarios}
                         firstDate={this.props.firstDate}
                         summaryStart={this.props.summaryStart}
                         summaryEnd={this.props.summaryEnd}
