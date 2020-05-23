@@ -36,10 +36,33 @@ class SearchBar extends Component {
             children.push(child);
         }
 
+        // FileUploader can go inside dropdown, although it may not be intuitive
+        // const child = {
+        //     key: "uploaded-county",
+        //     button: []
+        // } 
+        // child.button.push(
+        //     <Option
+        //         key="uploaded-county"
+        //         value="uploaded-county">
+        //         <label
+        //             htmlFor="upload">
+        //             Don't see your county? Click to upload a file 
+        //         </label>
+        //         <input
+        //             type="file"
+        //             id="upload"
+        //             onChange={this.handleUpload}>
+        //         </input>
+        //     </Option>
+        // )
+        // children.push(child)
+
         this.setState({children})
     }
 
     handleCountySelect = (event) => {
+        console.log('county select')
 
         const item = COUNTIES.filter(county => county.geoid === event)[0];
 
@@ -64,7 +87,8 @@ class SearchBar extends Component {
         //     });
     }
 
-    handleUpload = (info) => {
+    handleUpload = (event) => {
+        console.log('starting upload')
         // antd uploader doesn't provide data to fileRead
         // if (info.file.status !== 'uploading') {
         //     console.log(info.file, info.fileList);
@@ -76,18 +100,18 @@ class SearchBar extends Component {
         //   }
         
         // event sent from old bootstrap upload element
-        // if (event.target.files.length > 0) {
-        //     const file = event.target.files[0]
-        //     if (this.validateSize(file) && this.validateType(file)) {
-        //         const fileReader = new FileReader();
-        //         fileReader.onload = () => {
-        //             const json = JSON.parse(fileReader.result);
-        //             this.props.onFileUpload(json);
-        //             this.setState({'fileName': file.name})
-        //         }
-        //         fileReader.readAsText(file)
-        //     }
-        // }
+        if (event.target.files.length > 0) {
+            const file = event.target.files[0]
+            if (this.validateSize(file) && this.validateType(file)) {
+                const fileReader = new FileReader();
+                fileReader.onload = () => {
+                    const json = JSON.parse(fileReader.result);
+                    this.props.onFileUpload(json);
+                    this.setState({'fileName': file.name})
+                }
+                fileReader.readAsText(file)
+            }
+        }
         console.log('upload')
     }
 
