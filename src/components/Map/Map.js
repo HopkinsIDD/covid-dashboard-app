@@ -92,6 +92,7 @@ class Map extends Component {
             // console.log(this.props.stat, d.properties[this.props.stat][this.props.dateIdx])
             return (
                 <Tooltip
+                    key={`tooltip-county-boundary-${i}`}
                     title={this.state.tooltipText}
                     visible={this.state.hoveredCounty === d.properties.geoid ? true : false}
                 >
