@@ -286,6 +286,11 @@ class MainContainer extends Component {
         this.setState({ graphW, graphH });
       }
 
+    // updateChartDimensions = () => {
+    //     const chartW = this.chartEl.clientWidth;
+    //     const chartH = this.chartEl.clientHeight;
+    // }
+
     updateThresholdIterate = (series, statThreshold, dates, dateThreshold) => {
         const dateIndex = dates.findIndex(
             date => formatDate(date) === formatDate(dateThreshold)
@@ -360,8 +365,8 @@ class MainContainer extends Component {
             SCENARIOS,
             scenarioList,
             severityList,
-            // countyBoundaries,
-            // statsForCounty
+            countyBoundaries,
+            statsForCounty
         })
     }
     
@@ -408,7 +413,7 @@ class MainContainer extends Component {
     }
 
     handleScenarioClickMap = (item) => {
-        console.log('scenarioMap', item)
+        // console.log('scenarioMap', item)
         this.setState({
             scenarioMap : item
         })        

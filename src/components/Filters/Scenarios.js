@@ -137,7 +137,7 @@ class Scenarios extends Component {
         } else {
             defaultScenario = [this.props.scenario]
         }
-        console.log(this.props.view, defaultScenario)
+        // console.log(this.props.view, defaultScenario)
         return (
             <div>
                 <div className="param-header">SCENARIOS</div>
