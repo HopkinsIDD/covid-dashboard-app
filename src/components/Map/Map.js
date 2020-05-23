@@ -5,7 +5,8 @@ import { max } from 'd3-array';
 import { axisRight } from 'd3-axis';
 import { select } from 'd3-selection';
 import Axis from '../Graph/Axis';
-import { gray } from '../../utils/constants'
+import { gray } from '../../utils/constants';
+import { addCommas } from '../../utils/utils';
 
 
 const legendW = 60;
@@ -20,9 +21,12 @@ class Map extends Component {
             minVal: 0,
             maxVal: 0,
             countyBoundaries: {},
-            yScale: scaleLinear()
+            yScale: scaleLinear(),
+            countyIsHovered: false,
+            hoveredCounty: null
         }
         this.axisRef = React.createRef();
+        this.tooltipRef = React.createRef();
     }
     componentDidMount() {
         const { stat, dateIdx, countyBoundaries, statsForCounty } = this.props;
@@ -45,7 +49,8 @@ class Map extends Component {
                 return (value / population) * 10000
             })
             normalizedStatsAll.push(normalizedStatArray)
-            countyBoundaries.features[i].properties[stat] = normalizedStatArray
+            countyBoundaries.features[i].properties[stat] = statArray
+            countyBoundaries.features[i].properties[`${stat}Norm`] = normalizedStatArray
         }
         // get max of all values in stat array for colorscale
         const maxVal = max(Object.values(statsForCounty).map( county => {
@@ -87,14 +92,43 @@ class Map extends Component {
                 d={pathGenerator(d)}
                 style={{
                     stroke: gray,
-                    fill: ramp(d.properties[this.props.stat][this.props.dateIdx]),
+                    fill: ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]),
                     fillOpacity: 1
                 }}
                 className='counties'
-                onMouseEnter={() => console.log(d)}
-                onMouseLeave={() => console.log('left')}
+                onMouseEnter={(e) => this.handleCountyEnter(e, d)}
+                onMouseLeave={this.handleCountLeave}
             />)})
          return counties
+    }
+
+    handleCountyEnter = (event, feature) => {
+        // console.log(feature)
+        const tooltipText = `${feature.properties.geoid} County <br>
+                            Population: ${addCommas(feature.properties.population)} <br>
+                            ${this.props.statLabel}: ${feature.properties[this.props.stat][this.props.dateIdx]} `
+        // console.log(tooltipText)
+        const tooltip = this.tooltipRef.current;
+        tooltip.innerHTML = tooltipText
+
+        event.preventDefault();
+        const selector = `.mapSVG`
+        const node = document.querySelector(selector)
+        let point = node.createSVGPoint();
+        point.x = event.clientX;
+        point.y = event.clientY;
+        point = point.matrixTransform(node.getScreenCTM().inverse());
+        // console.log(point)
+        tooltip.style.marginLeft = `${point.x}px`;
+        tooltip.style.marginTop = `${point.y}px`;
+
+        this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true })
+    }
+
+    handleCountyLeave = () => {
+        console.log('left')
+
+        this.setState({ hoveredCounty: null, countyIsHovered: false })
     }
 
     drawLegend = () => {
@@ -151,7 +185,7 @@ class Map extends Component {
                         y={this.props.height - gradientMargin}
                     />
                 </svg>
-                <svg width={this.props.width - legendW} height={this.props.height * 0.75}>
+                <svg width={this.props.width - legendW} height={this.props.height * 0.75} className='mapSVG'>
                     <g style={{ stroke: '#00ff00'}}>
                         {/* debug green svg */}
                         {/* <rect
@@ -166,6 +200,9 @@ class Map extends Component {
                         {this.state.countyBoundaries.features && this.drawCounties()}
                     </g>
                 </svg>
+                <div className="tooltip">
+                    <span className="tooltip-text" ref={this.tooltipRef} style={this.state.countyIsHovered ? { visibility: 'visible', width: '135px', position: 'absolute', padding: '10px', zIndex: 10 } : { visibility: 'hidden' }}></span>
+                </div>
             </Fragment>
             
         )

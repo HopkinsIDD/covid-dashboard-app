@@ -19,6 +19,7 @@ class Chart extends Component {
                 'scenario': '',
                 'index': 0
             },
+            rectIsHovered: false,
             // tooltipText: '',
             severityMap: {
                 'high': '1% IFR, 10% hospitalization rate',

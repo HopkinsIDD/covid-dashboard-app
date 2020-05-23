@@ -103,6 +103,7 @@ module.exports = {
 
             geoObj.properties.geoid = geoid;
             geoObj.properties.population = population;
+            geoObj.properties.name = geoObj.properties.NAME;
             
             delete geoObj.properties.GEO_ID;
             delete geoObj.properties.STATE;
