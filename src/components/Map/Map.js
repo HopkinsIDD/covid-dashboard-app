@@ -5,7 +5,7 @@ import { max } from 'd3-array';
 import { axisRight } from 'd3-axis';
 import { select } from 'd3-selection';
 import Axis from '../Graph/Axis';
-import { gray } from '../../utils/constants';
+import { blue, gray } from '../../utils/constants';
 import { addCommas } from '../../utils/utils';
 
 
@@ -91,18 +91,20 @@ class Map extends Component {
                 key={`county-boundary-${i}`}
                 d={pathGenerator(d)}
                 style={{
-                    stroke: gray,
+                    stroke: this.state.hoveredCounty === d.properties.geoid ? blue : gray,
+                    strokeWidth: this.state.hoveredCounty === d.properties.geoid ? 4 : 1,
                     fill: ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]),
                     fillOpacity: 1
                 }}
                 className='counties'
                 onMouseEnter={(e) => this.handleCountyEnter(e, d)}
-                onMouseLeave={this.handleCountLeave}
+                onMouseLeave={this.handleCountyLeave}
             />)})
          return counties
     }
 
     handleCountyEnter = (event, feature) => {
+        console.log('entered')
         // console.log(feature)
         const tooltipText = `${feature.properties.geoid} County <br>
                             Population: ${addCommas(feature.properties.population)} <br>
@@ -112,22 +114,22 @@ class Map extends Component {
         tooltip.innerHTML = tooltipText
 
         event.preventDefault();
-        const selector = `.mapSVG`
+        const selector = `.mapSVG-${this.props.stat}`
         const node = document.querySelector(selector)
         let point = node.createSVGPoint();
         point.x = event.clientX;
         point.y = event.clientY;
+        console.log(point)
         point = point.matrixTransform(node.getScreenCTM().inverse());
-        // console.log(point)
+        console.log(point)
         tooltip.style.marginLeft = `${point.x}px`;
-        tooltip.style.marginTop = `${point.y}px`;
+        tooltip.style.marginTop = `${point.y - 200}px`;
 
         this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true })
     }
 
     handleCountyLeave = () => {
         console.log('left')
-
         this.setState({ hoveredCounty: null, countyIsHovered: false })
     }
 
@@ -141,6 +143,9 @@ class Map extends Component {
         return (
             <Fragment>
                 <div className='titleNarrow'>{`${this.props.statLabel} per 10K people`}</div>
+                <div className="tooltip">
+                    <span className="tooltip-text" ref={this.tooltipRef} style={this.state.countyIsHovered ? { visibility: 'visible', width: '135px', position: 'absolute', padding: '10px', zIndex: 10 } : { visibility: 'hidden' }}></span>
+                </div>
                 <svg width={legendW} height={this.props.height/2}>
                      {/* debug green svg */}
                      {/* <rect
@@ -185,7 +190,7 @@ class Map extends Component {
                         y={this.props.height - gradientMargin}
                     />
                 </svg>
-                <svg width={this.props.width - legendW} height={this.props.height * 0.75} className='mapSVG'>
+                <svg width={this.props.width - legendW} height={this.props.height * 0.75} className={`mapSVG-${this.props.stat}`}>
                     <g style={{ stroke: '#00ff00'}}>
                         {/* debug green svg */}
                         {/* <rect
@@ -200,9 +205,6 @@ class Map extends Component {
                         {this.state.countyBoundaries.features && this.drawCounties()}
                     </g>
                 </svg>
-                <div className="tooltip">
-                    <span className="tooltip-text" ref={this.tooltipRef} style={this.state.countyIsHovered ? { visibility: 'visible', width: '135px', position: 'absolute', padding: '10px', zIndex: 10 } : { visibility: 'hidden' }}></span>
-                </div>
             </Fragment>
             
         )
