@@ -266,7 +266,12 @@ ul {
 }
 
 .slidecontainer {
-  max-width: 170px;
+  max-width: 260px;
+}
+
+.slider-label-row {
+  display: flex;
+  justify-content: space-between;
 }
 
 .slider-max {
@@ -306,6 +311,12 @@ ul {
 
 .graph-wrapper {
   position: relative;
+}
+
+.graph-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .graph-title-row {
@@ -360,6 +371,7 @@ input[type=range] {
   width: 100%;
   margin-bottom: 0px;
   margin-top: 0px;
+  background-color: #f0f2f5;
 }
 input[type=range]:focus {
   outline: none;

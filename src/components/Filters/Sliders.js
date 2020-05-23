@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { addCommas } from '../../utils/utils.js';
 import { timeFormat } from 'd3-time-format';
 import { timeDay }  from 'd3-time';
+// import { Slider } from 'antd'
 
 const getDate = timeFormat('%b %d, %Y');
 const getMonth = timeFormat('%b %d');
@@ -34,6 +35,7 @@ class Sliders extends Component {
     }
 
     handleStatChange = (i) => {
+        console.log(i)
         this.props.onStatSliderChange(i);
     }
 
@@ -56,6 +58,21 @@ class Sliders extends Component {
                     </div>
                 </div>
                 <div className="slidecontainer">
+                    {/* <Slider 
+                        id="statThreshold"
+                        min={seriesMin}
+                        max={seriesMax}
+                        value={statThreshold}
+                        step={100}
+                        ref={ref => this.statInput = ref}
+                        onChange={
+                            () => {this.handleStatChange(this.statInput.value)}
+                        }
+                        
+                        // marks={this.state.marks}
+                        // tipFormatter={this.formatDateTooltip}
+                    
+                    /> */}
                     <input
                         id="statThreshold"
                         type="range"
@@ -68,11 +85,11 @@ class Sliders extends Component {
                             () => {this.handleStatChange(this.statInput.value)}
                         }>
                     </input> 
-                    <div className="row slider-label">
-                        <p className="col-6 filter-label callout">
+                    <div className=".slider-label-row slider-label">
+                        <p className="filter-label callout">
                             {addCommas(seriesMin)}
                         </p>
-                        <p className="col-6 filter-label slider-max callout">
+                        <p className="filter-label slider-max callout">
                             {addCommas(seriesMax)}
                         </p>
                     </div>
@@ -99,12 +116,12 @@ class Sliders extends Component {
                             () => {this.handleDateChange(this.dateInput.value)}
                         }>
                     </input>
-                    <div className="row slider-label">
-                        <p className="col-6 filter-label callout">
+                    <div className="slider-label-row slider-label">
+                        <p className="filter-label callout">
                             {/* {firstDateStr} */}
                             {getMonth(dateRange[0])}
                         </p>
-                        <p className="col-6 filter-label slider-max callout">
+                        <p className="filter-label slider-max callout">
                             {/* {lastDateStr} */}
                             {getMonth(timeDay.offset(dateRange[1], -1))}
                         </p>
