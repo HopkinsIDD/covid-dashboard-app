@@ -83,15 +83,17 @@ class Map extends Component {
         const counties = this.state.countyBoundaries.features.map((d,i) => {
             // console.log(this.props.stat, d.properties[this.props.stat][this.props.dateIdx])
             return (<path
-            key={`county-boundary-${i}`}
-            d={pathGenerator(d)}
-            style={{
-                stroke: gray,
-                fill: ramp(d.properties[this.props.stat][this.props.dateIdx]),
-                fillOpacity: 1
-            }}
-            className='counties'
-        />)})
+                key={`county-boundary-${i}`}
+                d={pathGenerator(d)}
+                style={{
+                    stroke: gray,
+                    fill: ramp(d.properties[this.props.stat][this.props.dateIdx]),
+                    fillOpacity: 1
+                }}
+                className='counties'
+                onMouseEnter={() => console.log(d)}
+                onMouseLeave={() => console.log('left')}
+            />)})
          return counties
     }
 
