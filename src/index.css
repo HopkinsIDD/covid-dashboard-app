@@ -579,3 +579,7 @@ input[type=range]::-moz-focus-outer {
 .section-spacer {
   margin-bottom: 10vh;
 }
+
+.selection {
+  stroke-opacity: 0;
+}
