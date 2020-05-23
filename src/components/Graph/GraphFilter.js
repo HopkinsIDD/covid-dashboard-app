@@ -44,8 +44,8 @@ class GraphFilter extends Component {
         return (
             <div>
                 <Legend />
-                <div className="param-header">SCENARIOS</div>
                 <Scenarios
+                    view="graph"
                     SCENARIOS={this.props.SCENARIOS}
                     scenario={this.props.scenario}
                     scenarioList={this.props.scenarioList}

@@ -5,17 +5,17 @@ class Scenarios extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            scenarioObj: [],
+            scenariosGraph: [],
             children: []
         }
     }
 
     componentDidMount() {
         const children = [];
-        const scenarioObj = Array.from(this.props.SCENARIOS);
+        const scenariosGraph = Array.from(this.props.SCENARIOS);
         const { Option } = Select;
 
-        for (let scenario of scenarioObj) {
+        for (let scenario of scenariosGraph) {
             const child = {
                 key: scenario.key,
                 checkbox: []
@@ -29,9 +29,8 @@ class Scenarios extends Component {
             children.push(child);
         }
 
-
         this.setState({
-            scenarioObj,
+            scenariosGraph,
             children
         })
     }
@@ -45,10 +44,10 @@ class Scenarios extends Component {
             const { scenarioList } = this.props;
 
             const keys = Object.values(scenarioList).map(scen => scen.key);
-            const scenarioObj = Array.from(this.props.SCENARIOS);
+            const scenariosGraph = Array.from(this.props.SCENARIOS);
             
             if (this.props.scenarioList.length >= 2) {
-                scenarioObj.map(scenario => {
+                scenariosGraph.map(scenario => {
                     if (keys.includes(scenario.key)) {
                         return scenario.disabled = false;
                     } else {
@@ -56,13 +55,13 @@ class Scenarios extends Component {
                         }
                   })
             } else {
-                scenarioObj.map(scenario => {return scenario.disabled = false})
+                scenariosGraph.map(scenario => {return scenario.disabled = false})
             }
 
             const children = [];
             const { Option } = Select;
     
-            for (let scenario of scenarioObj) {
+            for (let scenario of scenariosGraph) {
                 const child = {
                     key: scenario.key,
                     checkbox: []
@@ -77,24 +76,16 @@ class Scenarios extends Component {
                 children.push(child);
             }
     
-
             this.setState({
-                scenarioObj,
+                scenariosGraph,
                 children
             })
         }
     }
 
     handleChange = (event) => {
-        console.log('event', event)
-        console.log('before', this.props.scenarioList.map(s => s.key))
-
         // prevent user from deselecting all scenarios
         if (event.length === 0) { return };
-
-        // debugger;
-        // const eventClicked = event[event.length -1];
-        // const item = this.props.SCENARIOS.filter(s => s.key === eventClicked)[0];
 
         this.props.onScenarioClick(event);
     }
@@ -103,6 +94,7 @@ class Scenarios extends Component {
         const defaultScenario = this.props.scenarioList[0].key;
         return (
             <div>
+                <div className="param-header">SCENARIOS</div>
                 <Select
                     mode="multiple"
                     style={{ width: '70%' }}
