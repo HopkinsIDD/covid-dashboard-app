@@ -294,6 +294,11 @@ ul {
   /* border: 1px solid red; */
 }
 
+.map-wrapper {
+  display: flex;
+  flex-flow: wrap;
+}
+
 .map {
   /* border: 1px solid blue; */
 }

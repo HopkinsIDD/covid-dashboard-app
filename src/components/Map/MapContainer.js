@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { getDateIdx, getReadableDate } from '../../utils/utils';
+import { mapLowColors, mapHighColors } from '../../utils/constants';
 
-const lowColors = ['#deebf7', '#e5f5e0', '#fee6ce'] 
-const highColors = ['#3885fa', '#008769', '#e6550d']
+// const lowColors = ['#deebf7', '#e5f5e0', '#fee6ce'] 
+// const highColors = ['#3885fa', '#008769', '#e6550d']
 
 class MapContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
             children: [],
-            parameters: ['incidI', 'incidH', 'incidD'],
-            parameterLabels: ['Infections', 'Hospitalizations', 'Deaths'],
+            parameters: ['incidI', 'incidH', 'incidICU', 'incidD'],
+            parameterLabels: ['Infections', 'Hospitalizations', 'ICU Cases', 'Deaths'],
             scaleColors: []
         }
     }
@@ -34,10 +35,10 @@ class MapContainer extends Component {
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
                     statsForCounty={this.props.statsForCounty}
-                    width={this.props.width / this.state.parameters.length}
+                    width={this.props.width / 2}
                     height={this.props.height}
-                    lowColor={lowColors[index]}
-                    highColor={highColors[index]}
+                    lowColor={mapLowColors[index]}
+                    highColor={mapHighColors[index]}
                 />
             ) 
             children.push(child);
@@ -68,10 +69,10 @@ class MapContainer extends Component {
                         dateIdx={dateIdx}
                         countyBoundaries={this.props.countyBoundaries}
                         statsForCounty={this.props.statsForCounty}
-                        width={this.props.width / this.state.parameters.length}
+                        width={this.props.width / 2}
                         height={this.props.height}
-                        lowColor={lowColors[index]}
-                        highColor={highColors[index]}
+                        lowColor={mapLowColors[index]}
+                        highColor={mapHighColors[index]}
                     />
                 ) 
                 children.push(child);
@@ -90,10 +91,10 @@ class MapContainer extends Component {
         return (
             <div>
                 <div className="scenario-title titleNarrow">Geographic Summary:  <span className="callout">{getReadableDate(this.props.selectedDate)}</span></div>
-                <div className="row">
+                <div className="map-wrapper">
                     {this.state.children.map(child => {
                         return (
-                            <div className="col map" key={child.key}>
+                            <div className="map" key={child.key}>
                                 {child.map}
                             </div>
                         )

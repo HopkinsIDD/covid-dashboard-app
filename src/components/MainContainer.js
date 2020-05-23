@@ -675,18 +675,12 @@ class MainContainer extends Component {
                         </Col>
 
                         <Col className="gutter-row filters" span={6}>
-                            <DatePicker 
-                                firstDate={this.state.firstDate}
-                                summaryStart={this.state.summaryStart}
-                                summaryEnd={this.state.summaryEnd}
-                                onHandleSummaryDates={this.handleSummaryDates}
-                            />
-
                             {this.state.dataLoaded &&
                             <DateSlider
                                 dates={this.state.allTimeDates}
                                 endIndex={(this.state.allTimeDates.length - 1).toString()}
                                 currentDateIndex={this.state.mapCurrentDateIndex.toString()}
+                                selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
                                 onMapSliderChange={this.handleMapSliderChange}
                             />
                              }

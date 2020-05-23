@@ -85,7 +85,7 @@ class Sliders extends Component {
                             () => {this.handleStatChange(this.statInput.value)}
                         }>
                     </input> 
-                    <div className=".slider-label-row slider-label">
+                    <div className="slider-label-row slider-label">
                         <p className="filter-label callout">
                             {addCommas(seriesMin)}
                         </p>
