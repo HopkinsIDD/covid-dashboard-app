@@ -89,7 +89,7 @@ class MapContainer extends Component {
         // const scenario = scenarioList.length > 0 ? scenarioList[0] : scenarioList
         return (
             <div>
-                <div className="scenario-title titleNarrow">{`Geographic Summary of ${getReadableDate(this.props.selectedDate)}`}</div>
+                <div className="scenario-title titleNarrow">Geographic Summary:  <span className="callout">{getReadableDate(this.props.selectedDate)}</span></div>
                 <div className="row">
                     {this.state.children.map(child => {
                         return (

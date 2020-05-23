@@ -4,7 +4,9 @@ import { scaleLinear } from 'd3-scale';
 import { max } from 'd3-array';
 import { axisRight } from 'd3-axis';
 import { select } from 'd3-selection';
+import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
+
 import { blue, gray } from '../../utils/constants';
 import { addCommas } from '../../utils/utils';
 
@@ -23,7 +25,8 @@ class Map extends Component {
             countyBoundaries: {},
             yScale: scaleLinear(),
             countyIsHovered: false,
-            hoveredCounty: null
+            hoveredCounty: null,
+            tooltipText: ''
         }
         this.axisRef = React.createRef();
         this.tooltipRef = React.createRef();
@@ -87,45 +90,38 @@ class Map extends Component {
 
         const counties = this.state.countyBoundaries.features.map((d,i) => {
             // console.log(this.props.stat, d.properties[this.props.stat][this.props.dateIdx])
-            return (<path
-                key={`county-boundary-${i}`}
-                d={pathGenerator(d)}
-                style={{
-                    stroke: this.state.hoveredCounty === d.properties.geoid ? blue : gray,
-                    strokeWidth: this.state.hoveredCounty === d.properties.geoid ? 4 : 1,
-                    fill: ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]),
-                    fillOpacity: 1
-                }}
-                className='counties'
-                onMouseEnter={(e) => this.handleCountyEnter(e, d)}
-                onMouseLeave={this.handleCountyLeave}
-            />)})
+            return (
+                <Tooltip
+                    title={this.state.tooltipText}
+                    visible={this.state.hoveredCounty === d.properties.geoid ? true : false}
+                >
+                    <path
+                        key={`county-boundary-${i}`}
+                        d={pathGenerator(d)}
+                        style={{
+                            stroke: this.state.hoveredCounty === d.properties.geoid ? blue : gray,
+                            strokeWidth: this.state.hoveredCounty === d.properties.geoid ? 4 : 1,
+                            fill: ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]),
+                            fillOpacity: 1
+                        }}
+                        className='counties'
+                        onMouseEnter={(e) => this.handleCountyEnter(e, d)}
+                        onMouseLeave={this.handleCountyLeave}
+                    />
+                </Tooltip>
+            )})
          return counties
     }
 
     handleCountyEnter = (event, feature) => {
         console.log('entered')
         // console.log(feature)
-        const tooltipText = `${feature.properties.geoid} County <br>
-                            Population: ${addCommas(feature.properties.population)} <br>
+        const tooltipText = `${feature.properties.geoid} County \r\n\r\n
+                            Population: ${addCommas(feature.properties.population)} \r\n\r\n
                             ${this.props.statLabel}: ${feature.properties[this.props.stat][this.props.dateIdx]} `
         // console.log(tooltipText)
-        const tooltip = this.tooltipRef.current;
-        tooltip.innerHTML = tooltipText
 
-        event.preventDefault();
-        const selector = `.mapSVG-${this.props.stat}`
-        const node = document.querySelector(selector)
-        let point = node.createSVGPoint();
-        point.x = event.clientX;
-        point.y = event.clientY;
-        console.log(point)
-        point = point.matrixTransform(node.getScreenCTM().inverse());
-        console.log(point)
-        tooltip.style.marginLeft = `${point.x}px`;
-        tooltip.style.marginTop = `${point.y - 200}px`;
-
-        this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true })
+        this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true, tooltipText })
     }
 
     handleCountyLeave = () => {
@@ -143,9 +139,6 @@ class Map extends Component {
         return (
             <Fragment>
                 <div className='titleNarrow'>{`${this.props.statLabel} per 10K people`}</div>
-                <div className="tooltip">
-                    <span className="tooltip-text" ref={this.tooltipRef} style={this.state.countyIsHovered ? { visibility: 'visible', width: '135px', position: 'absolute', padding: '10px', zIndex: 10 } : { visibility: 'hidden' }}></span>
-                </div>
                 <svg width={legendW} height={this.props.height/2}>
                      {/* debug green svg */}
                      {/* <rect
