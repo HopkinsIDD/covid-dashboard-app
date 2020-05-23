@@ -1,8 +1,5 @@
 import React, { Fragment } from 'react';
-import { addCommas } from '../../utils/utils.js';
-import { timeFormat } from 'd3-time-format';
-
-const getReadableDate = timeFormat('%b %d, %Y');
+import { addCommas, getReadableDate } from '../../utils/utils.js';
 
 function SummaryLabel(props) {
     // console.log(props)

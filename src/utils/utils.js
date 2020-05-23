@@ -1,5 +1,6 @@
 import { extent } from 'd3-array';
 import { timeDay } from 'd3-time';
+import { timeFormat } from 'd3-time-format';
 ///////////////// UTILS ///////////////////
 
 export function buildScenarios(dataset) {
@@ -46,4 +47,6 @@ export function capitalize(s) {
   if (typeof s !== 'string') return ''
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
+
+export const getReadableDate = timeFormat('%b %d, %Y');
 

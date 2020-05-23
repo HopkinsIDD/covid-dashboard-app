@@ -3,9 +3,7 @@ import Chart from '../Chart/Chart';
 import SummaryLabel from '../Chart/SummaryLabel';
 // import { scaleLinear } from 'd3-scale';
 import { COUNTYNAMES, scenarioColors, blue } from '../../utils/constants'
-import { timeFormat } from 'd3-time-format';
-
-const getReadableDate = timeFormat('%b %d, %Y');
+import { getReadableDate } from '../../utils/utils'
 
 class ChartContainer extends Component {
     constructor(props) {
