@@ -95,6 +95,7 @@ class Map extends Component {
                     key={`tooltip-county-boundary-${i}`}
                     title={this.state.tooltipText}
                     visible={this.state.hoveredCounty === d.properties.geoid ? true : false}
+                    data-html="true"
                 >
                     <path
                         key={`county-boundary-${i}`}
@@ -117,10 +118,10 @@ class Map extends Component {
     handleCountyEnter = (event, feature) => {
         console.log('entered')
         // console.log(feature)
-        const tooltipText = `${feature.properties.geoid} County \r\n\r\n
-                            Population: ${addCommas(feature.properties.population)} \r\n\r\n
-                            ${this.props.statLabel}: ${feature.properties[this.props.stat][this.props.dateIdx]} `
-        // console.log(tooltipText)
+        const text = `${feature.properties.geoid} County <br>
+                        Population: ${addCommas(feature.properties.population)} <br>
+                        ${this.props.statLabel}: ${feature.properties[this.props.stat][this.props.dateIdx]}`
+        const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
 
         this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true, tooltipText })
     }
