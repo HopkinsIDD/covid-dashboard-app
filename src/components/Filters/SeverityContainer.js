@@ -93,7 +93,8 @@ class SeverityContainer extends Component {
                     })}
                     <div className="filter-description">
                         High, medium, and low severity correspond to 1%, 0.5%, 
-                        and 0.25% infection fatality rate, respectively.
+                        and 0.25% infection fatality rate, and 10%, 5% and 2.5%
+                        hospitatlization rate, respectively.
                     </div>
                 </div>
             )

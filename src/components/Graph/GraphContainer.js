@@ -182,7 +182,7 @@ class GraphContainer extends Component {
               <div className="y-axis-label titleNarrow graph-yLabel">
                   {this.props.yAxisLabel}
               </div>
-              <div className="resetRow graph-title-row">
+              <div className="graph-title-row">
               <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                 {scenarioList.map((scenario, i) => {
                     const scenarioTitle = scenario.name.replace('_', ' ');
@@ -201,7 +201,7 @@ class GraphContainer extends Component {
                             </div>
                 } )}
             </div>
-              <div className="resetRow graph-title-row callout-row">
+              <div className="graph-title-row callout-row">
                 <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                     {children.map( (child, i) => {
                         return (
@@ -227,7 +227,7 @@ class GraphContainer extends Component {
                         )
                     })}
                 </div>
-                <div className="row resetRow">
+                <div className="graph-container">
                   {this.state.scaleDomains &&
                   <Fragment>
                         <svg 

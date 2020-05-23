@@ -514,7 +514,7 @@ class MainContainer extends Component {
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16}>
                             <div
-                                className="graph resetRow"
+                                className="graph"
                                 ref={ (graphEl) => { this.graphEl = graphEl } }
                                 >
                                 {this.state.dataLoaded &&
