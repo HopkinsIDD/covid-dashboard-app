@@ -15,6 +15,7 @@ import Brush from './Filters/Brush';
 import GraphFilter from './Graph/GraphFilter';
 import DatePicker from './Chart/DatePicker';
 import ScaleToggle from './Chart/ScaleToggle';
+import DateSlider from './Map/DateSlider';
 
 import { buildScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
@@ -24,7 +25,7 @@ import { STATS, LEVELS, margin } from '../utils/constants';
 
 const dataset = require('../store/geo06085.json');
 // TODO: is this file affecting performance?
-// const geojsonStats = require('../store/statsForMap.json')
+const geojsonStats = require('../store/statsForMap.json')
 
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
@@ -73,6 +74,7 @@ class MainContainer extends Component {
             brushActive: false,
             scenarioClickCounter: 0,
             summaryScale: 'power',
+            mapCurrentDateIndex: 0
         };
     };
 
@@ -143,8 +145,10 @@ class MainContainer extends Component {
 
         // instantiates countyBoundaries
         const state = this.state.geoid.slice(0, 2);
-        // const countyBoundaries = require('../store/geoMapByState.json')[state];
-        // const statsForCounty = geojsonStats[state];
+        const countyBoundaries = require('../store/geoMapByState.json')[state];
+        const statsForCounty = geojsonStats[state];
+        const mapCurrentDateIndex = allTimeDates.findIndex( date => formatDate(date) === formatDate(new Date()));
+        // console.log(mapCurrentDateIndex);
 
         this.setState({
             dataset,
@@ -165,9 +169,10 @@ class MainContainer extends Component {
             lastDate,
             percExceedenceList,
             confBoundsList: [filteredConfBounds],
-            // countyBoundaries,
-            // statsForCounty,
+            countyBoundaries,
+            statsForCounty,
             summaryStart,
+            mapCurrentDateIndex
             // graphW,
             // graphH
         }, () => {
@@ -343,8 +348,8 @@ class MainContainer extends Component {
 
         // re-initialize countyBoundaries
         const state = i.geoid.slice(0, 2);
-        // const countyBoundaries = require('../store/geoMapByState.json')[state];
-        // const statsForCounty = geojsonStats[state];
+        const countyBoundaries = require('../store/geoMapByState.json')[state];
+        const statsForCounty = geojsonStats[state];
 
         this.setState({
             dataset,
@@ -481,6 +486,12 @@ class MainContainer extends Component {
             summaryEnd: end
         });
     };
+
+    handleMapSliderChange = (index) => {
+        this.setState({
+            mapCurrentDateIndex: +index
+        })
+    }
 
     render() {
         const { Content } = Layout;
@@ -643,6 +654,9 @@ class MainContainer extends Component {
                         <Col className="gutter-row container" span={16}>
 
                             <div className="row section-spacer"><p></p><p></p></div>
+                            <div className="map-dateSlider">
+
+                            </div>
                             {this.state.dataLoaded &&
                             <div className="map-container">
                                 <MapContainer
@@ -652,7 +666,7 @@ class MainContainer extends Component {
                                     // scenarioList={this.state.scenarioList}
                                     geoid={this.state.geoid}
                                     firstDate={this.state.firstDate}
-                                    dateThreshold={this.state.dateThreshold}
+                                    selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
                                     countyBoundaries={this.state.countyBoundaries}
                                     statsForCounty={this.state.statsForCounty}
                                 />
@@ -667,6 +681,15 @@ class MainContainer extends Component {
                                 summaryEnd={this.state.summaryEnd}
                                 onHandleSummaryDates={this.handleSummaryDates}
                             />
+
+                            {this.state.dataLoaded &&
+                            <DateSlider
+                                dates={this.state.allTimeDates}
+                                endIndex={(this.state.allTimeDates.length - 1).toString()}
+                                currentDateIndex={this.state.mapCurrentDateIndex.toString()}
+                                onMapSliderChange={this.handleMapSliderChange}
+                            />
+                             }
                         </Col>
                     </Row>
                 </Content>

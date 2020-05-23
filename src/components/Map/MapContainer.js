@@ -19,7 +19,7 @@ class MapContainer extends Component {
     componentDidMount() {
         // TODO: which scenario to display? default is first scenario (preprocessed)
         const children = [];
-        const dateIdx = getDateIdx(this.props.firstDate, this.props.dateThreshold);
+        const dateIdx = getDateIdx(this.props.firstDate, this.props.selectedDate);
 
         for (let [index, param] of this.state.parameters.entries()) {
             const child = {
@@ -50,10 +50,10 @@ class MapContainer extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.geoid !== prevProps.geoid 
-            || this.props.dateThreshold !== prevProps.dateThreshold) {
+            || this.props.selectedDate !== prevProps.selectedDate) {
 
             const children = [];
-            const dateIdx = getDateIdx(this.props.firstDate, this.props.dateThreshold);
+            const dateIdx = getDateIdx(this.props.firstDate, this.props.selectedDate);
 
             for (let [index, param] of this.state.parameters.entries()) {
                 const child = {
@@ -89,7 +89,7 @@ class MapContainer extends Component {
         // const scenario = scenarioList.length > 0 ? scenarioList[0] : scenarioList
         return (
             <div>
-                <h2>{`Geographic Summary of ${getReadableDate(this.props.dateThreshold)}`}</h2>
+                <div className="scenario-title titleNarrow">{`Geographic Summary of ${getReadableDate(this.props.selectedDate)}`}</div>
                 <div className="row">
                     {this.state.children.map(child => {
                         return (
