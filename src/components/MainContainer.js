@@ -1,26 +1,30 @@
-import React, { Component, Fragment } from 'react'
-import GraphContainer from '../components/Graph/GraphContainer';
-import ChartContainer from '../components/Chart/ChartContainer';
-import MapContainer from '../components/Map/MapContainer';
-import Search from '../components/Search'
-import Brush from '../components/Filters/Brush';
-import Legend from '../components/Graph/Legend';
-import Buttons from '../components/Filters/Buttons';
-import Scenarios from '../components/Filters/Scenarios';
-import SeverityContainer from '../components/Filters/SeverityContainer';
-import Sliders from '../components/Filters/Sliders';
-import Overlays from '../components/Filters/Overlays';
-import DatePicker from '../components/Chart/DatePicker';
-import ScaleToggle from '../components/Chart/ScaleToggle';
+import React, { Component, Fragment } from 'react';
+import { Layout, Row, Col } from 'antd';
 import _ from 'lodash';
+
+// import MainGraph from './Graph/MainGraph';
+// import MainChart from './Chart/MainChart';
+// import MainMap from './Map/MainMap';
+import Scenarios from './Filters/Scenarios';
+
+import GraphContainer from './Graph/GraphContainer';
+import ChartContainer from './Chart/ChartContainer';
+import MapContainer from './Map/MapContainer';
+import Search from './Search/Search'
+import Brush from './Filters/Brush';
+import GraphFilter from './Graph/GraphFilter';
+import DatePicker from './Chart/DatePicker';
+import ScaleToggle from './Chart/ScaleToggle';
+
 import { buildScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { maxIndex } from 'd3-array';
 import { STATS, LEVELS, margin } from '../utils/constants';
+
 const dataset = require('../store/geo06085.json');
 // TODO: is this file affecting performance?
-const geojsonStats = require('../store/statsForMap.json')
+// const geojsonStats = require('../store/statsForMap.json')
 
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
@@ -42,6 +46,7 @@ class MainContainer extends Component {
             SCENARIOS: [],
             scenario: {},
             scenarioList: [],           
+            scenarioListChart: [],           
             severity: _.cloneDeep(LEVELS[0]), 
             severityList: [_.cloneDeep(LEVELS[0])],
             scenarioHovered: '',
@@ -79,8 +84,10 @@ class MainContainer extends Component {
         
         // build scenarios for selected geoID
         const SCENARIOS = buildScenarios(dataset); // constant for geoID
+
         const scenario = SCENARIOS[0];      // initial scenario view
         const scenarioList = [scenario];    // updated based on selection
+        const scenarioListChart = SCENARIOS.map(s => s.name);
 
         // instantiate initial series and dates
         const { severity, stat } = this.state;
@@ -123,7 +130,7 @@ class MainContainer extends Component {
             return newS
         })
         
-        const yAxisLabel = `Number of ${stat.name} per Day`;
+        const yAxisLabel = `Daily ${stat.name}`;
         const percExceedenceList = [percExceedence]
 
         // instantiate confidence bounds
@@ -136,17 +143,15 @@ class MainContainer extends Component {
 
         // instantiates countyBoundaries
         const state = this.state.geoid.slice(0, 2);
-        const countyBoundaries = require('../store/geoMapByState.json')[state];
-        const statsForCounty = geojsonStats[state];
-        // console.log(state)
-        // console.log(countyBoundaries)
-        // console.log(statsForCounty)
+        // const countyBoundaries = require('../store/geoMapByState.json')[state];
+        // const statsForCounty = geojsonStats[state];
 
         this.setState({
             dataset,
             SCENARIOS,
             scenario,
             scenarioList,
+            scenarioListChart,
             dates: newDates,
             allTimeDates,
             seriesList: [filteredSeries],
@@ -160,8 +165,8 @@ class MainContainer extends Component {
             lastDate,
             percExceedenceList,
             confBoundsList: [filteredConfBounds],
-            countyBoundaries,
-            statsForCounty,
+            // countyBoundaries,
+            // statsForCounty,
             summaryStart,
             // graphW,
             // graphH
@@ -324,6 +329,7 @@ class MainContainer extends Component {
     }
 
     handleCountySelect = (i) => {
+        console.log('public county selected')
         const dataset = require(`../store/geo${i.geoid}.json`);
 
         // re-initialize scenarios
@@ -337,8 +343,8 @@ class MainContainer extends Component {
 
         // re-initialize countyBoundaries
         const state = i.geoid.slice(0, 2);
-        const countyBoundaries = require('../store/geoMapByState.json')[state];
-        const statsForCounty = geojsonStats[state];
+        // const countyBoundaries = require('../store/geoMapByState.json')[state];
+        // const statsForCounty = geojsonStats[state];
 
         this.setState({
             dataset,
@@ -346,46 +352,52 @@ class MainContainer extends Component {
             SCENARIOS,
             scenarioList,
             severityList,
-            countyBoundaries,
-            statsForCounty
+            // countyBoundaries,
+            // statsForCounty
         })
     }
     
-    handleUpload = (i) => {
-        this.setState({dataset: i})
-    }
+    handleUpload = (i) => {this.setState({dataset: i})};
 
     handleButtonClick = (i) => {
-        const yAxisLabel = `Number of Daily ${i.name}`;
+        const yAxisLabel = `Daily ${i.name}`;
         this.setState({stat: i, yAxisLabel})
     };
 
-    handleScenarioClick = (i) => {
-        let newScenarios = Array.from(this.state.scenarioList);
-        let newSevs = _.cloneDeep(this.state.severityList);
-        const scenarioKeys = Object.values(newScenarios).map(s => s.key);
+    handleScenarioClickGraph = (items) => {
+        // items is Array of scenario names
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
+        let newScenarios = [];
+        let newSevs = [];
 
-        // new scenario being selected
-        if (!scenarioKeys.includes(i.key)) {
-            // return high sev as default
+        for (let item of items) {
             const defaultSev = _.cloneDeep(LEVELS[0]); 
-            defaultSev.scenario = i.key;
+            defaultSev.scenario = item;
             newSevs.push(defaultSev)
-            newScenarios.push(i);
-        // scenario being turned off
-        } else {
-            if (this.state.scenarioList.length > 1) {
-                newSevs = newSevs.filter(sev => sev.scenario !== i.key)
-                newScenarios = newScenarios.filter(scenario => scenario.key !== i.key);
-            } 
+
+            const scenario = this.state.SCENARIOS.filter(s => s.key === item)[0];
+            newScenarios.push(scenario);
         }
+
+        console.log('scenarioList Graph', newScenarios)
         this.setState({
             scenarioList: newScenarios,
             scenarioClickCounter: scenarioClkCntr,
             severityList: newSevs
         })        
     };
+
+    handleScenarioClickChart = (items) => {
+        let scenarioListChart = [];
+        for (let item of items) {
+            scenarioListChart.push(item)
+        }
+
+        console.log('scenarioList Chart', scenarioListChart)
+        this.setState({
+            scenarioListChart
+        })        
+    }
 
     handleSeveritiesClick = (i) => {
         let newSevList = _.cloneDeep(this.state.severityList);
@@ -397,17 +409,9 @@ class MainContainer extends Component {
         this.setState({severityList: newSevList});
     };
 
-    handleSeveritiesHover = (i) => {
-        this.setState({
-            scenarioHovered: i,
-        })
-    }
+    handleSeveritiesHover = (i) => {this.setState({scenarioHovered: i})};
 
-    handleSeveritiesHoverLeave = () => {
-        this.setState({
-            scenarioHovered: '',
-        })
-    }
+    handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleStatSliderChange = (thresh) => {
         const { dates, dateThreshold, allTimeDates } = this.state;
@@ -443,7 +447,6 @@ class MainContainer extends Component {
             const percExceedence = simsOver / copyList[i].length;
             percExceedenceList.push(percExceedence);
         }
-    
         this.setState({
             seriesList: copyList,
             allTimeSeries: allSeriesCopy,
@@ -452,27 +455,13 @@ class MainContainer extends Component {
         })
     }
 
-    handleBrushRange = (i) => {
-        this.setState({
-            dateRange: i
-        });
-    };
+    handleBrushRange = (i) => {this.setState({dateRange: i});};
 
-    handleBrushStart = () => {
-        this.setState({
-            brushActive: true
-        })
-    }
+    handleBrushStart = () => {this.setState({brushActive: true})}
 
-    handleBrushEnd = () => {
-        this.setState({
-            brushActive: false
-        })
-    }
+    handleBrushEnd = () => {this.setState({brushActive: false})}
 
-    handleReprSliderChange = (i) => {
-        this.setState({r0: i});
-    };
+    handleScaleToggle = (scale) => {this.setState({ summaryScale: scale })}
 
     handleConfClick = () => {
         this.setState(prevState => ({
@@ -486,46 +475,33 @@ class MainContainer extends Component {
         }));
     };
 
-    handleSummaryStart = (date) => {
-        console.log('start', date)
-        this.setState({summaryStart: date});
-    }
-
-    handleSummaryEnd = (date) => {
-        console.log('end', date)
-        this.setState({summaryEnd: date});
-    }
-
-    handleScaleToggle = (scale) => {
-        console.log('scale', scale)
-        this.setState({ summaryScale: scale })
-    }
+    handleSummaryDates = (start, end) => {
+        this.setState({
+            summaryStart: start,
+            summaryEnd: end
+        });
+    };
 
     render() {
+        const { Content } = Layout;
         return (
-            <div className="main-container">
-                <div className="container">
-                    <div className="row section-spacer">
-                        <div className="col-10">
-                            <Search 
-                                stat={this.state.stat}
-                                geoid={this.state.geoid}
-                                onFileUpload={this.handleUpload}
-                                onCountySelect={this.handleCountySelect}
-                            />
-                            <div className="row">
-                                <div className="col-9">
-                                    <Buttons
-                                        stat={this.state.stat}
-                                        onButtonClick={this.handleButtonClick}
-                                    />
-                                    </div>
-                                    <div className="col-3">
-                                        <Legend />
-                                    </div>
-                                </div>
-                            <p></p>
+            <Layout>
 
+                {/* Search Component */}
+                <Search
+                    stat={this.state.stat}
+                    geoid={this.state.geoid}
+                    onFileUpload={this.handleUpload}
+                    onCountySelect={this.handleCountySelect}>
+                </Search>
+
+                {/* MainGraph Component */}
+                <Content style={{ padding: '50px 0' }}>
+                    <div className="content-section">
+                        <div className="content-header">Scenario Comparisons</div>
+                    </div>
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                        <Col className="gutter-row container" span={16}>
                             <div
                                 className="graph resetRow"
                                 ref={ (graphEl) => { this.graphEl = graphEl } }
@@ -572,6 +548,100 @@ class MainContainer extends Component {
                                 </div>
                                 }
                             </div>
+                        </Col>
+
+                        <Col className="gutter-row filters" span={6}>
+                            {this.state.dataLoaded &&
+                            <GraphFilter
+                                SCENARIOS={this.state.SCENARIOS}
+                                scenario={this.state.scenario}
+                                scenarioList={this.state.scenarioList}
+                                onScenarioClickGraph={this.handleScenarioClickGraph}
+                                stat={this.state.stat}
+                                onButtonClick={this.handleButtonClick}
+                                showConfBounds={this.state.showConfBounds}
+                                onConfClick={this.handleConfClick}
+                                severityList={this.state.severityList}
+                                onSeveritiesClick={this.handleSeveritiesClick}
+                                onSeveritiesHover={this.handleSeveritiesHover}
+                                onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
+                                dates={this.state.dates}
+                                seriesMax={this.state.seriesMax}
+                                seriesMin={this.state.seriesMin}
+                                statThreshold={this.state.statThreshold}
+                                dateThreshold={this.state.dateThreshold}
+                                dateThresholdIdx={this.state.dateThresholdIdx}
+                                firstDate={this.state.firstDate}
+                                lastDate={this.state.lastDate}
+                                dateRange={this.state.dateRange}
+                                onStatSliderChange={this.handleStatSliderChange}
+                                onDateSliderChange={this.handleDateSliderChange}
+                                 />
+                            }
+                        </Col>
+                    </Row>
+                </Content>
+
+                {/* MainChart Component */}
+                <Content style={{ background: 'white', padding: '50px 0' }}>
+                    <div className="content-section">
+                        <div className="content-header">Summary Across Scenarios</div>
+                    </div>
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                        <Col className="gutter-row container" span={16}>
+
+                            {this.state.dataLoaded &&
+                            <div className="map-container">
+                                <ChartContainer
+                                    geoid={this.state.geoid}
+                                    width={this.state.graphW - margin.left - margin.right}
+                                    height={this.state.graphH}
+                                    dataset={this.state.dataset}
+                                    scenarios={this.state.scenarioListChart}
+                                    firstDate={this.state.firstDate}
+                                    summaryStart={this.state.summaryStart}
+                                    summaryEnd={this.state.summaryEnd}
+                                    scale={this.state.summaryScale}
+                                />
+                            </div>
+                            }
+                        </Col>
+
+                        <Col className="gutter-row filters" span={6}>
+                            <Fragment>
+                            {this.state.dataLoaded &&
+                                <Scenarios 
+                                    view="chart"
+                                    scenarioListChart={this.state.scenarioListChart}
+                                    SCENARIOS={this.state.SCENARIOS}
+                                    scenario={this.state.scenario}
+                                    scenarioList={this.state.scenarioListChart}
+                                    onScenarioClickChart={this.handleScenarioClickChart}
+                                />
+                                }
+                                <DatePicker 
+                                    firstDate={this.state.firstDate}
+                                    summaryStart={this.state.summaryStart}
+                                    summaryEnd={this.state.summaryEnd}
+                                    onHandleSummaryDates={this.handleSummaryDates}
+                                />
+                                <ScaleToggle
+                                    scale={this.state.summaryScale}
+                                    onScaleToggle={this.handleScaleToggle}
+                                />
+                            </Fragment>
+                        </Col>
+                    </Row>
+                </Content>
+
+                {/* MainMap Component */}
+                <Content style={{ padding: '50px 0' }}>
+                    <div className="content-section">
+                        <div className="content-header">State-Wide Comparisons</div>
+                    </div>
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                        <Col className="gutter-row container" span={16}>
+
                             <div className="row section-spacer"><p></p><p></p></div>
                             {this.state.dataLoaded &&
                             <div className="map-container">
@@ -588,113 +658,79 @@ class MainContainer extends Component {
                                 />
                             </div>
                             }
-                        </div>
-                        <div className="col-2 filters">
-                            <h5 className="scenario-header">Scenarios
-                                <div className="tooltip">&nbsp;&#9432;
-                                    <span className="tooltip-text">
-                                    There are 3 intervention scenarios for model
-                                    simulations for comparison.
-                                    </span>
-                                </div>
-                            </h5>
-                            <span className="subtitle">(select up to 2)</span>                            
-                            {this.state.dataLoaded &&
-                            <Scenarios 
-                                SCENARIOS={this.state.SCENARIOS}
-                                scenario={this.state.scenario}
-                                scenarioList={this.state.scenarioList}
-                                onScenarioClick={this.handleScenarioClick}
-                            />
-                            }
-                            <p></p>                   
-                            <h5>Parameters</h5>
-                            <Overlays 
-                                showConfBounds={this.state.showConfBounds}
-                                // showActual={this.state.showActual}
-                                onConfClick={this.handleConfClick}
-                                // onActualClick={this.handleActualClick}
-                            /> 
-                            <p></p>                   
-                            {this.state.dataLoaded &&
-                            <SeverityContainer
-                                severityList={this.state.severityList}
-                                scenarioList={this.state.scenarioList}
-                                onSeveritiesClick={this.handleSeveritiesClick}
-                                onSeveritiesHover={this.handleSeveritiesHover}
-                                onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
-                            />
-                            }
-                            <p></p>
-                            <h5>Thresholds</h5>
-                            {this.state.dataLoaded &&
-                            <Sliders 
-                                stat={this.state.stat}
-                                dates={this.state.dates}
-                                seriesMax={this.state.seriesMax}
-                                seriesMin={this.state.seriesMin}
-                                statThreshold={this.state.statThreshold}
-                                dateThreshold={this.state.dateThreshold}
-                                dateThresholdIdx={this.state.dateThresholdIdx}
-                                firstDate={this.state.firstDate}
-                                lastDate={this.state.lastDate}
-                                dateRange={this.state.dateRange}
-                                onStatSliderChange={this.handleStatSliderChange}
-                                onDateSliderChange={this.handleDateSliderChange}
-                                // // onReprSliderChange={this.handleReprSliderChange}
-                            />
-                            }
-                        </div>
-                    </div>
-                    <div className="row">
-                        <div className="col-10">
-                            {this.state.dataLoaded &&
-                            <div className="map-container">
-                                <ChartContainer
-                                    geoid={this.state.geoid}
-                                    width={this.state.graphW - margin.left - margin.right}
-                                    height={this.state.graphH}
-                                    dataset={this.state.dataset}
-                                    firstDate={this.state.firstDate}
-                                    summaryStart={this.state.summaryStart}
-                                    summaryEnd={this.state.summaryEnd}
-                                    scale={this.state.summaryScale}
-                                />
-                            </div>
-                            }
-                        </div>
-                        <div className="col-2 filters">
-                            <Fragment>
+                        </Col>
+
+                        <Col className="gutter-row filters" span={6}>
                             <DatePicker 
                                 firstDate={this.state.firstDate}
                                 summaryStart={this.state.summaryStart}
                                 summaryEnd={this.state.summaryEnd}
-                                onHandleSummaryStart={this.handleSummaryStart}
-                                onHandleSummaryEnd={this.handleSummaryEnd}
+                                onHandleSummaryDates={this.handleSummaryDates}
                             />
-                            <div>
-                                <h5>Scale
-                                    <div className="tooltip">&nbsp;&#9432;
-                                    <span className="tooltip-text">
-                                        Toggle between a linear scale of the values or a 
-                                        power scale which reveals more granularity at lower levels
-                                    </span>
-                                    </div>
-                                </h5>
-                                <ScaleToggle
-                                scale={this.state.summaryScale}
-                                onScaleToggle={this.handleScaleToggle}
-                                />
-                            </div>
-                            </Fragment>
-                        </div>
-                            
-                    </div>
-                </div>
-
-            </div>
+                        </Col>
+                    </Row>
+                </Content>
+            </Layout>
         )
     }
 }
 
 export default MainContainer;
+
+
+/* <MainGraph 
+    stat={this.state.stat}
+    geoid={this.state.geoid}
+    yAxisLabel={this.state.yAxisLabel}
+    scenarioList={this.state.scenarioList}
+    severity={this.state.severity}
+    r0={this.state.r0}
+    simNum={this.state.simNum}
+    showConfBounds={this.state.showConfBounds}
+    confBoundsList={this.state.confBoundsList}
+    showActual={this.state.showActual}
+    seriesList={this.state.seriesList}
+    dates={this.state.dates}
+    statThreshold={this.state.statThreshold}
+    dateThreshold={this.state.dateThreshold}
+    percExceedenceList={this.state.percExceedenceList}
+    dateRange={this.state.dateRange}
+    brushActive={this.state.brushActive}
+    width={this.state.graphW}
+    height={this.state.graphH}
+    scenarioClickCounter={this.state.scenarioClickCounter}
+    scenarioHovered={this.state.scenarioHovered}
+    series={this.state.allTimeSeries}
+    x={margin.yAxis}
+    y={0}
+    onBrushChange={this.handleBrushRange}
+    onBrushStart={this.handleBrushStart}
+    onBrushEnd={this.handleBrushEnd}
+    SCENARIOS={this.state.SCENARIOS}
+    scenario={this.state.scenario}
+    onScenarioClick={this.handleScenarioClick}
+    onButtonClick={this.handleButtonClick}
+    onConfClick={this.handleConfClick}
+    severityList={this.state.severityList}
+    onSeveritiesClick={this.handleSeveritiesClick}
+    onSeveritiesHover={this.handleSeveritiesHover}
+    onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
+    seriesMax={this.state.seriesMax}
+    seriesMin={this.state.seriesMin}
+    dateThresholdIdx={this.state.dateThresholdIdx}
+    firstDate={this.state.firstDate}
+    lastDate={this.state.lastDate}
+    onStatSliderChange={this.handleStatSliderChange}
+    onDateSliderChange={this.handleDateSliderChange}
+/>
+
+<MainChart 
+    width={this.state.graphW - margin.left - margin.right}
+    height={this.state.graphH}
+    dataset={this.state.dataset}
+    firstDate={this.state.firstDate}
+    summaryStart={this.state.summaryStart}
+    summaryEnd={this.state.summaryEnd}
+    onHandleSummaryDates={this.handleSummaryDates}
+/> 
+*/

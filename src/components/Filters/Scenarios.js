@@ -1,103 +1,146 @@
 import React, { Component } from 'react';
+import { Select } from 'antd';
 
 class Scenarios extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            scenarios: [],
+            scenariosGraph: [],
+            children: []
         }
     }
 
     componentDidMount() {
-        const obj = Array.from(this.props.SCENARIOS);
+        const children = [];
+        const scenariosGraph = Array.from(this.props.SCENARIOS);
+        const { Option } = Select;
 
-        // update checked attribute for active scenario
-        obj.map(scenario => {
-            if (scenario.key === this.props.scenario.key) {
-                return scenario.checked = true;
-            } else {
-                return scenario.checked = false;
-            }
-        })
+        for (let scenario of scenariosGraph) {
+            const child = {
+                key: scenario.key,
+                checkbox: []
+            } 
+            child.checkbox.push(
+                <Option
+                    key={scenario.key}>
+                    {scenario.key.replace('USA_','')}
+                </Option>
+            )
+            children.push(child);
+        }
 
         this.setState({
-            scenarios: obj,
+            scenariosGraph,
+            children,
         })
     }
 
     componentDidUpdate(prevProp) {
-        const { scenarioList } = this.props;
-        if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
-            prevProp.scenarioList !== this.props.scenarioList ||
-            prevProp.scenario !== this.props.scenario) {
 
-            const keys = Object.values(scenarioList).map(scen => scen.key);
-            const obj = Array.from(this.props.SCENARIOS);
+        if (this.props.view === 'graph') {
             
-            // update checked attribute for active scenario
-            obj.map(scenario => {
-                if (keys.includes(scenario.key)) {
-                    return scenario.checked = true;
+            if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
+                prevProp.scenarioList !== this.props.scenarioList ||
+                prevProp.scenario !== this.props.scenario) {
+    
+                const { scenarioList } = this.props;
+    
+                const keys = Object.values(scenarioList).map(scen => scen.key);
+                const scenariosGraph = Array.from(this.props.SCENARIOS);
+                
+                if (this.props.scenarioList.length >= 2) {
+                    scenariosGraph.map(scenario => {
+                        if (keys.includes(scenario.key)) {
+                            return scenario.disabled = false;
+                        } else {
+                            return scenario.disabled = true;
+                            }
+                      })
                 } else {
-                    return scenario.checked = false;
+                    scenariosGraph.map(scenario => {return scenario.disabled = false})
                 }
-            })
-            // set disable attribute to false if required
-            if (this.props.scenarioList.length >= 2) {
-                obj.map(scenario => {
-                    if (keys.includes(scenario.key)) {
-                        return scenario.disabled = false;
-                    } else {
-                        return scenario.disabled = true;
-                        }
-                  })
-            } else {
-                obj.map(scenario => {return scenario.disabled = false})
+    
+                const children = [];
+                const { Option } = Select;
+        
+                for (let scenario of scenariosGraph) {
+                    const child = {
+                        key: scenario.key,
+                        checkbox: []
+                    } 
+                    child.checkbox.push(
+                        <Option
+                            key={scenario.key}
+                            disabled={scenario.disabled}>
+                            {scenario.key.replace('USA_','')}
+                        </Option>
+                    )
+                    children.push(child);
+                }
+                this.setState({
+                    scenariosGraph,
+                    children
+                })
             }
+        } else {
 
-            this.setState({
-                scenarios: obj
-            })
+            if (prevProp.SCENARIOS !== this.props.SCENARIOS) {
+
+                const children = [];
+                const scenariosChart = Array.from(this.props.SCENARIOS);
+                const { Option } = Select;
+        
+                for (let scenario of scenariosChart) {
+                    const child = {
+                        key: scenario.key,
+                        checkbox: []
+                    } 
+                    child.checkbox.push(
+                        <Option
+                            key={scenario.key}>
+                            {scenario.key.replace('USA_','')}
+                        </Option>
+                    )
+                    children.push(child);
+                }
+        
+                this.setState({
+                    children
+                })
+            }
         }
     }
 
-    handleClick = (event) => {
-        const { scenarioList } = this.props;
-        const scenarioKeys = scenarioList.map(scenario => scenario.key);
-
+    handleChange = (event) => {
         // prevent user from deselecting all scenarios
-        if (scenarioList.length === 1 && scenarioKeys.includes(event.key)) {
-            return;
-        } else {
+        if (event.length === 0) { return };
+
+        if (this.props.view === 'graph') {
             this.props.onScenarioClick(event);
+        } else {
+            this.props.onScenarioClickChart(event)
         }
     }
 
     render() {
+        let defaultScenario;
+        if (this.props.view === 'graph') {
+            defaultScenario = [this.props.scenarioList[0].key];
+        } else {
+            defaultScenario = this.props.SCENARIOS.map(s => s.name);
+        }
         return (
-            this.state.scenarios.map(scenario => {
-                return (
-                    <div
-                        className="form-check"
-                        key={scenario.key}>
-                        <input
-                            className={"form-check-input"}
-                            type="checkbox"
-                            id={scenario.key}
-                            onChange={() => this.handleClick(scenario)}
-                            disabled={scenario.disabled}
-                            checked={scenario.checked}
-                            >
-                        </input>
-                        <label
-                            className="form-check-label filter-label"
-                            htmlFor={scenario.key}
-                            >
-                            {scenario.name.replace('_',' ')}
-                        </label>
-                    </div>
-                )
-            })
+            <div>
+                <div className="param-header">SCENARIOS</div>
+                <Select
+                    mode="multiple"
+                    style={{ width: '70%' }}
+                    defaultValue={defaultScenario}
+                    maxTagTextLength={12}
+                    onChange={this.handleChange}>
+                    {this.state.children.map(child => child.checkbox)}
+                </Select>
+            </div>
         )
     }
 }

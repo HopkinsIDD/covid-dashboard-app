@@ -34,8 +34,36 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+h1, h2, h3, h4 {
+  color: white;
+  margin: 0;
+}
+
+.App-header {
+  padding: 1% 5%;
+}
+
 .container {
-  max-width: 2000px;
+  /* max-width: 2000px;  */
+  margin-left: 5%;
+}
+
+.content-section {
+  font-size: 16px;
+  text-align: center;
+  padding-left: 8%;
+}
+
+.content-header {
+  text-transform: uppercase;
+  font-size: 30px;
+  margin-bottom: 2rem;
+}
+
+.filter-description {
+  font-size: 13px;
+  max-width: 80%;
+  padding-top: 2%;
 }
 
 code {
@@ -83,7 +111,7 @@ a:hover {
 }
 
 .siteTitle {
-  font-size: 3rem;
+  font-size: 2rem;
 }
 
 .customLink {
@@ -129,14 +157,12 @@ ul {
 }
 
 .filters {
-  max-width: 220px;
-  padding-top: 2.8rem;
-  padding-bottom: 2.8rem;
+  padding-top: 1rem;
+  margin-left: 1.4rem;
 }
 
 .dropdown {
-  padding-top: 2.8rem;
-  padding-bottom: 1.4rem;
+  padding: 1rem 0;
 }
 
 .dropdown-menu {
@@ -187,11 +213,16 @@ ul {
 .scenario-title {
   text-align: center;
   margin-bottom: 0px;
-  font-size: 1rem;
+  font-size: 1.4rem;
 }
 
 .scenario-header {
   margin-bottom: -0.5rem;
+}
+
+.conf-bounds {
+  margin-top: 16px;
+  padding-left: 12px;
 }
 
 .subtitle {
@@ -201,7 +232,7 @@ ul {
 }
 
 .filter-label {
-  font-size: 14px;
+  font-size: 12px;
   margin-bottom: 0px;
   margin-top: 3px;
 }
@@ -222,9 +253,13 @@ ul {
   background-color: #e9ecef;
 } */
 
+.legend-container {
+  height: 9vh;
+}
+
 .legend {
-  font-size: 12px;
-  text-align: end;
+  font-size: 13px;
+  text-align: left;
   margin-bottom: 0px;
   margin-right: 10px;
 }
@@ -293,7 +328,7 @@ ul {
   bottom: 0;
   left: 0;
   /* margin-left: -5px; */
-  margin-bottom: 12%;
+  margin-bottom: 15%;
 }
 
 .y-axis-label {
@@ -513,16 +548,8 @@ input[type=range]::-moz-focus-outer {
   width: 3rem;
 }
 
-.react-datepicker {
-  margin-left: -140px;
-}
-
-.react-datepicker-popper[data-placement^="top"] .react-datepicker__triangle {
-  margin-left: 140px;
-}
-
-.react-datepicker-popper[data-placement^="bottom"] .react-datepicker__triangle {
-  margin-left: 140px;
+.selector-box {
+  min-width: 200px;
 }
 
 .sticky {

@@ -1,22 +1,16 @@
 import React, { Component } from 'react';
 import { NavLink } from 'react-router-dom';
+import { Row, Col } from 'antd';
 
 class NavBar extends Component {
     render() {
         return (
           <div className="App-header">
-            <h1 className="titleNarrow siteTitle">COVID-19 Scenario Modeling</h1>
-            <div className="row">
-              <div className="col-8 nav-subtitle">
-                <h4>Prepared by&nbsp;
-                  <a
-                    className="customLink"
-                    href="http://www.iddynamics.jhsph.edu/">
-                    Johns Hopkins IDD</a>
-                  &nbsp;Working Group 
-                </h4>
-              </div>
-              <div className="col-4 nav-menu">
+            <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+              <Col className="gutter-row nav-subtitle" span={16}>
+                <h2 className="titleNarrow siteTitle">COVID-19 Intervention Scenarios</h2>
+              </Col>
+              <Col className="gutter-row nav-menu" span={8}>
                 <ul>
                   <li>
                     <NavLink exact={true} activeClassName='active' to="/">
@@ -34,8 +28,8 @@ class NavBar extends Component {
                     </NavLink>
                   </li>
                 </ul>
-              </div>
-            </div>
+              </Col>
+            </Row>
           </div>
         )
     }
