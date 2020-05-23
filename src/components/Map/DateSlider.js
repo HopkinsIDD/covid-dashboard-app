@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { getReadableDate } from '../../utils/utils';
 import { timeDay }  from 'd3-time';
 
@@ -37,14 +37,15 @@ class DateSlider extends Component {
   render() {
     // console.log('0', this.props.endIndex)
     return (
-      <Fragment>
-        <div className="filter-label">
-            Selected Date: <span className='callout'>{getReadableDate(this.props.selectedDate)}</span>
-            <div className="tooltip">&nbsp;&#9432;
-                <span className="tooltip-text">Slide to select the date you want for the geographic summary</span>
-            </div>
-        </div>
-        <div className="slidecontainer">
+        <div>
+          <div className="param-header">DATE SELECTOR</div>
+          <div className="filter-label">
+              Selected Date: <span className='callout'>{getReadableDate(this.props.selectedDate)}</span>
+              <div className="tooltip">&nbsp;&#9432;
+                  <span className="tooltip-text">Slide to select the date you want for the geographic summary</span>
+              </div>
+          </div>
+          <div className="slidecontainer">
             <input
                 id="mapDateSlider"
                 type="range"
@@ -68,7 +69,7 @@ class DateSlider extends Component {
               </p>
           </div>
         </div>
-      </Fragment>
+      </div>
     )
   }
 }

@@ -47,7 +47,8 @@ class MainContainer extends Component {
             SCENARIOS: [],
             scenario: {},
             scenarioList: [],           
-            scenarioListChart: [],           
+            scenarioListChart: [],
+            scenarioMap: '',         
             severity: _.cloneDeep(LEVELS[0]), 
             severityList: [_.cloneDeep(LEVELS[0])],
             scenarioHovered: '',
@@ -88,6 +89,7 @@ class MainContainer extends Component {
         const SCENARIOS = buildScenarios(dataset); // constant for geoID
 
         const scenario = SCENARIOS[0];      // initial scenario view
+        const scenarioMap = SCENARIOS[0].key;   // scenario view for map
         const scenarioList = [scenario];    // updated based on selection
         const scenarioListChart = SCENARIOS.map(s => s.name);
 
@@ -154,6 +156,7 @@ class MainContainer extends Component {
             dataset,
             SCENARIOS,
             scenario,
+            scenarioMap,
             scenarioList,
             scenarioListChart,
             dates: newDates,
@@ -401,6 +404,13 @@ class MainContainer extends Component {
         console.log('scenarioList Chart', scenarioListChart)
         this.setState({
             scenarioListChart
+        })        
+    }
+
+    handleScenarioClickMap = (item) => {
+        console.log('scenarioMap', item)
+        this.setState({
+            scenarioMap : item
         })        
     }
 
@@ -676,13 +686,21 @@ class MainContainer extends Component {
 
                         <Col className="gutter-row filters" span={6}>
                             {this.state.dataLoaded &&
-                            <DateSlider
-                                dates={this.state.allTimeDates}
-                                endIndex={(this.state.allTimeDates.length - 1).toString()}
-                                currentDateIndex={this.state.mapCurrentDateIndex.toString()}
-                                selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
-                                onMapSliderChange={this.handleMapSliderChange}
-                            />
+                            <Fragment>
+                                <Scenarios
+                                    view="map"
+                                    SCENARIOS={this.state.SCENARIOS}
+                                    scenario={this.state.scenarioMap}
+                                    onScenarioClickMap={this.handleScenarioClickMap}
+                                />
+                                <DateSlider
+                                    dates={this.state.allTimeDates}
+                                    endIndex={(this.state.allTimeDates.length - 1).toString()}
+                                    currentDateIndex={this.state.mapCurrentDateIndex.toString()}
+                                    selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
+                                    onMapSliderChange={this.handleMapSliderChange}
+                                />
+                            </Fragment>
                              }
                         </Col>
                     </Row>

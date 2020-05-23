@@ -82,7 +82,7 @@ class Scenarios extends Component {
                     children
                 })
             }
-        } else {
+        } else if (this.props.view === 'chart') {
 
             if (prevProp.SCENARIOS !== this.props.SCENARIOS) {
 
@@ -108,6 +108,10 @@ class Scenarios extends Component {
                     children
                 })
             }
+        } else {
+            if (prevProp.scenario !== this.props.scenario) {
+
+            }
         }
     }
 
@@ -117,8 +121,10 @@ class Scenarios extends Component {
 
         if (this.props.view === 'graph') {
             this.props.onScenarioClick(event);
-        } else {
+        } else if (this.props.view === 'chart') {
             this.props.onScenarioClickChart(event)
+        } else {
+            this.props.onScenarioClickMap(event)
         }
     }
 
@@ -126,14 +132,17 @@ class Scenarios extends Component {
         let defaultScenario;
         if (this.props.view === 'graph') {
             defaultScenario = [this.props.scenarioList[0].key];
-        } else {
+        } else if (this.props.view === 'chart') {
             defaultScenario = this.props.SCENARIOS.map(s => s.name);
+        } else {
+            defaultScenario = [this.props.scenario]
         }
+        console.log(this.props.view, defaultScenario)
         return (
             <div>
                 <div className="param-header">SCENARIOS</div>
                 <Select
-                    mode="multiple"
+                    mode={this.props.view === 'map' ? "" : "multiple"}
                     style={{ width: '70%' }}
                     defaultValue={defaultScenario}
                     maxTagTextLength={12}
