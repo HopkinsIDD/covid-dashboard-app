@@ -542,6 +542,7 @@ class MainContainer extends Component {
 
     render() {
         const { Content } = Layout;
+        console.log(this.state.scenarioListChart)
         return (
             <Layout>
 
@@ -656,6 +657,7 @@ class MainContainer extends Component {
                                     height={this.state.graphH * 1.15} 
                                     dataset={this.state.dataset}
                                     scenarios={this.state.scenarioListChart}
+                                    stats={this.state.statListChart}
                                     firstDate={this.state.firstDate}
                                     summaryStart={this.state.summaryStart}
                                     summaryEnd={this.state.summaryEnd}
@@ -668,7 +670,7 @@ class MainContainer extends Component {
                         <Col className="gutter-row filters" span={6}>
                             <Fragment>
                                 <ChartLegend />
-                            {this.state.dataLoaded &&
+                                {this.state.dataLoaded &&
                                 <Fragment>
                                     <Scenarios 
                                         view="chart"

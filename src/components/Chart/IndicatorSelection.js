@@ -59,7 +59,7 @@ class IndicatorSelection extends Component {
           const keys = Object.values(statListChart).map(stat => stat.key);
           const statsForChart = Array.from(this.props.STATS);
           
-          if (this.props.statListChart.length >= 2) {
+          if (this.props.statListChart.length >= 3) {
             statsForChart.map(stat => {
               if (keys.includes(stat.key)) {
                   return stat.disabled = false;
