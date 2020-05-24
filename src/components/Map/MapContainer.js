@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { getDateIdx, getReadableDate } from '../../utils/utils';
-import { mapLowColors, mapHighColors, graphBkgd } from '../../utils/constants';
+import { COUNTYNAMES, mapLowColors, mapHighColors, graphBkgd } from '../../utils/constants';
 
 // const lowColors = ['#deebf7', '#e5f5e0', '#fee6ce'] 
 // const highColors = ['#3885fa', '#008769', '#e6550d']
@@ -36,7 +36,7 @@ class MapContainer extends Component {
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
                     statsForCounty={this.props.statsForCounty}
-                    width={this.props.width / 3}
+                    width={this.props.width / 2}
                     height={this.props.height}
                     lowColor={mapLowColors[index]}
                     highColor={mapHighColors[index]}
@@ -52,7 +52,8 @@ class MapContainer extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.geoid !== prevProps.geoid 
-            || this.props.selectedDate !== prevProps.selectedDate) {
+            || this.props.selectedDate !== prevProps.selectedDate
+            || this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
 
             const children = [];
             const dateIdx = getDateIdx(this.props.firstDate, this.props.selectedDate);
@@ -71,7 +72,7 @@ class MapContainer extends Component {
                         dateIdx={dateIdx}
                         countyBoundaries={this.props.countyBoundaries}
                         statsForCounty={this.props.statsForCounty}
-                        width={this.props.width / 3}
+                        width={this.props.width / 2}
                         height={this.props.height}
                         lowColor={mapLowColors[index]}
                         highColor={mapHighColors[index]}
@@ -92,7 +93,8 @@ class MapContainer extends Component {
         // const scenario = scenarioList.length > 0 ? scenarioList[0] : scenarioList
         return (
             <div>
-                <div className="scenario-title titleNarrow">Geographic Summary:  <span className="callout">{getReadableDate(this.props.selectedDate)}</span></div>
+                <div className="scenario-title titleNarrow">{COUNTYNAMES[this.props.geoid]}</div>
+                <div className="filter-label threshold-label callout callout-row">{`Date of State-wide Summary: `}<span className="bold">{getReadableDate(this.props.selectedDate)}</span></div>
                 <div className="map-wrapper">
                     {this.state.children.map(child => {
                         return (

@@ -39,8 +39,8 @@ export const COUNTIES = [
 ];
 
 export const COUNTYNAMES = {
-    '06085': 'Dorne County',
-    '01081': 'Highgarden County',
-    '25017': 'Winterfell County',
-    '36061': 'Kings Landing County'
+    '06085': 'Dorne County, ES',
+    '01081': 'Highgarden County, TW',
+    '25017': 'Winterfell County, NR',
+    '36061': 'Kings Landing County, TC'
 }

@@ -594,6 +594,11 @@ input[type=range]::-moz-focus-outer {
   margin-bottom: 10vh;
 }
 
+/* CSS overides from libraries */
 .selection {
   stroke-opacity: 0;
+}
+
+.ant-slider-mark-text {
+  min-width: 50px;
 }
