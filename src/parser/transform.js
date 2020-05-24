@@ -38,6 +38,9 @@ module.exports = {
             simObj.vals = obj[sim];
             simObj.over = false;
             simObj.max = Math.max.apply(null, simObj.vals);
+            
+            // TODO: generate r0 randomly but eventually join on sim number
+            sim.r0 = Math.random * 4;
 
             d3array.push(simObj)
         }
