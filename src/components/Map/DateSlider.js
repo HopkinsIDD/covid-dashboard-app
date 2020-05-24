@@ -15,8 +15,8 @@ class DateSlider extends Component {
     const { endIndex } = this.props;
     const formattedFirstDate = getReadableDate(this.props.dates[0])
     const formattedLastDate = getReadableDate(this.props.dates[+endIndex])
-    console.log(formattedFirstDate, formattedLastDate)
-    console.log(endIndex)
+    // console.log(formattedFirstDate, formattedLastDate)
+    // console.log(endIndex)
     const marks = {
       0 : {
         label: formattedFirstDate
