@@ -1,9 +1,8 @@
 const fs = require('fs');
 const utils = require('./utils');
 const constants = require('./constants');
-const transform = require('./transform');
 
-function parseSim(path, result, geoids, scenario, severity, getIdx) {
+function parseSim(path, result, geoids, scenario, sev, dates, getIdx) {
     // returns Object of Array series of sim values by geoID
     // getIdx: Obj index mapping of selected parameters
     // reduceInt: int that sim must be divisible by to be included in final set
@@ -11,34 +10,49 @@ function parseSim(path, result, geoids, scenario, severity, getIdx) {
     try {
         const data = fs.readFileSync(path, 'UTF-8');
         const lines = data.split(/\r?\n/);
+        let aggDate = dates[0];
     
-            for (let l = 0; l < lines.length; l++) {
-                const line = lines[l];
-                const geoid = line.split(',')[getIdx['geoid']];
-                const sim = line.split(',')[getIdx['sim_num']];
-                
-                // only include specified geoid
-                if (geoids.includes(geoid)) {
+        for (let line of lines) {
+            const geoid = line.split(',')[getIdx['geoid']];
+            const sim = line.split(',')[getIdx['sim_num']];
+            const date = line.split(',')[getIdx['time']];
+            
+            // only include specified geoid
+            if (geoids.includes(geoid) && utils.notHeaderOrEmpty(line)) {
 
-                    if (utils.notHeaderOrEmpty(line)) {
-
-                        const params = constants.parameters;
-                        for (let p = 0; p < params.length; p ++) {
-
-                            const param = params[p]; 
-                            const val = parseInt(line.split(',')[getIdx[param]]);
-                            const simObj = result[geoid][scenario][severity][param]['sims']
-
-                            if (sim in simObj) {
-                                simObj[sim].push(val);
-                            } else {
-                                simObj[sim] = [val];
-                            }
+                for (let param of constants.parameters) {
+                    if (param === 'incidI') {
+                        const val = parseInt(line.split(',')[getIdx[param]]);
+                        
+                        // populate by simulation
+                        const simObj = result[geoid][scenario][sev][param]['sims']
+    
+                        if (!(sim in simObj)) {
+                            simObj[sim] = [val];
+                        } else {
+                            simObj[sim].push(val);
+                        }
+    
+                        // aggregate on state-level
+                        const state = geoid.slice(0, 2);
+                        const stateObj = result[state][scenario][sev][param]['sims'];
+    
+                        // first value in sim file
+                        if (!(sim in stateObj)) {
+                            stateObj[sim] = [val];
+                        // aggregate if its the same date
+                        } else if (aggDate === date) { 
+                            const idx = dates.indexOf(date);
+                            stateObj[sim][idx] = stateObj[sim][idx] + val;
+                        // push if its a new date
+                        } else { 
+                            stateObj[sim].push(val);
+                            aggDate = date;
                         }
                     }
-                    
                 }
             }
+        }
 
     } catch (err) {
         console.error(err);
@@ -46,75 +60,40 @@ function parseSim(path, result, geoids, scenario, severity, getIdx) {
 };
 
 module.exports = {
-    parseDirectories: function parseDirectories(
-        dir, geoids, scenarios, dates) {
-        // parses entire model package of multiple scenario directories
-        // returns result Object
+    parseDirectories: function parseDirectories(dir, geoids, scenarios, dates) {
+        // parses entire model package of multiple scenario dirs, returns result Obj
 
         console.log('start:', new Date()); 
-        
-        const severities = constants.severities;
-        const parameters = constants.parameters;
-        const result = utils.initObj(
-            geoids, scenarios, severities, parameters, dates);
+        const result = utils.initObj(geoids, scenarios, dates);
             
-        for (let s = 0; s < scenarios.length; s ++) {
-            console.log('-----> parsing scenario...', scenarios[s])
+        for (let scenario of scenarios) {
+            console.log('-----> parsing scenario...', scenario)
 
-            const scenarioDir = `${dir}${scenarios[s]}/`;
+            const scenarioDir = `${dir}${scenario}/`;
             const files = fs.readdirSync(scenarioDir)
-                .filter(file => file !== '.DS_Store')
-                //.slice(0, 5);
+                .filter(file => file !== '.DS_Store');
+                // .slice(0, 3);
 
             // get index mapping based on parameters and headers
             let getIdx = {};
             if (files.length > 0) {
                 const headers = utils.getHeaders(`${scenarioDir}${files[0]}`);
-                getIdx = utils.getIdx(headers, parameters); 
+                getIdx = utils.getIdx(headers, constants.parameters); 
             } else {
                 console.log(`No files in directory: ${scenarioDir}`)
             }
 
             // parse by sim file
-            for (let f = 0; f < files.length; f ++) {
-                const severity = files[f].split('_')[0];
-                const filePath = scenarioDir + files[f];
+            for (let file of files) {
+                const severity = file.split('_')[0];
+                const filePath = scenarioDir + file;
                 console.log(severity)
 
                 parseSim(
-                    filePath, result, geoids, scenarios[s], severity, getIdx)
+                    filePath, result, geoids, scenario, severity, dates, getIdx)
             }
         };
-
-        // transform each simObj to D3-friendly format
-        transform.toD3format(result, geoids, scenarios);
 
         return result;
     }
 }
-
-// snippet for debugging this module
-// const dir = 'store/sims/';
-// const geoInput = ['06085', '06019']; //'06019'; // '25017'; //'01081'; 
-// const scenarios = fs.readdirSync(dir)
-//     .filter(file => file !== '.DS_Store')
-//     .slice(0,1); // shorten
-
-// // faster to getDates from the get-go
-// let dates = [];
-// if (scenarios.length > 0) {
-//     const files = fs.readdirSync(dir + scenarios[0] + '/',)
-//         .filter(file => file !== '.DS_Store');
-//     dates = utils.getDates(dir + scenarios[0] + '/' + files[0]);
-// } else {
-//     console.log(`No scenario directories: ${dir}`)
-// }
-
-// const result = module.exports.parseDirectories(
-//     dir,
-//     geoInput,
-//     scenarios,
-//     constants.severities,
-//     constants.parameters,
-//     dates
-//     )

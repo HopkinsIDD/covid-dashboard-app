@@ -25,7 +25,6 @@ import { maxIndex } from 'd3-array';
 import { STATS, LEVELS, margin } from '../utils/constants';
 
 const dataset = require('../store/geo06085.json');
-// TODO: is this file affecting performance?
 const geojsonStats = require('../store/statsForMap.json')
 
 const parseDate = utcParse('%Y-%m-%d')
@@ -84,7 +83,7 @@ class MainContainer extends Component {
 
     componentDidMount() {
         // console.log('componentDidMount')
-        // console.log('dataset', dataset)
+        console.log('dataset', dataset)
         window.addEventListener('resize', this.updateGraphDimensions)
         window.addEventListener('resize', this.updateMapContainerDimensions)
         this.updateGraphDimensions()

@@ -31,11 +31,13 @@ export const LEVELS = [
 // public county model files on github
 // const baseUrl = 'https://raw.githubusercontent.com/';
 export const COUNTIES = [
-    {'geoid': '06085', 'name': 'Dorne County', 'usps': 'ES', 'state': '01', 'path': '../store/geo06085.json'},
-    {'geoid': '01081', 'name': 'Highgarden County', 'usps': 'TW',  'state': '01','path': '../store/geo01081.json'},
-    {'geoid': '25017', 'name': 'Winterfell County', 'usps': 'NR',  'state': '02','path': '../store/geo25017.json'},
-    {'geoid': '36061', 'name': 'Kings Landing County', 'usps': 'TC',  'state': '03','path': '../store/geo36061.json'},
-    // {'geoid': '06085', 'name': 'Dorne', 'usps': 'CA', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
+    {'geoid': '06085', 'name': 'Santa Clara County', 'usps': 'CA', 'state': '01', 'path': '../store/geo06085.json'},
+    {'geoid': '06037', 'name': 'Los Angeles County', 'usps': 'CA',  'state': '01','path': '../store/geo01081.json'},
+    {'geoid': '06075', 'name': 'San Francisco County', 'usps': 'CA',  'state': '02','path': '../store/geo25017.json'},
+    {'geoid': '36061', 'name': 'New York County', 'usps': 'NY',  'state': '03','path': '../store/geo36061.json'},
+    {'geoid': '36005', 'name': 'Bronx County', 'usps': 'NY',  'state': '03','path': '../store/geo36061.json'},
+    {'geoid': '36081', 'name': 'Queens County', 'usps': 'NY',  'state': '03','path': '../store/geo36061.json'},
+    // {'geoid': '06085', 'name': 'Santa Clara County', 'usps': 'CA', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
 ];
 
 export const COUNTYNAMES = {
