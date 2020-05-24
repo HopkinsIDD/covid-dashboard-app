@@ -122,7 +122,7 @@ class Map extends Component {
         // console.log(feature)
         const text = `${feature.properties.name} County <br>
                         Population: ${addCommas(feature.properties.population)} <br>
-                        ${this.props.statLabel}: ${feature.properties[this.props.stat][this.props.dateIdx]}`
+                        ${this.props.statLabel}: ${addCommas(feature.properties[this.props.stat][this.props.dateIdx])}`
         const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
 
         this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true, tooltipText })
@@ -142,8 +142,8 @@ class Map extends Component {
     render() {
         return (
             <Fragment>
-                <div className='titleNarrow'>{`${this.props.statLabel} per 10K people`}</div>
-                <svg width={legendW} height={this.props.height/2}>
+                <div className='titleNarrow map-title'>{`${this.props.statLabel} per 10K people`}</div>
+                <svg width={legendW} height={this.props.height/1.5}>
                      {/* debug green svg */}
                      {/* <rect
                         x={0}

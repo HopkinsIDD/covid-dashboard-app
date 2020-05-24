@@ -27,7 +27,9 @@ class ChartContainer extends Component {
             || prevProps.summaryEnd !== this.props.summaryEnd
             || prevProps.dataset !== this.props.dataset
             || prevProps.scenarios !== this.props.scenarios
-            || prevProps.scale !== this.props.scale) {
+            || prevProps.scale !== this.props.scale
+            || prevProps.width !== this.props.width 
+            || prevProps.height !== this.props.height) {
             console.log('ComponentDidUpdate Summary Start or End or Dataset')
             this.drawSummaryStatCharts();
         }
@@ -93,11 +95,13 @@ class ChartContainer extends Component {
 
 
     render() {
-        const scenarios = Object.keys(this.props.dataset);
-        if (this.state.hoveredScenarioIdx) console.log(scenarios[this.state.hoveredScenarioIdx])
+        // const scenarios = Object.keys(this.props.dataset);
+        // console.log(scenarios)
+        // console.log('props', this.props.scenarios)
+        if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
         return (
             <div>
-                <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]} Summary Statistics - ${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</div>
+                <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]} - ${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</div>
                 {/* <h5>{`${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h5> */}
                 <div className="row resetRow chart-callout" style={{ display: 'block !important'}}>
                     {this.state.rectIsHovered &&
@@ -111,7 +115,7 @@ class ChartContainer extends Component {
                                     classProps={'filter-label threshold-label callout'}
                                     summaryStart={this.props.summaryStart}
                                     summaryEnd={this.props.summaryEnd}
-                                    scenario={scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
+                                    scenario={this.props.scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
                                     label={this.state.statLabel.toLowerCase()}
                                     median={this.state.median}
                                     tenth={this.state.tenth}
@@ -125,7 +129,7 @@ class ChartContainer extends Component {
                     <div className="col-7"></div>
                     <div className="col-5 chart-legend">
                     {
-                        scenarios.map( (scenario, index) => {
+                        this.props.scenarios.map( (scenario, index) => {
                             return (
                                 <div key={`chart-item-${scenario}`} className="chart-item">
                                     <div

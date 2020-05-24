@@ -177,8 +177,10 @@ class Chart extends Component {
                 </rect>
                 <text
                     key={`bar-label-${severity}`}
-                    x={(margin.left * 7) + (i * (this.props.width / this.state.severities.length))}
+                    x={(i * (this.props.width / this.state.severities.length)) + (this.props.width / this.state.severities.length * 0.5)}
                     y={margin.top}
+                    textAnchor={'middle'}
+                    opacity={0.65}
                     // className='titleNarrow'
                     style={{'fontSize': '0.8rem'}}
                 >
@@ -201,6 +203,7 @@ class Chart extends Component {
                                 stroke={this.state.hoveredRect.severity === severity &&
                                     this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
                                 strokeWidth={4}
+                                style={{ cursor: 'pointer'}}
                                 onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
                                 onMouseLeave={this.handleHighlightLeave}
                             >

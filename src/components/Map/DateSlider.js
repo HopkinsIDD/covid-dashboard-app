@@ -42,7 +42,7 @@ class DateSlider extends Component {
           <div className="filter-label">
               Selected Date: <span className='callout'>{getReadableDate(this.props.selectedDate)}</span>
               <div className="tooltip">&nbsp;&#9432;
-                  <span className="tooltip-text">Slide to select the date you want for the geographic summary</span>
+                  <span className="tooltip-text">Slide to select the date you want for the geographic summary. Use right and left arrow keys to increase or decrease by day.</span>
               </div>
           </div>
           <div className="slidecontainer">

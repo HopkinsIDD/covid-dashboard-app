@@ -13,6 +13,7 @@ import MapContainer from './Map/MapContainer';
 import Search from './Search/Search'
 import Brush from './Filters/Brush';
 import GraphFilter from './Graph/GraphFilter';
+import ChartLegend from './Chart/ChartLegend';
 import DatePicker from './Chart/DatePicker';
 import ScaleToggle from './Chart/ScaleToggle';
 import DateSlider from './Map/DateSlider';
@@ -72,6 +73,8 @@ class MainContainer extends Component {
             statsForCounty: {},
             graphW: 0,
             graphH: 0,
+            mapContainerW: 0,
+            mapContainerH: 0,
             brushActive: false,
             scenarioClickCounter: 0,
             summaryScale: 'power',
@@ -83,7 +86,9 @@ class MainContainer extends Component {
         // console.log('componentDidMount')
         // console.log('dataset', dataset)
         window.addEventListener('resize', this.updateGraphDimensions)
+        window.addEventListener('resize', this.updateMapContainerDimensions)
         this.updateGraphDimensions()
+        this.updateMapContainerDimensions()
         
         // build scenarios for selected geoID
         const SCENARIOS = buildScenarios(dataset); // constant for geoID
@@ -277,6 +282,7 @@ class MainContainer extends Component {
 
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateGraphDimensions)
+        window.removeEventListener('resize', this.updateMapContainerDimensions)
     }
 
     updateGraphDimensions = () => {
@@ -286,10 +292,11 @@ class MainContainer extends Component {
         this.setState({ graphW, graphH });
       }
 
-    // updateChartDimensions = () => {
-    //     const chartW = this.chartEl.clientWidth;
-    //     const chartH = this.chartEl.clientHeight;
-    // }
+    updateMapContainerDimensions = () => {
+        const mapContainerW = (this.graphEl.clientWidth  - margin.yAxis) - ( 3 * (margin.left)) - (3 * (margin.right));
+        const mapContainerH = this.graphEl.clientHeight * 0.8;
+        this.setState({ mapContainerW, mapContainerH });
+    }
 
     updateThresholdIterate = (series, statThreshold, dates, dateThreshold) => {
         const dateIndex = dates.findIndex(
@@ -635,6 +642,7 @@ class MainContainer extends Component {
 
                         <Col className="gutter-row filters" span={6}>
                             <Fragment>
+                                <ChartLegend />
                             {this.state.dataLoaded &&
                                 <Scenarios 
                                     view="chart"
@@ -666,17 +674,17 @@ class MainContainer extends Component {
                         <div className="content-header">State-Wide Comparisons</div>
                     </div>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                        <Col className="gutter-row container" span={16}>
+                        <Col className="gutter-row container" span={16} style={{ paddingLeft: margin.yAxis + (2 * margin.left) + margin.right }}>
 
-                            <div className="row section-spacer"><p></p><p></p></div>
-                            <div className="map-dateSlider">
+                            {/* <div className="row section-spacer"><p></p><p></p></div> */}
+                            {/* <div className="map-dateSlider">
 
-                            </div>
+                            </div> */}
                             {this.state.dataLoaded &&
                             <div className="map-container">
                                 <MapContainer
-                                    width={this.state.graphW - margin.left - margin.right}
-                                    height={this.state.graphH}
+                                    width={this.state.mapContainerW - margin.left - margin.right}
+                                    height={this.state.mapContainerH}
                                     dataset={this.state.dataset}
                                     // scenarioList={this.state.scenarioList}
                                     geoid={this.state.geoid}

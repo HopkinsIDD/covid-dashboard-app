@@ -305,6 +305,16 @@ ul {
   padding: 5px;
 }
 
+.map-title {
+  /* width: 80px; */
+  padding: 0 0 15px 5px;
+  text-align: left;
+}
+
+.map-summary-title {
+  font-size: 1.2rem;
+}
+
 .slider-menu {
   margin: 10px 0 20px 0;
 }
@@ -536,7 +546,9 @@ input[type=range]::-moz-focus-outer {
 .chart-legend {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   margin-bottom: 20px;
+  margin-left: 80px;
 }
 
 .chart-legend-box {
