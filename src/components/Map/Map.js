@@ -101,10 +101,11 @@ class Map extends Component {
                         key={`county-boundary-${i}`}
                         d={pathGenerator(d)}
                         style={{
-                            stroke: this.state.hoveredCounty === d.properties.geoid ? blue : gray,
-                            strokeWidth: this.state.hoveredCounty === d.properties.geoid ? 4 : 1,
+                            stroke: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? this.props.highColor : gray,
+                            strokeWidth: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? 2 : 1,
                             fill: ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]),
-                            fillOpacity: 1
+                            fillOpacity: 1,
+                            cursor: 'pointer'
                         }}
                         className='counties'
                         onMouseEnter={(e) => this.handleCountyEnter(e, d)}

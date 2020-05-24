@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { getDateIdx, getReadableDate } from '../../utils/utils';
-import { mapLowColors, mapHighColors } from '../../utils/constants';
+import { mapLowColors, mapHighColors, graphBkgd } from '../../utils/constants';
 
 // const lowColors = ['#deebf7', '#e5f5e0', '#fee6ce'] 
 // const highColors = ['#3885fa', '#008769', '#e6550d']
@@ -32,10 +32,11 @@ class MapContainer extends Component {
                     key={`${param}-map`}
                     stat={param}
                     statLabel={this.state.parameterLabels[index]}
+                    geoid={this.props.geoid}
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
                     statsForCounty={this.props.statsForCounty}
-                    width={this.props.width / 2}
+                    width={this.props.width / 3}
                     height={this.props.height}
                     lowColor={mapLowColors[index]}
                     highColor={mapHighColors[index]}
@@ -66,10 +67,11 @@ class MapContainer extends Component {
                         key={`${param}-map`}
                         stat={param}
                         statLabel={this.state.parameterLabels[index]}
+                        geoid={this.props.geoid}
                         dateIdx={dateIdx}
                         countyBoundaries={this.props.countyBoundaries}
                         statsForCounty={this.props.statsForCounty}
-                        width={this.props.width / 2}
+                        width={this.props.width / 3}
                         height={this.props.height}
                         lowColor={mapLowColors[index]}
                         highColor={mapHighColors[index]}
@@ -94,7 +96,7 @@ class MapContainer extends Component {
                 <div className="map-wrapper">
                     {this.state.children.map(child => {
                         return (
-                            <div className="map" key={child.key}>
+                            <div className="map" key={child.key} style={{ background: graphBkgd }}>
                                 {child.map}
                             </div>
                         )
