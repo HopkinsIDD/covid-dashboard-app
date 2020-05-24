@@ -57,7 +57,7 @@ class Search extends Component {
     render() {
         const { Content } = Layout;
         return (
-            <Content style={{ background: 'white', padding: '50px 0' }}>
+            <Content style={{ background: '#fefefe', padding: '50px 0' }}>
                 <div className="content-section">
                     <div className="content-header">
                         Intervention Scenario Modeling

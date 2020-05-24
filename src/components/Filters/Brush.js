@@ -8,7 +8,7 @@ import { timeDay, timeYear } from 'd3-time'
 import { brushX } from 'd3-brush'
 import { event } from 'd3-selection'
 import { max, extent } from 'd3-array'
-import { margin, red, green } from '../../utils/constants'
+import { margin, red, green, graphBkgd } from '../../utils/constants'
 
 class Brush extends Component {
   constructor(props) {
@@ -210,7 +210,7 @@ class Brush extends Component {
                 y={margin.top}
                 width={this.props.width - margin.left - margin.right}
                 height={this.props.height - margin.bottom - margin.top}
-                fill={'#f6f5f5'}
+                fill={'#fbfbfb'}
             />
             {
               // visible simPaths

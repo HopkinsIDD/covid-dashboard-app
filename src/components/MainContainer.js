@@ -609,7 +609,7 @@ class MainContainer extends Component {
                 </Content>
 
                 {/* MainChart Component */}
-                <Content style={{ background: 'white', padding: '50px 0' }}>
+                <Content style={{ background: '#fefefe', padding: '50px 0' }}>
                     <div className="content-section">
                         <div className="content-header">Summary Across Scenarios</div>
                     </div>
@@ -621,7 +621,7 @@ class MainContainer extends Component {
                                 <ChartContainer
                                     geoid={this.state.geoid}
                                     width={this.state.graphW - margin.left - margin.right}
-                                    height={this.state.graphH}
+                                    height={this.state.graphH * 1.15} 
                                     dataset={this.state.dataset}
                                     scenarios={this.state.scenarioListChart}
                                     firstDate={this.state.firstDate}

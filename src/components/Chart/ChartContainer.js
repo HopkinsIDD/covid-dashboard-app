@@ -10,10 +10,10 @@ class ChartContainer extends Component {
         super(props);
         this.state = {
             // TODO: depending on performance, may add more or less
-            parameters: ['incidI', 'incidH', 'incidD'],
-            parameterLabels: ['Infections', 'Hospitalizations', 'Deaths'],
+            parameters: ['incidI', 'incidH', 'incidICU', 'incidD'],
+            parameterLabels: ['Infections', 'Hospitalizations', 'ICU Cases', 'Deaths'],
             // severities: ['high', 'med', 'low'],
-            children: {'incidI': {}, 'incidH': {}, 'incidD': {}},
+            children: {'incidI': {}, 'incidH': {}, 'incidICU': {}, 'incidD': {}},
             hoveredScenarioIdx: null
         }
     }
@@ -97,7 +97,7 @@ class ChartContainer extends Component {
         if (this.state.hoveredScenarioIdx) console.log(scenarios[this.state.hoveredScenarioIdx])
         return (
             <div>
-                <h2>{`${COUNTYNAMES[this.props.geoid]} Summary Statistics - ${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h2>
+                <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]} Summary Statistics - ${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</div>
                 {/* <h5>{`${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h5> */}
                 <div className="row resetRow chart-callout" style={{ display: 'block !important'}}>
                     {this.state.rectIsHovered &&
@@ -148,22 +148,15 @@ class ChartContainer extends Component {
                     }
                     </div>
                 </div>
-                <div className="row resetRow">
-                    <div className="chart" key={this.state.children['incidH'].key}>
-                        {this.state.children['incidI'].chart}
-                    </div>
-                </div> 
-                <div className="row">
-
-                    <div className="chart" key={this.state.children['incidH'].key}>
-                        {this.state.children['incidH'].chart}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="chart" key={this.state.children['incidD'].key}>
-                        {this.state.children['incidD'].chart}
-                    </div>
-                </div>
+                {this.state.parameters.map( param => {
+                    return (
+                        <div className="row" key={`chart-row-${this.state.children[param].key}`}>
+                            <div className="chart" key={this.state.children[param].key}>
+                                {this.state.children[param].chart}
+                            </div>
+                        </div>
+                    )
+                })}
             </div>
         )
     }

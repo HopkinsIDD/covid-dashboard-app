@@ -6,7 +6,7 @@ import { timeFormat } from 'd3-time-format';
 import Axis from '../Graph/Axis';
 import { getDateIdx, addCommas } from '../../utils/utils';
 import { margin } from '../../utils/constants';
-import { graphBkgd, green, gray, blue, scenarioColors } from '../../utils/constants'
+import { chartBkgd, green, gray, blue, scenarioColors } from '../../utils/constants'
 
 class Chart extends Component {
     constructor(props) {
@@ -172,7 +172,7 @@ class Chart extends Component {
                     height={this.props.height - margin.chartTop - margin.bottom + 2}
                     x={margin.left + (i * (this.props.width / this.state.severities.length))}
                     y={margin.chartTop}
-                    fill={graphBkgd}
+                    fill={chartBkgd}
                 >
                 </rect>
                 <text

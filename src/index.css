@@ -301,6 +301,8 @@ ul {
 
 .map {
   /* border: 1px solid blue; */
+  margin: 5px;
+  padding: 5px;
 }
 
 .slider-menu {
