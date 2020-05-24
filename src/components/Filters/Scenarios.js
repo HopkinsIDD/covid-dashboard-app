@@ -135,10 +135,11 @@ class Scenarios extends Component {
             defaultScenario = [this.props.scenarioList[0].key];
         } else if (this.props.view === 'chart') {
             defaultScenario = this.props.SCENARIOS.map(s => s.name);
-            style = { width: '100%' };
+            style = { width: '80%' };
         } else {
             defaultScenario = [this.props.scenario]
-            style = { width: '100%' };
+            style = { width: '70%' };
+
         }
         // console.log(this.props.view, defaultScenario)
         return (
@@ -148,14 +149,10 @@ class Scenarios extends Component {
                     mode={this.props.view === 'map' ? "" : "multiple"}
                     style={style}
                     defaultValue={defaultScenario}
-                    maxTagCount={1}
                     maxTagTextLength={12}
                     onChange={this.handleChange}>
                     {this.state.children.map(child => child.checkbox)}
                 </Select>
-                {/* <div className="filter-description">
-                    For more information on scenarios, click here.
-                </div> */}
             </div>
         )
     }
