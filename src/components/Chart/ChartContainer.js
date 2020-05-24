@@ -152,10 +152,12 @@ class ChartContainer extends Component {
                     }
                     </div>
                 </div>
-                {this.state.parameters.map( param => {
+                {this.state.parameters.map( (param, i) => {
+                    // console.log(param)
+                    // console.log(this.state.children[param])
                     return (
-                        <div className="row" key={`chart-row-${this.state.children[param].key}`}>
-                            <div className="chart" key={this.state.children[param].key}>
+                        <div className="row" key={`chart-row-${i}`}>
+                            <div className="chart" key={`chart-${i}`}>
                                 {this.state.children[param].chart}
                             </div>
                         </div>

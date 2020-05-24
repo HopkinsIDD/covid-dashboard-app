@@ -14,6 +14,7 @@ import Search from './Search/Search'
 import Brush from './Filters/Brush';
 import GraphFilter from './Graph/GraphFilter';
 import ChartLegend from './Chart/ChartLegend';
+import IndicatorSelection from './Chart/IndicatorSelection';
 import DatePicker from './Chart/DatePicker';
 import ScaleToggle from './Chart/ScaleToggle';
 import DateSlider from './Map/DateSlider';
@@ -54,6 +55,7 @@ class MainContainer extends Component {
             severityList: [_.cloneDeep(LEVELS[0])],
             scenarioHovered: '',
             statThreshold: 0,
+            statListChart: [],
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: new Date(),
@@ -97,6 +99,10 @@ class MainContainer extends Component {
         const scenarioMap = SCENARIOS[0].key;   // scenario view for map
         const scenarioList = [scenario];    // updated based on selection
         const scenarioListChart = SCENARIOS.map(s => s.name);
+
+        // add default stats to chart
+        const statListChart = STATS.slice(0,3)
+        console.log(statListChart)
 
         // instantiate initial series and dates
         const { severity, stat } = this.state;
@@ -164,6 +170,7 @@ class MainContainer extends Component {
             scenarioMap,
             scenarioList,
             scenarioListChart,
+            statListChart,
             dates: newDates,
             allTimeDates,
             seriesList: [filteredSeries],
@@ -383,6 +390,24 @@ class MainContainer extends Component {
         const yAxisLabel = `Daily ${i.name}`;
         this.setState({stat: i, yAxisLabel})
     };
+
+    handleStatClickChart = (items) => {
+        // items is Array of scenario names
+        console.log(items)
+
+        let newChartStats = []
+
+        for (let item of items) {
+            const chartStat = STATS.filter(s => s.key === item)[0];
+            newChartStats.push(chartStat)
+        }
+
+        console.log('statListChart', newChartStats)
+        this.setState({
+            statListChart: newChartStats
+        })
+        
+    }
 
     handleScenarioClickGraph = (items) => {
         // items is Array of scenario names
@@ -644,14 +669,21 @@ class MainContainer extends Component {
                             <Fragment>
                                 <ChartLegend />
                             {this.state.dataLoaded &&
-                                <Scenarios 
-                                    view="chart"
-                                    scenarioListChart={this.state.scenarioListChart}
-                                    SCENARIOS={this.state.SCENARIOS}
-                                    scenario={this.state.scenario}
-                                    scenarioList={this.state.scenarioListChart}
-                                    onScenarioClickChart={this.handleScenarioClickChart}
-                                />
+                                <Fragment>
+                                    <Scenarios 
+                                        view="chart"
+                                        scenarioListChart={this.state.scenarioListChart}
+                                        SCENARIOS={this.state.SCENARIOS}
+                                        scenario={this.state.scenario}
+                                        scenarioList={this.state.scenarioListChart}
+                                        onScenarioClickChart={this.handleScenarioClickChart}
+                                    />
+                                    <IndicatorSelection
+                                        STATS={STATS}
+                                        statListChart={this.state.statListChart}
+                                        onStatClickChart={this.handleStatClickChart}
+                                    />
+                                </Fragment>
                                 }
                                 <DatePicker 
                                     firstDate={this.state.firstDate}
