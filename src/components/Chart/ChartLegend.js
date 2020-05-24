@@ -13,9 +13,9 @@ function ChartLegend(props) {
                             opacity={0.8}
                         />
                         <line
-                            x1="5" y1="0" x2="15" y2="0"
+                            x1="5" y1="1" x2="15" y2="1"
                             stroke={gray}
-                            strokeWidth="2"
+                            strokeWidth="1"
                         />
                         <line
                             x1="10" y1="0" x2="10" y2="40"
@@ -25,7 +25,7 @@ function ChartLegend(props) {
                         <line
                             x1="5" y1="40" x2="15" y2="40"
                             stroke={gray}
-                            strokeWidth="2"
+                            strokeWidth="1"
                         />
                     </svg>
                 </p>
