@@ -48,7 +48,7 @@ class Scenarios extends Component {
                 const keys = Object.values(scenarioList).map(scen => scen.key);
                 const scenariosGraph = Array.from(this.props.SCENARIOS);
                 
-                if (this.props.scenarioList.length >= 2) {
+                if (this.props.scenarioList.length >= 3) {
                     scenariosGraph.map(scenario => {
                         if (keys.includes(scenario.key)) {
                             return scenario.disabled = false;
