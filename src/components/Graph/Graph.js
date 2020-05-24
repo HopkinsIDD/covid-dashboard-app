@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { Tooltip } from 'antd'
 import Axis from './Axis'
 // import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line, area, curveLinear } from 'd3-shape'
@@ -322,7 +323,7 @@ class Graph extends Component {
         if (s) {
             const hoveredIdx = this.props.series.findIndex( sim => sim.name === s.name)
             // console.log(hoveredIdx)
-            this.setState({ hoveredSimPathId: hoveredIdx })  
+            this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `sim: ${s.name}` })  
         } 
     }
 
@@ -362,19 +363,29 @@ class Graph extends Component {
                         {
                         // visible simPaths
                         this.state.simPaths.map( (simPath, i) => {
-                            return <path
-                                d={simPath}
-                                key={`simPath-${i}`}
-                                id={`simPath-${i}`}
-                                className={`simPath`}
-                                fill='none' 
-                                stroke = { this.state.series[i].over ? red : green}
-                                strokeWidth={'1'}
-                                strokeOpacity={ this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 0 : 0.6}
-                                onMouseMove={(e) => this.handleMouseMove(e, i)}
-                                onMouseEnter={(e) => this.handleMouseEnter(e, i)}
-                                onMouseLeave={(e) => this.handleMouseLeave(e, i)}
-                            />
+                            const simIsHovered = (i === this.state.hoveredSimPathId)
+                            return (
+                                <Tooltip
+                                    key={`tooltip-sim-${i}`}
+                                    title={this.state.tooltipText}
+                                    visible={simIsHovered ? true : false}
+                                    data-html="true"
+                                >
+                                    <path
+                                        d={simPath}
+                                        key={`simPath-${i}`}
+                                        id={`simPath-${i}`}
+                                        className={`simPath`}
+                                        fill='none' 
+                                        stroke = { this.state.series[i].over ? red : green}
+                                        strokeWidth={'1'}
+                                        strokeOpacity={ this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 0 : 0.6}
+                                        onMouseMove={(e) => this.handleMouseMove(e, i)}
+                                        onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                                        onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                                    />
+                                </Tooltip>
+                            ) 
                         })}
                         {// highlight simPaths
                         this.state.simPaths.map( (simPath, i) => {
