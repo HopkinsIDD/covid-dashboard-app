@@ -3,7 +3,7 @@ const utils = require('./utils');
 const constants = require('./constants');
 const transform = require('./transform');
 
-function parseSim(path, result, geoids, scenario, severity, getIdx, reduceInt) {
+function parseSim(path, result, geoids, scenario, severity, getIdx) {
     // returns Object of Array series of sim values by geoID
     // getIdx: Obj index mapping of selected parameters
     // reduceInt: int that sim must be divisible by to be included in final set
@@ -11,14 +11,11 @@ function parseSim(path, result, geoids, scenario, severity, getIdx, reduceInt) {
     try {
         const data = fs.readFileSync(path, 'UTF-8');
         const lines = data.split(/\r?\n/);
-
+    
             for (let l = 0; l < lines.length; l++) {
                 const line = lines[l];
                 const geoid = line.split(',')[getIdx['geoid']];
                 const sim = line.split(',')[getIdx['sim_num']];
-                
-                // reduce eligible sims
-                if (sim % reduceInt > 0) { break; }
                 
                 // only include specified geoid
                 if (geoids.includes(geoid)) {
@@ -50,11 +47,14 @@ function parseSim(path, result, geoids, scenario, severity, getIdx, reduceInt) {
 
 module.exports = {
     parseDirectories: function parseDirectories(
-        dir, geoids, scenarios, severities, parameters, dates) {
+        dir, geoids, scenarios, dates) {
         // parses entire model package of multiple scenario directories
         // returns result Object
 
         console.log('start:', new Date()); 
+        
+        const severities = constants.severities;
+        const parameters = constants.parameters;
         const result = utils.initObj(
             geoids, scenarios, severities, parameters, dates);
             
@@ -63,8 +63,8 @@ module.exports = {
 
             const scenarioDir = `${dir}${scenarios[s]}/`;
             const files = fs.readdirSync(scenarioDir)
-                .filter(file => file !== '.DS_Store');
-                //.slice(0,3);
+                .filter(file => file !== '.DS_Store')
+                //.slice(0, 5);
 
             // get index mapping based on parameters and headers
             let getIdx = {};
@@ -75,9 +75,6 @@ module.exports = {
                 console.log(`No files in directory: ${scenarioDir}`)
             }
 
-            // determine files to discard based on number of files in scenario
-            const reduceInt = utils.reduceSims(files.length);
-
             // parse by sim file
             for (let f = 0; f < files.length; f ++) {
                 const severity = files[f].split('_')[0];
@@ -85,8 +82,7 @@ module.exports = {
                 console.log(severity)
 
                 parseSim(
-                    filePath, result, geoids, scenarios[s], severity, getIdx, reduceInt
-                    )
+                    filePath, result, geoids, scenarios[s], severity, getIdx)
             }
         };
 

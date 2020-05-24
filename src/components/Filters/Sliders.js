@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { addCommas } from '../../utils/utils.js';
 import { timeFormat } from 'd3-time-format';
 import { timeDay }  from 'd3-time';
+// import { Slider } from 'antd'
 
 const getDate = timeFormat('%b %d, %Y');
 const getMonth = timeFormat('%b %d');
@@ -34,6 +35,7 @@ class Sliders extends Component {
     }
 
     handleStatChange = (i) => {
+        console.log(i)
         this.props.onStatSliderChange(i);
     }
 
@@ -42,10 +44,6 @@ class Sliders extends Component {
         this.props.onDateSliderChange(selectedDate);
     }
 
-    // handleReprChange = (i) => {
-    //     this.props.onReprSliderChange(i);
-    // }
-
     render() {
         const { stat, statThreshold, seriesMin, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
         const roundedStat = Math.ceil(statThreshold / 100) * 100;
@@ -53,11 +51,9 @@ class Sliders extends Component {
         return (
             <div className="slider-menu">
                 {/* Stat Threshold */}
+                <div className="param-header">INDICATOR THRESHOLD</div>
                 <div className="filter-label">
-                    {stat.name} Threshold: <span className='callout'>{addCommas(roundedStat)}</span>
-                    <div className="tooltip">&nbsp;&#9432;
-                        <span className="tooltip-text">Slide the {stat.name} threshold to visualize the percent chance daily {stat.name} exceed the selected value.</span>
-                    </div>
+                    {stat.name}: <span className='callout'>{addCommas(roundedStat)}</span>
                 </div>
                 <div className="slidecontainer">
                     <input
@@ -66,16 +62,17 @@ class Sliders extends Component {
                         min={seriesMin.toString()}
                         max={seriesMax.toString()}
                         value={statThreshold.toString()}
+                        step={100}
                         ref={ref => this.statInput = ref}
                         onChange={
                             () => {this.handleStatChange(this.statInput.value)}
                         }>
                     </input> 
-                    <div className="row slider-label">
-                        <p className="col-6 filter-label callout">
+                    <div className="slider-label-row slider-label">
+                        <p className="filter-label callout">
                             {addCommas(seriesMin)}
                         </p>
-                        <p className="col-6 filter-label slider-max callout">
+                        <p className="filter-label slider-max callout">
                             {addCommas(seriesMax)}
                         </p>
                     </div>
@@ -83,11 +80,9 @@ class Sliders extends Component {
                 <p></p>
 
                 {/* Date Threshold */}
+                <div className="param-header">DATE THRESHOLD</div>
                 <div className="filter-label">
-                    Date Threshold: <span className='callout'>{getDate(dateThreshold)}</span>
-                    <div className="tooltip">&nbsp;&#9432;
-                        <span className="tooltip-text">Slide the date threshold to visualize the percent chance daily {stat.name}s exceed the selected value by a given date.</span>
-                    </div>
+                    Date: <span className='callout'>{getDate(dateThreshold)}</span>
                 </div>
                 <div className="slidecontainer">
                     <input
@@ -102,44 +97,25 @@ class Sliders extends Component {
                             () => {this.handleDateChange(this.dateInput.value)}
                         }>
                     </input>
-                    <div className="row slider-label">
-                        <p className="col-6 filter-label callout">
-                            {/* {firstDateStr} */}
+                    <div className="slider-label-row slider-label">
+                        <p className="filter-label callout">
+                            
                             {getMonth(dateRange[0])}
                         </p>
-                        <p className="col-6 filter-label slider-max callout">
-                            {/* {lastDateStr} */}
+                        <p className="filter-label slider-max callout">
+                           
                             {getMonth(timeDay.offset(dateRange[1], -1))}
                         </p>
+                        <span className="tooltip-text">
+                        Slide the date threshold to visualize the percent chance daily 
+                        {stat.name}s exceed the selected value by a given date.</span>
                     </div>
+                </div> 
+
+                <div className="filter-description">
+                    Slide over indicator value and day to see how likely daily&nbsp;
+                    {stat.name} will exceed a certain number by a given day.
                 </div>
-                
-                {/* <div className="slidecontainer">
-                    <label
-                        className="filter-label"
-                        htmlFor="dateThreshold">
-                        Date Threshold: {date}
-                    </label>
-                    <input
-                        id="dateThreshold"
-                        className="filter-label"
-                        type="date"
-                        value={this.props.dateThreshold}
-                        min={this.props.firstDate}
-                        max={this.props.lastDate}
-                        onChange={this.handleDateChange}>
-                    </input>
-                </div> */}
-
-{/*             <p className="param-header">Reproductive Number</p>
-                <div className="slidecontainer">
-                    <input
-                        id="r0" type="range" min="0" max="4"
-                        ref={ref => this.r0Input = ref}
-                        onChange={() => this.handleReprChange(this.r0Input.value)}>
-                    </input>
-                </div> */}
-
             </div>
         )
     }

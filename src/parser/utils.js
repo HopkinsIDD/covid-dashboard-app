@@ -1,4 +1,5 @@
 const fs = require('fs');
+const constants = require('./constants');
 
 module.exports = {
 
@@ -118,7 +119,7 @@ module.exports = {
         return filesBySev;
     },
 
-    reduceSims: function reduceSims(fileLength) {
+    calcReduceInt: function calcReduceInt(fileLength) {
         // returns int a sim number must be divisible by
         // in order to be included in final dataset
         // fileLength is length of files in scenario directory
@@ -137,19 +138,74 @@ module.exports = {
         }
     },
 
+    reduceSims: function reduceSims(dir, parsedObj) {
+        // reduce number of sims based on sim files per scenario
+        
+        const geoids = Object.keys(parsedObj);
+        for (let geoid of geoids) {
+    
+            const scenarios = Object.keys(parsedObj[geoid]);
+            for (let scenario of scenarios) {
+
+                const files = fs.readdirSync(`${dir}${scenario}/`)
+                    .filter(file => file !== '.DS_Store');
+                const reduceInt = module.exports.calcReduceInt(files.length);
+                for (let sev of constants.severities) {
+
+                    for (let param of constants.parameters) {
+
+                        const newSims = parsedObj[scenario][sev][param].sims
+                            .filter(sim => sim.name % reduceInt === 0);
+                        parsedObj[scenario][sev][param].sims = newSims;
+                    }
+                }
+            }
+        }
+    },
+
     writeToFile: function writeToFile(parsedObj, geoids) {
         // each geoid will write to separate JSON file
 
         console.log('... writing files')
         for (let g = 0; g < geoids.length; g ++) {
             const json = JSON.stringify(parsedObj[geoids[g]]);
-            const path = `src/store/geo${geoids[g]}.json`;
+            const path = `src/store/geo${geoids[g]}_NEW.json`;
     
-            fs.writeFile(path, json, 'utf8', function(err) {
+            fs.writeFileSync(path, json, 'utf8', function(err) {
                 if (err) throw err;
             });
         }
+    },
+
+    combineCaliCounties: function combineCaliCounties() {
+        // Add renamed scenarios of geo06019 to geo06085
+    
+        const geo06019 = require('../store/geo06019.json');
+        const oldKeys = Object.keys(geo06019);
+        const newKeys = ['USA_Lockdown1945', 'USA_LockdownHK', 'USA_Fatiguing'];
+        
+        // rename scenarios of geo06019
+        for (let i = 0; i < oldKeys.length; i ++) {
+            Object.defineProperty(geo06019, newKeys[i],
+                Object.getOwnPropertyDescriptor(geo06019, oldKeys[i]));
+            delete geo06019[oldKeys[i]];
+        }
+    
+        // add renamed scenarios to geo06085
+        const geo06085 = require('../store/geo06085.json');
+        for (let key of newKeys) {
+            geo06085[key] = geo06019[key];
+        }
+        
+        const json = JSON.stringify(geo06085);
+        const path = `src/store/geo06085.json`;
+    
+        fs.writeFileSync(path, json, 'utf8', function(err) {
+            if (err) throw err;
+        });
+    
     }
+    
 }
 
 // const dir = 'src/store/sims/';

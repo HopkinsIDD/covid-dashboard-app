@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { axisLeft, axisBottom } from 'd3-axis'
+import { axisLeft, axisBottom, axisRight } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
 import { select } from 'd3-selection'
 import { addCommas } from '../../utils/utils.js'
@@ -21,6 +21,14 @@ class Axis extends Component {
   drawAxis = () => {
     if (this.props.orientation === 'left') {
       this.axis = axisLeft().scale(this.props.scale)
+        .ticks(this.props.tickNum ? this.props.tickNum : 10)
+        .tickFormat(d => addCommas(d));
+
+      if (this.axisRef.current) {
+        select(this.axisRef.current).call(this.axis)
+      }
+    } else if (this.props.orientation === 'right') {
+      this.axis = axisRight().scale(this.props.scale)
         .tickFormat(d => addCommas(d));
 
       if (this.axisRef.current) {

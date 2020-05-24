@@ -3,9 +3,9 @@ import Axis from './Axis'
 // import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least } from 'd3-array'
-import { select, clientPoint } from 'd3-selection'
+import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
-import { margin, red, green, blue, gray, lightgray } from '../../utils/constants'
+import { margin, red, green, blue, gray, lightgray, graphBkgd } from '../../utils/constants'
 
 class Graph extends Component {
     constructor(props) {
@@ -327,7 +327,7 @@ class Graph extends Component {
     }
 
     render() {
-
+        const roundedThreshold = Math.ceil(this.props.statThreshold / 100) * 100;
         return (
             // <div className="graph-area">
                 <g 
@@ -354,7 +354,7 @@ class Graph extends Component {
                             id={`graphArea_${this.props.keyVal}`}
                             width={this.props.width - margin.left - margin.right}
                             height={this.props.height - margin.bottom - margin.top}
-                            fill={'#f6f5f5'}
+                            fill={graphBkgd}
                             // onMouseEnter={() => console.log('entered')}
                             onMouseMove={(e) => this.handleBetterSimMouseHover(e)}
                             onMouseLeave={(e, i) => this.handleMouseLeave(e, i)}
@@ -414,9 +414,9 @@ class Graph extends Component {
                         <g ref={this.thresholdRef}>
                             <line
                                 x1={margin.left}
-                                y1={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
+                                y1={this.props.yScale(roundedThreshold) < margin.top ? margin.top : this.props.yScale(roundedThreshold)}
                                 x2={this.props.width - margin.right}
-                                y2={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
+                                y2={this.props.yScale(roundedThreshold) < margin.top ? margin.top : this.props.yScale(roundedThreshold)}
                                 stroke={gray}
                                 className={'statThreshold'}
                                 strokeDasharray="4 2"
@@ -432,7 +432,7 @@ class Graph extends Component {
                             ></line>
                             <circle
                                 cx={this.props.xScale(this.props.dateThreshold)}
-                                cy={this.props.yScale(this.props.statThreshold)}
+                                cy={this.props.yScale(roundedThreshold)}
                                 r={4}
                                 fill={gray}
                                 className={'thresholdCircle'}
@@ -442,7 +442,6 @@ class Graph extends Component {
                     <g>
                         <Axis 
                             keyVal={this.props.keyVal}
-                            ref={this.axisRef}
                             width={this.props.width}
                             height={this.props.height}
                             orientation={'bottom'}

@@ -1,4 +1,6 @@
-import { extent } from 'd3-array'
+import { extent } from 'd3-array';
+import { timeDay } from 'd3-time';
+import { timeFormat } from 'd3-time-format';
 ///////////////// UTILS ///////////////////
 
 export function buildScenarios(dataset) {
@@ -36,4 +38,15 @@ export function getRange(series, seriesPeaks) {
 
   return [minPeak, maxPeak];
 };
+
+export function getDateIdx(firstDate, currentDate) {
+  return timeDay.count(firstDate, currentDate);
+};
+
+export function capitalize(s) {
+  if (typeof s !== 'string') return ''
+  return s.charAt(0).toUpperCase() + s.slice(1)
+}
+
+export const getReadableDate = timeFormat('%b %d, %Y');
 

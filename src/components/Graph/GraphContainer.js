@@ -27,8 +27,8 @@ class GraphContainer extends Component {
         const graphHeight = height;
         const scales = this.getScales(seriesList, confBoundsList, dates, graphWidth, height);
         const child = {
-            'key': `${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`,
-            'graph': [],
+            key: `${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`,
+            graph: [],
         }
         
         child.graph.push(
@@ -108,8 +108,8 @@ class GraphContainer extends Component {
         // console.log(this.props.confBoundsList)
         for (let i = 0; i < scenarioList.length; i++) {
             const child = {
-                'key': `${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`,
-                'graph': [],
+                key: `${scenarioList[i].key}_Graph_${this.props.scenarioClickCounter}`,
+                graph: [],
             }
             child.graph.push(
                 <Graph
@@ -179,10 +179,10 @@ class GraphContainer extends Component {
       return (
           <div className="graph-wrapper">
               <div className="col-1"></div>
-              <div className="y-axis-label titleNarrow">
+              <div className="y-axis-label titleNarrow graph-yLabel">
                   {this.props.yAxisLabel}
               </div>
-              <div className="resetRow graph-title-row">
+              <div className="graph-title-row">
               <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                 {scenarioList.map((scenario, i) => {
                     const scenarioTitle = scenario.name.replace('_', ' ');
@@ -201,7 +201,7 @@ class GraphContainer extends Component {
                             </div>
                 } )}
             </div>
-              <div className="resetRow graph-title-row callout-row">
+              <div className="graph-title-row callout-row">
                 <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                     {children.map( (child, i) => {
                         return (
@@ -227,7 +227,7 @@ class GraphContainer extends Component {
                         )
                     })}
                 </div>
-                <div className="row resetRow">
+                <div className="graph-container">
                   {this.state.scaleDomains &&
                   <Fragment>
                         <svg 
