@@ -26,6 +26,11 @@ class Chart extends Component {
             date.getDay() > 0
             );
     }
+
+    handleOpen = (datePickerOpen) => {
+        console.log('datePickerOpen', datePickerOpen)
+        this.props.onHandleDatePicker(datePickerOpen)
+    }
     
     render() {
         const { RangePicker } = DatePicker;
@@ -35,6 +40,7 @@ class Chart extends Component {
                 <RangePicker
                     disabledDate={this.disabledDate} 
                     onChange={this.handleChange}
+                    onOpenChange={this.handleOpen}
                 />
             </div>
         );

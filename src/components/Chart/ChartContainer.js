@@ -112,8 +112,8 @@ class ChartContainer extends Component {
         const parameters = this.props.stats.map( s => s.key )
         return (
             <div>
-                <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]} - ${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</div>
-                <h5>{`${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h5>
+                <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]}`}</div>
+                <div className="filter-label threshold-label callout callout-row"><span className={this.props.datePickerActive ? 'customLink' : 'bold'}>{getReadableDate(this.props.summaryStart)}</span>&nbsp;to <span className={this.props.datePickerActive ? 'customLink' : 'bold'}>{getReadableDate(this.props.summaryEnd)}</span></div>
                 <div className="chart-callout" style={{ display: 'block !important'}}>
                     {this.state.rectIsHovered &&
                                 

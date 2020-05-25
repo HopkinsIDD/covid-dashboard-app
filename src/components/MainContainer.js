@@ -62,6 +62,7 @@ class MainContainer extends Component {
             dateThreshold: new Date(),
             dateSliderActive: false,
             dateSliderActiveMap: false,
+            datePickerActiveChart: false,
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             firstDate: '',
             lastDate: '',
@@ -571,8 +572,11 @@ class MainContainer extends Component {
                 console.log('map date mouseup')
                 this.setState({ dateSliderActiveMap: false })
             }
-        }
-        
+        } 
+    }
+
+    handleDatePicker = (datePickerOpen) => {
+        this.setState({ datePickerActiveChart: datePickerOpen })
     }
 
     render() {
@@ -699,6 +703,7 @@ class MainContainer extends Component {
                                     summaryStart={this.state.summaryStart}
                                     summaryEnd={this.state.summaryEnd}
                                     scale={this.state.summaryScale}
+                                    datePickerActive={this.state.datePickerActiveChart}
                                 />
                             </div>
                             }
@@ -729,6 +734,7 @@ class MainContainer extends Component {
                                     summaryStart={this.state.summaryStart}
                                     summaryEnd={this.state.summaryEnd}
                                     onHandleSummaryDates={this.handleSummaryDates}
+                                    onHandleDatePicker={this.handleDatePicker}
                                 />
                                 <ScaleToggle
                                     scale={this.state.summaryScale}
