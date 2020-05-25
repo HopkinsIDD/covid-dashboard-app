@@ -45,13 +45,11 @@ class Sliders extends Component {
     }
 
     handleStatMouseEvent = (e) => {
-        // console.log('stat', e.type)
-        this.props.onSliderMouseEvent(e.type, 'stat')
+        this.props.onSliderMouseEvent(e.type, 'stat', 'graph')
     }
 
     handleDateMouseEvent = (e) => {
-        // console.log('date', e.type)
-        this.props.onSliderMouseEvent(e.type, 'date')
+        this.props.onSliderMouseEvent(e.type, 'date', 'graph')
     }
 
     render() {

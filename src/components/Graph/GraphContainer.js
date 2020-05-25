@@ -178,7 +178,6 @@ class GraphContainer extends Component {
       const { scenarioList, scenarioHovered } = this.props;
       return (
           <div className="graph-wrapper">
-              <div className="col-1"></div>
               <div className="y-axis-label titleNarrow graph-yLabel">
                   {this.props.yAxisLabel}
               </div>
