@@ -35,8 +35,8 @@ module.exports = {
     // returns Object of statistic data to join into GeoJSON Boundary Collection
     // inside MapContainer of react app
 
-    const geoids = Object.keys(parsedObj);
-    const states = [...new Set(geoids.map(geoid => geoid.slice(0, 2)))];
+    const geoids = Object.keys(parsedObj).filter(g => g.length === 5);
+    const states = Object.keys(parsedObj).filter(g => g.length === 2);
     const scenarios = Object.keys(parsedObj[geoids[0]]);
     const geoObj = module.exports.initStatGeoObj(states, geoids, scenarios);
 
@@ -54,7 +54,7 @@ module.exports = {
 
     const json = JSON.stringify(geoObj);
 
-    fs.writeFileSync('src/store/geoStatsForMap.json', json, 'utf8', function(err) {
+    fs.writeFileSync('src/store/statsForMap.json', json, 'utf8', function(err) {
         if (err) throw err;
     });
 

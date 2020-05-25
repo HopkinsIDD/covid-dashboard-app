@@ -10,11 +10,9 @@ module.exports = {
             const scenarios = Object.keys(parsedObj[geoid]);
             for (let scenario of scenarios) {
     
-                const severities = constants.severities;
-                for (let sev of severities) {
+                for (let sev of constants.severities) {
     
-                    const parameters = constants.parameters;
-                    for (let param of parameters) {
+                    for (let param of constants.parameters) {
     
                         const confObj = {'p10': [], 'p50': [], 'p90': []};
                         for (let d = 0; d < dates.length; d ++) {

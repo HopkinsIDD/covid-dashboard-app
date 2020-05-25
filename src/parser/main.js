@@ -21,11 +21,8 @@ function buildDataset(dir, geoids) {
 
     // faster to grab dates from the get-go
     const dates = utils.getDates(dir, scenarios);
-    
-    // add state geoids to geoid list
-    const states = [...new Set(geoids.map(geoid => geoid.slice(0, 2)))];
-    geoids = geoids.concat(states);
-    
+
+    // parse all files in scenario directories
     const parsedObj = parse.parseDirectories(
         dir,
         geoids,
@@ -33,8 +30,11 @@ function buildDataset(dir, geoids) {
         dates
         );
 
+    // add state-level sims
+    utils.aggregateByState(parsedObj, scenarios, dates);
+
     // transform each simObj to D3-friendly format
-    transform.toD3format(parsedObj, geoids, scenarios);
+    transform.toD3format(parsedObj, scenarios);
     
     // quantiles should be based on all sims
     quantile.addQuantiles(parsedObj, dates);
@@ -49,7 +49,7 @@ function buildDataset(dir, geoids) {
     quantile.transformQuantiles(parsedObj, dates)
 
     // write to individual files
-    utils.writeToFile(parsedObj, geoids);
+    utils.writeToFile(parsedObj);
     
     console.log('end:', new Date());
     console.log('data processing complete!'); 
@@ -74,6 +74,6 @@ const geoids = [
     '36091', '36093', '36095', '36097', '36099', '36101', '36103', '36105', '36107', 
     '36109', '36111', '36113', '36115', '36117', '36119', '36121', '36123']
 
-// const geoids = ['06085', '06095'];
+// const geoids = ['06085', '06095', '36001', '36003'];
 // TODO: geoids should default to all unless specified for testing
 buildDataset(dir, geoids)
