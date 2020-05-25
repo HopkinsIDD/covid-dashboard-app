@@ -117,7 +117,6 @@ class IndicatorSelection extends Component {
                     value={this.props.statListChart.map(s => s.key)}
                     maxTagTextLength={12}
                     onChange={this.handleChange}>
-                    onDeselect={this.handleUnclick}>
                     {this.state.children.map(child => child.checkbox)}
                 </Select>
             </div>
