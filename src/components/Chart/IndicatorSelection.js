@@ -99,9 +99,8 @@ class IndicatorSelection extends Component {
 
     handleChange = (event) => {
         // prevent user from deselecting all scenarios
-        if (event.length === 0) { return };
+        if (event.length === 1) { return };
         this.props.onStatClickChart(event);
-        
     }
 
     render() {
@@ -115,8 +114,10 @@ class IndicatorSelection extends Component {
                     mode="multiple"
                     style={{ width: '80%' }}
                     defaultValue={this.props.statListChart.map(s => s.key)}
+                    value={this.props.statListChart.map(s => s.key)}
                     maxTagTextLength={12}
                     onChange={this.handleChange}>
+                    onDeselect={this.handleUnclick}>
                     {this.state.children.map(child => child.checkbox)}
                 </Select>
             </div>

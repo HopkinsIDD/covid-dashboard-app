@@ -43,6 +43,7 @@ class Chart extends Component {
             prevProps.summaryEnd !== this.props.summaryEnd ||
             prevProps.dataset !== this.props.dataset ||
             prevProps.scenarios !== this.props.scenarios ||
+            prevProps.stats !== this.props.stats ||
             prevProps.scale !== this.props.scale) {
             this.calculateQuantiles();
         }

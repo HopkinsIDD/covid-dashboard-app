@@ -10,8 +10,8 @@ class ChartContainer extends Component {
         super(props);
         this.state = {
             // TODO: depending on performance, may add more or less
-            // parameters: [],
-            // parameterLabels: [],
+            parameters: [],
+            parameterLabels: [],
             // severities: ['high', 'med', 'low'],
             children: {},
             hoveredScenarioIdx: null
@@ -62,6 +62,7 @@ class ChartContainer extends Component {
                         // severity={severity}
                         stat={param}
                         statLabel={parameterLabels[index]}
+                        stats={this.props.stats}
                         width={this.props.width}
                         height={this.props.height / parameters.length}
                         handleCalloutInfo={this.handleCalloutInfo}
@@ -76,6 +77,8 @@ class ChartContainer extends Component {
         console.log(children)
         this.setState({
             children,
+            parameters,
+            parameterLabels
         })
     }
 
@@ -103,13 +106,14 @@ class ChartContainer extends Component {
         // const scenarios = Object.keys(this.props.dataset);
         // console.log(scenarios)
         // console.log('props', this.props.scenarios)
-        console.log(this.props.stats)
+        console.log('statListChart', this.props.stats)
+        console.log('children', this.state.children)
         if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
         const parameters = this.props.stats.map( s => s.key )
         return (
             <div>
                 <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]} - ${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</div>
-                {/* <h5>{`${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h5> */}
+                <h5>{`${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h5>
                 <div className="chart-callout" style={{ display: 'block !important'}}>
                     {this.state.rectIsHovered &&
                                 
@@ -152,15 +156,15 @@ class ChartContainer extends Component {
                     }
                     </div>
                 </div>
-                {Object.keys(this.state.children).length === this.props.stats.length && 
-                this.props.stats.map( (stat, i) => {
-                    console.log(stat.key)
+                {/* {Object.keys(this.state.children).length === this.props.stats.length &&  */}
+                {this.state.parameters.map( (param, i) => {
+                    console.log(param)
                     console.log(this.state.children)
-                    console.log(this.state.children[stat.key])
+                    console.log(this.state.children[param])
                     return (
-                        <div className="row" key={`chart-row-${stat.key}`}>
-                            <div className="chart" key={`chart-${stat.key}`}>
-                                {this.state.children[stat.key].chart}
+                        <div className="row" key={`chart-row-${param}`}>
+                            <div className="chart" key={`chart-${param}`}>
+                                {this.state.children[param].chart}
                             </div>
                         </div>
                     )
