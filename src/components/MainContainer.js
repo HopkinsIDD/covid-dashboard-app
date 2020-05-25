@@ -5,6 +5,7 @@ import _ from 'lodash';
 // import MainGraph from './Graph/MainGraph';
 // import MainChart from './Chart/MainChart';
 // import MainMap from './Map/MainMap';
+// import TestDivider from './TestDivider';
 import Scenarios from './Filters/Scenarios';
 
 import GraphContainer from './Graph/GraphContainer';
@@ -43,7 +44,7 @@ class MainContainer extends Component {
             allTimeDates: [],
             yAxisLabel: '',
             stat: STATS[0],
-            geoid: '06085',
+            geoid: '06085', 
             SCENARIOS: [],
             scenario: {},
             scenarioList: [],           
@@ -59,7 +60,7 @@ class MainContainer extends Component {
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             firstDate: '',
             lastDate: '',
-            r0: '1',
+            r0: [0, 4],
             simNum: '150',
             percExceedenceList: [],
             showConfBounds: false,
@@ -84,6 +85,7 @@ class MainContainer extends Component {
     componentDidMount() {
         // console.log('componentDidMount')
         console.log('dataset', dataset)
+        
         window.addEventListener('resize', this.updateGraphDimensions)
         window.addEventListener('resize', this.updateMapContainerDimensions)
         this.updateGraphDimensions()
@@ -100,6 +102,7 @@ class MainContainer extends Component {
         // instantiate initial series and dates
         const { severity, stat } = this.state;
         const series = dataset[scenario.key][severity.key][stat.key].sims;
+         
         const dates = dataset[scenario.key].dates.map( d => parseDate(d));
         const firstDate = dates[0];
         const lastDate = dates[dates.length - 1];
@@ -194,15 +197,15 @@ class MainContainer extends Component {
             this.state.scenarioList !== prevState.scenarioList ||
             this.state.severityList !== prevState.severityList ||
             this.state.dateRange !== prevState.dateRange ||
+            this.state.r0 !== prevState.r0 ||
             this.state.dataset !== prevState.dataset) {
-            // console.log('componentDidUpdate')
 
             const filteredSeriesList = []
             const percExceedenceList = []
             const confBoundsList = [];
             let brushSeries
             
-            const { dataset, stat, severityList, scenarioList } = this.state;
+            const { dataset, stat, severityList, scenarioList, r0 } = this.state;
             // filter series and dates by dateRange
             const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
             const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
@@ -214,9 +217,14 @@ class MainContainer extends Component {
             let sliderMax = 0
 
             for (let i = 0; i < scenarioList.length; i++) {
-                const newSeries = Array.from(
+                const copy = Array.from(
                     dataset[scenarioList[i].key][severityList[i].key][stat.key].sims
                     );
+
+                // filter down sims on reproductive number
+                const newSeries = copy.filter(s => {
+                    return Number(s.r0) > r0[0] && Number(s.r0) < r0[1]});
+                    
                 const filteredSeriesForStatThreshold = newSeries.map( s => {
                     const newS = {...s}
                     newS.vals = s.vals.slice(idxMin, idxMax)
@@ -271,8 +279,8 @@ class MainContainer extends Component {
                 dates: filteredDates,
                 statThreshold,
                 dateThreshold,
-                seriesMin : sliderMin,
-                seriesMax : sliderMax,
+                seriesMin: sliderMin,
+                seriesMax: sliderMax,
                 percExceedenceList,
                 confBoundsList
             })
@@ -439,6 +447,10 @@ class MainContainer extends Component {
 
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
+    handleR0Change = (e) => {
+        this.setState({r0: e})
+    };
+
     handleStatSliderChange = (thresh) => {
         const { dates, dateThreshold, allTimeDates } = this.state;
         // const rounded = Math.ceil(i / 100) * 100;
@@ -598,6 +610,8 @@ class MainContainer extends Component {
                                 onSeveritiesHover={this.handleSeveritiesHover}
                                 onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
                                 dates={this.state.dates}
+                                r0={this.state.r0}
+                                onHandleR0Change={this.handleR0Change}
                                 seriesMax={this.state.seriesMax}
                                 seriesMin={this.state.seriesMin}
                                 statThreshold={this.state.statThreshold}
@@ -608,12 +622,13 @@ class MainContainer extends Component {
                                 dateRange={this.state.dateRange}
                                 onStatSliderChange={this.handleStatSliderChange}
                                 onDateSliderChange={this.handleDateSliderChange}
-                                 />
+                            />
                             }
                         </Col>
                     </Row>
                 </Content>
 
+                {/* <TestDivider /> */}
                 {/* MainChart Component */}
                 <Content style={{ background: '#fefefe', padding: '50px 0' }}>
                     <div className="content-section">
@@ -685,7 +700,7 @@ class MainContainer extends Component {
                                     width={this.state.mapContainerW - margin.left - margin.right}
                                     height={this.state.mapContainerH}
                                     dataset={this.state.dataset}
-                                    // scenarioList={this.state.scenarioList}
+                                    scenario={this.state.scenarioMap}
                                     geoid={this.state.geoid}
                                     firstDate={this.state.firstDate}
                                     selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
@@ -732,6 +747,7 @@ export default MainContainer;
     scenarioList={this.state.scenarioList}
     severity={this.state.severity}
     r0={this.state.r0}
+
     simNum={this.state.simNum}
     showConfBounds={this.state.showConfBounds}
     confBoundsList={this.state.confBoundsList}
