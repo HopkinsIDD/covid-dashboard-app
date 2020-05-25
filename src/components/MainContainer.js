@@ -61,6 +61,7 @@ class MainContainer extends Component {
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: new Date(),
             dateSliderActive: false,
+            dateSliderActiveMap: false,
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             firstDate: '',
             lastDate: '',
@@ -542,24 +543,36 @@ class MainContainer extends Component {
         })
     }
 
-    handleGraphSliderMouseEvent = (type, slider) => {
-        if (slider === 'stat') {
-            if (type === 'mousedown') {
-                console.log('stat mousedown')
-                this.setState({ statSliderActive: true })
+    handleSliderMouseEvent = (type, slider, view) => {
+        if (view === 'graph') {
+            if (slider === 'stat') {
+                if (type === 'mousedown') {
+                    console.log('graph stat mousedown')
+                    this.setState({ statSliderActive: true })
+                } else {
+                    console.log('graph stat mouseup')
+                    this.setState({ statSliderActive: false })
+                }
             } else {
-                console.log('stat mouseup')
-                this.setState({ statSliderActive: false })
+                if (type === 'mousedown') {
+                    console.log('graph date mousedown')
+                    this.setState({ dateSliderActive: true })
+                } else {
+                    console.log('graph date mouseup')
+                    this.setState({ dateSliderActive: false })
+                }
             }
         } else {
+            // map date slider
             if (type === 'mousedown') {
-                console.log('date mousedown')
-                this.setState({ dateSliderActive: true })
+                console.log('map date mousedown')
+                this.setState({ dateSliderActiveMap: true })
             } else {
-                console.log('date mouseup')
-                this.setState({ dateSliderActive: false })
+                console.log('map date mouseup')
+                this.setState({ dateSliderActiveMap: false })
             }
         }
+        
     }
 
     render() {
@@ -658,7 +671,7 @@ class MainContainer extends Component {
                                 dateRange={this.state.dateRange}
                                 onStatSliderChange={this.handleStatSliderChange}
                                 onDateSliderChange={this.handleDateSliderChange}
-                                onSliderMouseEvent={this.handleGraphSliderMouseEvent}
+                                onSliderMouseEvent={this.handleSliderMouseEvent}
                                  />
                             }
                         </Col>
@@ -750,6 +763,7 @@ class MainContainer extends Component {
                                     selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
                                     countyBoundaries={this.state.countyBoundaries}
                                     statsForCounty={this.state.statsForCounty}
+                                    dateSliderActive={this.state.dateSliderActiveMap}
                                 />
                             </div>
                             }
@@ -770,6 +784,7 @@ class MainContainer extends Component {
                                     currentDateIndex={this.state.mapCurrentDateIndex.toString()}
                                     selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
                                     onMapSliderChange={this.handleMapSliderChange}
+                                    onSliderMouseEvent={this.handleSliderMouseEvent}
                                 />
                             </Fragment>
                              }
