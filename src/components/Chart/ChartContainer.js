@@ -106,8 +106,8 @@ class ChartContainer extends Component {
         // const scenarios = Object.keys(this.props.dataset);
         // console.log(scenarios)
         // console.log('props', this.props.scenarios)
-        console.log('statListChart', this.props.stats)
-        console.log('children', this.state.children)
+        // console.log('statListChart', this.props.stats)
+        // console.log('children', this.state.children)
         if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
         const parameters = this.props.stats.map( s => s.key )
         return (
@@ -158,9 +158,9 @@ class ChartContainer extends Component {
                 </div>
                 {/* {Object.keys(this.state.children).length === this.props.stats.length &&  */}
                 {this.state.parameters.map( (param, i) => {
-                    console.log(param)
-                    console.log(this.state.children)
-                    console.log(this.state.children[param])
+                    // console.log(param)
+                    // console.log(this.state.children)
+                    // console.log(this.state.children[param])
                     return (
                         <div className="row" key={`chart-row-${param}`}>
                             <div className="chart" key={`chart-${param}`}>
