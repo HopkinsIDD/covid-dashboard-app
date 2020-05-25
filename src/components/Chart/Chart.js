@@ -55,7 +55,8 @@ class Chart extends Component {
         if (prevProps.scale !== this.props.scale) {
             console.log('componentDidUpdate scale check')
             const calc = this.calculateQuantiles();
-            this.updateSummaryStats(calc.quantileObj, calc.xScale, calc.yScale, calc.scaleDomains)
+            this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
+            // this.updateSummaryStats(calc.quantileObj, calc.xScale, calc.yScale, calc.scaleDomains);
         }
     }
 
