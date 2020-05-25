@@ -55,10 +55,12 @@ class MainContainer extends Component {
             severityList: [_.cloneDeep(LEVELS[0])],
             scenarioHovered: '',
             statThreshold: 0,
+            statSliderActive: false,
             statListChart: [],
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: new Date(),
+            dateSliderActive: false,
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             firstDate: '',
             lastDate: '',
@@ -540,9 +542,28 @@ class MainContainer extends Component {
         })
     }
 
+    handleGraphSliderMouseEvent = (type, slider) => {
+        if (slider === 'stat') {
+            if (type === 'mousedown') {
+                console.log('stat mousedown')
+                this.setState({ statSliderActive: true })
+            } else {
+                console.log('stat mouseup')
+                this.setState({ statSliderActive: false })
+            }
+        } else {
+            if (type === 'mousedown') {
+                console.log('date mousedown')
+                this.setState({ dateSliderActive: true })
+            } else {
+                console.log('date mouseup')
+                this.setState({ dateSliderActive: false })
+            }
+        }
+    }
+
     render() {
         const { Content } = Layout;
-        console.log(this.state.scenarioListChart)
         return (
             <Layout>
 
@@ -589,6 +610,8 @@ class MainContainer extends Component {
                                         height={this.state.graphH}
                                         scenarioClickCounter={this.state.scenarioClickCounter}
                                         scenarioHovered={this.state.scenarioHovered}
+                                        statSliderActive={this.state.statSliderActive}
+                                        dateSliderActive={this.state.dateSliderActive}
                                     /> 
                                     <Brush
                                         series={this.state.allTimeSeries}
@@ -635,6 +658,7 @@ class MainContainer extends Component {
                                 dateRange={this.state.dateRange}
                                 onStatSliderChange={this.handleStatSliderChange}
                                 onDateSliderChange={this.handleDateSliderChange}
+                                onSliderMouseEvent={this.handleGraphSliderMouseEvent}
                                  />
                             }
                         </Col>

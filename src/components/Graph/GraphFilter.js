@@ -83,6 +83,7 @@ class GraphFilter extends Component {
                     dateRange={this.props.dateRange}
                     onStatSliderChange={this.handleStatSliderChange}
                     onDateSliderChange={this.handleDateSliderChange}
+                    onSliderMouseEvent={this.props.onSliderMouseEvent}
                 />
             </div>   
         )
