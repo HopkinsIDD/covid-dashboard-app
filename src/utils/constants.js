@@ -33,12 +33,12 @@ export const LEVELS = [
 export const COUNTIES = [
     {'geoid': '06', 'name': 'California', 'usps': 'CA', 'path': '../store/geo06.json'},
     {'geoid': '36', 'name': 'New York', 'usps': 'NY', 'path': '../store/geo36.json'},
-    // {'geoid': '06037', 'name': 'Los Angeles County', 'usps': 'CA', 'path': '../store/geo06037.json'},
-    // {'geoid': '06075', 'name': 'San Francisco County', 'usps': 'CA', 'path': '../store/geo06075.json'},
+    {'geoid': '06037', 'name': 'Los Angeles County', 'usps': 'CA', 'path': '../store/geo06037.json'},
+    {'geoid': '06075', 'name': 'San Francisco County', 'usps': 'CA', 'path': '../store/geo06075.json'},
     {'geoid': '06085', 'name': 'Santa Clara County', 'usps': 'CA', 'path': '../store/geo06085.json'},
     {'geoid': '36005', 'name': 'Bronx County', 'usps': 'NY', 'path': '../store/geo36005.json'},
-    // {'geoid': '36061', 'name': 'New York County', 'usps': 'NY', 'path': '../store/geo36061.json'},
-    // {'geoid': '36081', 'name': 'Queens County', 'usps': 'NY', 'path': '../store/geo36081.json'},
+    {'geoid': '36061', 'name': 'New York County', 'usps': 'NY', 'path': '../store/geo36061.json'},
+    {'geoid': '36081', 'name': 'Queens County', 'usps': 'NY', 'path': '../store/geo36081.json'},
     // {'geoid': '06085', 'name': 'Santa Clara County', 'usps': 'CA', 'path': baseUrl + 'lxu213/codenames/master/src/test.json'},
 ];
 
