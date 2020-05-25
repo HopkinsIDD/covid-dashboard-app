@@ -32,7 +32,7 @@ class Map extends Component {
         this.tooltipRef = React.createRef();
     }
     componentDidMount() {
-        const { stat, dateIdx, countyBoundaries, statsForCounty } = this.props;
+        const { stat, dateIdx, countyBoundaries, statsForCounty, scenario } = this.props;
         // console.log(stat);
         // console.log(dateIdx);
         // console.log(countyBoundaries);
@@ -47,7 +47,7 @@ class Map extends Component {
             const population = countyBoundaries.features[i].properties.population;
             // const geoid = countyBoundaries.features[i].properties.GEO_ID.slice(9)
             // console.log(geoid)
-            const statArray = statsForCounty[geoid][stat]
+            const statArray = statsForCounty[geoid][scenario][stat];
             const normalizedStatArray = statArray.map( value => {
                 return (value / population) * 10000
             })
@@ -57,7 +57,7 @@ class Map extends Component {
         }
         // get max of all values in stat array for colorscale
         const maxVal = max(Object.values(statsForCounty).map( county => {
-            return max(county[stat])
+            return max(county[scenario][stat])
         }))
         const minVal = maxVal * 0.3333;
 

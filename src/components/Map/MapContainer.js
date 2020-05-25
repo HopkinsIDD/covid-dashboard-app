@@ -33,6 +33,7 @@ class MapContainer extends Component {
                     stat={param}
                     statLabel={this.state.parameterLabels[index]}
                     geoid={this.props.geoid}
+                    scenario={this.props.scenario}
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
                     statsForCounty={this.props.statsForCounty}
@@ -69,6 +70,7 @@ class MapContainer extends Component {
                         stat={param}
                         statLabel={this.state.parameterLabels[index]}
                         geoid={this.props.geoid}
+                        scenario={this.props.scenario}
                         dateIdx={dateIdx}
                         countyBoundaries={this.props.countyBoundaries}
                         statsForCounty={this.props.statsForCounty}
