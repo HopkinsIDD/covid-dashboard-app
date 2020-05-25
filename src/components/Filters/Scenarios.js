@@ -142,7 +142,7 @@ class Scenarios extends Component {
             style = { width: '70%' };
 
         }
-        console.log(this.props.view, defaultScenario)
+        // console.log(this.props.view, defaultScenario)
         return (
             <div>
                 <div className="param-header">SCENARIOS</div>
