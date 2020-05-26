@@ -1,11 +1,19 @@
 import React from 'react';
-import { green, red } from '../../utils/constants';
+import { green, red, graphBkgd } from '../../utils/constants';
 
 function Legend(props) {
     if (!props.showConfBounds) {
         return (
             <g className="legend-container">
                 <g className="legend">
+                    <rect
+                        x={props.x}
+                        y={props.y}
+                        width={165}
+                        height={50}
+                        fill={graphBkgd}
+                        fillOpacity={0.5}
+                    />
                     <g className="legend-above" >
                         <line
                             x1={props.x}
@@ -51,6 +59,14 @@ function Legend(props) {
         return (
             <g className="legend-container">
                 <g className="legend">
+                    <rect
+                        x={props.x}
+                        y={props.y}
+                        width={165}
+                        height={50}
+                        fill={graphBkgd}
+                        fillOpacity={0.5}
+                    />
                     <g className="legend-mean">
                         <line
                             x1={props.x}
@@ -74,9 +90,9 @@ function Legend(props) {
                     <g className="legend-confBounds">
                         <rect
                             x={props.x}
-                            y={props.y + 20}
+                            y={props.y + 15}
                             width={20} 
-                            height={10}
+                            height={12}
                             fill="#4ddaba"
                             fillOpacity={0.3}
                         />
