@@ -1,33 +1,32 @@
 const fs = require('fs');
+const _ = require('lodash');
 const constants = require('./constants');
 
 module.exports = {
 
-    initObj: function initObj(geoids, scenarios, severities, parameters, dates) {
+    initObj: function initObj(geoids, scenarios, dates) {
         // build structure of final Object
         const obj = {};
 
-        for (let g = 0; g < geoids.length; g ++) {
-            obj[geoids[g]] = {};
+        for (let geoid of geoids) {
+            obj[geoid] = {};
 
-            for (let s = 0; s < scenarios.length; s ++) {
-                obj[geoids[g]][scenarios[s]] = {'dates': dates};
+            for (let scenario of scenarios) {
+                obj[geoid][scenario] = {'dates': dates};
     
-                for (let v = 0; v < severities.length; v ++) {
-                    obj[geoids[g]][scenarios[s]][severities[v]] = {};
+                for (let sev of constants.severities ) {
+                    obj[geoid][scenario][sev] = {};
         
-                    for (let p = 0; p < parameters.length; p ++) {
-                        obj[geoids[g]][scenarios[s]][severities[v]][parameters[p]] = {
+                    for (let param of constants.parameters) {
+                        obj[geoid][scenario][sev][param] = {
                             "peak": 0,
                             "sims": {},
                             "conf": {}
                         };
-            
                     }    
                 }
             }
         }
-
         return obj;
     },
 
@@ -38,6 +37,7 @@ module.exports = {
         let getIdx = Object();
         getIdx['geoid'] = headers.indexOf('geoid')
         getIdx['sim_num'] = headers.indexOf('sim_num')
+        getIdx['time'] = headers.indexOf('time')
 
         for (let i = 0; i < parameters.length; i ++) {
             getIdx[parameters[i]] = headers.indexOf(parameters[i])
@@ -119,6 +119,47 @@ module.exports = {
         return filesBySev;
     },
 
+    aggregateByState: function aggregateByState(parsedObj, scenarios, dates) {
+        // add state geoid with sims aggregated by county geoid to parsedObj
+
+        const allGeoids = Object.keys(parsedObj);
+        const states = [...new Set(allGeoids.map(geoid => geoid.slice(0, 2)))];
+        const finalObj = module.exports.initObj(states, scenarios, dates);
+
+        for (let state of states) {
+
+            const geoids = allGeoids.filter(g => g.slice(0, 2) === state);
+            for (let geoid of geoids) { 
+
+                for (let scen of scenarios) {
+
+                    for (let sev of constants.severities ) {
+
+                        for (let param of constants.parameters) {
+
+                            if (Object.keys(finalObj[state][scen][sev][param].sims).length === 0) {
+                                finalObj[state][scen][sev][param].sims = _.cloneDeep(parsedObj[geoid][scen][sev][param].sims);
+
+                            } else {
+                                const sims = Object.keys(parsedObj[geoid][scen][sev][param].sims);
+
+                                for (let sim of sims) {
+
+                                    for (let i = 0 ; i < dates.length; i++) {
+                                        const val = parsedObj[geoid][scen][sev][param].sims[sim][i]; 
+                                        finalObj[state][scen][sev][param].sims[sim][i] = finalObj[state][scen][sev][param].sims[sim][i] + val;
+                                    }
+                                }
+                            }
+
+                        }     
+                    }   
+                }
+            }
+            parsedObj[state] = finalObj[state];
+        }
+    },
+
     calcReduceInt: function calcReduceInt(fileLength) {
         // returns int a sim number must be divisible by
         // in order to be included in final dataset
@@ -154,22 +195,23 @@ module.exports = {
 
                     for (let param of constants.parameters) {
 
-                        const newSims = parsedObj[scenario][sev][param].sims
+                        const newSims = parsedObj[geoid][scenario][sev][param].sims
                             .filter(sim => sim.name % reduceInt === 0);
-                        parsedObj[scenario][sev][param].sims = newSims;
+                        parsedObj[geoid][scenario][sev][param].sims = newSims;
                     }
                 }
             }
         }
     },
 
-    writeToFile: function writeToFile(parsedObj, geoids) {
+    writeToFile: function writeToFile(parsedObj) {
         // each geoid will write to separate JSON file
 
+        const geoids = Object.keys(parsedObj);
         console.log('... writing files')
         for (let g = 0; g < geoids.length; g ++) {
             const json = JSON.stringify(parsedObj[geoids[g]]);
-            const path = `src/store/geo${geoids[g]}_NEW.json`;
+            const path = `src/store/geo${geoids[g]}.json`;
     
             fs.writeFileSync(path, json, 'utf8', function(err) {
                 if (err) throw err;
@@ -203,20 +245,5 @@ module.exports = {
         fs.writeFileSync(path, json, 'utf8', function(err) {
             if (err) throw err;
         });
-    
     }
-    
 }
-
-// const dir = 'src/store/sims/';
-// const geoids = ['06085', '06019']; //'06019'; // '25017'; //'01081'; 
-// const scenarios = fs.readdirSync(dir)
-//     .filter(file => file !== '.DS_Store')
-//     //.slice(0,1); // shorten
-// const severities = ['high', 'med', 'low'];
-// const parameters = ['incidD','incidH','incidI','incidICU','incidVent'];
-
-// const dates = ['the dates are here'];
-// const obj = module.exports.initObj(geoids, scenarios, severities, parameters, dates);
-
-// console.log(obj)

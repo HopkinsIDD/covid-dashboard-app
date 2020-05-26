@@ -63,10 +63,11 @@ class Search extends Component {
                         Intervention Scenario Modeling
                     </div>
                     <div>
-                        Find your county in our registry 
+                        Find your state or county in our registry 
                         to start comparing scenarios now.
                     </div>
                 </div>
+
                 <SearchBar
                     stat={this.props.stat}
                     geoid={this.props.geoid}
@@ -101,3 +102,20 @@ class Search extends Component {
 }
 
 export default Search;
+
+/* <Radio.Group
+// value={severity.key} 
+style={{ width: '80%' }}
+size={'large'}
+onChange={this.handleUploadType}>
+<Radio.Button
+    key={'select-registry'}
+    value={'select-registry'}>
+    Search Our Registry
+</Radio.Button>              
+<Radio.Button
+    key={'upload-file'}
+    value={'upload-file'}>
+    Upload a File
+</Radio.Button>   
+</Radio.Group> */

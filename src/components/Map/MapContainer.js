@@ -33,6 +33,7 @@ class MapContainer extends Component {
                     stat={param}
                     statLabel={this.state.parameterLabels[index]}
                     geoid={this.props.geoid}
+                    scenario={this.props.scenario}
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
                     statsForCounty={this.props.statsForCounty}
@@ -54,7 +55,9 @@ class MapContainer extends Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.geoid !== prevProps.geoid 
             || this.props.selectedDate !== prevProps.selectedDate
-            || this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
+            || this.props.countyBoundaries !== prevProps.countyBoundaries
+            || this.props.width !== prevProps.width 
+            || this.props.height !== prevProps.height) {
 
             const children = [];
             const dateIdx = getDateIdx(this.props.firstDate, this.props.selectedDate);
@@ -70,6 +73,7 @@ class MapContainer extends Component {
                         stat={param}
                         statLabel={this.state.parameterLabels[index]}
                         geoid={this.props.geoid}
+                        scenario={this.props.scenario}
                         dateIdx={dateIdx}
                         countyBoundaries={this.props.countyBoundaries}
                         statsForCounty={this.props.statsForCounty}

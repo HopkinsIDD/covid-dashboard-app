@@ -26,11 +26,14 @@ class SearchBar extends Component {
                 key: `${county.geoid}-county`,
                 button: []
             } 
+            const label = county.geoid.length === 2 ? county.name :
+                `${county.name}, ${county.usps}`;
+
             child.button.push(
                 <Option
                     key={`${county.geoid}-county`}
                     value={county.geoid}>
-                    {county.name}, {county.usps}
+                    {label}
                 </Option>
             )
             children.push(child);
@@ -168,7 +171,7 @@ class SearchBar extends Component {
                     <Col className="gutter-row" offset={6} span={18}>
                         <Select
                             showSearch
-                            placeholder="Select a county"
+                            placeholder="Search for your state or county"
                             optionFilterProp="children"
                             style={{ width: '80%' }}
                             size="large"
