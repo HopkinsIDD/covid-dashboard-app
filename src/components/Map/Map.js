@@ -32,28 +32,39 @@ class Map extends Component {
         this.tooltipRef = React.createRef();
     }
     componentDidMount() {
-        const { stat, dateIdx, countyBoundaries, statsForCounty } = this.props;
-        // console.log(stat);
+        const { stat, dateIdx, countyBoundaries, statsForCounty, scenario } = this.props;
+        console.log(stat);
         // console.log(dateIdx);
-        // console.log(countyBoundaries);
-        // console.log(statsForCounty);
+        console.log(countyBoundaries);
+        console.log(statsForCounty);
+        console.log(scenario);
         const normalizedStatsAll = []
         
         // iterate over this.props.countyBoundaries to plot up boundaries
         // join each geoid to statsForCounty[geoid][stat][dateIdx]
+        const statsKeys = Object.keys(statsForCounty)
+        console.log(statsKeys)
+
+        console.log(statsForCounty[statsKeys[0]])
+
         for (let i = 0; i < countyBoundaries.features.length; i++) {
             // console.log(countyBoundaries.features[i].properties)
             const geoid = countyBoundaries.features[i].properties.geoid;
             const population = countyBoundaries.features[i].properties.population;
-            // const geoid = countyBoundaries.features[i].properties.GEO_ID.slice(9)
-            // console.log(geoid)
-            const statArray = statsForCounty[geoid][stat]
-            const normalizedStatArray = statArray.map( value => {
-                return (value / population) * 10000
-            })
-            normalizedStatsAll.push(normalizedStatArray)
-            countyBoundaries.features[i].properties[stat] = statArray
-            countyBoundaries.features[i].properties[`${stat}Norm`] = normalizedStatArray
+            console.log(geoid)
+            // check to see if stats exist for this county
+            if (statsForCounty[geoid]) {
+                const statArray = statsForCounty[geoid][scenario][stat]
+                const normalizedStatArray = statArray.map( value => {
+                    return (value / population) * 10000
+                })
+                normalizedStatsAll.push(normalizedStatArray)
+                countyBoundaries.features[i].properties[stat] = statArray
+                countyBoundaries.features[i].properties[`${stat}Norm`] = normalizedStatArray
+            } else {
+                countyBoundaries.features[i].properties[stat] = []
+                countyBoundaries.features[i].properties[`${stat}Norm`] = []
+            }
         }
         // get max of all values in stat array for colorscale
         const maxVal = max(Object.values(statsForCounty).map( county => {

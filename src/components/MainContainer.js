@@ -757,6 +757,7 @@ class MainContainer extends Component {
                                     width={this.state.mapContainerW - margin.left - margin.right}
                                     height={this.state.mapContainerH}
                                     dataset={this.state.dataset}
+                                    scenario={this.state.scenarioMap}
                                     // scenarioList={this.state.scenarioList}
                                     geoid={this.state.geoid}
                                     firstDate={this.state.firstDate}
