@@ -2,11 +2,11 @@ import React, { Component, Fragment } from 'react';
 import { min, max, quantile } from 'd3-array';
 import { scaleLinear, scaleBand, scaleLog, scalePow } from 'd3-scale';
 import { select } from 'd3-selection';
+import { easeCubicOut } from 'd3-ease'
 import { timeFormat } from 'd3-time-format';
 import Axis from '../Graph/Axis';
 import { getDateIdx, addCommas } from '../../utils/utils';
-import { margin } from '../../utils/constants';
-import { chartBkgd, green, gray, blue, scenarioColors } from '../../utils/constants'
+import { margin, chartBkgd, green, gray, blue, scenarioColors } from '../../utils/constants'
 
 class Chart extends Component {
     constructor(props) {
@@ -33,18 +33,30 @@ class Chart extends Component {
     }
     componentDidMount() {
         // console.log('componentDidMount');
-        this.calculateQuantiles();
+        const calc = this.calculateQuantiles();
+        this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
         
     }
 
     componentDidUpdate(prevProps, prevState) {
         // console.log(this.props.summaryStart, this.props.summaryEnd)
+        console.log('componentDidUpdate')
+        console.log(prevProps)
+        console.log(this.props)
         if (prevProps.summaryStart !== this.props.summaryStart || 
             prevProps.summaryEnd !== this.props.summaryEnd ||
             prevProps.dataset !== this.props.dataset ||
             prevProps.scenarios !== this.props.scenarios ||
-            prevProps.scale !== this.props.scale) {
-            this.calculateQuantiles();
+            prevProps.stats !== this.props.stats) {
+                console.log('componentDidUpdate main check')
+                const calc = this.calculateQuantiles();
+                this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
+        }
+        if (prevProps.scale !== this.props.scale) {
+            console.log('componentDidUpdate scale check')
+            const calc = this.calculateQuantiles();
+            this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
+            // this.updateSummaryStats(calc.quantileObj, calc.xScale, calc.yScale, calc.scaleDomains);
         }
     }
 
@@ -93,7 +105,7 @@ class Chart extends Component {
             }
         }
         
-        console.log(quantileObj)
+        // console.log(quantileObj)
         let yScale;
         if (this.props.scale === 'linear') {
             yScale = scaleLinear().range([height - margin.bottom, margin.top]).domain([0, globalMaxVal])
@@ -102,7 +114,40 @@ class Chart extends Component {
         }
         // const yScale = scaleLog().range([height - margin.bottom, margin.top]).domain([1, globalMaxVal]) //
         const xScale = scaleBand().range([0, (width / severities.length) - margin.left]).domain(scenarios)//.paddingInner(1).paddingOuter(.5);
-        this.setState({ quantileObj, xScale, yScale, scaleDomains: true })
+        const scaleDomains = true
+        return { quantileObj, xScale, yScale, scaleDomains}
+        // this.setState({ quantileObj, xScale, yScale, scaleDomains: true })
+    }
+
+    updateSummaryStats = (quantileObj, xScale, yScale, scaleDomains) => {
+        console.log('updateSummaryStats')
+        if (this.chartRef.current) {
+            console.log('ref check, update Summary stats')
+            const barWidth = ((this.props.width / this.state.severities.length) / this.props.scenarios.length) - margin.left - margin.right;
+            // console.log('barWidth', barWidth)
+            const whiskerMargin = barWidth * 0.2;
+            // console.log('whiskerMargin', whiskerMargin)
+            const rectWidth = (this.props.width / this.state.severities.length) - margin.left
+
+            // update paths with new data
+            const barNodes = select(this.chartRef.current)
+            this.props.severities.map( (severity, i) => {
+                Object.entries(quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
+                    barNodes.selectAll('.bars')
+                        .transition()
+                        .duration(500)
+                        .attr("x", (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + xScale(key))
+                        .attr("y", yScale(value.median))
+                        .attr("width", barWidth)
+                        .attr("height", yScale(0) - yScale(value.median))
+                        .ease(easeCubicOut)
+                    .on("end", () => {
+                        console.log('bar rect transition ended')
+                        this.setState({ quantileObj, xScale, yScale, scaleDomains })
+                    })
+                })
+            })
+        }
     }
 
     handleHighlightEnter = (event, severity, key, index) => {

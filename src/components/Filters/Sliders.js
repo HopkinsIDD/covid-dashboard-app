@@ -44,6 +44,14 @@ class Sliders extends Component {
         this.props.onDateSliderChange(selectedDate);
     }
 
+    handleStatMouseEvent = (e) => {
+        this.props.onSliderMouseEvent(e.type, 'stat', 'graph')
+    }
+
+    handleDateMouseEvent = (e) => {
+        this.props.onSliderMouseEvent(e.type, 'date', 'graph')
+    }
+
     render() {
         const { stat, statThreshold, seriesMin, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
         const roundedStat = Math.ceil(statThreshold / 100) * 100;
@@ -66,7 +74,9 @@ class Sliders extends Component {
                         ref={ref => this.statInput = ref}
                         onChange={
                             () => {this.handleStatChange(this.statInput.value)}
-                        }>
+                        }
+                        onMouseDown={this.handleStatMouseEvent}
+                        onMouseUp={this.handleStatMouseEvent}>
                     </input> 
                     <div className="slider-label-row slider-label">
                         <p className="filter-label callout">
@@ -95,7 +105,9 @@ class Sliders extends Component {
                         ref={ref => this.dateInput = ref}
                         onChange={
                             () => {this.handleDateChange(this.dateInput.value)}
-                        }>
+                        }
+                        onMouseDown={this.handleDateMouseEvent}
+                        onMouseUp={this.handleDateMouseEvent}>
                     </input>
                     <div className="slider-label-row slider-label">
                         <p className="filter-label callout">

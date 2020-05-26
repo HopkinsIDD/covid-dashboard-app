@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Chart from '../Chart/Chart';
 import SummaryLabel from '../Chart/SummaryLabel';
+import ChartLegend from '../Chart/ChartLegend';
 // import { scaleLinear } from 'd3-scale';
 import { COUNTYNAMES, scenarioColors, blue } from '../../utils/constants'
 import { getReadableDate } from '../../utils/utils'
@@ -10,10 +11,10 @@ class ChartContainer extends Component {
         super(props);
         this.state = {
             // TODO: depending on performance, may add more or less
-            parameters: ['incidI', 'incidH', 'incidICU', 'incidD'],
-            parameterLabels: ['Infections', 'Hospitalizations', 'ICU Cases', 'Deaths'],
+            parameters: [],
+            parameterLabels: [],
             // severities: ['high', 'med', 'low'],
-            children: {'incidI': {}, 'incidH': {}, 'incidICU': {}, 'incidD': {}},
+            children: {},
             hoveredScenarioIdx: null
         }
     }
@@ -27,6 +28,7 @@ class ChartContainer extends Component {
             || prevProps.summaryEnd !== this.props.summaryEnd
             || prevProps.dataset !== this.props.dataset
             || prevProps.scenarios !== this.props.scenarios
+            || prevProps.stats !== this.props.stats
             || prevProps.scale !== this.props.scale
             || prevProps.width !== this.props.width 
             || prevProps.height !== this.props.height) {
@@ -38,8 +40,11 @@ class ChartContainer extends Component {
     drawSummaryStatCharts = () => {
         const { children } = this.state;
         const { summaryStart, summaryEnd } = this.props;
+
+        const parameters = this.props.stats.map( stat => stat.key )
+        const parameterLabels = this.props.stats.map( stat => stat.name )
             
-        for (let [index, param] of this.state.parameters.entries()) {
+        for (let [index, param] of parameters.entries()) {
 
             // for (let severity of this.state.severities) {
                 const child = {
@@ -57,9 +62,10 @@ class ChartContainer extends Component {
                         summaryEnd={this.props.summaryEnd}
                         // severity={severity}
                         stat={param}
-                        statLabel={this.state.parameterLabels[index]}
+                        statLabel={parameterLabels[index]}
+                        stats={this.props.stats}
                         width={this.props.width}
-                        height={this.props.height / this.state.parameters.length}
+                        height={this.props.height / parameters.length}
                         handleCalloutInfo={this.handleCalloutInfo}
                         handleCalloutLeave={this.handleCalloutLeave}
                         handleScenarioHover={this.handleScenarioHighlight}
@@ -69,8 +75,11 @@ class ChartContainer extends Component {
                 children[param] = child;
             // }
         } 
+        console.log(children)
         this.setState({
-            children
+            children,
+            parameters,
+            parameterLabels
         })
     }
 
@@ -98,19 +107,21 @@ class ChartContainer extends Component {
         // const scenarios = Object.keys(this.props.dataset);
         // console.log(scenarios)
         // console.log('props', this.props.scenarios)
+        // console.log('statListChart', this.props.stats)
+        // console.log('children', this.state.children)
         if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
+        const parameters = this.props.stats.map( s => s.key )
         return (
             <div>
-                <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]} - ${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</div>
-                {/* <h5>{`${getReadableDate(this.props.summaryStart)} to ${getReadableDate(this.props.summaryEnd)}`}</h5> */}
-                <div className="row resetRow chart-callout" style={{ display: 'block !important'}}>
+                <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]}`}</div>
+                <div className="filter-label threshold-label callout callout-row">
+                    <span className={this.props.datePickerActive ? 'customLink' : 'bold'}>
+                        {getReadableDate(this.props.summaryStart)}</span>&nbsp;to&nbsp;
+                    <span className={this.props.datePickerActive ? 'customLink' : 'bold'}>
+                        {getReadableDate(this.props.summaryEnd)}</span>
+                </div>
+                <div className="chart-callout" style={{ display: 'block !important'}}>
                     {this.state.rectIsHovered &&
-                        // <Fragment>
-                        //     <div className="col-2">
-                        //     {/* {scenarios[this.state.hoveredScenarioIdx].replace('_',' ')} */}
-                        //     </div>
-                        //     <div className="col-10" >
-                                
                                 <SummaryLabel 
                                     classProps={'filter-label threshold-label callout'}
                                     summaryStart={this.props.summaryStart}
@@ -121,13 +132,10 @@ class ChartContainer extends Component {
                                     tenth={this.state.tenth}
                                     ninetyith={this.state.ninetyith}
                                 />
-                        //     </div>
-                        // </Fragment>
                     }
                 </div>
-                <div className="row resetRow">
-                    <div className="col-7"></div>
-                    <div className="col-5 chart-legend">
+                <div className="chart-legend-container">
+                    <div className="chart-legend">
                     {
                         this.props.scenarios.map( (scenario, index) => {
                             return (
@@ -151,11 +159,16 @@ class ChartContainer extends Component {
                         })
                     }
                     </div>
+                    <ChartLegend />
                 </div>
-                {this.state.parameters.map( param => {
+                {/* {Object.keys(this.state.children).length === this.props.stats.length &&  */}
+                {this.state.parameters.map( (param, i) => {
+                    // console.log(param)
+                    // console.log(this.state.children)
+                    // console.log(this.state.children[param])
                     return (
-                        <div className="row" key={`chart-row-${this.state.children[param].key}`}>
-                            <div className="chart" key={this.state.children[param].key}>
+                        <div className="row" key={`chart-row-${param}`}>
+                            <div className="chart" key={`chart-${param}`}>
                                 {this.state.children[param].chart}
                             </div>
                         </div>

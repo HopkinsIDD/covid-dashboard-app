@@ -149,8 +149,9 @@ a:hover {
 }
 
 .callout {
-  font-family: 'Roboto Mono', monospace;
+  /* font-family: 'Roboto Mono', monospace; */
   /* font-family: 'Space Mono', monospace; */
+  font-family: 'Cousine', monospace;
   padding-left: 0px;
 }
 
@@ -542,6 +543,15 @@ input[type=range]::-moz-focus-outer {
   display: block !important;
   min-height: 70px;
   padding: 10px 0;
+}
+
+.chart-legend-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chart-legend-boxplot {
+  width: 140px;
 }
 
 .chart-legend {

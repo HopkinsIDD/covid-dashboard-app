@@ -15,8 +15,8 @@ class DateSlider extends Component {
     const { endIndex } = this.props;
     const formattedFirstDate = getReadableDate(this.props.dates[0])
     const formattedLastDate = getReadableDate(this.props.dates[+endIndex])
-    console.log(formattedFirstDate, formattedLastDate)
-    console.log(endIndex)
+    // console.log(formattedFirstDate, formattedLastDate)
+    // console.log(endIndex)
     const marks = {
       0 : {
         label: formattedFirstDate
@@ -33,6 +33,9 @@ class DateSlider extends Component {
     return `${value}: ${getReadableDate(this.props.dates[value])}`
   }
   
+  handleDateMouseEvent = (e) => {
+    this.props.onSliderMouseEvent(e.type, 'date', 'map')
+  }
 
   render() {
     // console.log('0', this.props.endIndex)
@@ -56,7 +59,9 @@ class DateSlider extends Component {
                 ref={ref => this.dateInput = ref}
                 onChange={
                     () => {this.props.onMapSliderChange(this.dateInput.value)}
-                }>
+                }
+                onMouseDown={this.handleDateMouseEvent}
+                onMouseUp={this.handleDateMouseEvent}>
             </input> 
             <div className="slider-label-row slider-label">
               <p className="filter-label callout">

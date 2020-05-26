@@ -9,8 +9,8 @@ import MapContainer from './Map/MapContainer';
 import Brush from './Filters/Brush';
 
 import GraphFilter from './Graph/GraphFilter';
-import ChartLegend from './Chart/ChartLegend';
 import Scenarios from './Filters/Scenarios';
+import IndicatorSelection from './Chart/IndicatorSelection';
 import DatePicker from './Chart/DatePicker';
 import ScaleToggle from './Chart/ScaleToggle';
 import DateSlider from './Map/DateSlider';
@@ -50,9 +50,14 @@ class MainContainer extends Component {
             severityList: [_.cloneDeep(LEVELS[0])],
             scenarioHovered: '',
             statThreshold: 0,
+            statSliderActive: false,
+            statListChart: [],
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: new Date(),
+            dateSliderActive: false,
+            dateSliderActiveMap: false,
+            datePickerActiveChart: false,
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             firstDate: '',
             lastDate: '',
@@ -93,6 +98,10 @@ class MainContainer extends Component {
         const scenarioMap = SCENARIOS[0].key;       // scenario view for map
         const scenarioList = [scenario];            // updated based on selection
         const scenarioListChart = SCENARIOS.map(s => s.name);
+
+        // add default stats to chart
+        const statListChart = STATS.slice(0,3)
+        console.log(statListChart)
 
         // instantiate initial series and dates
         const { severity, stat } = this.state;
@@ -161,6 +170,7 @@ class MainContainer extends Component {
             scenarioMap,
             scenarioList,
             scenarioListChart,
+            statListChart,
             dates: newDates,
             allTimeDates,
             seriesList: [filteredSeries],
@@ -391,6 +401,24 @@ class MainContainer extends Component {
         this.setState({stat: i, yAxisLabel})
     };
 
+    handleStatClickChart = (items) => {
+        // items is Array of scenario names
+        console.log(items)
+
+        let newChartStats = []
+
+        for (let item of items) {
+            const chartStat = STATS.filter(s => s.key === item)[0];
+            newChartStats.push(chartStat)
+        }
+
+        console.log('statListChart', newChartStats)
+        this.setState({
+            statListChart: newChartStats
+        })
+        
+    }
+
     handleScenarioClickGraph = (items) => {
         // items is Array of scenario names
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
@@ -526,6 +554,41 @@ class MainContainer extends Component {
         })
     }
 
+    handleSliderMouseEvent = (type, slider, view) => {
+        if (view === 'graph') {
+            if (slider === 'stat') {
+                if (type === 'mousedown') {
+                    console.log('graph stat mousedown')
+                    this.setState({ statSliderActive: true })
+                } else {
+                    console.log('graph stat mouseup')
+                    this.setState({ statSliderActive: false })
+                }
+            } else {
+                if (type === 'mousedown') {
+                    console.log('graph date mousedown')
+                    this.setState({ dateSliderActive: true })
+                } else {
+                    console.log('graph date mouseup')
+                    this.setState({ dateSliderActive: false })
+                }
+            }
+        } else {
+            // map date slider
+            if (type === 'mousedown') {
+                console.log('map date mousedown')
+                this.setState({ dateSliderActiveMap: true })
+            } else {
+                console.log('map date mouseup')
+                this.setState({ dateSliderActiveMap: false })
+            }
+        } 
+    }
+
+    handleDatePicker = (datePickerOpen) => {
+        this.setState({ datePickerActiveChart: datePickerOpen })
+    }
+
     render() {
         const { Content } = Layout;
         return (
@@ -574,6 +637,8 @@ class MainContainer extends Component {
                                         height={this.state.graphH}
                                         scenarioClickCounter={this.state.scenarioClickCounter}
                                         scenarioHovered={this.state.scenarioHovered}
+                                        statSliderActive={this.state.statSliderActive}
+                                        dateSliderActive={this.state.dateSliderActive}
                                     /> 
                                     <Brush
                                         series={this.state.allTimeSeries}
@@ -622,7 +687,8 @@ class MainContainer extends Component {
                                 dateRange={this.state.dateRange}
                                 onStatSliderChange={this.handleStatSliderChange}
                                 onDateSliderChange={this.handleDateSliderChange}
-                            />
+                                onSliderMouseEvent={this.handleSliderMouseEvent}
+                                 />
                             }
                         </Col>
                     </Row>
@@ -645,10 +711,12 @@ class MainContainer extends Component {
                                     height={this.state.graphH * 1.15} 
                                     dataset={this.state.dataset}
                                     scenarios={this.state.scenarioListChart}
+                                    stats={this.state.statListChart}
                                     firstDate={this.state.firstDate}
                                     summaryStart={this.state.summaryStart}
                                     summaryEnd={this.state.summaryEnd}
                                     scale={this.state.summaryScale}
+                                    datePickerActive={this.state.datePickerActiveChart}
                                 />
                             </div>
                             }
@@ -656,22 +724,29 @@ class MainContainer extends Component {
 
                         <Col className="gutter-row filters" span={6}>
                             <Fragment>
-                                <ChartLegend />
-                            {this.state.dataLoaded &&
-                                <Scenarios 
-                                    view="chart"
-                                    scenarioListChart={this.state.scenarioListChart}
-                                    SCENARIOS={this.state.SCENARIOS}
-                                    scenario={this.state.scenario}
-                                    scenarioList={this.state.scenarioListChart}
-                                    onScenarioClickChart={this.handleScenarioClickChart}
-                                />
+                                {this.state.dataLoaded &&
+                                <Fragment>
+                                    <Scenarios 
+                                        view="chart"
+                                        scenarioListChart={this.state.scenarioListChart}
+                                        SCENARIOS={this.state.SCENARIOS}
+                                        scenario={this.state.scenario}
+                                        scenarioList={this.state.scenarioListChart}
+                                        onScenarioClickChart={this.handleScenarioClickChart}
+                                    />
+                                    <IndicatorSelection
+                                        STATS={STATS}
+                                        statListChart={this.state.statListChart}
+                                        onStatClickChart={this.handleStatClickChart}
+                                    />
+                                </Fragment>
                                 }
                                 <DatePicker 
                                     firstDate={this.state.firstDate}
                                     summaryStart={this.state.summaryStart}
                                     summaryEnd={this.state.summaryEnd}
                                     onHandleSummaryDates={this.handleSummaryDates}
+                                    onHandleDatePicker={this.handleDatePicker}
                                 />
                                 <ScaleToggle
                                     scale={this.state.summaryScale}
@@ -689,7 +764,6 @@ class MainContainer extends Component {
                     </div>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16} style={{ paddingLeft: margin.yAxis + (2 * margin.left) + margin.right }}>
-
                             {this.state.dataLoaded &&
                             <div className="map-container">
                                 <MapContainer
@@ -702,6 +776,7 @@ class MainContainer extends Component {
                                     selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
                                     countyBoundaries={this.state.countyBoundaries}
                                     statsForCounty={this.state.statsForCounty}
+                                    dateSliderActive={this.state.dateSliderActiveMap}
                                 />
                             </div>
                             }
@@ -722,6 +797,7 @@ class MainContainer extends Component {
                                     currentDateIndex={this.state.mapCurrentDateIndex.toString()}
                                     selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
                                     onMapSliderChange={this.handleMapSliderChange}
+                                    onSliderMouseEvent={this.handleSliderMouseEvent}
                                 />
                             </Fragment>
                              }

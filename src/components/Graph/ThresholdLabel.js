@@ -8,11 +8,11 @@ function ThresholdLabel(props) {
 
     return (
         <p className={props.classProps}>
-            <span className="bold">{chance}%</span>
+            <span className={props.statSliderActive || props.dateSliderActive ? 'customLink' : 'bold'}>{chance}%</span>
             &nbsp;{`chance daily ${props.label} exceed`}&nbsp;
-            <span className="bold">{val}</span>
+            <span className={props.statSliderActive ? 'customLink' : 'bold'}>{val}</span>
             &nbsp;by&nbsp;
-            <span className="bold">{date}</span>
+            <span className={props.dateSliderActive ? 'customLink' : 'bold'}>{date}</span>
         </p>
         )
 }

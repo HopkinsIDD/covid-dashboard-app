@@ -51,6 +51,7 @@ class GraphContainer extends Component {
                 dateRange={this.props.dateRange}
                 width={graphWidth}
                 height={graphHeight}
+                showLegend={true}
                 x={0}
                 y={0}
                 xScale={scales.xScale}
@@ -132,6 +133,7 @@ class GraphContainer extends Component {
                     brushActive={this.props.brushActive}
                     width={graphWidth}
                     height={graphHeight}
+                    showLegend={scenarioList.length === 1 || (scenarioList.length > 1 && i === 1) ? true : false }
                     // x={i * graphWidth}
                     x={0}
                     y={0}
@@ -178,7 +180,6 @@ class GraphContainer extends Component {
       const { scenarioList, scenarioHovered } = this.props;
       return (
           <div className="graph-wrapper">
-              <div className="col-1"></div>
               <div className="y-axis-label titleNarrow graph-yLabel">
                   {this.props.yAxisLabel}
               </div>
@@ -213,6 +214,8 @@ class GraphContainer extends Component {
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}
                                     label={this.props.stat.name.toLowerCase()}
+                                    statSliderActive={this.props.statSliderActive}
+                                    dateSliderActive={this.props.dateSliderActive}
                                 />
                             :
 
@@ -223,6 +226,8 @@ class GraphContainer extends Component {
                                     dateThreshold={this.props.dateThreshold}
                                     percExceedence={this.props.percExceedenceList[i]}
                                     label={this.props.stat.name.toLowerCase()}
+                                    statSliderActive={this.props.statSliderActive}
+                                    dateSliderActive={this.props.dateSliderActive}
                                 />
                         )
                     })}

@@ -13,6 +13,7 @@ class Scenarios extends Component {
     componentDidMount() {
         const children = [];
         const scenariosGraph = Array.from(this.props.SCENARIOS);
+        console.log(scenariosGraph)
         const { Option } = Select;
 
         for (let scenario of scenariosGraph) {

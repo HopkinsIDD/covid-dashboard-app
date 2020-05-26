@@ -48,9 +48,6 @@ class GraphFilter extends Component {
     render() {
         return (
             <div>
-                <Legend 
-                    showConfBounds={this.props.showConfBounds}
-                />
                 <Scenarios
                     view="graph"
                     SCENARIOS={this.props.SCENARIOS}
@@ -91,6 +88,7 @@ class GraphFilter extends Component {
                     dateRange={this.props.dateRange}
                     onStatSliderChange={this.handleStatSliderChange}
                     onDateSliderChange={this.handleDateSliderChange}
+                    onSliderMouseEvent={this.props.onSliderMouseEvent}
                 />
             </div>   
         )
