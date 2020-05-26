@@ -7,7 +7,7 @@ import { select } from 'd3-selection';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
 
-import { blue, gray } from '../../utils/constants';
+import { blue, gray, graphBkgd, lightgray } from '../../utils/constants';
 import { addCommas } from '../../utils/utils';
 
 
@@ -63,7 +63,6 @@ class Map extends Component {
         }
         // get max of all values in stat array for colorscale
         const maxVal = max(Object.values(statsForCounty).map( county => {
-            console.log(county)
             return max(county[scenario][stat])
         }))
         const minVal = maxVal * 0.3333;
@@ -110,7 +109,7 @@ class Map extends Component {
                         style={{
                             stroke: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? this.props.highColor : gray,
                             strokeWidth: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? 2 : 1,
-                            fill: ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]),
+                            fill: d.properties[`${this.props.stat}Norm`].length > 0 ? ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]) : lightgray,
                             fillOpacity: 1,
                             cursor: 'pointer'
                         }}
@@ -127,9 +126,16 @@ class Map extends Component {
         event.preventDefault()
         // console.log('entered', feature.properties.name)
         // console.log(feature)
+        let statInfo = ''
+        if (feature.properties[this.props.stat].length > 0) {
+            statInfo = `${this.props.statLabel}: ${addCommas(feature.properties[this.props.stat][this.props.dateIdx])}`
+        } else {
+            statInfo = 'No Indicator Data'
+        }
         const text = `${feature.properties.name} County <br>
-                        Population: ${addCommas(feature.properties.population)} <br>
-                        ${this.props.statLabel}: ${addCommas(feature.properties[this.props.stat][this.props.dateIdx])}`
+                    Population: ${addCommas(feature.properties.population)} <br>
+                    ${statInfo}`
+
         const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
 
         this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true, tooltipText })
