@@ -87,12 +87,11 @@ class MainContainer extends Component {
         this.updateGraphDimensions()
         this.updateMapContainerDimensions()
         
-        // build scenarios for selected geoID
-        const SCENARIOS = buildScenarios(dataset); // constant for geoID
-
-        const scenario = SCENARIOS[0];      // initial scenario view
-        const scenarioMap = SCENARIOS[0].key;   // scenario view for map
-        const scenarioList = [scenario];    // updated based on selection
+        // instantiate all scenario lists for selected geoID
+        const SCENARIOS = buildScenarios(dataset);  // constant for geoID
+        const scenario = SCENARIOS[0];              // initial scenario view
+        const scenarioMap = SCENARIOS[0].key;       // scenario view for map
+        const scenarioList = [scenario];            // updated based on selection
         const scenarioListChart = SCENARIOS.map(s => s.name);
 
         // instantiate initial series and dates
@@ -150,7 +149,7 @@ class MainContainer extends Component {
 
         // instantiates countyBoundaries
         const state = this.state.geoid.slice(0, 2);
-        const countyBoundaries = require('../store/geoMapByState.json')[state];
+        const countyBoundaries = require('../store/countyBoundaries.json')[state];
         const statsForCounty = geojsonStats[state];
         const mapCurrentDateIndex = allTimeDates.findIndex( date => formatDate(date) === formatDate(new Date()));
         // console.log(mapCurrentDateIndex);
@@ -352,13 +351,16 @@ class MainContainer extends Component {
     }
 
     handleCountySelect = (i) => {
-        console.log('public county selected')
+
         const dataset = require(`../store/geo${i.geoid}.json`);
 
         // re-initialize scenarios
         const SCENARIOS = buildScenarios(dataset); 
         const scenario = SCENARIOS[0];
         const scenarioList = [scenario]; 
+        const scenarioListChart = SCENARIOS.map(s => s.name);
+        const scenarioMap = SCENARIOS[0].key;       
+
 
         // re-initialize severity
         const severityList = [_.cloneDeep(LEVELS[0])];
@@ -366,7 +368,7 @@ class MainContainer extends Component {
 
         // re-initialize countyBoundaries
         const state = i.geoid.slice(0, 2);
-        const countyBoundaries = require('../store/geoMapByState.json')[state];
+        const countyBoundaries = require('../store/countyBoundaries.json')[state];
         const statsForCounty = geojsonStats[state];
 
         this.setState({
@@ -374,6 +376,8 @@ class MainContainer extends Component {
             geoid: i.geoid,
             SCENARIOS,
             scenarioList,
+            scenarioListChart,
+            scenarioMap,
             severityList,
             countyBoundaries,
             statsForCounty
@@ -686,13 +690,9 @@ class MainContainer extends Component {
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16} style={{ paddingLeft: margin.yAxis + (2 * margin.left) + margin.right }}>
 
-                            {/* <div className="row section-spacer"><p></p><p></p></div> */}
-                            {/* <div className="map-dateSlider">
-
-                            </div> */}
                             {this.state.dataLoaded &&
                             <div className="map-container">
-                                {/* <MapContainer
+                                <MapContainer
                                     width={this.state.mapContainerW - margin.left - margin.right}
                                     height={this.state.mapContainerH}
                                     dataset={this.state.dataset}
@@ -702,7 +702,7 @@ class MainContainer extends Component {
                                     selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
                                     countyBoundaries={this.state.countyBoundaries}
                                     statsForCounty={this.state.statsForCounty}
-                                /> */}
+                                />
                             </div>
                             }
                         </Col>

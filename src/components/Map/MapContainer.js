@@ -54,7 +54,9 @@ class MapContainer extends Component {
     componentDidUpdate(prevProps, prevState) {
         if (this.props.geoid !== prevProps.geoid 
             || this.props.selectedDate !== prevProps.selectedDate
-            || this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
+            || this.props.countyBoundaries !== prevProps.countyBoundaries
+            || this.props.width !== prevProps.width 
+            || this.props.height !== prevProps.height) {
 
             const children = [];
             const dateIdx = getDateIdx(this.props.firstDate, this.props.selectedDate);
