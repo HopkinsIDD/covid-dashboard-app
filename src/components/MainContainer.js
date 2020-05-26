@@ -2,19 +2,15 @@ import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
 import _ from 'lodash';
 
-// import MainGraph from './Graph/MainGraph';
-// import MainChart from './Chart/MainChart';
-// import MainMap from './Map/MainMap';
-// import TestDivider from './TestDivider';
-import Scenarios from './Filters/Scenarios';
-
+import Search from './Search/Search'
 import GraphContainer from './Graph/GraphContainer';
 import ChartContainer from './Chart/ChartContainer';
 import MapContainer from './Map/MapContainer';
-import Search from './Search/Search'
 import Brush from './Filters/Brush';
+
 import GraphFilter from './Graph/GraphFilter';
 import ChartLegend from './Chart/ChartLegend';
+import Scenarios from './Filters/Scenarios';
 import DatePicker from './Chart/DatePicker';
 import ScaleToggle from './Chart/ScaleToggle';
 import DateSlider from './Map/DateSlider';
@@ -540,7 +536,7 @@ class MainContainer extends Component {
                 </Search>
 
                 {/* MainGraph Component */}
-                <Content style={{ padding: '50px 0' }}>
+                <Content id="scenario-comparisons" style={{ padding: '50px 0' }}>
                     <div className="content-section">
                         <div className="content-header">Scenario Comparisons</div>
                     </div>
@@ -630,7 +626,7 @@ class MainContainer extends Component {
 
                 {/* <TestDivider /> */}
                 {/* MainChart Component */}
-                <Content style={{ background: '#fefefe', padding: '50px 0' }}>
+                <Content id="stats" style={{ background: '#fefefe', padding: '50px 0' }}>
                     <div className="content-section">
                         <div className="content-header">Summary Across Scenarios</div>
                     </div>
@@ -683,7 +679,7 @@ class MainContainer extends Component {
                 </Content>
 
                 {/* MainMap Component */}
-                <Content style={{ padding: '50px 0' }}>
+                <Content id="map" style={{ padding: '50px 0' }}>
                     <div className="content-section">
                         <div className="content-header">State-Wide Comparisons</div>
                     </div>
@@ -696,7 +692,7 @@ class MainContainer extends Component {
                             </div> */}
                             {this.state.dataLoaded &&
                             <div className="map-container">
-                                <MapContainer
+                                {/* <MapContainer
                                     width={this.state.mapContainerW - margin.left - margin.right}
                                     height={this.state.mapContainerH}
                                     dataset={this.state.dataset}
@@ -706,7 +702,7 @@ class MainContainer extends Component {
                                     selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
                                     countyBoundaries={this.state.countyBoundaries}
                                     statsForCounty={this.state.statsForCounty}
-                                />
+                                /> */}
                             </div>
                             }
                         </Col>
@@ -738,62 +734,3 @@ class MainContainer extends Component {
 }
 
 export default MainContainer;
-
-
-/* <MainGraph 
-    stat={this.state.stat}
-    geoid={this.state.geoid}
-    yAxisLabel={this.state.yAxisLabel}
-    scenarioList={this.state.scenarioList}
-    severity={this.state.severity}
-    r0={this.state.r0}
-
-    simNum={this.state.simNum}
-    showConfBounds={this.state.showConfBounds}
-    confBoundsList={this.state.confBoundsList}
-    showActual={this.state.showActual}
-    seriesList={this.state.seriesList}
-    dates={this.state.dates}
-    statThreshold={this.state.statThreshold}
-    dateThreshold={this.state.dateThreshold}
-    percExceedenceList={this.state.percExceedenceList}
-    dateRange={this.state.dateRange}
-    brushActive={this.state.brushActive}
-    width={this.state.graphW}
-    height={this.state.graphH}
-    scenarioClickCounter={this.state.scenarioClickCounter}
-    scenarioHovered={this.state.scenarioHovered}
-    series={this.state.allTimeSeries}
-    x={margin.yAxis}
-    y={0}
-    onBrushChange={this.handleBrushRange}
-    onBrushStart={this.handleBrushStart}
-    onBrushEnd={this.handleBrushEnd}
-    SCENARIOS={this.state.SCENARIOS}
-    scenario={this.state.scenario}
-    onScenarioClick={this.handleScenarioClick}
-    onButtonClick={this.handleButtonClick}
-    onConfClick={this.handleConfClick}
-    severityList={this.state.severityList}
-    onSeveritiesClick={this.handleSeveritiesClick}
-    onSeveritiesHover={this.handleSeveritiesHover}
-    onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
-    seriesMax={this.state.seriesMax}
-    seriesMin={this.state.seriesMin}
-    dateThresholdIdx={this.state.dateThresholdIdx}
-    firstDate={this.state.firstDate}
-    lastDate={this.state.lastDate}
-    onStatSliderChange={this.handleStatSliderChange}
-    onDateSliderChange={this.handleDateSliderChange}
-/>
-
-<MainChart 
-    width={this.state.graphW - margin.left - margin.right}
-    height={this.state.graphH}
-    dataset={this.state.dataset}
-    firstDate={this.state.firstDate}
-    summaryStart={this.state.summaryStart}
-    summaryEnd={this.state.summaryEnd}
-    onHandleSummaryDates={this.handleSummaryDates}
-/> 
-*/
