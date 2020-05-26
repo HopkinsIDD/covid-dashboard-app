@@ -33,25 +33,20 @@ class Map extends Component {
     }
     componentDidMount() {
         const { stat, dateIdx, countyBoundaries, statsForCounty, scenario } = this.props;
-        console.log(stat);
+        // console.log(stat);
         // console.log(dateIdx);
-        console.log(countyBoundaries);
-        console.log(statsForCounty);
-        console.log(scenario);
+        // console.log(countyBoundaries);
+        // console.log(statsForCounty);
+        // console.log(scenario);
         const normalizedStatsAll = []
         
         // iterate over this.props.countyBoundaries to plot up boundaries
-        // join each geoid to statsForCounty[geoid][stat][dateIdx]
-        const statsKeys = Object.keys(statsForCounty)
-        console.log(statsKeys)
-
-        console.log(statsForCounty[statsKeys[0]])
-
+        // join each geoid to statsForCounty[geoid][scenario][stat][dateIdx]
         for (let i = 0; i < countyBoundaries.features.length; i++) {
             // console.log(countyBoundaries.features[i].properties)
             const geoid = countyBoundaries.features[i].properties.geoid;
             const population = countyBoundaries.features[i].properties.population;
-            console.log(geoid)
+            // console.log(geoid)
             // check to see if stats exist for this county
             if (statsForCounty[geoid]) {
                 const statArray = statsForCounty[geoid][scenario][stat]
@@ -68,7 +63,8 @@ class Map extends Component {
         }
         // get max of all values in stat array for colorscale
         const maxVal = max(Object.values(statsForCounty).map( county => {
-            return max(county[stat])
+            console.log(county)
+            return max(county[scenario][stat])
         }))
         const minVal = maxVal * 0.3333;
 
