@@ -752,11 +752,6 @@ class MainContainer extends Component {
                     </div>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16} style={{ paddingLeft: margin.yAxis + (2 * margin.left) + margin.right }}>
-
-                            {/* <div className="row section-spacer"><p></p><p></p></div> */}
-                            {/* <div className="map-dateSlider">
-
-                            </div> */}
                             {this.state.dataLoaded &&
                             <div className="map-container">
                                 <MapContainer

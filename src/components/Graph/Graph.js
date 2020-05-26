@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Tooltip } from 'antd'
 import Axis from './Axis'
+import Legend from './Legend'
 // import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least } from 'd3-array'
@@ -451,6 +452,14 @@ class Graph extends Component {
                             ></circle>
                         </g>
                     </g>
+                    {
+                        this.props.showLegend &&
+                        <Legend 
+                            showConfBounds={this.props.showConfBounds}
+                            x={this.props.width - margin.right - 155}
+                            y={margin.top * 2.3}
+                        />
+                    }
                     <g>
                         <Axis 
                             keyVal={this.props.keyVal}

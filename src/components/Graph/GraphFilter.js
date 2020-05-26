@@ -43,9 +43,6 @@ class GraphFilter extends Component {
     render() {
         return (
             <div>
-                <Legend 
-                    showConfBounds={this.props.showConfBounds}
-                />
                 <Scenarios
                     view="graph"
                     SCENARIOS={this.props.SCENARIOS}

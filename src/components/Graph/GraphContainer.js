@@ -51,6 +51,7 @@ class GraphContainer extends Component {
                 dateRange={this.props.dateRange}
                 width={graphWidth}
                 height={graphHeight}
+                showLegend={true}
                 x={0}
                 y={0}
                 xScale={scales.xScale}
@@ -132,6 +133,7 @@ class GraphContainer extends Component {
                     brushActive={this.props.brushActive}
                     width={graphWidth}
                     height={graphHeight}
+                    showLegend={scenarioList.length === 1 || (scenarioList.length > 1 && i === 1) ? true : false }
                     // x={i * graphWidth}
                     x={0}
                     y={0}
