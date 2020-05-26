@@ -326,7 +326,7 @@ class Graph extends Component {
         if (s) {
             const hoveredIdx = this.props.series.findIndex( sim => sim.name === s.name)
             // console.log(hoveredIdx)
-            this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `sim: ${s.name}` })  
+            this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `R0: ${s.r0}` })  
         } 
     }
 
@@ -371,7 +371,8 @@ class Graph extends Component {
                                 <Tooltip
                                     key={`tooltip-sim-${i}`}
                                     title={this.state.tooltipText}
-                                    visible={simIsHovered ? true : false}
+                                    // visible={simIsHovered ? true : false}
+                                    visible={true}
                                     // align={}
                                     data-html="true"
                                 >
