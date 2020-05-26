@@ -4,7 +4,7 @@ import { green, red, gray } from '../../utils/constants';
 function ChartLegend(props) {
    
         return (
-            <div className="legend-container" style={{ display: 'flex' }}>
+            <div className="legend-container chart-legend-boxplot" style={{ display: 'flex' }}>
                 <p className="legend" style={{ marginRight: 0 }}>
                     <svg width="20" height="55">
                         <rect 
@@ -60,6 +60,7 @@ function ChartLegend(props) {
                         x="0"
                         y="10"
                         opacity={0.65}
+                        className="titleNarrow"
                     >
                     90th percentile
                     </text>
@@ -67,6 +68,7 @@ function ChartLegend(props) {
                         x="0"
                         y="27"
                         opacity={0.65}
+                        className="titleNarrow"
                     >
                     median
                     </text>
@@ -74,6 +76,7 @@ function ChartLegend(props) {
                         x="0"
                         y="45"
                         opacity={0.65}
+                        className="titleNarrow"
                     >
                     10th percentile
                     </text>

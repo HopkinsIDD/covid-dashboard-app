@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Chart from '../Chart/Chart';
 import SummaryLabel from '../Chart/SummaryLabel';
+import ChartLegend from '../Chart/ChartLegend';
 // import { scaleLinear } from 'd3-scale';
 import { COUNTYNAMES, scenarioColors, blue } from '../../utils/constants'
 import { getReadableDate } from '../../utils/utils'
@@ -113,10 +114,14 @@ class ChartContainer extends Component {
         return (
             <div>
                 <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]}`}</div>
-                <div className="filter-label threshold-label callout callout-row"><span className={this.props.datePickerActive ? 'customLink' : 'bold'}>{getReadableDate(this.props.summaryStart)}</span>&nbsp;to <span className={this.props.datePickerActive ? 'customLink' : 'bold'}>{getReadableDate(this.props.summaryEnd)}</span></div>
+                <div className="filter-label threshold-label callout callout-row">
+                    <span className={this.props.datePickerActive ? 'customLink' : 'bold'}>
+                        {getReadableDate(this.props.summaryStart)}</span>&nbsp;to 
+                    <span className={this.props.datePickerActive ? 'customLink' : 'bold'}>
+                        {getReadableDate(this.props.summaryEnd)}</span>
+                </div>
                 <div className="chart-callout" style={{ display: 'block !important'}}>
                     {this.state.rectIsHovered &&
-                                
                                 <SummaryLabel 
                                     classProps={'filter-label threshold-label callout'}
                                     summaryStart={this.props.summaryStart}
@@ -127,10 +132,9 @@ class ChartContainer extends Component {
                                     tenth={this.state.tenth}
                                     ninetyith={this.state.ninetyith}
                                 />
-             
                     }
                 </div>
-                <div>
+                <div className="chart-legend-container">
                     <div className="chart-legend">
                     {
                         this.props.scenarios.map( (scenario, index) => {
@@ -155,6 +159,7 @@ class ChartContainer extends Component {
                         })
                     }
                     </div>
+                    <ChartLegend />
                 </div>
                 {/* {Object.keys(this.state.children).length === this.props.stats.length &&  */}
                 {this.state.parameters.map( (param, i) => {

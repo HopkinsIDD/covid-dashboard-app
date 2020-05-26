@@ -544,6 +544,15 @@ input[type=range]::-moz-focus-outer {
   padding: 10px 0;
 }
 
+.chart-legend-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.chart-legend-boxplot {
+  width: 140px;
+}
+
 .chart-legend {
   display: flex;
   flex-wrap: wrap;

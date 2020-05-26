@@ -456,7 +456,7 @@ class Graph extends Component {
                         this.props.showLegend &&
                         <Legend 
                             showConfBounds={this.props.showConfBounds}
-                            x={this.props.width - margin.right - 155}
+                            x={this.props.width - margin.right - 160}
                             y={margin.top * 2.3}
                         />
                     }

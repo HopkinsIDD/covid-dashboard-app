@@ -711,7 +711,6 @@ class MainContainer extends Component {
 
                         <Col className="gutter-row filters" span={6}>
                             <Fragment>
-                                <ChartLegend />
                                 {this.state.dataLoaded &&
                                 <Fragment>
                                     <Scenarios 
