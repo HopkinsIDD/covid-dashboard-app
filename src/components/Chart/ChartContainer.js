@@ -116,7 +116,7 @@ class ChartContainer extends Component {
                 <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]}`}</div>
                 <div className="filter-label threshold-label callout callout-row">
                     <span className={this.props.datePickerActive ? 'customLink' : 'bold'}>
-                        {getReadableDate(this.props.summaryStart)}</span>&nbsp;to 
+                        {getReadableDate(this.props.summaryStart)}</span>&nbsp;to&nbsp;
                     <span className={this.props.datePickerActive ? 'customLink' : 'bold'}>
                         {getReadableDate(this.props.summaryEnd)}</span>
                 </div>
