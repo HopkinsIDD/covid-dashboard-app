@@ -85,18 +85,19 @@ ul {
 
 li {
   display: inline;
+  line-height: 2.8rem;
 }
 
 li a {
   font-size: 18px;
-  color: lightgray;
+  color: white;
   text-align: center;
-  padding: 6px;
+  padding: 8px;
   text-decoration: none;
 }
 
 li a:not(.active):hover {
-  color: white;
+  color: lightgray;
   text-decoration: none;
 }
 
@@ -111,7 +112,7 @@ a:hover {
 }
 
 .siteTitle {
-  font-size: 2rem;
+  font-size: 1.8rem;
 }
 
 .customLink {

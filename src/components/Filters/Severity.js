@@ -50,8 +50,8 @@ class Severity extends Component {
 
     render() {
         const { severity, scenario, sevCount } = this.props; 
-        const title = sevCount === 2 ?
-            ('Severity for ' + scenario.name.replace('USA_','')) : 'SEVERITY';
+        const title = sevCount === 1 ?
+            'SEVERITY' : ('Severity for ' + scenario.name.replace('USA_','')) ;
         return ( 
             <div
                 onMouseEnter={() => this.handleMouseEnter(scenario.name)}

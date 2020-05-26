@@ -4,19 +4,15 @@ module.exports = {
     addQuantiles: function addQuantiles(parsedObj, dates) {
         // calculate p10, p50, p90 quantiles and add to parsedObj
     
-        console.log('... calculating and adding quantiles')
-    
         const geoids = Object.keys(parsedObj);
         for (let geoid of geoids) {
     
             const scenarios = Object.keys(parsedObj[geoid]);
             for (let scenario of scenarios) {
     
-                const severities = constants.severities;
-                for (let sev of severities) {
+                for (let sev of constants.severities) {
     
-                    const parameters = constants.parameters;
-                    for (let param of parameters) {
+                    for (let param of constants.parameters) {
     
                         const confObj = {'p10': [], 'p50': [], 'p90': []};
                         for (let d = 0; d < dates.length; d ++) {
@@ -43,14 +39,13 @@ module.exports = {
                 }
             }
         }
+        console.log(new Date(), 'quantiles added');
     },
 
     transformQuantiles: function transformQuantiles(parsedObj, dates) {
         // transform parsedObj confidence bounds to D3-friendly format
         // Obj {p10: [], p50: [], p90: []} to Array(479) [{p10: 2, p50: 4, p90: 9}]
 
-        console.log('... transforming quantiles')
-        
         const geoids = Object.keys(parsedObj);
         for (let geoid of geoids) {
     

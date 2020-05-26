@@ -3,6 +3,7 @@ import Legend from '../Graph/Legend';
 import Scenarios from '../Filters/Scenarios';
 import Indicators from '../Filters/Indicators';
 import Overlays from '../Filters/Overlays';
+import R0 from '../Filters/R0';
 import SeverityContainer from '../Filters/SeverityContainer'
 import Sliders from '../Filters/Sliders';
 
@@ -32,6 +33,10 @@ class GraphFilter extends Component {
         this.props.onSeveritiesHoverLeave();
     }
 
+    handleR0Change= (e) => {
+        this.props.onHandleR0Change(e);
+    }
+
     handleStatSliderChange = (i) => {
         this.props.onStatSliderChange(i);
     }
@@ -58,6 +63,10 @@ class GraphFilter extends Component {
                     showConfBounds={this.props.showConfBounds}
                     onConfClick={this.handleConfClick}
                 /> 
+                <R0
+                    r0={this.props.r0}
+                    onR0Change={this.handleR0Change}
+                />
                 <SeverityContainer
                     stat={this.props.stat}
                     severityList={this.props.severityList}
@@ -66,7 +75,6 @@ class GraphFilter extends Component {
                     onSeveritiesHover={this.handleSeveritiesHover}
                     onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
                 />
-                <br />      
                 <Sliders 
                     stat={this.props.stat}
                     dates={this.props.dates}

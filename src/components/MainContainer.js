@@ -2,17 +2,14 @@ import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
 import _ from 'lodash';
 
-// import MainGraph from './Graph/MainGraph';
-// import MainChart from './Chart/MainChart';
-// import MainMap from './Map/MainMap';
-import Scenarios from './Filters/Scenarios';
-
+import Search from './Search/Search'
 import GraphContainer from './Graph/GraphContainer';
 import ChartContainer from './Chart/ChartContainer';
 import MapContainer from './Map/MapContainer';
-import Search from './Search/Search'
 import Brush from './Filters/Brush';
+
 import GraphFilter from './Graph/GraphFilter';
+import Scenarios from './Filters/Scenarios';
 import ChartLegend from './Chart/ChartLegend';
 import IndicatorSelection from './Chart/IndicatorSelection';
 import DatePicker from './Chart/DatePicker';
@@ -26,7 +23,6 @@ import { maxIndex } from 'd3-array';
 import { STATS, LEVELS, margin } from '../utils/constants';
 
 const dataset = require('../store/geo06085.json');
-// TODO: is this file affecting performance?
 const geojsonStats = require('../store/statsForMap.json')
 
 const parseDate = utcParse('%Y-%m-%d')
@@ -45,7 +41,7 @@ class MainContainer extends Component {
             allTimeDates: [],
             yAxisLabel: '',
             stat: STATS[0],
-            geoid: '06085',
+            geoid: '06085', 
             SCENARIOS: [],
             scenario: {},
             scenarioList: [],           
@@ -66,7 +62,7 @@ class MainContainer extends Component {
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             firstDate: '',
             lastDate: '',
-            r0: '1',
+            r0: [0, 4],
             simNum: '150',
             percExceedenceList: [],
             showConfBounds: false,
@@ -90,18 +86,18 @@ class MainContainer extends Component {
 
     componentDidMount() {
         // console.log('componentDidMount')
-        // console.log('dataset', dataset)
+        console.log('dataset', dataset)
+        
         window.addEventListener('resize', this.updateGraphDimensions)
         window.addEventListener('resize', this.updateMapContainerDimensions)
         this.updateGraphDimensions()
         this.updateMapContainerDimensions()
         
-        // build scenarios for selected geoID
-        const SCENARIOS = buildScenarios(dataset); // constant for geoID
-
-        const scenario = SCENARIOS[0];      // initial scenario view
-        const scenarioMap = SCENARIOS[0].key;   // scenario view for map
-        const scenarioList = [scenario];    // updated based on selection
+        // instantiate all scenario lists for selected geoID
+        const SCENARIOS = buildScenarios(dataset);  // constant for geoID
+        const scenario = SCENARIOS[0];              // initial scenario view
+        const scenarioMap = SCENARIOS[0].key;       // scenario view for map
+        const scenarioList = [scenario];            // updated based on selection
         const scenarioListChart = SCENARIOS.map(s => s.name);
 
         // add default stats to chart
@@ -111,6 +107,7 @@ class MainContainer extends Component {
         // instantiate initial series and dates
         const { severity, stat } = this.state;
         const series = dataset[scenario.key][severity.key][stat.key].sims;
+         
         const dates = dataset[scenario.key].dates.map( d => parseDate(d));
         const firstDate = dates[0];
         const lastDate = dates[dates.length - 1];
@@ -162,7 +159,7 @@ class MainContainer extends Component {
 
         // instantiates countyBoundaries
         const state = this.state.geoid.slice(0, 2);
-        const countyBoundaries = require('../store/geoMapByState.json')[state];
+        const countyBoundaries = require('../store/countyBoundaries.json')[state];
         const statsForCounty = geojsonStats[state];
         const mapCurrentDateIndex = allTimeDates.findIndex( date => formatDate(date) === formatDate(new Date()));
         // console.log(mapCurrentDateIndex);
@@ -206,15 +203,15 @@ class MainContainer extends Component {
             this.state.scenarioList !== prevState.scenarioList ||
             this.state.severityList !== prevState.severityList ||
             this.state.dateRange !== prevState.dateRange ||
+            this.state.r0 !== prevState.r0 ||
             this.state.dataset !== prevState.dataset) {
-            // console.log('componentDidUpdate')
 
             const filteredSeriesList = []
             const percExceedenceList = []
             const confBoundsList = [];
             let brushSeries
             
-            const { dataset, stat, severityList, scenarioList } = this.state;
+            const { dataset, stat, severityList, scenarioList, r0 } = this.state;
             // filter series and dates by dateRange
             const idxMin = timeDay.count(this.state.firstDate, this.state.dateRange[0]);
             const idxMax = timeDay.count(this.state.firstDate, this.state.dateRange[1]);
@@ -226,9 +223,14 @@ class MainContainer extends Component {
             let sliderMax = 0
 
             for (let i = 0; i < scenarioList.length; i++) {
-                const newSeries = Array.from(
+                const copy = Array.from(
                     dataset[scenarioList[i].key][severityList[i].key][stat.key].sims
                     );
+
+                // filter down sims on reproductive number
+                const newSeries = copy.filter(s => {
+                    return Number(s.r0) > r0[0] && Number(s.r0) < r0[1]});
+                    
                 const filteredSeriesForStatThreshold = newSeries.map( s => {
                     const newS = {...s}
                     newS.vals = s.vals.slice(idxMin, idxMax)
@@ -283,8 +285,8 @@ class MainContainer extends Component {
                 dates: filteredDates,
                 statThreshold,
                 dateThreshold,
-                seriesMin : sliderMin,
-                seriesMax : sliderMax,
+                seriesMin: sliderMin,
+                seriesMax: sliderMax,
                 percExceedenceList,
                 confBoundsList
             })
@@ -360,13 +362,16 @@ class MainContainer extends Component {
     }
 
     handleCountySelect = (i) => {
-        console.log('public county selected')
+
         const dataset = require(`../store/geo${i.geoid}.json`);
 
         // re-initialize scenarios
         const SCENARIOS = buildScenarios(dataset); 
         const scenario = SCENARIOS[0];
         const scenarioList = [scenario]; 
+        const scenarioListChart = SCENARIOS.map(s => s.name);
+        const scenarioMap = SCENARIOS[0].key;       
+
 
         // re-initialize severity
         const severityList = [_.cloneDeep(LEVELS[0])];
@@ -374,7 +379,7 @@ class MainContainer extends Component {
 
         // re-initialize countyBoundaries
         const state = i.geoid.slice(0, 2);
-        const countyBoundaries = require('../store/geoMapByState.json')[state];
+        const countyBoundaries = require('../store/countyBoundaries.json')[state];
         const statsForCounty = geojsonStats[state];
 
         this.setState({
@@ -382,6 +387,8 @@ class MainContainer extends Component {
             geoid: i.geoid,
             SCENARIOS,
             scenarioList,
+            scenarioListChart,
+            scenarioMap,
             severityList,
             countyBoundaries,
             statsForCounty
@@ -468,6 +475,10 @@ class MainContainer extends Component {
     handleSeveritiesHover = (i) => {this.setState({scenarioHovered: i})};
 
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
+
+    handleR0Change = (e) => {
+        this.setState({r0: e})
+    };
 
     handleStatSliderChange = (thresh) => {
         const { dates, dateThreshold, allTimeDates } = this.state;
@@ -593,7 +604,7 @@ class MainContainer extends Component {
                 </Search>
 
                 {/* MainGraph Component */}
-                <Content style={{ padding: '50px 0' }}>
+                <Content id="scenario-comparisons" style={{ padding: '50px 0' }}>
                     <div className="content-section">
                         <div className="content-header">Scenario Comparisons</div>
                     </div>
@@ -665,6 +676,8 @@ class MainContainer extends Component {
                                 onSeveritiesHover={this.handleSeveritiesHover}
                                 onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
                                 dates={this.state.dates}
+                                r0={this.state.r0}
+                                onHandleR0Change={this.handleR0Change}
                                 seriesMax={this.state.seriesMax}
                                 seriesMin={this.state.seriesMin}
                                 statThreshold={this.state.statThreshold}
@@ -682,8 +695,9 @@ class MainContainer extends Component {
                     </Row>
                 </Content>
 
+                {/* <TestDivider /> */}
                 {/* MainChart Component */}
-                <Content style={{ background: '#fefefe', padding: '50px 0' }}>
+                <Content id="stats" style={{ background: '#fefefe', padding: '50px 0' }}>
                     <div className="content-section">
                         <div className="content-header">Summary Across Scenarios</div>
                     </div>
@@ -745,7 +759,7 @@ class MainContainer extends Component {
                 </Content>
 
                 {/* MainMap Component */}
-                <Content style={{ padding: '50px 0' }}>
+                <Content id="map" style={{ padding: '50px 0' }}>
                     <div className="content-section">
                         <div className="content-header">State-Wide Comparisons</div>
                     </div>
@@ -757,7 +771,7 @@ class MainContainer extends Component {
                                     width={this.state.mapContainerW - margin.left - margin.right}
                                     height={this.state.mapContainerH}
                                     dataset={this.state.dataset}
-                                    // scenarioList={this.state.scenarioList}
+                                    scenario={this.state.scenarioMap}
                                     geoid={this.state.geoid}
                                     firstDate={this.state.firstDate}
                                     selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
@@ -797,61 +811,3 @@ class MainContainer extends Component {
 }
 
 export default MainContainer;
-
-
-/* <MainGraph 
-    stat={this.state.stat}
-    geoid={this.state.geoid}
-    yAxisLabel={this.state.yAxisLabel}
-    scenarioList={this.state.scenarioList}
-    severity={this.state.severity}
-    r0={this.state.r0}
-    simNum={this.state.simNum}
-    showConfBounds={this.state.showConfBounds}
-    confBoundsList={this.state.confBoundsList}
-    showActual={this.state.showActual}
-    seriesList={this.state.seriesList}
-    dates={this.state.dates}
-    statThreshold={this.state.statThreshold}
-    dateThreshold={this.state.dateThreshold}
-    percExceedenceList={this.state.percExceedenceList}
-    dateRange={this.state.dateRange}
-    brushActive={this.state.brushActive}
-    width={this.state.graphW}
-    height={this.state.graphH}
-    scenarioClickCounter={this.state.scenarioClickCounter}
-    scenarioHovered={this.state.scenarioHovered}
-    series={this.state.allTimeSeries}
-    x={margin.yAxis}
-    y={0}
-    onBrushChange={this.handleBrushRange}
-    onBrushStart={this.handleBrushStart}
-    onBrushEnd={this.handleBrushEnd}
-    SCENARIOS={this.state.SCENARIOS}
-    scenario={this.state.scenario}
-    onScenarioClick={this.handleScenarioClick}
-    onButtonClick={this.handleButtonClick}
-    onConfClick={this.handleConfClick}
-    severityList={this.state.severityList}
-    onSeveritiesClick={this.handleSeveritiesClick}
-    onSeveritiesHover={this.handleSeveritiesHover}
-    onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
-    seriesMax={this.state.seriesMax}
-    seriesMin={this.state.seriesMin}
-    dateThresholdIdx={this.state.dateThresholdIdx}
-    firstDate={this.state.firstDate}
-    lastDate={this.state.lastDate}
-    onStatSliderChange={this.handleStatSliderChange}
-    onDateSliderChange={this.handleDateSliderChange}
-/>
-
-<MainChart 
-    width={this.state.graphW - margin.left - margin.right}
-    height={this.state.graphH}
-    dataset={this.state.dataset}
-    firstDate={this.state.firstDate}
-    summaryStart={this.state.summaryStart}
-    summaryEnd={this.state.summaryEnd}
-    onHandleSummaryDates={this.handleSummaryDates}
-/> 
-*/

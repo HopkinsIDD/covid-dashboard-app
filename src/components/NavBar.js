@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { NavLink } from 'react-router-dom';
 import { Row, Col } from 'antd';
 
 class NavBar extends Component {
@@ -12,21 +11,9 @@ class NavBar extends Component {
               </Col>
               <Col className="gutter-row nav-menu" span={8}>
                 <ul>
-                  <li>
-                    <NavLink exact={true} activeClassName='active' to="/">
-                      Dashboard
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink activeClassName='active' to="/scenarios">
-                      Scenarios
-                    </NavLink>
-                  </li>
-                  <li>
-                    <NavLink activeClassName='active' to="/methods">
-                      Methods
-                    </NavLink>
-                  </li>
+                  <li><a href="#scenario-comparisons">VIZ</a></li>
+                  <li><a href="#stats">STATS</a></li>
+                  <li><a href="#map">MAP</a></li>
                 </ul>
               </Col>
             </Row>
