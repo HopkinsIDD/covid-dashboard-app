@@ -371,8 +371,8 @@ class Graph extends Component {
                                 <Tooltip
                                     key={`tooltip-sim-${i}`}
                                     title={this.state.tooltipText}
-                                    // visible={simIsHovered ? true : false}
-                                    visible={true}
+                                    visible={simIsHovered ? true : false}
+                                    // visible={true}
                                     // align={}
                                     data-html="true"
                                 >

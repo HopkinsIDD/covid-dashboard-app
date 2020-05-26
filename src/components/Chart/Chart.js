@@ -40,9 +40,9 @@ class Chart extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         // console.log(this.props.summaryStart, this.props.summaryEnd)
-        console.log('componentDidUpdate')
-        console.log(prevProps)
-        console.log(this.props)
+        // console.log('componentDidUpdate')
+        // console.log(prevProps)
+        // console.log(this.props)
         if (prevProps.summaryStart !== this.props.summaryStart || 
             prevProps.summaryEnd !== this.props.summaryEnd ||
             prevProps.dataset !== this.props.dataset ||
