@@ -38,7 +38,7 @@ class Graph extends Component {
     
     componentDidMount() {
         // console.log('ComponentDidMount', this.props.keyVal)
-        // console.log(this.state.series)
+        console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
         if (this.state.confBounds && this.state.confBounds.length > 0) this.drawConfBounds(this.state.confBounds, this.state.areaGenerator, this.state.dates);
     }
@@ -292,10 +292,12 @@ class Graph extends Component {
     }
 
     handleMouseMove = (event, index) => {
+        if (this.props.showConfBounds) return
         this.setState({ hoveredSimPathId: index })
     }
 
     handleMouseEnter = (event, index) => {
+        if (this.props.showConfBounds) return
         this.setState({ hoveredSimPathId: index })
     }
 
@@ -456,6 +458,7 @@ class Graph extends Component {
                         this.props.showLegend &&
                         <Legend 
                             showConfBounds={this.props.showConfBounds}
+                            showHoveredSim={this.state.hoveredSimPathId}
                             x={this.props.width - margin.right - 160}
                             y={margin.top * 2.3}
                         />
