@@ -4,7 +4,7 @@ import { green, red, gray } from '../../utils/constants';
 function ChartLegend(props) {
    
         return (
-            <div className="legend-container chart-legend-boxplot" style={{ display: 'flex' }}>
+            <div className="legend-container chart-legend-boxplot">
                 <p className="legend" style={{ marginRight: 0 }}>
                     <svg width="20" height="55">
                         <rect 

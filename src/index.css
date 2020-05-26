@@ -554,11 +554,13 @@ input[type=range]::-moz-focus-outer {
 
 .chart-legend-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .chart-legend-boxplot {
   width: 140px;
+  margin-left: 30px;
+  display: flex;
 }
 
 .chart-legend {
