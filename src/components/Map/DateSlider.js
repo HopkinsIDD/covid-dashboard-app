@@ -40,10 +40,7 @@ class DateSlider extends Component {
         <div>
           <div className="param-header">DATE SELECTOR</div>
           <div className="filter-label">
-              Selected Date: <span className='callout'>{getReadableDate(this.props.selectedDate)}</span>
-              <div className="tooltip">&nbsp;&#9432;
-                  <span className="tooltip-text">Slide to select the date you want for the geographic summary. Use right and left arrow keys to increase or decrease by day.</span>
-              </div>
+              Selected Date: &nbsp; <span className='callout'>{getReadableDate(this.props.selectedDate)}</span>
           </div>
           <div className="slidecontainer">
             <input
@@ -70,6 +67,10 @@ class DateSlider extends Component {
                   {getReadableDate(timeDay.offset(this.props.dates[this.props.dates.length - 1], -1))}
               </p>
           </div>
+        </div>
+        <div className="filter-description">
+          Slide to select a date for the geographic maps. 
+          Use right and left arrow keys to increase or decrease by day.
         </div>
       </div>
     )

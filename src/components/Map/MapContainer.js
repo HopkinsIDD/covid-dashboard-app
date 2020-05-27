@@ -99,7 +99,7 @@ class MapContainer extends Component {
         return (
             <div>
                 <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]} - ${this.props.scenario.replace('_', ' ')}`}</div>
-                <div className="filter-label threshold-label callout callout-row">{`Date of State-wide Summary: `}<span className={this.props.dateSliderActive ? 'customLink' : 'bold'}>{getReadableDate(this.props.selectedDate)}</span></div>
+                <div className="filter-label threshold-label callout callout-row">{`Selected Date: `}<span className={this.props.dateSliderActive ? 'customLink' : 'bold'}>{getReadableDate(this.props.selectedDate)}</span></div>
                 <div className="map-wrapper">
                     {this.state.children.map(child => {
                         return (
