@@ -37,18 +37,20 @@ class Map extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.countyBoundaries !== this.props.countyBoundaries ||
-            prevProps.statsForCounty !== this.props.statsForCounty) {
+            prevProps.statsForCounty !== this.props.statsForCounty ||
+            prevProps.scenario !== this.props.scenario) {
                 this.calculateScales();
         }
     }
 
     calculateScales = () => {
-        const { stat, dateIdx, countyBoundaries, statsForCounty, scenario } = this.props;
+        const { stat, dateIdx, countyBoundaries, statsForCounty, scenario, geoid } = this.props;
         // console.log(stat);
         // console.log(dateIdx);
         // console.log(countyBoundaries);
-        // console.log(statsForCounty);
-        // console.log(scenario);
+        console.log(geoid);
+        console.log(statsForCounty);
+        console.log(scenario);
         const normalizedStatsAll = []
         
         // iterate over this.props.countyBoundaries to plot up boundaries
