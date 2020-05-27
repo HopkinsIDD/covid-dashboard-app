@@ -36,41 +36,41 @@ function parseSim(path, result, geoids, scenario, sev, getIdx) {
     };
 };
 
-module.exports = {
-    parseDirectories: function parseDirectories(dir, geoids, scenarios, dates) {
-        // parses entire model package of multiple scenario dirs, returns result Obj
+function parseDirectories(dir, geoids, scenarios, dates) {
+    // parses entire model package of multiple scenario dirs, returns result Obj
 
-        console.log('start:', new Date()); 
-        const result = utils.initObj(geoids, scenarios, dates);
-            
-        for (let scenario of scenarios) {
-            console.log('-----> parsing scenario...', scenario)
+    console.log('start:', new Date()); 
+    const result = utils.initObj(geoids, scenarios, dates);
+        
+    for (let scenario of scenarios) {
+        console.log('-----> parsing scenario...', scenario)
 
-            const scenarioDir = `${dir}${scenario}/`;
-            const files = fs.readdirSync(scenarioDir)
-                .filter(file => file !== '.DS_Store');
-                // .slice(0, 3);
+        const scenarioDir = `${dir}${scenario}/`;
+        const files = fs.readdirSync(scenarioDir)
+            .filter(file => file !== '.DS_Store');
+            // .slice(0, 3);
 
-            // get index mapping based on parameters and headers
-            let getIdx = {};
-            if (files.length > 0) {
-                const headers = utils.getHeaders(`${scenarioDir}${files[0]}`);
-                getIdx = utils.getIdx(headers, constants.parameters); 
-            } else {
-                console.log(`No files in directory: ${scenarioDir}`)
-            }
+        // get index mapping based on parameters and headers
+        let getIdx = {};
+        const headers = utils.getHeaders(`${scenarioDir}${files[0]}`);
+        getIdx = utils.getIdx(headers, constants.parameters); 
 
-            // parse by sim file
-            for (let file of files) {
-                const severity = file.split('_')[0];
-                const filePath = scenarioDir + file;
-                console.log(severity)
+        // parse by sim file
+        for (let file of files) {
+            const severity = file.split('_')[0];
+            const filePath = scenarioDir + file;
+            console.log(file)
 
-                parseSim(
-                    filePath, result, geoids, scenario, severity, getIdx)
-            }
-        };
+            parseSim(
+                filePath, result, geoids, scenario, severity, getIdx)
+        }
+    };
 
-        return result;
-    }
+    return result;
 }
+
+module.exports = {
+    parseSim,
+    parseDirectories
+};
+

@@ -4,14 +4,16 @@
 // sim numbers are evenly distributed - reduction is based on divisibility
 
 // TO TEST
-// populate geoid, slice scenarios, slice files
+// populate geoid, slice scenarios, slice files, check reduceSims
 
 const fs = require('fs');
+const validate = require('./validate');
 const parse = require('./parse');
 const utils = require('./utils');
 const quantile = require('./quantiles');
 const transform = require('./transform');
 const geostat = require('./geostat');
+// const constants = require('./constants')
 
 function buildDataset(dir, geoids) {
 
@@ -21,6 +23,9 @@ function buildDataset(dir, geoids) {
 
     // faster to grab dates from the get-go
     const dates = utils.getDates(dir, scenarios);
+
+    // validate input files
+    validate.validateFiles(dir);
 
     // parse all files in scenario directories
     const parsedObj = parse.parseDirectories(
@@ -48,8 +53,15 @@ function buildDataset(dir, geoids) {
     // transform quantiles
     quantile.transformQuantiles(parsedObj, dates)
 
-    // write to individual files
-    utils.writeToFile(parsedObj);
+    // write to individual files (only a subset, for now)
+    const geoidsToSave = [
+        '06', '06037', '06075', '06085', '06019', 
+        '36', '36005', '36061', '36081'
+    ];
+    utils.writeToFile(parsedObj, geoidsToSave);
+
+    // add a county to 06085 to simulate 6 scenarios
+    utils.combineCaliCounties();
     
     console.log('end:', new Date());
     console.log('data processing complete!'); 
@@ -65,7 +77,7 @@ const geoids = [
     '06055', '06057', '06059', '06061', '06063', '06065', '06067', '06069', '06071', 
     '06073', '06075', '06077', '06079', '06081', '06083', '06085', '06087', '06089', 
     '06091', '06093', '06095', '06097', '06099', '06101', '06103', '06105', '06107', 
-    '06109', '06111', '06113', 
+    '06109', '06111', '06113', '06115',
     '36001', '36003', '36005', '36007', '36009', '36011', '36013', '36015', '36017', 
     '36019', '36021', '36023', '36025', '36027', '36029', '36031', '36033', '36035', 
     '36037', '36039', '36041', '36043', '36045', '36047', '36049', '36051', '36053', 
@@ -77,3 +89,21 @@ const geoids = [
 // const geoids = ['06085', '06095', '36001', '36003'];
 // TODO: geoids should default to all unless specified for testing
 buildDataset(dir, geoids)
+
+
+// build expectedParseSim.json for Jest Test
+// const filePath = 'src/parser/fixtures/USA_Lockdown1918/high_death-1.csv';
+// const scenario = 'USA_Lockdown1918';
+// const geoids = ['06085', '06019', '36005', '36081'];
+// const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
+// let result = utils.initObj(geoids, [scenario], dates);
+
+// const getIdx = require('./resources/expectedIdxMap.json');
+// const severity = 'high'; 
+
+// parse.parseSim(filePath, result, geoids, scenario, severity, getIdx)
+// const json = JSON.stringify(result);
+
+// fs.writeFileSync('src/parser/resources/expectedParseSim.json', json, 'utf8', function(err) {
+//     if (err) throw err;
+// })
