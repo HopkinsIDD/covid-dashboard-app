@@ -46,6 +46,7 @@ class Graph extends Component {
     componentDidUpdate(prevProps, prevState) {
         // console.log('ComponentDidUpdate', this.props.keyVal)
         // confidence bounds overlay
+        
         if (this.props.showConfBounds !== prevProps.showConfBounds && this.props.confBounds) {
             // console.log('showConfBounds is', this.props.showConfBounds)
             if (this.props.confBounds) {
@@ -67,12 +68,15 @@ class Graph extends Component {
         }
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
-            // console.log('brushing is FALSE, series diff', this.props.keyVal)
+            console.log('brushing is FALSE, series diff', this.props.keyVal)
             const { series, dates, width } = this.props;
             const { lineGenerator, areaGenerator } = prevState;
             
+            if (this.props.r0 !== prevProps.r0) this.updateSimPaths(series, dates, lineGenerator, true, width);
+            
             this.updateSimPaths(series, dates, lineGenerator, false, width);
             if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
+            
             // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
         }
 
