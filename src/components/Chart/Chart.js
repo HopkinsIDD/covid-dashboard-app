@@ -115,7 +115,7 @@ class Chart extends Component {
            yScale = scalePow().exponent(0.25).range([height - margin.bottom, margin.chartTop]).domain([0, globalMaxVal])
         }
         // const yScale = scaleLog().range([height - margin.bottom, margin.top]).domain([1, globalMaxVal]) //
-        const xScale = scaleBand().range([0, (width / severities.length) - margin.left]).domain(scenarios)//.paddingInner(1).paddingOuter(.5);
+        const xScale = scaleBand().range([margin.left, width]).domain(scenarios)//.paddingInner(1).paddingOuter(.5);
         const scaleDomains = true
         return { quantileObj, xScale, yScale, scaleDomains}
         // this.setState({ quantileObj, xScale, yScale, scaleDomains: true })
@@ -205,34 +205,24 @@ class Chart extends Component {
     drawSummaryStats = () => {
         const barWidth = ((this.props.width / this.state.severities.length) / this.props.scenarios.length) - margin.left - margin.right;
         // console.log('barWidth', barWidth)
+        const barMargin = 10;
         const whiskerMargin = barWidth * 0.2;
         // console.log('whiskerMargin', whiskerMargin)
-        const rectWidth = (this.props.width / this.state.severities.length) - margin.left
+        const rectWidth = this.props.width - margin.left
         // console.log('rectWidth', rectWidth)
         return (
-            this.state.severities.map( (severity, i) => {
+            <Fragment key={`chart-fragment`}>
+            <rect
+                key={`chart-bkgd-rect`}
+                width={rectWidth}
+                height={this.props.height - margin.chartTop - margin.bottom + 2}
+                x={margin.left}
+                y={margin.chartTop}
+                fill={chartBkgd}
+            >
+            </rect>
+            {this.state.severities.map( (severity, i) => {
             return (
-                <Fragment key={`chart-fragment-${severity}`}>
-                <rect
-                    key={`chart-rect-${severity}`}
-                    width={(this.props.width / this.state.severities.length) - margin.left}
-                    height={this.props.height - margin.chartTop - margin.bottom + 2}
-                    x={margin.left + (i * (this.props.width / this.state.severities.length))}
-                    y={margin.chartTop}
-                    fill={chartBkgd}
-                >
-                </rect>
-                <text
-                    key={`bar-label-${severity}`}
-                    x={(i * (this.props.width / this.state.severities.length)) + (this.props.width / this.state.severities.length * 0.5)}
-                    y={margin.top}
-                    textAnchor={'middle'}
-                    opacity={0.65}
-                    // className='titleNarrow'
-                    style={{'fontSize': '0.8rem'}}
-                >
-                    {this.state.severityMap[severity]}
-                </text>
                 <g key={`chart-group-${severity}`}>
                     { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
                         // console.log(severity, 'barPos', key, this.state.xScale(key))
@@ -244,7 +234,7 @@ class Chart extends Component {
                                 className={'bars'}
                                 width={barWidth}
                                 height={this.state.yScale(0) - this.state.yScale(value.median)}
-                                x={(margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key)}
+                                x={(margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key)}
                                 y={this.state.yScale(value.median)}
                                 fill={scenarioColors[j]}
                                 stroke={this.state.hoveredRect.severity === severity &&
@@ -257,9 +247,9 @@ class Chart extends Component {
                             </rect>
                             <line
                                 key={`vertline-${severity}-${key}`}
-                                x1={(barWidth/2 + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
+                                x1={(barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                 y1={this.state.yScale(value.ninetyith)}
-                                x2={(barWidth/2 + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
+                                x2={(barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                 y2={this.state.yScale(value.tenth)}
                                 stroke={gray}
                                 strokeWidth={1}
@@ -267,9 +257,9 @@ class Chart extends Component {
                             </line>
                             <line
                                 key={`topline-${severity}-${key}`}
-                                x1={(whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
+                                x1={(whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                 y1={this.state.yScale(value.ninetyith)}
-                                x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
+                                x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                 y2={this.state.yScale(value.ninetyith)}
                                 stroke={gray}
                                 strokeWidth={1}
@@ -277,9 +267,9 @@ class Chart extends Component {
                             </line>
                             <line
                                 key={`bottomline-${severity}-${key}`}
-                                x1={(whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
+                                x1={(whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                 y1={this.state.yScale(value.tenth)}
-                                x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
+                                x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                 y2={this.state.yScale(value.tenth)}
                                 stroke={gray}
                                 strokeWidth={1}
@@ -290,9 +280,10 @@ class Chart extends Component {
                 })
                 }
                 </g>
-                </Fragment>
-            )
-        }))
+                )
+            })}
+            </Fragment>
+        )
     }
 
     updateSummaryStats = () => {
