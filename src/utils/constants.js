@@ -43,8 +43,12 @@ export const COUNTIES = [
 ];
 
 export const COUNTYNAMES = {
-    '06085': 'Dorne County, ES',
-    '01081': 'Highgarden County, TW',
-    '25017': 'Winterfell County, NR',
-    '36061': 'Kings Landing County, TC'
+    '06': 'California, CA',
+    '36': 'New York, NY',
+    '06037': 'Los Angeles County, CA',
+    '06085': 'Santa Clara County, CA',
+    '06075': 'San Francisco County, CA',
+    '36005': 'Bronx County, NY',
+    '36061': 'New York County, NY',
+    '36081': 'Queens County, NY'
 }
