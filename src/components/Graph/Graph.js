@@ -310,6 +310,7 @@ class Graph extends Component {
     }
 
     handleBetterSimMouseHover = (event) => {
+        if (this.props.showConfBounds) return
         // console.log('mousemove');
         event.preventDefault();
         const selector = `.graphSVG_${this.props.keyVal}`
