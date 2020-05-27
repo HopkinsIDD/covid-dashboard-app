@@ -255,13 +255,16 @@ ul {
 
 .bold {
   font-weight: bold;
-  border-bottom: 2px #4ddaba dashed;
 }
 
-.bold-active {
+.underline {
+  border-bottom: 2px #4ddaba dotted;
+}
+
+.underline-active {
   font-weight: bold;
   color: #4ddaba;
-  border-bottom: 2px #4ddaba dashed;
+  border-bottom: 2px #4ddaba dotted;
 }
 
 /* .dynamic-label {
