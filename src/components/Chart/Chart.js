@@ -47,7 +47,9 @@ class Chart extends Component {
             prevProps.summaryEnd !== this.props.summaryEnd ||
             prevProps.dataset !== this.props.dataset ||
             prevProps.scenarios !== this.props.scenarios ||
-            prevProps.stats !== this.props.stats) {
+            prevProps.stats !== this.props.stats ||
+            prevProps.width !== this.props.width ||
+            prevProps.height !== this.props.height) {
                 console.log('componentDidUpdate main check')
                 const calc = this.calculateQuantiles();
                 this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
