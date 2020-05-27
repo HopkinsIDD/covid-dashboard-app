@@ -229,7 +229,8 @@ class MainContainer extends Component {
 
                 // filter down sims on reproductive number
                 const newSeries = copy.filter(s => {
-                    return Number(s.r0) > r0[0] && Number(s.r0) < r0[1]});
+                    return (s.r0 > r0[0] && s.r0 < r0[1])
+                });
                     
                 const filteredSeriesForStatThreshold = newSeries.map( s => {
                     const newS = {...s}
