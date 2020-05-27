@@ -14,7 +14,7 @@ launch.json
 /build
 
 # datasets
-/_archive
+/src/store/_archive
 /src/store/sims
 
 # misc
