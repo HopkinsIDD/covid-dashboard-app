@@ -1,49 +1,27 @@
 import React, { Component } from 'react';
 import Legend from '../Graph/Legend';
 import Scenarios from '../Filters/Scenarios';
-import Indicators from '../Filters/Indicators';
+import Indicators from '../Filters/Indicators.tsx';
 import Overlays from '../Filters/Overlays';
 import R0 from '../Filters/R0';
 import SeverityContainer from '../Filters/SeverityContainer'
 import Sliders from '../Filters/Sliders';
 
+interface Props {
+    onScenarioClickGraph: (any) => void; //FIXME any should be typed
+    onButtonClick: (any) => void; //FIXME any should be typed
+    onSeveritiesClick: (any) => void; //FIXME any should be typed
+    onSeveritiesHover: (any) => void; //FIXME any should be typed
+    onHandleR0Change: (any) => void; //FIXME any should be typed
+    onStatSliderChange: (any) => void; //FIXME any should be typed
+    onDateSliderChange: (any) => void; //FIXME any should be typed
+    onConfClick: () => void;
+    onSeveritiesHoverLeave: () => void;
+    SCENARIOS: Array<Scenario>;
+    scenario: Scenario;
+}
 
-class GraphFilter extends Component {
-    handleScenarioClick = (i) => {
-        this.props.onScenarioClickGraph(i);
-    }
-
-    handleButtonClick = (i) => {
-        this.props.onButtonClick(i);
-    }
-    
-    handleConfClick = () => {
-        this.props.onConfClick();
-    }
-
-    handleSeveritiesClick = (i) => {
-        this.props.onSeveritiesClick(i);
-    }
-
-    handleSeveritiesHover = (i) => {
-        this.props.onSeveritiesHover(i);
-    }
-
-    handleSeveritiesHoverLeave= () => {
-        this.props.onSeveritiesHoverLeave();
-    }
-
-    handleR0Change= (e) => {
-        this.props.onHandleR0Change(e);
-    }
-
-    handleStatSliderChange = (i) => {
-        this.props.onStatSliderChange(i);
-    }
-
-    handleDateSliderChange = (i) => {
-        this.props.onDateSliderChange(i);
-    }
+class GraphFilter extends Component<Props> {
 
     render() {
         return (
@@ -53,27 +31,27 @@ class GraphFilter extends Component {
                     SCENARIOS={this.props.SCENARIOS}
                     scenario={this.props.scenario}
                     scenarioList={this.props.scenarioList}
-                    onScenarioClick={this.handleScenarioClick}
+                    onScenarioClick={this.props.onScenarioClickGraph}
                 />
                 <Indicators
                     stat={this.props.stat}
-                    onButtonClick={this.handleButtonClick}
+                    onButtonClick={this.props.onButtonClick}
                 />        
                 <Overlays 
                     showConfBounds={this.props.showConfBounds}
-                    onConfClick={this.handleConfClick}
+                    onConfClick={this.props.onConfClick}
                 /> 
                 <R0
                     r0={this.props.r0}
-                    onR0Change={this.handleR0Change}
+                    onR0Change={this.props.onHandleR0Change}
                 />
                 <SeverityContainer
                     stat={this.props.stat}
                     severityList={this.props.severityList}
                     scenarioList={this.props.scenarioList}
-                    onSeveritiesClick={this.handleSeveritiesClick}
-                    onSeveritiesHover={this.handleSeveritiesHover}
-                    onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
+                    onSeveritiesClick={this.props.onSeveritiesClick}
+                    onSeveritiesHover={this.props.onSeveritiesHover}
+                    onSeveritiesHoverLeave={this.props.onSeveritiesHoverLeave}
                 />
                 <Sliders 
                     stat={this.props.stat}
@@ -86,8 +64,8 @@ class GraphFilter extends Component {
                     firstDate={this.props.firstDate}
                     lastDate={this.props.lastDate}
                     dateRange={this.props.dateRange}
-                    onStatSliderChange={this.handleStatSliderChange}
-                    onDateSliderChange={this.handleDateSliderChange}
+                    onStatSliderChange={this.props.onStatSliderChange}
+                    onDateSliderChange={this.props.onDateSliderChange}
                     onSliderMouseEvent={this.props.onSliderMouseEvent}
                 />
             </div>   

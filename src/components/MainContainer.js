@@ -8,7 +8,7 @@ import ChartContainer from './Chart/ChartContainer';
 import MapContainer from './Map/MapContainer';
 import Brush from './Filters/Brush';
 
-import GraphFilter from './Graph/GraphFilter';
+import GraphFilter from './Graph/GraphFilter.tsx';
 import Scenarios from './Filters/Scenarios';
 import ChartLegend from './Chart/ChartLegend';
 import IndicatorSelection from './Chart/IndicatorSelection';
