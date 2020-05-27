@@ -10,7 +10,6 @@ import Brush from './Filters/Brush';
 
 import GraphFilter from './Graph/GraphFilter';
 import Scenarios from './Filters/Scenarios';
-import ChartLegend from './Chart/ChartLegend';
 import IndicatorSelection from './Chart/IndicatorSelection';
 import DatePicker from './Chart/DatePicker';
 import ScaleToggle from './Chart/ScaleToggle';
@@ -102,7 +101,6 @@ class MainContainer extends Component {
 
         // add default stats to chart
         const statListChart = STATS.slice(0,3)
-        console.log(statListChart)
 
         // instantiate initial series and dates
         const { severity, stat } = this.state;
@@ -162,7 +160,6 @@ class MainContainer extends Component {
         const countyBoundaries = require('../store/countyBoundaries.json')[state];
         const statsForCounty = geojsonStats[state];
         const mapCurrentDateIndex = allTimeDates.findIndex( date => formatDate(date) === formatDate(new Date()));
-        // console.log(mapCurrentDateIndex);
 
         this.setState({
             dataset,
@@ -273,12 +270,8 @@ class MainContainer extends Component {
                 if (confBounds && confBounds.length > 0) {
                     // filter by date range selected
                     const filteredConfBounds = confBounds.slice(idxMin, idxMax)
-                    // console.log(filteredConfBounds)
                     confBoundsList.push(filteredConfBounds);
-                    // console.log(confBoundsList)
                 }
-                // console.log(confBoundsList)
-                
             }
             this.setState({
                 seriesList: filteredSeriesList,
@@ -302,7 +295,6 @@ class MainContainer extends Component {
     updateGraphDimensions = () => {
         const graphW = this.graphEl.clientWidth - margin.yAxis;
         const graphH = this.graphEl.clientHeight;
-        // console.log('updating graph dimensions', graphW, graphH)
         this.setState({ graphW, graphH });
       }
 
@@ -316,8 +308,6 @@ class MainContainer extends Component {
         const dateIndex = dates.findIndex(
             date => formatDate(date) === formatDate(dateThreshold)
             );
-        // console.log('dateThreshold', dateThreshold)
-        // console.log('dateIndex', dateIndex)
         let simsOver = 0;
         Object.values(series).forEach((sim, simIdx) => {
             let simOver = false;
@@ -328,7 +318,6 @@ class MainContainer extends Component {
                     break;
                 }
             }
-            // console.log(`sim ${simIdx} is over is ${simOver}`)
             simOver ? sim.over = true : sim.over = false
         })
         return simsOver;
@@ -339,16 +328,12 @@ class MainContainer extends Component {
         // returns numSims 'over' threshold
         // first find index of dates at dateThreshold
         const dateIndex = dates.indexOf(dateThreshold);
-        // console.log('statThreshold', statThreshold)
-        // console.log('dateThreshold', dateThreshold)
-        // console.log('dateIndex', dateIndex)
 
         let simsOver = 0;
         Object.values(series).map(sim => {
             // calculate max once, use to find maxIndex
             const maxIdx = maxIndex(sim.vals)
             const dateAtMax = dates[maxIdx]
-            // console.log(sim.vals[dateIndex])
             // we need to keep track of whether simval at dateThreshold is over statThreshold
             // as well as whether the max is over statThreshold and occured in the past
             if (sim.vals[dateIndex] > statThreshold
@@ -392,7 +377,8 @@ class MainContainer extends Component {
             scenarioMap,
             severityList,
             countyBoundaries,
-            statsForCounty
+            statsForCounty,
+            r0: [0, 4]
         })
     }
     
@@ -400,13 +386,15 @@ class MainContainer extends Component {
 
     handleButtonClick = (i) => {
         const yAxisLabel = `Daily ${i.name}`;
-        this.setState({stat: i, yAxisLabel})
+        this.setState({
+            stat: i, 
+            yAxisLabel,
+            r0: [0, 4]
+        })
     };
 
     handleStatClickChart = (items) => {
         // items is Array of scenario names
-        console.log(items)
-
         let newChartStats = []
 
         for (let item of items) {
@@ -414,7 +402,6 @@ class MainContainer extends Component {
             newChartStats.push(chartStat)
         }
 
-        console.log('statListChart', newChartStats)
         this.setState({
             statListChart: newChartStats
         })
@@ -436,11 +423,11 @@ class MainContainer extends Component {
             newScenarios.push(scenario);
         }
 
-        console.log('scenarioList Graph', newScenarios)
         this.setState({
             scenarioList: newScenarios,
             scenarioClickCounter: scenarioClkCntr,
-            severityList: newSevs
+            severityList: newSevs, 
+            r0: [0, 4]
         })        
     };
 
@@ -450,14 +437,12 @@ class MainContainer extends Component {
             scenarioListChart.push(item)
         }
 
-        console.log('scenarioList Chart', scenarioListChart)
         this.setState({
             scenarioListChart
         })        
     }
 
     handleScenarioClickMap = (item) => {
-        // console.log('scenarioMap', item)
         this.setState({
             scenarioMap : item
         })        
@@ -470,7 +455,10 @@ class MainContainer extends Component {
                 return sev.key = i.key;
             }
         })
-        this.setState({severityList: newSevList});
+        this.setState({
+            severityList: newSevList, 
+            r0: [0, 4]
+        });
     };
 
     handleSeveritiesHover = (i) => {this.setState({scenarioHovered: i})};
@@ -560,28 +548,22 @@ class MainContainer extends Component {
         if (view === 'graph') {
             if (slider === 'stat') {
                 if (type === 'mousedown') {
-                    console.log('graph stat mousedown')
                     this.setState({ statSliderActive: true })
                 } else {
-                    console.log('graph stat mouseup')
                     this.setState({ statSliderActive: false })
                 }
             } else {
                 if (type === 'mousedown') {
-                    console.log('graph date mousedown')
                     this.setState({ dateSliderActive: true })
                 } else {
-                    console.log('graph date mouseup')
                     this.setState({ dateSliderActive: false })
                 }
             }
         } else {
             // map date slider
             if (type === 'mousedown') {
-                console.log('map date mousedown')
                 this.setState({ dateSliderActiveMap: true })
             } else {
-                console.log('map date mouseup')
                 this.setState({ dateSliderActiveMap: false })
             }
         } 
@@ -593,7 +575,6 @@ class MainContainer extends Component {
 
     render() {
         const { Content } = Layout;
-        console.log('data loaded', this.state.dataLoaded)
         return (
             <Layout>
 

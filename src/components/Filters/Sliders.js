@@ -59,9 +59,9 @@ class Sliders extends Component {
         return (
             <div className="slider-menu">
                 {/* Stat Threshold */}
-                <div className="param-header">INDICATOR THRESHOLD</div>
+                <div className="param-header">THRESHOLD</div>
                 <div className="filter-label">
-                    {stat.name}: <span className='callout'>{addCommas(roundedStat)}</span>
+                    Value:&nbsp; <span className='callout'>{addCommas(roundedStat)}</span>
                 </div>
                 <div className="slidecontainer">
                     <input
@@ -92,7 +92,7 @@ class Sliders extends Component {
                 {/* Date Threshold */}
                 <div className="param-header">DATE THRESHOLD</div>
                 <div className="filter-label">
-                    Date: <span className='callout'>{getDate(dateThreshold)}</span>
+                    Date:&nbsp; <span className='callout'>{getDate(dateThreshold)}</span>
                 </div>
                 <div className="slidecontainer">
                     <input

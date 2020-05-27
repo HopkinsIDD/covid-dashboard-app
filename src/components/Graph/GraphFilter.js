@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Legend from '../Graph/Legend';
 import Scenarios from '../Filters/Scenarios';
 import Indicators from '../Filters/Indicators';
 import Overlays from '../Filters/Overlays';
