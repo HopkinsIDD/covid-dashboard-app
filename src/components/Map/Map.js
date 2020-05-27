@@ -7,7 +7,7 @@ import { select } from 'd3-selection';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
 
-import { blue, gray } from '../../utils/constants';
+import { blue, gray, graphBkgd, lightgray } from '../../utils/constants';
 import { addCommas } from '../../utils/utils';
 
 
@@ -32,28 +32,47 @@ class Map extends Component {
         this.tooltipRef = React.createRef();
     }
     componentDidMount() {
-        const { stat, dateIdx, countyBoundaries, statsForCounty, scenario } = this.props;
+        this.calculateScales();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.countyBoundaries !== this.props.countyBoundaries ||
+            prevProps.statsForCounty !== this.props.statsForCounty ||
+            prevProps.scenario !== this.props.scenario) {
+                this.calculateScales();
+        }
+    }
+
+    calculateScales = () => {
+        const { stat, dateIdx, countyBoundaries, statsForCounty, scenario, geoid } = this.props;
         // console.log(stat);
         // console.log(dateIdx);
         // console.log(countyBoundaries);
+        // console.log(geoid);
         // console.log(statsForCounty);
+        // console.log(scenario);
         const normalizedStatsAll = []
         
         // iterate over this.props.countyBoundaries to plot up boundaries
-        // join each geoid to statsForCounty[geoid][stat][dateIdx]
+        // join each geoid to statsForCounty[geoid][scenario][stat][dateIdx]
         for (let i = 0; i < countyBoundaries.features.length; i++) {
             // console.log(countyBoundaries.features[i].properties)
             const geoid = countyBoundaries.features[i].properties.geoid;
             const population = countyBoundaries.features[i].properties.population;
-            // const geoid = countyBoundaries.features[i].properties.GEO_ID.slice(9)
             // console.log(geoid)
-            const statArray = statsForCounty[geoid][scenario][stat];
-            const normalizedStatArray = statArray.map( value => {
-                return (value / population) * 10000
-            })
-            normalizedStatsAll.push(normalizedStatArray)
-            countyBoundaries.features[i].properties[stat] = statArray
-            countyBoundaries.features[i].properties[`${stat}Norm`] = normalizedStatArray
+            // check to see if stats exist for this county
+            if (statsForCounty[geoid]) {
+                const statArray = statsForCounty[geoid][scenario][stat]
+                const normalizedStatArray = statArray.map( value => {
+                    return (value / population) * 10000
+                })
+                normalizedStatsAll.push(normalizedStatArray)
+                countyBoundaries.features[i].properties[stat] = statArray
+                countyBoundaries.features[i].properties[`${stat}Norm`] = normalizedStatArray
+            } else {
+                countyBoundaries.features[i].properties[stat] = []
+                countyBoundaries.features[i].properties[`${stat}Norm`] = []
+            }
         }
         // get max of all values in stat array for colorscale
         const maxVal = max(Object.values(statsForCounty).map( county => {
@@ -103,7 +122,7 @@ class Map extends Component {
                         style={{
                             stroke: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? this.props.highColor : gray,
                             strokeWidth: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? 2 : 1,
-                            fill: ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]),
+                            fill: d.properties[`${this.props.stat}Norm`].length > 0 ? ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]) : lightgray,
                             fillOpacity: 1,
                             cursor: 'pointer'
                         }}
@@ -120,9 +139,16 @@ class Map extends Component {
         event.preventDefault()
         // console.log('entered', feature.properties.name)
         // console.log(feature)
+        let statInfo = ''
+        if (feature.properties[this.props.stat].length > 0) {
+            statInfo = `${this.props.statLabel}: ${addCommas(feature.properties[this.props.stat][this.props.dateIdx])}`
+        } else {
+            statInfo = 'No Indicator Data'
+        }
         const text = `${feature.properties.name} County <br>
-                        Population: ${addCommas(feature.properties.population)} <br>
-                        ${this.props.statLabel}: ${addCommas(feature.properties[this.props.stat][this.props.dateIdx])}`
+                    Population: ${addCommas(feature.properties.population)} <br>
+                    ${statInfo}`
+
         const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
 
         this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true, tooltipText })

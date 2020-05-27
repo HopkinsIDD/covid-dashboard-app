@@ -38,7 +38,7 @@ class Graph extends Component {
     
     componentDidMount() {
         // console.log('ComponentDidMount', this.props.keyVal)
-        // console.log(this.state.series)
+        console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
         if (this.state.confBounds && this.state.confBounds.length > 0) this.drawConfBounds(this.state.confBounds, this.state.areaGenerator, this.state.dates);
     }
@@ -46,6 +46,7 @@ class Graph extends Component {
     componentDidUpdate(prevProps, prevState) {
         // console.log('ComponentDidUpdate', this.props.keyVal)
         // confidence bounds overlay
+        
         if (this.props.showConfBounds !== prevProps.showConfBounds && this.props.confBounds) {
             // console.log('showConfBounds is', this.props.showConfBounds)
             if (this.props.confBounds) {
@@ -67,12 +68,15 @@ class Graph extends Component {
         }
 
         if (this.props.series !== prevProps.series && !this.props.brushActive) {
-            // console.log('brushing is FALSE, series diff', this.props.keyVal)
+            console.log('brushing is FALSE, series diff', this.props.keyVal)
             const { series, dates, width } = this.props;
             const { lineGenerator, areaGenerator } = prevState;
             
+            if (this.props.r0 !== prevProps.r0) this.updateSimPaths(series, dates, lineGenerator, true, width);
+            
             this.updateSimPaths(series, dates, lineGenerator, false, width);
             if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
+            
             // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
         }
 
@@ -292,10 +296,12 @@ class Graph extends Component {
     }
 
     handleMouseMove = (event, index) => {
+        if (this.props.showConfBounds) return
         this.setState({ hoveredSimPathId: index })
     }
 
     handleMouseEnter = (event, index) => {
+        if (this.props.showConfBounds) return
         this.setState({ hoveredSimPathId: index })
     }
 
@@ -324,7 +330,7 @@ class Graph extends Component {
         if (s) {
             const hoveredIdx = this.props.series.findIndex( sim => sim.name === s.name)
             // console.log(hoveredIdx)
-            this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `sim: ${s.name}` })  
+            this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `R0: ${s.r0}` })  
         } 
     }
 
@@ -370,6 +376,7 @@ class Graph extends Component {
                                     key={`tooltip-sim-${i}`}
                                     title={this.state.tooltipText}
                                     visible={simIsHovered ? true : false}
+                                    // visible={true}
                                     // align={}
                                     data-html="true"
                                 >
@@ -456,6 +463,7 @@ class Graph extends Component {
                         this.props.showLegend &&
                         <Legend 
                             showConfBounds={this.props.showConfBounds}
+                            showHoveredSim={this.state.hoveredSimPathId}
                             x={this.props.width - margin.right - 160}
                             y={margin.top * 2.3}
                         />

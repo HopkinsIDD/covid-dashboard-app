@@ -21,7 +21,13 @@
     max-width: 1300px;
   } 
 } */
-
+html,body
+{
+  width: 100%;
+  height: 100%;
+  padding: 0px;
+  overflow-x: hidden; 
+}
 
 body {
   margin: 0;
@@ -152,6 +158,8 @@ a:hover {
   /* font-family: 'Roboto Mono', monospace; */
   /* font-family: 'Space Mono', monospace; */
   font-family: 'Cousine', monospace;
+  /* font-family: 'Fira Mono', monospace; */
+  /* font-family: 'Anonymous Pro', monospace; */
   padding-left: 0px;
 }
 
@@ -547,11 +555,13 @@ input[type=range]::-moz-focus-outer {
 
 .chart-legend-container {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .chart-legend-boxplot {
   width: 140px;
+  margin-left: 30px;
+  display: flex;
 }
 
 .chart-legend {

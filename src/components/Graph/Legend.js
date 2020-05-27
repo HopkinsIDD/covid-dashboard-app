@@ -1,8 +1,8 @@
 import React from 'react';
-import { green, red, graphBkgd } from '../../utils/constants';
+import { green, red, blue, gray, graphBkgd } from '../../utils/constants';
 
 function Legend(props) {
-    if (!props.showConfBounds) {
+    if (!props.showConfBounds && !props.showHoveredSim) {
         return (
             <g className="legend-container">
                 <g className="legend">
@@ -55,7 +55,7 @@ function Legend(props) {
                 </g>
             </g>
         )     
-    } else {
+    } else if (props.showConfBounds && !props.showHoveredSim) {
         return (
             <g className="legend-container">
                 <g className="legend">
@@ -129,6 +129,59 @@ function Legend(props) {
                 </g>
             </g>
         )
+    } else {
+        return (
+            <g className="legend-container">
+                <g className="legend">
+                    <rect
+                        x={props.x}
+                        y={props.y}
+                        width={165}
+                        height={50}
+                        fill={graphBkgd}
+                        fillOpacity={0.5}
+                    />
+                    <g className="legend-above" >
+                        <line
+                            x1={props.x}
+                            y1={props.y}
+                            x2={props.x + 20}
+                            y2={props.y}
+                            stroke={blue}
+                            strokeWidth="1"
+                        />
+                        <text
+                            x={props.x + 25}
+                            y={props.y + 4}
+                            opacity={0.65}
+                            className="titleNarrow"
+                        >
+                            highlighted simulation
+                        </text>
+                    </g>
+                </g>
+                <g className="legend">
+                    <g className="legend-below">
+                        <line
+                            x1={props.x}
+                            y1={props.y + 20}
+                            x2={props.x + 20}
+                            y2={props.y + 20}
+                            stroke={gray}
+                            strokeWidth="1"
+                        />
+                        <text
+                            x={props.x + 25}
+                            y={props.y + 20 + 4}
+                            opacity={0.65}
+                            className="titleNarrow"
+                        >
+                            other simulations
+                        </text>
+                    </g>
+                </g>
+            </g>
+        )     
     }
 }
 
