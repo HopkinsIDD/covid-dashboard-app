@@ -8,7 +8,7 @@ import { timeDay, timeYear } from 'd3-time'
 import { brushX } from 'd3-brush'
 import { event } from 'd3-selection'
 import { max, extent } from 'd3-array'
-import { margin, red, green, graphBkgd } from '../../utils/constants'
+import { margin, red, green } from '../../utils/constants'
 
 class Brush extends Component {
   constructor(props) {

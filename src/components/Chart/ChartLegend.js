@@ -1,5 +1,5 @@
 import React from 'react';
-import { green, red, gray } from '../../utils/constants';
+import { green, gray } from '../../utils/constants';
 
 function ChartLegend(props) {
    

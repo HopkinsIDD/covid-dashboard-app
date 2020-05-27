@@ -38,7 +38,7 @@ class Graph extends Component {
     
     componentDidMount() {
         // console.log('ComponentDidMount', this.props.keyVal)
-        console.log(this.state.series)
+        // console.log(this.state.series)
         this.drawSimPaths(this.state.series, this.state.dates);
         if (this.state.confBounds && this.state.confBounds.length > 0) this.drawConfBounds(this.state.confBounds, this.state.areaGenerator, this.state.dates);
     }

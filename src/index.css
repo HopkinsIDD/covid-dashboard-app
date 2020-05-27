@@ -68,7 +68,7 @@ h1, h2, h3, h4 {
 
 .filter-description {
   font-size: 13px;
-  max-width: 80%;
+  max-width: 95%;
   padding-top: 2%;
 }
 
@@ -150,6 +150,7 @@ a:hover {
 .title-active {
   font-weight: bold;
   background-color: #e9ecef;
+  border: 1px dashed #4ddaba;
   margin-left: 10%;
   margin-right: 10%;
 }
@@ -286,6 +287,7 @@ ul {
 }
 
 .slidecontainer {
+  width: 85%;
   max-width: 260px;
 }
 

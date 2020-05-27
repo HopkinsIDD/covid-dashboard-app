@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import Chart from '../Chart/Chart';
 import SummaryLabel from '../Chart/SummaryLabel';
 import ChartLegend from '../Chart/ChartLegend';
@@ -39,8 +39,6 @@ class ChartContainer extends Component {
 
     drawSummaryStatCharts = () => {
         const { children } = this.state;
-        const { summaryStart, summaryEnd } = this.props;
-
         const parameters = this.props.stats.map( stat => stat.key )
         const parameterLabels = this.props.stats.map( stat => stat.name )
             
@@ -75,7 +73,6 @@ class ChartContainer extends Component {
                 children[param] = child;
             // }
         } 
-        console.log(children)
         this.setState({
             children,
             parameters,
@@ -84,8 +81,6 @@ class ChartContainer extends Component {
     }
 
     handleCalloutInfo = (statLabel, median, tenth, ninetyith) => {
-        // console.log('handleCalloutEnter rectIsHovered');
-        // console.log(statLabel, median, tenth, ninetyith)
         this.setState({ statLabel, median, tenth, ninetyith, rectIsHovered: true });
     }
 
@@ -94,7 +89,6 @@ class ChartContainer extends Component {
     }
 
     handleScenarioHighlight = (scenarioIdx) => {
-        // console.log(scenarioIdx)
         if (scenarioIdx !== null) {
             this.setState({ hoveredScenarioIdx: scenarioIdx })
         } else {
@@ -105,12 +99,9 @@ class ChartContainer extends Component {
 
     render() {
         // const scenarios = Object.keys(this.props.dataset);
-        // console.log(scenarios)
-        // console.log('props', this.props.scenarios)
-        // console.log('statListChart', this.props.stats)
-        // console.log('children', this.state.children)
+        // const parameters = this.props.stats.map( s => s.key )
         // if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
-        const parameters = this.props.stats.map( s => s.key )
+        // const parameters = this.props.stats.map( s => s.key )
         return (
             <div>
                 <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]}`}</div>

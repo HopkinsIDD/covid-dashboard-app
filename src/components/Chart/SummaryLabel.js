@@ -1,11 +1,7 @@
 import React, { Fragment } from 'react';
-import { addCommas, getReadableDate } from '../../utils/utils.js';
+import { addCommas } from '../../utils/utils.js';
 
 function SummaryLabel(props) {
-    // console.log(props)
-    const startDate = getReadableDate(props.summaryStart);
-    const endDate = getReadableDate(props.summaryEnd);
-
     return (
         <Fragment>
           <div className={props.classProps}>

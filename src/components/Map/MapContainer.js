@@ -37,7 +37,6 @@ class MapContainer extends Component {
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
                     statsForCounty={this.props.statsForCounty}
-                    scenario={this.props.scenario}
                     width={this.props.width / 2}
                     height={this.props.height}
                     lowColor={mapLowColors[index]}
@@ -78,7 +77,6 @@ class MapContainer extends Component {
                         dateIdx={dateIdx}
                         countyBoundaries={this.props.countyBoundaries}
                         statsForCounty={this.props.statsForCounty}
-                        scenario={this.props.scenario}
                         width={this.props.width / 2}
                         height={this.props.height}
                         lowColor={mapLowColors[index]}
