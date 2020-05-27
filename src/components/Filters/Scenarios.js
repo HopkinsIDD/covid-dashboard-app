@@ -39,11 +39,10 @@ class Scenarios extends Component {
     componentDidUpdate(prevProp) {
 
         if (this.props.view === 'graph') {
-            
             if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
                 prevProp.scenarioList !== this.props.scenarioList ||
                 prevProp.scenario !== this.props.scenario) {
-    
+                    console.log('graph scenario change')
                 const { scenarioList } = this.props;
     
                 const keys = Object.values(scenarioList).map(scen => scen.key);
@@ -132,8 +131,11 @@ class Scenarios extends Component {
     render() {
         let defaultScenario;
         let style;
+        let graphTags;
         if (this.props.view === 'graph') {
             defaultScenario = [this.props.scenarioList[0].key];
+            graphTags = this.props.scenarioList.map( s => s.key)
+            console.log('scenarioList', this.props.scenarioList)
         } else if (this.props.view === 'chart') {
             defaultScenario = this.props.SCENARIOS.map(s => s.name);
             style = { width: '80%' };
@@ -142,6 +144,7 @@ class Scenarios extends Component {
             style = { width: '70%' };
 
         }
+        
         // console.log(this.props.view, defaultScenario)
         return (
             <div>
@@ -150,6 +153,7 @@ class Scenarios extends Component {
                     mode={this.props.view === 'map' ? "" : "multiple"}
                     style={style}
                     defaultValue={defaultScenario}
+                    value={this.props.view === 'graph' && graphTags}
                     maxTagTextLength={12}
                     onChange={this.handleChange}>
                     {this.state.children.map(child => child.checkbox)}
