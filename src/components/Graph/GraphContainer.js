@@ -190,15 +190,15 @@ class GraphContainer extends Component {
                     const isActive = scenario.name === scenarioHovered ? ' title-active' : '';
                     return (this.props.scenarioList && scenarioList.length > 1) ? 
                             <div key={scenario.key} style={{ width: this.props.width - margin.right}}>
-                                <p className={"scenario-title titleNarrow" + isActive}>
-                                    {scenarioTitle}
-                                </p>
+                                <div className={"scenario-title titleNarrow" + isActive}>
+                                    <span className="">{scenarioTitle}</span>
+                                </div>
                             </div>
                          :
                             <div key={scenario.key} style={{ width: this.props.width - margin.right}}>
-                                <p className="scenario-title titleNarrow">
-                                    {scenarioTitle}
-                                </p>
+                                <div className="scenario-title titleNarrow">
+                                    <span className="">{scenarioTitle}</span>
+                                </div>
                             </div>
                 } )}
             </div>

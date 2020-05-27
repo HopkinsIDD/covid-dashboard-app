@@ -258,6 +258,16 @@ ul {
   font-weight: bold;
 }
 
+.underline {
+  border-bottom: 2px #4ddaba dotted;
+}
+
+.underline-active {
+  font-weight: bold;
+  color: #4ddaba;
+  border-bottom: 2px #4ddaba dotted;
+}
+
 /* .dynamic-label {
   font-weight: bold;
   padding-left: 3px;

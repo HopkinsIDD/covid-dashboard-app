@@ -9,11 +9,11 @@ function ThresholdLabel(props) {
     if (props.r0.includes(0) && props.r0.includes(4)) {
         return (
             <p className={props.classProps}>
-                <span className={props.statSliderActive || props.dateSliderActive ? 'customLink' : 'bold'}>{chance}%</span>
+                <span className={props.statSliderActive || props.dateSliderActive ? 'underline-active' : 'bold underline'}>{chance}%</span>
                 &nbsp;{`chance daily ${props.label} exceed`}&nbsp;
-                <span className={props.statSliderActive ? 'customLink' : 'bold'}>{val}</span>
+                <span className={props.statSliderActive ? 'underline-active' : 'bold underline'}>{val}</span>
                 &nbsp;by&nbsp;
-                <span className={props.dateSliderActive ? 'customLink' : 'bold'}>{date}</span>
+                <span className={props.dateSliderActive ? 'underline-active' : 'bold underline'}>{date}</span>
             </p>
         )
     } else {

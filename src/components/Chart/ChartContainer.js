@@ -99,15 +99,16 @@ class ChartContainer extends Component {
 
     render() {
         // const scenarios = Object.keys(this.props.dataset);
+        // const parameters = this.props.stats.map( s => s.key )
         // if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
         // const parameters = this.props.stats.map( s => s.key )
         return (
             <div>
                 <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]}`}</div>
                 <div className="filter-label threshold-label callout callout-row">
-                    <span className={this.props.datePickerActive ? 'customLink' : 'bold'}>
+                    <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
                         {getReadableDate(this.props.summaryStart)}</span>&nbsp;to&nbsp;
-                    <span className={this.props.datePickerActive ? 'customLink' : 'bold'}>
+                    <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
                         {getReadableDate(this.props.summaryEnd)}</span>
                 </div>
                 <div className="chart-callout" style={{ display: 'block !important'}}>
