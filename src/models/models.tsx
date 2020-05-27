@@ -7,3 +7,15 @@ interface Scenario {
     checked: Boolean,
     disabled: Boolean,
 }
+
+interface Stat {
+    id: Number,
+    key: String,
+    name: String
+}
+
+interface Severity {
+    id: Number,
+    key: String,
+    name: String
+}

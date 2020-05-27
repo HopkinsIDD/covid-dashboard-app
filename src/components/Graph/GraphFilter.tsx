@@ -15,10 +15,22 @@ interface Props {
     onHandleR0Change: (any) => void; //FIXME any should be typed
     onStatSliderChange: (any) => void; //FIXME any should be typed
     onDateSliderChange: (any) => void; //FIXME any should be typed
+    onSliderMouseEvent: () => void;
     onConfClick: () => void;
     onSeveritiesHoverLeave: () => void;
     SCENARIOS: Array<Scenario>;
+    scenarioList: Array<Scenario>;
     scenario: Scenario;
+    stat: Stat;
+    statThreshold: Stat;
+    severityList: Array<Severity>;
+    dateThresholdIdx: Date;
+    dateRange: Array<Date>;
+    dates: Array<Date>
+    firstDate: Date;
+    lastDate: Date;
+    dateThreshold: Date;
+
 }
 
 class GraphFilter extends Component<Props> {
