@@ -48,9 +48,9 @@ class Map extends Component {
         // console.log(stat);
         // console.log(dateIdx);
         // console.log(countyBoundaries);
-        console.log(geoid);
-        console.log(statsForCounty);
-        console.log(scenario);
+        // console.log(geoid);
+        // console.log(statsForCounty);
+        // console.log(scenario);
         const normalizedStatsAll = []
         
         // iterate over this.props.countyBoundaries to plot up boundaries
