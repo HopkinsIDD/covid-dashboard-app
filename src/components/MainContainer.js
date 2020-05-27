@@ -100,7 +100,7 @@ class MainContainer extends Component {
         const scenarioListChart = SCENARIOS.map(s => s.name);
 
         // add default stats to chart
-        const statListChart = STATS.slice(0,3)
+        const statListChart = STATS.slice(0,2)
 
         // instantiate initial series and dates
         const { severity, stat } = this.state;

@@ -3,8 +3,9 @@ import { min, max, quantile } from 'd3-array';
 import { scaleLinear, scaleBand, scalePow } from 'd3-scale';
 import { select } from 'd3-selection';
 import { easeCubicOut } from 'd3-ease'
+import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
-import { getDateIdx, addCommas } from '../../utils/utils';
+import { getDateIdx, addCommas, capitalize } from '../../utils/utils';
 import { margin, chartBkgd, gray, blue, scenarioColors } from '../../utils/constants'
 
 class Chart extends Component {
@@ -19,13 +20,6 @@ class Chart extends Component {
                 'index': 0
             },
             rectIsHovered: false,
-            // tooltipText: '',
-            severityMap: {
-                'high': '1% IFR, 10% hospitalization rate',
-                'med': '0.5% IFR, 5% hospitalization rate',
-                'low': '0.25% IFR, 2.5% hospitalization rate'
-            }
-            // quantileObj: {}
         }
         this.tooltipRef = React.createRef();
         this.chartRef = React.createRef();
@@ -114,7 +108,7 @@ class Chart extends Component {
            yScale = scalePow().exponent(0.25).range([height - margin.bottom, margin.chartTop]).domain([0, globalMaxVal])
         }
         // const yScale = scaleLog().range([height - margin.bottom, margin.top]).domain([1, globalMaxVal]) //
-        const xScale = scaleBand().range([0, (width / severities.length) - margin.left]).domain(scenarios)//.paddingInner(1).paddingOuter(.5);
+        const xScale = scaleBand().range([margin.left, width]).domain(scenarios)//.paddingInner(1).paddingOuter(.5);
         const scaleDomains = true
         return { quantileObj, xScale, yScale, scaleDomains}
         // this.setState({ quantileObj, xScale, yScale, scaleDomains: true })
@@ -149,7 +143,6 @@ class Chart extends Component {
 
     handleHighlightEnter = (event, severity, key, index) => {
         if (!this.state.rectIsHovered) {
-            console.log('handleHighlightEnter', this.state.rectIsHovered)
             event.stopPropagation();
             // console.log(severity, key, index)
             const hoveredRect = {
@@ -157,30 +150,24 @@ class Chart extends Component {
                 'scenario': key,
                 'index': index
             }
-            const { severities, quantileObj }  = this.state;
-            const { stat, statLabel, width } = this.props;
+            const { quantileObj }  = this.state;
+            const { stat, statLabel, scenarios } = this.props;
             // const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
             const median = quantileObj[stat][severity][key]['median']
             const tenth = quantileObj[stat][severity][key]['tenth']
             const ninetyith = quantileObj[stat][severity][key]['ninetyith']
+            // console.log(median, this.state.yScale(median), this.state.yScale(median) / (this.props.height - margin.bottom))
             // console.log(quantileObj[stat][severity][key])
+         
+            const text =    `${scenarios[index].replace('_', ' ')}<br>` +
+                            `${capitalize(severity)} Severity<br>` +
+                            `p90: ${addCommas(Math.ceil(ninetyith))}<br>` +
+                            `median: ${addCommas(Math.ceil(median))}<br>` +
+                            `p10: ${addCommas(Math.ceil(tenth))}<br>`
+    
+            const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
 
-            const tooltipText = `<b>50%</b> chance of <b>${addCommas(Math.ceil(median))}</b> ${statLabel}<br><br> ` +
-                                // `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b> <br><br>` +
-                                `<b>90%</b> chance of <b>${addCommas(Math.ceil(tenth))} to ${addCommas(Math.ceil(ninetyith))}</b> ${statLabel} `
-                                // `from <b>${formatDate(summaryStart)}</b> to <b>${formatDate(summaryEnd)}</b>`
-            // console.log(tooltipText)
-            const tooltip = this.tooltipRef.current;
-            tooltip.innerHTML = tooltipText
-            // (i * (width / severities.length) - margin.left - margin.right) + this.state.xScale(key)
-            if (severity === 'high') {
-                tooltip.style.marginLeft = `${(1 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
-            } else if (severity === 'med') {
-                tooltip.style.marginLeft = `${(2 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
-            } else {
-                tooltip.style.marginLeft = `${(3 * (width  - margin.left - margin.right) / severities.length) + this.state.xScale(key) - 300}px`
-            }
-            this.setState({ hoveredRect, rectIsHovered: true })
+            this.setState({ hoveredRect, rectIsHovered: true, tooltipText })
             this.props.handleCalloutInfo( statLabel, median, tenth, ninetyith, true );
             this.props.handleScenarioHover( index );
         }
@@ -199,93 +186,111 @@ class Chart extends Component {
 
     drawSummaryStats = () => {
         const barWidth = ((this.props.width / this.state.severities.length) / this.props.scenarios.length) - margin.left - margin.right;
-        // console.log('barWidth', barWidth)
+        const barMargin = 10;
         const whiskerMargin = barWidth * 0.2;
-        // console.log('rectWidth', rectWidth)
+        const rectWidth = this.props.width - margin.left
         return (
-            this.state.severities.map( (severity, i) => {
+            <Fragment key={`chart-fragment`}>
+            <rect
+                key={`chart-bkgd-rect`}
+                width={rectWidth}
+                height={this.props.height - margin.chartTop - margin.bottom + 2}
+                x={margin.left}
+                y={margin.chartTop}
+                fill={chartBkgd}
+            >
+            </rect>
+            {this.state.severities.map( (severity, i) => {
             return (
-                <Fragment key={`chart-fragment-${severity}`}>
-                <rect
-                    key={`chart-rect-${severity}`}
-                    width={(this.props.width / this.state.severities.length) - margin.left}
-                    height={this.props.height - margin.chartTop - margin.bottom + 2}
-                    x={margin.left + (i * (this.props.width / this.state.severities.length))}
-                    y={margin.chartTop}
-                    fill={chartBkgd}
-                >
-                </rect>
-                <text
-                    key={`bar-label-${severity}`}
-                    x={(i * (this.props.width / this.state.severities.length)) + (this.props.width / this.state.severities.length * 0.5)}
-                    y={margin.top}
-                    textAnchor={'middle'}
-                    opacity={0.65}
-                    // className='titleNarrow'
-                    style={{'fontSize': '0.8rem'}}
-                >
-                    {this.state.severityMap[severity]}
-                </text>
-                <g key={`chart-group-${severity}`}>
-                    { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
-                        // console.log(severity, 'barPos', key, this.state.xScale(key))
-                    return (
-                        <Fragment key={`chart-fragment-${severity}-${key}`}>
-                            <rect 
-                                d={value}
-                                key={`bar-${severity}-${key}`}
-                                className={'bars'}
-                                width={barWidth}
-                                height={this.state.yScale(0) - this.state.yScale(value.median)}
-                                x={(margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key)}
-                                y={this.state.yScale(value.median)}
-                                fill={scenarioColors[j]}
-                                stroke={this.state.hoveredRect.severity === severity &&
-                                    this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
-                                strokeWidth={4}
-                                style={{ cursor: 'pointer'}}
-                                onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
-                                onMouseLeave={this.handleHighlightLeave}
-                            >
-                            </rect>
-                            <line
-                                key={`vertline-${severity}-${key}`}
-                                x1={(barWidth/2 + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
-                                y1={this.state.yScale(value.ninetyith)}
-                                x2={(barWidth/2 + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
-                                y2={this.state.yScale(value.tenth)}
-                                stroke={gray}
-                                strokeWidth={1}
-                            >
-                            </line>
-                            <line
-                                key={`topline-${severity}-${key}`}
-                                x1={(whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
-                                y1={this.state.yScale(value.ninetyith)}
-                                x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
-                                y2={this.state.yScale(value.ninetyith)}
-                                stroke={gray}
-                                strokeWidth={1}
-                            >
-                            </line>
-                            <line
-                                key={`bottomline-${severity}-${key}`}
-                                x1={(whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
-                                y1={this.state.yScale(value.tenth)}
-                                x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + this.state.xScale(key))}
-                                y2={this.state.yScale(value.tenth)}
-                                stroke={gray}
-                                strokeWidth={1}
-                            >
-                            </line>
-                        </Fragment>
-                    )
-                })
-                }
-                </g>
-                </Fragment>
-            )
-        }))
+                    <g key={`chart-group-${severity}`}>
+                        { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
+                            // console.log(severity, 'barPos', key, this.state.xScale(key))
+                            // console.log(this.props.stat, i, j, severity, this.state.yScale(value.median))
+                        return (
+                                <Fragment key={`chart-fragment-${severity}-${key}`}>
+                                    <rect 
+                                        d={value}
+                                        key={`bar-${severity}-${key}`}
+                                        className={'bars'}
+                                        width={barWidth}
+                                        height={this.state.yScale(0) - this.state.yScale(value.median)}
+                                        x={(margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key)}
+                                        y={this.state.yScale(value.median)}
+                                        fill={scenarioColors[j]}
+                                        stroke={this.state.hoveredRect.severity === severity &&
+                                            this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
+                                        strokeWidth={4}
+                                        onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
+                                        onMouseLeave={this.handleHighlightLeave}
+                                    >
+                                    </rect>
+                                    <line
+                                        key={`vertline-${severity}-${key}`}
+                                        x1={(barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y1={this.state.yScale(value.ninetyith)}
+                                        x2={(barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y2={this.state.yScale(value.tenth)}
+                                        stroke={gray}
+                                        strokeWidth={1}
+                                    >
+                                    </line>
+                                    <line
+                                        key={`topline-${severity}-${key}`}
+                                        x1={(whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y1={this.state.yScale(value.ninetyith)}
+                                        x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y2={this.state.yScale(value.ninetyith)}
+                                        stroke={gray}
+                                        strokeWidth={1}
+                                    >
+                                    </line>
+                                    <line
+                                        key={`bottomline-${severity}-${key}`}
+                                        x1={(whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y1={this.state.yScale(value.tenth)}
+                                        x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y2={this.state.yScale(value.tenth)}
+                                        stroke={gray}
+                                        strokeWidth={1}
+                                    >
+                                    </line>
+                                    {/* debug red rect highlight */}
+                                    <Tooltip
+                                        key={`tooltip-chart-${i}-${j}`}
+                                        title={this.state.tooltipText}
+                                        visible={this.state.hoveredRect.severity === severity &&
+                                                this.state.hoveredRect.scenario === key ? true : false}
+                                        data-html="true"
+                                    >
+                                        <rect
+                                            d={value}
+                                            key={`bar-${severity}-${key}-hover`}
+                                            className={'bars-hover'}
+                                            width={barWidth}
+                                            // height={this.state.yScale(0) - this.state.yScale(value.median)}
+                                            height={this.state.yScale(value.median) / (this.props.height - margin.bottom) > 0.9 ? 20 : this.state.yScale(0) - this.state.yScale(value.median)}
+                                            x={(margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key)}
+                                            y={ this.state.yScale(value.median) / (this.props.height - margin.bottom) > 0.9 ? this.props.height - margin.bottom - 20 : this.state.yScale(value.median)}
+                                            fill={'red'}
+                                            fillOpacity={0}
+                                            stroke={'red'}
+                                            strokeOpacity={0}
+                                            strokeWidth={4}
+                                            style={{ cursor: 'pointer'}}
+                                            onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
+                                            onMouseLeave={this.handleHighlightLeave}
+                                        >
+                                        </rect>
+                                    </Tooltip>
+                                </Fragment>
+                        )
+                    })
+                    }
+                    </g>
+                )
+            })}
+            </Fragment>
+        )
     }
 
     updateSummaryStats = () => {
@@ -297,27 +302,36 @@ class Chart extends Component {
         // console.log(this.props.width, this.props.height)
         return (
             <div >
-                <div className="y-axis-label chart-yLabel titleNarrow">
+                {/* <div className="y-axis-label chart-yLabel titleNarrow">
                   {this.props.statLabel}
-                  </div>
-                  <div className="tooltip">
-                    <span className="tooltip-text" ref={this.tooltipRef} style={this.state.rectIsHovered ? { visibility: 'hidden', width: '135px', position: 'absolute', padding: '10px', zIndex: 10 } : { visibility: 'hidden' }}></span>
-                  </div>
+                  </div> */}
                   {this.state.scaleDomains &&
                     <Fragment>
                         <svg 
                             width={margin.yAxis}
                             height={this.props.height} 
                         >
-                        <Axis 
-                            width={this.props.width}
-                            height={this.props.height - margin.chartTop - margin.bottom}
-                            orientation={'left'}
-                            scale={this.state.yScale}
-                            x={margin.yAxis}
-                            y={0}
-                            tickNum={4}
-                        />
+                            <text
+                                transform="rotate(-90)"
+                                y={0}
+                                x={0-(this.props.height / 2) - (this.props.statLabel.length * 2)}
+                                dy="1em"
+                                opacity={0.65}
+                                textAchor="middle"
+                                style={{ fontSize: '1rem'}}
+                                className="titleNarrow"
+                            >
+                                {this.props.statLabel}
+                            </text>
+                            <Axis 
+                                width={this.props.width}
+                                height={this.props.height - margin.chartTop - margin.bottom}
+                                orientation={'left'}
+                                scale={this.state.yScale}
+                                x={margin.yAxis}
+                                y={0}
+                                tickNum={4}
+                            />
                         </svg>
                         <svg 
                         width={this.props.width}
