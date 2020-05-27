@@ -13,7 +13,6 @@ class IndicatorSelection extends Component {
     componentDidMount() {
         const children = [];
         const statsForChart = Array.from(this.props.STATS);
-        console.log(statsForChart)
         const { Option } = Select;
 
         const keys = Object.values(this.props.statListChart).map(stat => stat.key);
@@ -71,7 +70,6 @@ class IndicatorSelection extends Component {
             statsForChart.map(stat => {return stat.disabled = false})
           }
 
-          console.log(statsForChart)
 
           const children = [];
           const { Option } = Select;

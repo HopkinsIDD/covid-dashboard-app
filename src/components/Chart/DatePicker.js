@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { DatePicker } from 'antd';
-import moment from 'moment';
 
 class Chart extends Component {
     handleChange = (dates) => {
@@ -34,7 +33,6 @@ class Chart extends Component {
     }
     
     render() {
-        const dateFormat = 'MM-DD-YYYY';
         const { RangePicker } = DatePicker;
         // defautValue for DatePicker might be buggy.
         // these values console out with the right defaults here

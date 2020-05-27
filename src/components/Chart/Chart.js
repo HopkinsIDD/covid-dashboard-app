@@ -1,12 +1,11 @@
 import React, { Component, Fragment } from 'react'; 
 import { min, max, quantile } from 'd3-array';
-import { scaleLinear, scaleBand, scaleLog, scalePow } from 'd3-scale';
+import { scaleLinear, scaleBand, scalePow } from 'd3-scale';
 import { select } from 'd3-selection';
 import { easeCubicOut } from 'd3-ease'
-import { timeFormat } from 'd3-time-format';
 import Axis from '../Graph/Axis';
 import { getDateIdx, addCommas } from '../../utils/utils';
-import { margin, chartBkgd, green, gray, blue, scenarioColors } from '../../utils/constants'
+import { margin, chartBkgd, gray, blue, scenarioColors } from '../../utils/constants'
 
 class Chart extends Component {
     constructor(props) {
@@ -126,15 +125,11 @@ class Chart extends Component {
         if (this.chartRef.current) {
             console.log('ref check, update Summary stats')
             const barWidth = ((this.props.width / this.state.severities.length) / this.props.scenarios.length) - margin.left - margin.right;
-            // console.log('barWidth', barWidth)
-            const whiskerMargin = barWidth * 0.2;
-            // console.log('whiskerMargin', whiskerMargin)
-            const rectWidth = (this.props.width / this.state.severities.length) - margin.left
 
             // update paths with new data
             const barNodes = select(this.chartRef.current)
             this.props.severities.map( (severity, i) => {
-                Object.entries(quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
+                Object.entries(quantileObj[this.props.stat][severity]).map( ([key, value]) => {
                     barNodes.selectAll('.bars')
                         .transition()
                         .duration(500)
@@ -163,7 +158,7 @@ class Chart extends Component {
                 'index': index
             }
             const { severities, quantileObj }  = this.state;
-            const { stat, statLabel, summaryStart, summaryEnd, width } = this.props;
+            const { stat, statLabel, width } = this.props;
             // const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
             const median = quantileObj[stat][severity][key]['median']
             const tenth = quantileObj[stat][severity][key]['tenth']
@@ -206,8 +201,6 @@ class Chart extends Component {
         const barWidth = ((this.props.width / this.state.severities.length) / this.props.scenarios.length) - margin.left - margin.right;
         // console.log('barWidth', barWidth)
         const whiskerMargin = barWidth * 0.2;
-        // console.log('whiskerMargin', whiskerMargin)
-        const rectWidth = (this.props.width / this.state.severities.length) - margin.left
         // console.log('rectWidth', rectWidth)
         return (
             this.state.severities.map( (severity, i) => {
@@ -297,7 +290,6 @@ class Chart extends Component {
 
     updateSummaryStats = () => {
         if(this.chartRef.current) {
-            const chartNode = select(this.chartRef.current);
         }
     }
 

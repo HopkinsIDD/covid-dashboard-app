@@ -13,10 +13,9 @@ class Scenarios extends Component {
     componentDidMount() {
         const children = [];
         const scenariosGraph = Array.from(this.props.SCENARIOS);
-        console.log(scenariosGraph)
+        // console.log(scenariosGraph)
         const { Option } = Select;
 
-        const { view } = this.props;
 
         for (let scenario of scenariosGraph) {
             // console.log(`${view}-${scenario.key}`)
@@ -47,7 +46,7 @@ class Scenarios extends Component {
                 prevProp.scenarioList !== this.props.scenarioList ||
                 prevProp.scenario !== this.props.scenario) {
                 // console.log('graph scenario change')
-                const { scenarioList, view } = this.props;
+                const { scenarioList } = this.props;
     
                 const keys = Object.values(scenarioList).map(scen => scen.key);
                 const scenariosGraph = Array.from(this.props.SCENARIOS);
@@ -97,8 +96,6 @@ class Scenarios extends Component {
                 const scenariosChart = Array.from(this.props.SCENARIOS);
                 const { Option } = Select;
 
-                const { view } = this.props;
-        
                 for (let scenario of scenariosChart) {
                     const child = {
                         key: scenario.key,
