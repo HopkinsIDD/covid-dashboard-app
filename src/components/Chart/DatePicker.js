@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { DatePicker } from 'antd';
+import moment from 'moment';
 
 class Chart extends Component {
     handleChange = (dates) => {
@@ -33,11 +34,18 @@ class Chart extends Component {
     }
     
     render() {
+        const dateFormat = 'MM-DD-YYYY';
         const { RangePicker } = DatePicker;
+        // defautValue for DatePicker might be buggy.
+        // these values console out with the right defaults here
+        // but both render as the value for summaryEnd in the DatePicker
+        // console.log(moment(this.props.summaryStart, dateFormat))
+        // console.log(moment(this.props.summaryEnd, dateFormat))
         return (
             <div>
                 <div className="param-header">DATE RANGE</div>
                 <RangePicker
+                    // defaultValue={[moment(this.props.summaryStart, dateFormat), moment(this.props.summaryEnd, dateFormat)]}
                     disabledDate={this.disabledDate} 
                     onChange={this.handleChange}
                     onOpenChange={this.handleOpen}
