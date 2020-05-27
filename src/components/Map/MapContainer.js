@@ -56,6 +56,7 @@ class MapContainer extends Component {
         if (this.props.geoid !== prevProps.geoid 
             || this.props.selectedDate !== prevProps.selectedDate
             || this.props.countyBoundaries !== prevProps.countyBoundaries
+            || this.props.scenario !== prevProps.scenario
             || this.props.width !== prevProps.width 
             || this.props.height !== prevProps.height) {
 
@@ -99,7 +100,7 @@ class MapContainer extends Component {
         // const scenario = scenarioList.length > 0 ? scenarioList[0] : scenarioList
         return (
             <div>
-                <div className="scenario-title titleNarrow">{COUNTYNAMES[this.props.geoid]}</div>
+                <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]} - ${this.props.scenario.replace('_', ' ')}`}</div>
                 <div className="filter-label threshold-label callout callout-row">{`Date of State-wide Summary: `}<span className={this.props.dateSliderActive ? 'customLink' : 'bold'}>{getReadableDate(this.props.selectedDate)}</span></div>
                 <div className="map-wrapper">
                     {this.state.children.map(child => {

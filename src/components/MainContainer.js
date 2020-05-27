@@ -788,7 +788,8 @@ class MainContainer extends Component {
                             <Fragment>
                                 <Scenarios
                                     view="map"
-                                    SCENARIOS={this.state.SCENARIOS}
+                                    // temporary fix for different scenario array lengths between dataset and map
+                                    SCENARIOS={this.state.SCENARIOS.length > 3 ? this.state.SCENARIOS.slice(0, 3) : this.state.SCENARIOS}
                                     scenario={this.state.scenarioMap}
                                     onScenarioClickMap={this.handleScenarioClickMap}
                                 />
