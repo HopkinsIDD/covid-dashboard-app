@@ -42,7 +42,6 @@ function returnNYTcountyID() {
     // given a geoid, need to find nyt equivalent "id"
     // returns NYT-specific ID given a Tuple of county and state
 
-    console.log(counties)
     let id;
 
     return id;
@@ -75,6 +74,7 @@ function getActualData(geoid) {
     });
 }
 
+countiesByGeoid()
+returnNYTcountyID()
+getActualData()
 createNYTmapping()
-// locateCounty()
-// getActualData()
