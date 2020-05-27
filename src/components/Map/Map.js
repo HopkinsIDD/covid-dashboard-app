@@ -7,7 +7,7 @@ import { select } from 'd3-selection';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
 
-import { blue, gray, graphBkgd, lightgray } from '../../utils/constants';
+import { gray, lightgray } from '../../utils/constants';
 import { addCommas } from '../../utils/utils';
 
 
@@ -44,7 +44,7 @@ class Map extends Component {
     }
 
     calculateScales = () => {
-        const { stat, dateIdx, countyBoundaries, statsForCounty, scenario, geoid } = this.props;
+        const { stat, countyBoundaries, statsForCounty, scenario } = this.props;
         // console.log(stat);
         // console.log(dateIdx);
         // console.log(countyBoundaries);
@@ -76,6 +76,7 @@ class Map extends Component {
         }
         // get max of all values in stat array for colorscale
         const maxVal = max(Object.values(statsForCounty).map( county => {
+            // return max(county[stat])
             return max(county[scenario][stat])
         }))
         const minVal = maxVal * 0.3333;
@@ -154,7 +155,7 @@ class Map extends Component {
         this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true, tooltipText })
     }
 
-    handleCountyLeave = (feature) => {
+    handleCountyLeave = () => {
         // console.log('left', feature.properties.name)
         this.setState({ hoveredCounty: null, countyIsHovered: false })
     }
