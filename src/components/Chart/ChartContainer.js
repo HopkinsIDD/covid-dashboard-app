@@ -94,7 +94,7 @@ class ChartContainer extends Component {
     }
 
     handleScenarioHighlight = (scenarioIdx) => {
-        console.log(scenarioIdx)
+        // console.log(scenarioIdx)
         if (scenarioIdx !== null) {
             this.setState({ hoveredScenarioIdx: scenarioIdx })
         } else {
