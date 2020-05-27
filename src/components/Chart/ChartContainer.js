@@ -109,7 +109,7 @@ class ChartContainer extends Component {
         // console.log('props', this.props.scenarios)
         // console.log('statListChart', this.props.stats)
         // console.log('children', this.state.children)
-        if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
+        // if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
         const parameters = this.props.stats.map( s => s.key )
         return (
             <div>
