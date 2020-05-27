@@ -12,9 +12,7 @@ interface State {
 }
 
 class Indicators extends Component<Props, State> {
-    state: State = {
-        children: []
-    }
+    
     constructor(props) {
         super(props);
         this.state = {
