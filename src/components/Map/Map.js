@@ -32,6 +32,17 @@ class Map extends Component {
         this.tooltipRef = React.createRef();
     }
     componentDidMount() {
+        this.calculateScales();
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevProps.countyBoundaries !== this.props.countyBoundaries ||
+            prevProps.statsForCounty !== this.props.statsForCounty) {
+                this.calculateScales();
+        }
+    }
+
+    calculateScales = () => {
         const { stat, dateIdx, countyBoundaries, statsForCounty, scenario } = this.props;
         // console.log(stat);
         // console.log(dateIdx);
