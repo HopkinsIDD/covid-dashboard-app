@@ -21,13 +21,6 @@ class Chart extends Component {
                 'index': 0
             },
             rectIsHovered: false,
-            // tooltipText: '',
-            // severityMap: {
-            //     'high': '1% IFR, 10% hospitalization rate',
-            //     'med': '0.5% IFR, 5% hospitalization rate',
-            //     'low': '0.25% IFR, 2.5% hospitalization rate'
-            // }
-            // quantileObj: {}
         }
         this.tooltipRef = React.createRef();
         this.chartRef = React.createRef();
@@ -154,11 +147,9 @@ class Chart extends Component {
     }
 
     handleHighlightEnter = (event, severity, key, index) => {
-        console.log('handleHighlightEnter FIRST', this.state.rectIsHovered)
         if (!this.state.rectIsHovered) {
-            console.log('handleHighlightEnter', this.state.rectIsHovered)
             event.stopPropagation();
-            console.log(severity, key, index)
+            // console.log(severity, key, index)
             const hoveredRect = {
                 'severity': severity,
                 'scenario': key,
@@ -170,9 +161,8 @@ class Chart extends Component {
             const median = quantileObj[stat][severity][key]['median']
             const tenth = quantileObj[stat][severity][key]['tenth']
             const ninetyith = quantileObj[stat][severity][key]['ninetyith']
-            console.log(median, this.state.yScale(median), this.state.yScale(median) / (this.props.height - margin.bottom))
+            // console.log(median, this.state.yScale(median), this.state.yScale(median) / (this.props.height - margin.bottom))
             // console.log(quantileObj[stat][severity][key])
-
          
             const text =    `${scenarios[index].replace('_', ' ')}<br>` +
                             `${capitalize(severity)} Severity<br>` +
@@ -189,7 +179,6 @@ class Chart extends Component {
     }
 
     handleHighlightLeave = () => {
-        console.log('handleHighlightLEAVE', this.state.rectIsHovered)
         const hoveredRect = {
             'severity': '',
             'scenario': '',
@@ -239,7 +228,6 @@ class Chart extends Component {
                                         stroke={this.state.hoveredRect.severity === severity &&
                                             this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
                                         strokeWidth={4}
-                                        // style={{ pointerEvents: 'none'}}
                                         onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
                                         onMouseLeave={this.handleHighlightLeave}
                                     >
@@ -252,7 +240,6 @@ class Chart extends Component {
                                         y2={this.state.yScale(value.tenth)}
                                         stroke={gray}
                                         strokeWidth={1}
-                                        // style={{ cursor: 'pointer'}}
                                     >
                                     </line>
                                     <line
@@ -263,7 +250,6 @@ class Chart extends Component {
                                         y2={this.state.yScale(value.ninetyith)}
                                         stroke={gray}
                                         strokeWidth={1}
-                                        // style={{ cursor: 'pointer'}}
                                     >
                                     </line>
                                     <line
@@ -274,7 +260,6 @@ class Chart extends Component {
                                         y2={this.state.yScale(value.tenth)}
                                         stroke={gray}
                                         strokeWidth={1}
-                                        // style={{ cursor: 'pointer'}}
                                     >
                                     </line>
                                     {/* debug red rect highlight */}
@@ -326,27 +311,36 @@ class Chart extends Component {
         // console.log(this.props.width, this.props.height)
         return (
             <div >
-                <div className="y-axis-label chart-yLabel titleNarrow">
+                {/* <div className="y-axis-label chart-yLabel titleNarrow">
                   {this.props.statLabel}
-                  </div>
-                  <div className="tooltip">
-                    <span className="tooltip-text" ref={this.tooltipRef} style={this.state.rectIsHovered ? { visibility: 'hidden', width: '135px', position: 'absolute', padding: '10px', zIndex: 10 } : { visibility: 'hidden' }}></span>
-                  </div>
+                  </div> */}
                   {this.state.scaleDomains &&
                     <Fragment>
                         <svg 
                             width={margin.yAxis}
                             height={this.props.height} 
                         >
-                        <Axis 
-                            width={this.props.width}
-                            height={this.props.height - margin.chartTop - margin.bottom}
-                            orientation={'left'}
-                            scale={this.state.yScale}
-                            x={margin.yAxis}
-                            y={0}
-                            tickNum={4}
-                        />
+                            <text
+                                transform="rotate(-90)"
+                                y={0}
+                                x={0-(this.props.height / 2) - (this.props.statLabel.length * 2)}
+                                dy="1em"
+                                opacity={0.65}
+                                textAchor="middle"
+                                style={{ fontSize: '1rem'}}
+                                className="titleNarrow"
+                            >
+                                {this.props.statLabel}
+                            </text>
+                            <Axis 
+                                width={this.props.width}
+                                height={this.props.height - margin.chartTop - margin.bottom}
+                                orientation={'left'}
+                                scale={this.state.yScale}
+                                x={margin.yAxis}
+                                y={0}
+                                tickNum={4}
+                            />
                         </svg>
                         <svg 
                         width={this.props.width}
