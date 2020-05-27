@@ -156,7 +156,7 @@ class Chart extends Component {
         if (!this.state.rectIsHovered) {
             console.log('handleHighlightEnter', this.state.rectIsHovered)
             event.stopPropagation();
-            // console.log(severity, key, index)
+            console.log(severity, key, index)
             const hoveredRect = {
                 'severity': severity,
                 'scenario': key,
@@ -168,6 +168,7 @@ class Chart extends Component {
             const median = quantileObj[stat][severity][key]['median']
             const tenth = quantileObj[stat][severity][key]['tenth']
             const ninetyith = quantileObj[stat][severity][key]['ninetyith']
+            console.log(this.state.yScale(median))
             // console.log(quantileObj[stat][severity][key])
 
             const tooltipText = `<b>50%</b> chance of <b>${addCommas(Math.ceil(median))}</b> ${statLabel}<br><br> ` +
@@ -226,6 +227,7 @@ class Chart extends Component {
                 <g key={`chart-group-${severity}`}>
                     { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
                         // console.log(severity, 'barPos', key, this.state.xScale(key))
+                        // console.log(this.props.stat, i, j, severity, this.state.yScale(value.median))
                     return (
                         <Fragment key={`chart-fragment-${severity}-${key}`}>
                             <rect 
@@ -275,6 +277,26 @@ class Chart extends Component {
                                 strokeWidth={1}
                             >
                             </line>
+                            {/* debug red rect highlight */}
+                            <rect
+                                d={value}
+                                key={`bar-${severity}-${key}-hover`}
+                                className={'bars-hover'}
+                                width={barWidth}
+                                // height={this.state.yScale(0) - this.state.yScale(value.median)}
+                                height={this.state.yScale(value.median) > 110 ? 20 : this.state.yScale(0) - this.state.yScale(value.median)}
+                                x={(margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key)}
+                                y={this.state.yScale(value.median) > 110 ? this.props.height - margin.bottom - 20 : this.state.yScale(value.median)}
+                                fill={'red'}
+                                fillOpacity={0.5}
+                                stroke={'red'}
+                                strokeOpacity={0.5}
+                                strokeWidth={4}
+                                style={{ cursor: 'pointer'}}
+                                onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
+                                onMouseLeave={this.handleHighlightLeave}
+                            >
+                            </rect>
                         </Fragment>
                     )
                 })
