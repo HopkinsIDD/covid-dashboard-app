@@ -623,3 +623,8 @@ input[type=range]::-moz-focus-outer {
 .ant-slider-mark-text {
   min-width: 50px;
 }
+
+.ant-slider-rail {
+  background-color: #d2d2d2;
+  height: 5px;
+}
