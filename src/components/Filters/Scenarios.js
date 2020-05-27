@@ -16,11 +16,15 @@ class Scenarios extends Component {
         console.log(scenariosGraph)
         const { Option } = Select;
 
+        const { view } = this.props;
+
         for (let scenario of scenariosGraph) {
+            // console.log(`${view}-${scenario.key}`)
             const child = {
                 key: scenario.key,
                 checkbox: []
             } 
+           
             child.checkbox.push(
                 <Option
                     key={scenario.key}>
@@ -43,12 +47,12 @@ class Scenarios extends Component {
                 prevProp.scenarioList !== this.props.scenarioList ||
                 prevProp.scenario !== this.props.scenario) {
                 // console.log('graph scenario change')
-                const { scenarioList } = this.props;
+                const { scenarioList, view } = this.props;
     
                 const keys = Object.values(scenarioList).map(scen => scen.key);
                 const scenariosGraph = Array.from(this.props.SCENARIOS);
                 
-                if (this.props.scenarioList.length >= 3) {
+                if (this.props.scenarioList.length >= 2) {
                     scenariosGraph.map(scenario => {
                         if (keys.includes(scenario.key)) {
                             return scenario.disabled = false;
@@ -68,6 +72,7 @@ class Scenarios extends Component {
                         key: scenario.key,
                         checkbox: []
                     } 
+                    // console.log(`${view}-${scenario.key}`)
                     child.checkbox.push(
                         <Option
                             key={scenario.key}
@@ -84,11 +89,15 @@ class Scenarios extends Component {
             }
         } else if (this.props.view === 'chart') {
 
-            if (prevProp.SCENARIOS !== this.props.SCENARIOS) {
+            if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
+                prevProp.scenarioList !== this.props.scenarioList ||
+                prevProp.scenario !== this.props.scenario) {
 
                 const children = [];
                 const scenariosChart = Array.from(this.props.SCENARIOS);
                 const { Option } = Select;
+
+                const { view } = this.props;
         
                 for (let scenario of scenariosChart) {
                     const child = {
@@ -132,17 +141,20 @@ class Scenarios extends Component {
         let defaultScenario;
         let style;
         let graphTags;
+        // console.log(this.props.view)
+        // console.log(this.props.scenarioList)
         if (this.props.view === 'graph') {
             defaultScenario = [this.props.scenarioList[0].key];
-            graphTags = this.props.scenarioList.map( s => s.key)
+            graphTags = this.props.scenarioList.map( s => s.key )
             // console.log('scenarioList', this.props.scenarioList)
         } else if (this.props.view === 'chart') {
             defaultScenario = this.props.SCENARIOS.map(s => s.name);
+            graphTags = this.props.scenarioList
             style = { width: '80%' };
         } else {
             defaultScenario = [this.props.scenario]
+            graphTags = defaultScenario
             style = { width: '70%' };
-
         }
         
         // console.log(this.props.view, defaultScenario)
@@ -153,7 +165,7 @@ class Scenarios extends Component {
                     mode={this.props.view === 'map' ? "" : "multiple"}
                     style={style}
                     defaultValue={defaultScenario}
-                    value={this.props.view === 'graph' && graphTags}
+                    value={graphTags}
                     maxTagTextLength={12}
                     onChange={this.handleChange}>
                     {this.state.children.map(child => child.checkbox)}
