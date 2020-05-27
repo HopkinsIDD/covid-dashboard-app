@@ -255,6 +255,13 @@ ul {
 
 .bold {
   font-weight: bold;
+  border-bottom: 2px #4ddaba dashed;
+}
+
+.bold-active {
+  font-weight: bold;
+  color: #4ddaba;
+  border-bottom: 2px #4ddaba dashed;
 }
 
 /* .dynamic-label {
