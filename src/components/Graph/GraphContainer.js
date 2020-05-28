@@ -188,6 +188,7 @@ class GraphContainer extends Component {
                   {this.props.yAxisLabel}
               </div>
               <div className="graph-title-row">
+              
               <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                 {scenarioList.map((scenario, i) => {
                     const scenarioTitle = scenario.name.replace('_', ' ');

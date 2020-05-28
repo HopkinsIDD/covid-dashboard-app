@@ -74,8 +74,10 @@ h1, h2, h3, h4 {
   margin-bottom: 2rem;
 }
 .content-header {
-  font-size: 30px;
-  margin-bottom: 2rem;
+  font-size: 18px;
+  text-align: left;
+  font-weight: bold;
+  /* margin-bottom: 2rem; */
 }
 
 .filter-description {
