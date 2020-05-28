@@ -222,8 +222,6 @@ class Chart extends Component {
                                             stroke={this.state.hoveredRect.severity === severity &&
                                                 this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
                                             strokeWidth={4}
-                                            onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
-                                            onMouseLeave={this.handleHighlightLeave}
                                         >
                                         </rect>
                                         <line
@@ -317,7 +315,7 @@ class Chart extends Component {
                             <text
                                 transform="rotate(-90)"
                                 y={0}
-                                x={0-(this.props.height / 2) - (this.props.statLabel.length * 2)}
+                                x={0-(this.props.height / 2)}
                                 dy="1em"
                                 opacity={0.65}
                                 textAnchor="middle"

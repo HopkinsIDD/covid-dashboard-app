@@ -3,6 +3,10 @@ import { Row, Col } from 'antd';
 import SearchBar from './Search/SearchBar';
 import { styles } from '../utils/constants';
 import logo from '../assets/logo.png'; 
+import { ReactComponent as GraphLogo } from '../assets/graph.svg';
+import { ReactComponent as ChartLogo } from '../assets/chart.svg';
+import { ReactComponent as MapLogo } from '../assets/globe.svg';
+import { ReactComponent as MethodsLogo } from '../assets/book.svg';
 class NavBar extends Component {
   constructor(props) {
     super(props);
@@ -37,6 +41,7 @@ class NavBar extends Component {
             style={styles.MiniSearchBar}
             size="default"
           />   
+
         )
       } 
       console.log('set state')
@@ -70,14 +75,23 @@ class NavBar extends Component {
           <Col className="gutter-row" span={1}>
             <img className="logo" src={logo} alt="Logo" /> 
           </Col>
-          <Col className="gutter-row mini-search" span={14}>
+          <Col className="gutter-row mini-search" span={12}>
             {this.state.searchBar}
           </Col>
-          <Col className="gutter-row nav-menu" span={8}>
-            <ul>
-              <li><a href="#scenario-comparisons">Viz</a></li>
-              <li><a href="#stats">Stats</a></li>
-              <li><a href="#map">Map</a></li>
+          <Col className="gutter-row nav-menu" span={10}>
+            <ul style={{ marginTop: '5px' }}>
+              <li style={{ paddingRight: '10px'}}>
+                <a href="#scenario-comparisons"><GraphLogo height="28" /></a>
+              </li>
+              <li style={{ paddingRight: '10px'}}>
+                <a href="#stats"><ChartLogo height="28"/></a>
+              </li>
+              <li style={{ paddingRight: '20px'}}>
+                <a href="#map"><MapLogo height="28"/></a>
+              </li>
+              <li style={ {paddingRight: '10px'}}>
+                <a href="#methods"><MethodsLogo height="28"/></a>
+              </li>
             </ul>
           </Col>
         </Row>

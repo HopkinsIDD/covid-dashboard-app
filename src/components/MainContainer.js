@@ -78,6 +78,7 @@ class MainContainer extends Component {
             mapContainerW: 0,
             mapContainerH: 0,
             brushActive: false,
+            animateTransition: true,
             scenarioClickCounter: 0,
             summaryScale: 'power',
             mapCurrentDateIndex: 0
@@ -296,7 +297,7 @@ class MainContainer extends Component {
     updateGraphDimensions = () => {
         const graphW = this.graphEl.clientWidth - margin.yAxis;
         const graphH = this.graphEl.clientHeight;
-        this.setState({ graphW, graphH });
+        this.setState({ graphW, graphH, animateTransition: false });
       }
 
     updateMapContainerDimensions = () => {
@@ -458,7 +459,8 @@ class MainContainer extends Component {
         })
         this.setState({
             severityList: newSevList, 
-            r0: [0, 4]
+            r0: [0, 4],
+            animateTransition: true
         });
     };
 
@@ -467,7 +469,7 @@ class MainContainer extends Component {
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleR0Change = (e) => {
-        this.setState({r0: e})
+        this.setState({ r0: e, animateTransition: false })
     };
 
     handleStatSliderChange = (thresh) => {
@@ -488,7 +490,8 @@ class MainContainer extends Component {
             seriesList: copyList,
             allTimeSeries: allSeriesCopy,
             statThreshold: +thresh,
-            percExceedenceList
+            percExceedenceList,
+            animateTransition: true
         });
     };
 
@@ -512,11 +515,11 @@ class MainContainer extends Component {
         })
     }
 
-    handleBrushRange = (i) => {this.setState({dateRange: i});};
+    handleBrushRange = (i) => {this.setState({dateRange: i, animateTransition: false});};
 
-    handleBrushStart = () => {this.setState({brushActive: true})}
+    handleBrushStart = () => {this.setState({brushActive: true, animateTransition: false})}
 
-    handleBrushEnd = () => {this.setState({brushActive: false})}
+    handleBrushEnd = () => {this.setState({brushActive: false, animateTransition: true})}
 
     handleScaleToggle = (scale) => {this.setState({ summaryScale: scale })}
 
@@ -574,8 +577,13 @@ class MainContainer extends Component {
         this.setState({ datePickerActiveChart: datePickerOpen })
     }
 
+    toggleAnimateTransition = () => {
+        this.setState({ animateTransition: !this.state.animateTransition })
+    }
+
     render() {
         const { Content } = Layout;
+        // console.log('animateTransition', this.state.animateTransition)
         return (
             <Layout>
                 {/* Navigation Bar */}
@@ -613,6 +621,8 @@ class MainContainer extends Component {
                                         scenarioList={this.state.scenarioList}
                                         severity={this.state.severity}
                                         r0={this.state.r0}
+                                        animateTransition={this.state.animateTransition}
+                                        toggleAnimateTransition={this.toggleAnimateTransition}
                                         simNum={this.state.simNum}
                                         showConfBounds={this.state.showConfBounds}
                                         confBoundsList={this.state.confBoundsList}
@@ -638,6 +648,8 @@ class MainContainer extends Component {
                                         height={80}
                                         x={margin.yAxis}
                                         y={0}
+                                        animateTransition={this.state.animateTransition}
+                                        toggleAnimateTransition={this.toggleAnimateTransition}
                                         dateRange={this.state.dateRange}
                                         dateThreshold={this.state.dateThreshold}
                                         statThreshold={this.state.statThreshold}

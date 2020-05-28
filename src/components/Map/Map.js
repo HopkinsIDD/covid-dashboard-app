@@ -100,9 +100,13 @@ class Map extends Component {
 
     drawCounties = () => {
         // console.log(this.state.countyBoundaries)
+        // optimize projection for CA or NY
+        const parallels = (this.props.geoid.slice(0,2) === '06') ? [34, 40.5] : [40.5, 41.5]
+        const rotation = (this.props.geoid.slice(0,2) === '06') ? [120, 0] : [74, 0]
+        
         const projection = geoConicEqualArea()
-            .parallels([34, 40.5])
-            .rotate([120, 0])
+            .parallels(parallels)
+            .rotate(rotation)
             .fitSize([this.props.width - legendW, this.props.height * 0.75], this.state.countyBoundaries)
 
         const pathGenerator = geoPath().projection(projection)
