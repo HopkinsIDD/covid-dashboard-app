@@ -4,7 +4,7 @@ import Axis from './Axis'
 import Legend from './Legend'
 // import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line, area, curveLinear } from 'd3-shape'
-import { bisectLeft, least } from 'd3-array'
+import { bisectLeft, least, max, maxIndex } from 'd3-array'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
 import { margin, red, green, blue, gray, lightgray, graphBkgd } from '../../utils/constants'
@@ -28,7 +28,9 @@ class Graph extends Component {
             areaGenerator: area().curve(curveLinear),
             confBounds: this.props.confBounds,
             confBoundsAreaPath: [],
-            confBoundsMeanLinePath: []
+            confBoundsMeanLinePath: [],
+            tooltipXPos: 0,
+            tooltipYPos: 0
         };
         
         this.simPathsRef = React.createRef();
@@ -299,11 +301,17 @@ class Graph extends Component {
         const i0 = i1 - 1;
         const i = xm - this.props.dates[i0] > this.props.dates[i1] - xm ? i1 : i0;
         const s = least(this.props.series, d => Math.abs(d.vals[i] - ym));
-        // console.log(s)
+        console.log(s)
         if (s) {
             const hoveredIdx = this.props.series.findIndex( sim => sim.name === s.name)
             // console.log(hoveredIdx)
-            this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `R0: ${s.r0}` })  
+            // we also want to find highest point of sim
+            const peak = max(s.vals)
+            const peakIndex = maxIndex(s.vals)
+            const tooltipXPos = this.props.xScale(this.props.dates[peakIndex])
+            const tooltipYPos = this.props.yScale(peak)
+            console.log(peakIndex, peak, tooltipXPos, tooltipYPos)
+            this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `R0: ${s.r0}`, tooltipXPos, tooltipYPos })
         } 
     }
 
@@ -345,28 +353,19 @@ class Graph extends Component {
                         this.state.simPaths.map( (simPath, i) => {
                             const simIsHovered = (i === this.state.hoveredSimPathId)
                             return (
-                                <Tooltip
-                                    key={`tooltip-sim-${i}`}
-                                    title={this.state.tooltipText}
-                                    visible={simIsHovered ? true : false}
-                                    // visible={true}
-                                    // align={}
-                                    data-html="true"
-                                >
-                                    <path
-                                        d={simPath}
-                                        key={`simPath-${i}`}
-                                        id={`simPath-${i}`}
-                                        className={`simPath`}
-                                        fill='none' 
-                                        stroke = { this.state.series[i].over ? red : green}
-                                        strokeWidth={'1'}
-                                        strokeOpacity={ this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 0 : 0.6}
-                                        onMouseMove={(e) => this.handleMouseMove(e, i)}
-                                        onMouseEnter={(e) => this.handleMouseEnter(e, i)}
-                                        onMouseLeave={(e) => this.handleMouseLeave(e, i)}
-                                    />
-                                </Tooltip>
+                                <path
+                                    d={simPath}
+                                    key={`simPath-${i}`}
+                                    id={`simPath-${i}`}
+                                    className={`simPath`}
+                                    fill='none' 
+                                    stroke = { this.state.series[i].over ? red : green}
+                                    strokeWidth={'1'}
+                                    strokeOpacity={ this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 0 : 0.6}
+                                    onMouseMove={(e) => this.handleMouseMove(e, i)}
+                                    onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                                    onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                                />
                             ) 
                         })}
                         {// highlight simPaths
@@ -387,6 +386,28 @@ class Graph extends Component {
                                 onMouseLeave={(e) => this.handleMouseLeave(e, i)}
                             />
                         })}
+                        <Tooltip
+                            key={`sim-tooltip`}
+                            title={this.state.tooltipText}
+                            visible={this.state.hoveredSimPathId ? true : false}
+                            // visible={true}
+                            // align={{
+                            //     points: ['bc', 'tc'],        // align top left point of sourceNode with top right point of targetNode
+                            //     offset: [10, 20],            // the offset sourceNode by 10px in x and 20px in y,
+                            //     targetOffset: ['0%','0%'], // the offset targetNode by 30% of targetNode width in x and 40% of targetNode height in y,
+                            //     overflow: { adjustX: true, adjustY: true }, // auto adjust position when sourceNode is overflowed
+                            //   }}
+                            data-html="true"
+                        >
+                            <circle
+                                cx={this.state.tooltipXPos}
+                                cy={this.state.tooltipYPos}
+                                r={2}
+                                fill={gray}
+                                fillOpacity={0}
+                                className={'tooltipCircle'}
+                            ></circle>
+                        </Tooltip>
                         {(this.props.showConfBounds && this.props.confBounds) &&
                         <g ref={this.confBoundsRef}>
                             <path
