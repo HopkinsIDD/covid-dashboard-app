@@ -103,7 +103,7 @@ class MapContainer extends Component {
                 <div className="map-wrapper">
                     {this.state.children.map(child => {
                         return (
-                            <div className="map" key={child.key} style={{ background: graphBkgd }}>
+                            <div className="map" key={child.key}>
                                 {child.map}
                             </div>
                         )
