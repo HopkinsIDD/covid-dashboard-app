@@ -642,7 +642,8 @@ input[type=range]::-moz-focus-outer {
 }
 
 .ant-slider-track {
-  background-color: #3885fa;
+  /* background-color: #3885fa; */
+  background-color: #69a5ff;
 }
 
 .ant-slider-dot {
