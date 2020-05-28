@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="38px" height="38px" viewBox="0 0 38 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Geographic Summary</title>
+    <g id="Dashboard-Wires---fourth-pass" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-1266.000000, -66.000000)" stroke="#EBEBEB" stroke-width="2">
+            <g id="Group-3" transform="translate(1267.000000, 67.000000)">
+                <circle id="Oval" cx="18" cy="18" r="18"></circle>
+                <line x1="18" y1="0" x2="18" y2="36" id="Line-5" stroke-linecap="square"></line>
+                <ellipse id="Oval" cx="18" cy="18" rx="9" ry="18"></ellipse>
+                <line x1="0" y1="18" x2="36" y2="18" id="Line-5" stroke-linecap="square"></line>
+                <line x1="3" y1="10" x2="33" y2="10" id="Line-5-Copy-2" stroke-linecap="square"></line>
+                <line x1="3" y1="26" x2="33" y2="26" id="Line-5-Copy" stroke-linecap="square"></line>
+            </g>
+        </g>
+    </g>
+</svg>
