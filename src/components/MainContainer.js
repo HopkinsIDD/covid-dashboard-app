@@ -77,6 +77,7 @@ class MainContainer extends Component {
             mapContainerW: 0,
             mapContainerH: 0,
             brushActive: false,
+            animateTransition: true,
             scenarioClickCounter: 0,
             summaryScale: 'power',
             mapCurrentDateIndex: 0
@@ -466,7 +467,7 @@ class MainContainer extends Component {
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleR0Change = (e) => {
-        this.setState({r0: e})
+        this.setState({ r0: e, animateTransition: false })
     };
 
     handleStatSliderChange = (thresh) => {
@@ -573,6 +574,10 @@ class MainContainer extends Component {
         this.setState({ datePickerActiveChart: datePickerOpen })
     }
 
+    toggleAnimateTransition = () => {
+        this.setState({ animateTransition: !this.state.animateTransition })
+    }
+
     render() {
         const { Content } = Layout;
         return (
@@ -631,6 +636,8 @@ class MainContainer extends Component {
                                         height={80}
                                         x={margin.yAxis}
                                         y={0}
+                                        animateTransition={this.state.animateTransition}
+                                        toggleAnimateTransition={this.toggleAnimateTransition}
                                         dateRange={this.state.dateRange}
                                         dateThreshold={this.state.dateThreshold}
                                         statThreshold={this.state.statThreshold}

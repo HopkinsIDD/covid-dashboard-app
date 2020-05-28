@@ -8,6 +8,7 @@ import { timeDay, timeYear } from 'd3-time'
 import { brushX } from 'd3-brush'
 import { event } from 'd3-selection'
 import { max, extent } from 'd3-array'
+import { easeCubicOut } from 'd3-ease'
 import { margin, red, green } from '../../utils/constants'
 
 class Brush extends Component {
@@ -45,24 +46,40 @@ class Brush extends Component {
 
   componentDidUpdate(prevProps, prevState) {
     // console.log('different series is ', this.props.series !== prevProps.series)
+    // console.log('different r0 is ', this.props.r0 !== prevProps.r0)
+    // console.log('different dimensions is', this.props.width !== prevProps.width )
     // console.log('different dateThreshold is', this.props.dateThreshold !== prevProps.dateThreshold)
     // console.log('different statThreshold is', this.props.statThreshold !== prevProps.statThreshold)
     if (this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
       // console.log('componentDidUpdate width height change');
+      console.log('different dimensions is', this.props.width !== prevProps.width )
       const { series, dates, width, height } = this.props;
       const { lineGenerator } = prevState;
-      this.updateSimPaths(lineGenerator, series, dates, width, height);
+      this.updateSimPaths(lineGenerator, series, dates, width, height, false);
+      return
     }
 
-    if (this.props.series !== prevProps.series) {
+    // if (this.props.r0 !== prevProps.r0) {
+    //   console.log('different r0 is ', this.props.r0 !== prevProps.r0)
+    //   console.log('different series is ', this.props.series !== prevProps.series)
+    //   const { series, dates, width, height } = this.props;
+    //   const { lineGenerator } = prevState;
+    //   this.updateSimPaths(lineGenerator, series, dates, width, height, true);
+    //   return
+    // }
 
-      const { series, dates, width, height } = this.props;
+    if (this.props.series !== prevProps.series) {
+      console.log('different series is ', this.props.series !== prevProps.series)
+      console.log('different animateTransition is ', this.props.animateTransition !== prevProps.animateTransition)
+      const { series, dates, width, height, animateTransition } = this.props;
       const { lineGenerator } = prevState;
-      this.updateSimPaths(lineGenerator, series, dates, width, height);
+      this.updateSimPaths(lineGenerator, series, dates, width, height, animateTransition);
+      return
     }
   }
 
-  updateSimPaths = (lineGenerator, series, dates, width, height) => {
+  updateSimPaths = (lineGenerator, series, dates, width, height, animateTransition) => {
+    console.log('updateSimPaths animateTransition is', animateTransition)
     // const { lineGenerator } = this.state;
     if (this.simPathsRef.current) {
       // update scale and data
@@ -85,23 +102,45 @@ class Brush extends Component {
       const simPathsNode = select(this.simPathsRef.current)
       // console.log(simPathsNode.selectAll('.simPath'))
       // update the paths with new data
-      simPathsNode.selectAll('.simPath')
-          .data(series)
-          .attr("stroke", (d,i) => series[i].over ? red : green )
-          .transition()
-          .duration(1000)
-          .attr("d", d => lineGenerator(d.vals))
-          .on("end", () => {
-              // set new vals to state
-              this.setState({ 
-                  series: series,
-                  dates: dates,
-                  scales: updatedScales,
-                  lineGenerator: lineGenerator,
-                  simPaths: simPaths,
-              })
-          })
-    
+      if (animateTransition) {
+        simPathsNode.selectAll('.simPath')
+            .data(series)
+            .transition()
+            .duration(1000)
+            .ease(easeCubicOut)
+            .attr("d", d => lineGenerator(d.vals))
+            .attr("stroke", (d,i) => series[i].over ? red : green )
+            .on("end", () => {
+                // set new vals to state
+                console.log('finished animateTransition update')
+                this.setState({ 
+                    series: series,
+                    dates: dates,
+                    scales: updatedScales,
+                    lineGenerator: lineGenerator,
+                    simPaths: simPaths,
+                })
+            })
+      } else {
+        console.log('No animateTransition')
+        simPathsNode.selectAll('.simPath')
+            .data(series)
+            .attr("d", d => lineGenerator(d.vals))
+            .attr("stroke", (d,i) => series[i].over ? red : green )
+            .on("end", () => {
+                // set new vals to state
+                console.log('finished no animateTransition update')
+                this.setState({ 
+                    series: series,
+                    dates: dates,
+                    scales: updatedScales,
+                    lineGenerator: lineGenerator,
+                    simPaths: simPaths,
+                })
+            })
+            this.props.toggleAnimateTransition()
+        }
+
     }
   
     // this.xAxis.scale(this.state.xScale);
