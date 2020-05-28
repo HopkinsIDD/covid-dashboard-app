@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
 import _ from 'lodash';
 
+import NavBar from './NavBar';
 import Search from './Search/Search'
 import GraphContainer from './Graph/GraphContainer';
 import ChartContainer from './Chart/ChartContainer';
@@ -577,6 +578,12 @@ class MainContainer extends Component {
         const { Content } = Layout;
         return (
             <Layout>
+                {/* Navigation Bar */}
+                <NavBar 
+                    stat={this.state.stat}
+                    geoid={this.state.geoid}
+                    onCountySelect={this.handleCountySelect}>                
+                </NavBar>
 
                 {/* Search Component */}
                 <Search

@@ -166,33 +166,28 @@ class SearchBar extends Component {
         //   };
           
         return (
-            <div className="dropdown">
-                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    <Col className="gutter-row" offset={6} span={18}>
-                        <Select
-                            showSearch
-                            placeholder="Search for your state or county"
-                            optionFilterProp="children"
-                            style={{ width: '80%' }}
-                            size="large"
-                            onChange={this.handleCountySelect}
-                            filterOption={(input, option) =>
-                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                            }>
-                            {this.state.children.map(county => county.button)}
-                        </Select>
-                    </Col>
-                    {/* <Col className="gutter-row" span={6}> */}
-                        {/* <Upload {...props}>
-                            <Button>
-                                <UploadOutlined /> Upload
-                            </Button>
-                        </Upload> */}
-                    {/* </Col> */}
-                </Row>
-            </div>            
+            <Select
+                showSearch
+                placeholder="Search for your state or county"
+                optionFilterProp="children"
+                style={this.props.style}
+                size={this.props.size}
+                onChange={this.handleCountySelect}
+                filterOption={(input, option) =>
+                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                }>
+                {this.state.children.map(county => county.button)}
+            </Select>
         )
     }
 }
 
 export default SearchBar;
+
+// {/* <Col className="gutter-row" span={6}> */}
+//     {/* <Upload {...props}>
+//         <Button>
+//             <UploadOutlined /> Upload
+//         </Button>
+//     </Upload> */}
+// {/* </Col> */}

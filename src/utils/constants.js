@@ -14,6 +14,16 @@ export const scenarioColors = ['#4ddaba', '#b6f5e7','#19b18e', '#e0fdf7', '#0087
 export const mapLowColors = ['#deebf7', '#e5f5e0', '#fee6ce', '#fee0d2'] 
 export const mapHighColors = ['#3885fa', '#008769', '#e6550d', '#de2d26']
 
+export const styles = {
+    SearchBar: {
+        width: "75%"
+    },
+    MiniSearchBar: {
+        paddingTop: "0.4rem",
+        width: "15rem"
+    },
+};
+  
 export const STATS = [
     {'id': 1, 'key': 'incidI', 'name': 'Infections'},
     {'id': 2, 'key': 'incidH', 'name': 'Hospitalizations'},

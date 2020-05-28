@@ -320,7 +320,7 @@ class Chart extends Component {
                                 x={0-(this.props.height / 2) - (this.props.statLabel.length * 2)}
                                 dy="1em"
                                 opacity={0.65}
-                                textAchor="middle"
+                                textAnchor="middle"
                                 style={{ fontSize: '1rem'}}
                                 className="titleNarrow"
                             >
