@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { Row, Col, Select } from 'antd';
+import { Select } from 'antd';
 //, Upload, message, Button } from 'antd';
 // import { UploadOutlined } from '@ant-design/icons';
 // import axios from 'axios';
 import { COUNTIES } from '../../utils/constants.js';
-// import { ReactComponent as MagnifyingGlass } from '../assets/search.svg';
 
 
 class SearchBar extends Component {
@@ -168,7 +167,7 @@ class SearchBar extends Component {
         return (
             <Select
                 showSearch
-                placeholder="Search for your state or county"
+                placeholder={this.props.placeholder}
                 optionFilterProp="children"
                 style={this.props.style}
                 size={this.props.size}

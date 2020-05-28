@@ -20,8 +20,13 @@ export const styles = {
     },
     MiniSearchBar: {
         paddingTop: "0.4rem",
-        width: "15rem"
+        width: "15rem",
+        backgroundColor: "transparent", // This is not showing up!
+        // color: "white"
     },
+    MenuIcons: {
+        paddingRight: '10px'
+    }
 };
   
 export const STATS = [

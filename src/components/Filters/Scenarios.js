@@ -27,7 +27,7 @@ class Scenarios extends Component {
             child.checkbox.push(
                 <Option
                     key={scenario.key}>
-                    {scenario.key.replace('USA_','')}
+                    {scenario.key.replace('_',' ')}
                 </Option>
             )
             children.push(child);
@@ -76,7 +76,7 @@ class Scenarios extends Component {
                         <Option
                             key={scenario.key}
                             disabled={scenario.disabled}>
-                            {scenario.key.replace('USA_','')}
+                            {scenario.key.replace('_',' ')}
                         </Option>
                     )
                     children.push(child);
@@ -104,7 +104,7 @@ class Scenarios extends Component {
                     child.checkbox.push(
                         <Option
                             key={scenario.key}>
-                            {scenario.key.replace('USA_','')}
+                            {scenario.key.replace('_',' ')}
                         </Option>
                     )
                     children.push(child);
