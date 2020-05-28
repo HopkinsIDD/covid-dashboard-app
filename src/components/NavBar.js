@@ -15,10 +15,10 @@ class NavBar extends Component {
               </Col>
               <Col className="gutter-row nav-menu" span={8}>
                 <ul style={{ marginTop: '5px' }}>
-                  <li style={{ paddingRight: '20px'}}><a href="#scenario-comparisons"><GraphLogo height="28" /></a></li>
-                  <li style={{ paddingRight: '20px'}}><a href="#stats"><ChartLogo height="28"/></a></li>
+                  <li style={{ paddingRight: '15px'}}><a href="#scenario-comparisons"><GraphLogo height="28" /></a></li>
+                  <li style={{ paddingRight: '25px'}}><a href="#stats"><ChartLogo height="28"/></a></li>
                   <li style={{ paddingRight: '30px'}}><a href="#map"><MapLogo height="28"/></a></li>
-                  <li style={ {paddingRight: '20px'}}><a href="#methods"><MethodsLogo height="28"/></a></li>
+                  <li><a href="#methods"><MethodsLogo height="28"/></a></li>
                 </ul>
               </Col>
             </Row>
