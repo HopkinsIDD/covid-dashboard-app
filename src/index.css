@@ -45,8 +45,17 @@ h1, h2, h3, h4 {
   margin: 0;
 }
 
+.logo {
+  max-width: 2rem;
+  padding-top: 0.4rem;
+}
+
 .App-header {
-  padding: 1% 5%;
+  background-color: #607aa2;
+  padding: 0% 5%;
+  z-index: 10;
+  position: sticky;
+  top: 0
 }
 
 .container {
@@ -60,8 +69,11 @@ h1, h2, h3, h4 {
   padding-left: 8%;
 }
 
+.title-header {
+  font-size: 36px;
+  margin-bottom: 2rem;
+}
 .content-header {
-  text-transform: uppercase;
   font-size: 30px;
   margin-bottom: 2rem;
 }
@@ -196,6 +208,10 @@ ul {
   padding-left: 0.8rem;
   padding-bottom: .3rem;
   padding-top: .3rem;
+}
+
+.hide-search {
+  display: none;
 }
 
 .magnifying-glass {

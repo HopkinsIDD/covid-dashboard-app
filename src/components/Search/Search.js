@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Layout } from 'antd';
+import { Layout, Row, Col } from 'antd';
 import SearchBar from './SearchBar';
-
+import { styles } from '../../utils/constants';
 
 class Search extends Component {
     constructor(props) {
@@ -57,10 +57,10 @@ class Search extends Component {
     render() {
         const { Content } = Layout;
         return (
-            <Content style={{ background: '#fefefe', padding: '50px 0' }}>
+            <Content id="search-container" style={{ background: '#fefefe', padding: '5rem 0 4rem' }}>
                 <div className="content-section">
-                    <div className="content-header">
-                        Intervention Scenario Modeling
+                    <div className="title-header">
+                        COVID-19 Intervention Scenario Modeling
                     </div>
                     <div>
                         Find your state or county in our registry 
@@ -68,12 +68,20 @@ class Search extends Component {
                     </div>
                 </div>
 
-                <SearchBar
-                    stat={this.props.stat}
-                    geoid={this.props.geoid}
-                    // onFileUpload={this.handleUpload}
-                    onCountySelect={this.handleCountySelect}
-                />
+                <div className="dropdown">
+                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                        <Col className="gutter-row" offset={6} span={18}>
+                            <SearchBar
+                                stat={this.props.stat}
+                                geoid={this.props.geoid}
+                                // onFileUpload={this.handleUpload}
+                                onCountySelect={this.handleCountySelect}
+                                style={styles.SearchBar}
+                                size="large"
+                            />
+                        </Col>
+                    </Row>
+                </div>
 
                 {/* <div className="content-section">
                     <label
