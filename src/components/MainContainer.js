@@ -296,7 +296,7 @@ class MainContainer extends Component {
     updateGraphDimensions = () => {
         const graphW = this.graphEl.clientWidth - margin.yAxis;
         const graphH = this.graphEl.clientHeight;
-        this.setState({ graphW, graphH });
+        this.setState({ graphW, graphH, animateTransition: false });
       }
 
     updateMapContainerDimensions = () => {
@@ -458,7 +458,8 @@ class MainContainer extends Component {
         })
         this.setState({
             severityList: newSevList, 
-            r0: [0, 4]
+            r0: [0, 4],
+            animateTransition: true
         });
     };
 
@@ -488,7 +489,8 @@ class MainContainer extends Component {
             seriesList: copyList,
             allTimeSeries: allSeriesCopy,
             statThreshold: +thresh,
-            percExceedenceList
+            percExceedenceList,
+            animateTransition: true
         });
     };
 
@@ -512,11 +514,11 @@ class MainContainer extends Component {
         })
     }
 
-    handleBrushRange = (i) => {this.setState({dateRange: i});};
+    handleBrushRange = (i) => {this.setState({dateRange: i, animateTransition: false});};
 
-    handleBrushStart = () => {this.setState({brushActive: true})}
+    handleBrushStart = () => {this.setState({brushActive: true, animateTransition: false})}
 
-    handleBrushEnd = () => {this.setState({brushActive: false})}
+    handleBrushEnd = () => {this.setState({brushActive: false, animateTransition: true})}
 
     handleScaleToggle = (scale) => {this.setState({ summaryScale: scale })}
 
@@ -580,6 +582,7 @@ class MainContainer extends Component {
 
     render() {
         const { Content } = Layout;
+        // console.log('animateTransition', this.state.animateTransition)
         return (
             <Layout>
 
@@ -611,6 +614,8 @@ class MainContainer extends Component {
                                         scenarioList={this.state.scenarioList}
                                         severity={this.state.severity}
                                         r0={this.state.r0}
+                                        animateTransition={this.state.animateTransition}
+                                        toggleAnimateTransition={this.toggleAnimateTransition}
                                         simNum={this.state.simNum}
                                         showConfBounds={this.state.showConfBounds}
                                         confBoundsList={this.state.confBoundsList}

@@ -40,6 +40,8 @@ class GraphContainer extends Component {
                 scenario={this.props.scenario}
                 severity={this.props.severity}
                 r0={this.props.r0}
+                animateTransition={this.props.animateTransition}
+                toggleAnimateTransition={this.props.toggleAnimateTransition}
                 simNum={this.props.simNum}
                 showConfBounds={this.props.showConfBounds}
                 confBounds={this.props.confBoundsList[0]}
@@ -121,6 +123,8 @@ class GraphContainer extends Component {
                     scenario={this.props.scenarioList[i]}
                     severity={this.props.severity}
                     r0={this.props.r0}
+                    animateTransition={this.props.animateTransition}
+                    toggleAnimateTransition={this.props.toggleAnimateTransition}
                     simNum={this.props.simNum}
                     showConfBounds={this.props.showConfBounds}
                     confBounds={this.props.confBoundsList[i]}

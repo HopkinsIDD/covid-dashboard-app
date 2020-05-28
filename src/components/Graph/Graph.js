@@ -46,62 +46,34 @@ class Graph extends Component {
     componentDidUpdate(prevProps, prevState) {
         // console.log('ComponentDidUpdate', this.props.keyVal)
         // confidence bounds overlay
-        
         if (this.props.showConfBounds !== prevProps.showConfBounds && this.props.confBounds) {
             // console.log('showConfBounds is', this.props.showConfBounds)
             if (this.props.confBounds) {
-                // console.log(this.props.confBounds)
+                console.log(this.props.confBounds)
                 const { confBounds, dates} = this.props;
                 const { areaGenerator } = prevState;
                 this.updateConfBounds(confBounds, areaGenerator, dates)
             }
         }
-    
-        if (this.props.series !== prevProps.series && this.props.brushActive) {
-            // console.log('brushing is TRUE, series diff', this.props.keyVal)
-            const { series, dates, width} = this.props;
-            const { lineGenerator, areaGenerator } = prevState;
 
-            this.updateSimPaths(series, dates, lineGenerator, true, width);
+        if (this.props.series !== prevProps.series) {
+            // console.log('componentDidUpdate SERIES change');
+            const { series, dates, animateTransition, width } = this.props;
+            const { lineGenerator, areaGenerator } = prevState;
+            console.log('animateTransition', animateTransition)
+
+            this.updateSimPaths(series, dates, lineGenerator, animateTransition, width);
             if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
-            // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
         }
 
-        if (this.props.series !== prevProps.series && !this.props.brushActive) {
-            console.log('brushing is FALSE, series diff', this.props.keyVal)
-            const { series, dates, width } = this.props;
-            const { lineGenerator, areaGenerator } = prevState;
-            
-            if (this.props.r0 !== prevProps.r0) this.updateSimPaths(series, dates, lineGenerator, true, width);
-            
-            this.updateSimPaths(series, dates, lineGenerator, false, width);
-            if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
-            
-            // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
-        }
-
-        if (!this.props.brushActive &&
-            this.props.stat === prevProps.stat &&
-            this.props.severity === prevProps.severity &&
-            (this.props.statThreshold !== prevProps.statThreshold || this.props.dateThreshold !== prevProps.dateThreshold)) {
-            // console.log('threshold diff', this.props.keyVal)
-            const { series, dates, width } = this.props;
-            const { lineGenerator, areaGenerator } = prevState;
-            
-            this.updateSimPaths(series, dates, lineGenerator, false, width);
-            if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
-            // this.updateThresholdIndicators(statThreshold, dateThreshold, xScale, yScale);
-        }
-
-        if (!this.props.brushActive && (this.props.xScale !== prevProps.xScale || this.props.yScale !== prevProps.yScale)) {
+        if (this.props.xScale !== prevProps.xScale || this.props.yScale !== prevProps.yScale) {
             // console.log('componentDidUpdate scale changed')
-            const { series, dates, width } = this.props;
+            const { series, dates, animateTransition, width } = this.props;
             const { lineGenerator, areaGenerator } = prevState;
 
-            this.updateSimPaths(series, dates, lineGenerator, false, width);
+            this.updateSimPaths(series, dates, lineGenerator, animateTransition, width);
             if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
         }
-
     }
 
     drawSimPaths = (series, dates) => {
@@ -128,7 +100,7 @@ class Graph extends Component {
         })
     }
 
-    updateSimPaths = (series, dates, lineGenerator, brushed, width) => {
+    updateSimPaths = (series, dates, lineGenerator, animateTransition, width) => {
         //Animate simPath color but don't change data
         if (this.simPathsRef.current) {
                 
@@ -145,7 +117,7 @@ class Graph extends Component {
             // get svg node
             const simPathsNode = select(this.simPathsRef.current)
 
-            if (brushed) {
+            if (!animateTransition) {
                 simPathsNode.selectAll('.simPath')
                     .data(series)
                     .attr("d", d => lineGenerator(d.vals))
