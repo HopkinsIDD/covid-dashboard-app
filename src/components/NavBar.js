@@ -31,19 +31,19 @@ class NavBar extends Component {
       const { showMiniSearch } = this.state;
 
       let searchBar = '';
-      if (showMiniSearch) {
-        console.log('yes show mini search')
-        searchBar = (
-          <SearchBar
-            stat={this.props.stat}
-            geoid={this.props.geoid}
-            onCountySelect={this.handleCountySelect}
-            style={styles.MiniSearchBar}
-            size="default"
-          />   
+      // if (showMiniSearch) {
+      //   console.log('yes show mini search')
+      //   searchBar = (
+      //     <SearchBar
+      //       stat={this.props.stat}
+      //       geoid={this.props.geoid}
+      //       onCountySelect={this.handleCountySelect}
+      //       style={styles.MiniSearchBar}
+      //       size="default"
+      //     />   
 
-        )
-      } 
+      //   )
+      // } 
       console.log('set state')
       this.setState({searchBar});
     }
@@ -77,6 +77,7 @@ class NavBar extends Component {
           </Col>
           <Col className="gutter-row mini-search" span={12}>
             {this.state.searchBar}
+            <h1 className="titleNarrow">Covid-19 Scenario Interventions</h1>
           </Col>
           <Col className="gutter-row nav-menu" span={10}>
             <ul style={{ marginTop: '5px' }}>

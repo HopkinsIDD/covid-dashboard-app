@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
 import SearchBar from './SearchBar';
 import { styles } from '../../utils/constants';
@@ -57,8 +57,9 @@ class Search extends Component {
     render() {
         const { Content } = Layout;
         return (
-            <Content id="search-container" style={{ background: '#fefefe', padding: '5rem 0 4rem' }}>
-                <div className="content-section">
+            <Fragment>
+            <div id="search-container" style={{ background: '#fefefe', padding: '5rem 0 0 0' }}>
+                <div className="content-section" style={{ textAlign: 'left' }}>
                     <div className="title-header">
                         COVID-19 Intervention Scenario Modeling
                     </div>
@@ -67,10 +68,11 @@ class Search extends Component {
                         to start comparing scenarios now.
                     </div>
                 </div>
-
+            </div>  
+            <div id="search-container" style={{ background: '#fefefe', position:'sticky', top: 50, zIndex: 10 }}>
                 <div className="dropdown">
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                        <Col className="gutter-row" offset={6} span={18}>
+                        <Col className="gutter-row" span={18} style={{ paddingLeft: '9%'}}>
                             <SearchBar
                                 stat={this.props.stat}
                                 geoid={this.props.geoid}
@@ -82,20 +84,9 @@ class Search extends Component {
                         </Col>
                     </Row>
                 </div>
-
-                {/* <div className="content-section">
-                    <label
-                        htmlFor="upload">
-                        Greetings
-                    </label>
-                    <input
-                        type="file"
-                        id="upload"
-                        onChange={this.handleUpload}>
-                    </input>
-                </div> */}
-
-                <div className="content-section">
+            </div>  
+            <div id="search-container" style={{ background: '#fefefe', padding: '0 0 4rem 0' }}>       
+                <div className="content-section" style={{ textAlign: 'left' }}>
                     Prepared by the&nbsp;
                     <a
                         className="customLink"
@@ -104,7 +95,8 @@ class Search extends Component {
                     </a>
                     &nbsp;Working Group.
                 </div>
-            </Content>       
+            </div>
+        </Fragment>
         )
     }
 }
