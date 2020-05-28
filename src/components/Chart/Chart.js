@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'; 
 import { min, max, quantile } from 'd3-array';
 import { scaleLinear, scaleBand, scalePow } from 'd3-scale';
-import { select } from 'd3-selection';
+import { select, transition } from 'd3-selection';
 import { easeCubicOut } from 'd3-ease'
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
@@ -50,8 +50,8 @@ class Chart extends Component {
         if (prevProps.scale !== this.props.scale) {
             console.log('componentDidUpdate scale check')
             const calc = this.calculateQuantiles();
-            this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
-            // this.updateSummaryStats(calc.quantileObj, calc.xScale, calc.yScale, calc.scaleDomains);
+            // this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
+            this.updateSummaryStats(calc.quantileObj, calc.xScale, calc.yScale, calc.scaleDomains);
         }
     }
 
@@ -119,17 +119,19 @@ class Chart extends Component {
         if (this.chartRef.current) {
             console.log('ref check, update Summary stats')
             const barWidth = ((this.props.width / this.state.severities.length) / this.props.scenarios.length) - margin.left - margin.right;
-
+            const barMargin = 10;
+            const whiskerMargin = barWidth * 0.2;
             // update paths with new data
             const barNodes = select(this.chartRef.current)
-            this.props.severities.map( (severity, i) => {
+
+            this.state.severities.map( (severity, i) => {
                 Object.entries(quantileObj[this.props.stat][severity]).map( ([key, value]) => {
-                    barNodes.selectAll('.bars')
+                    barNodes.selectAll(`.bar-${severity}-${key}`)
                         .transition()
                         .duration(500)
-                        .attr("x", (margin.left * 2) + (i * (this.props.width / this.state.severities.length)) + xScale(key))
+                        // .attr("x", (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key))
                         .attr("y", yScale(value.median))
-                        .attr("width", barWidth)
+                        // .attr("width", barWidth)
                         .attr("height", yScale(0) - yScale(value.median))
                         .ease(easeCubicOut)
                     .on("end", () => {
@@ -139,50 +141,6 @@ class Chart extends Component {
                 })
             })
         }
-    }
-
-    handleHighlightEnter = (event, severity, key, index) => {
-        if (!this.state.rectIsHovered) {
-            event.stopPropagation();
-            // console.log(severity, key, index)
-            const hoveredRect = {
-                'severity': severity,
-                'scenario': key,
-                'index': index
-            }
-            const { quantileObj }  = this.state;
-            const { stat, statLabel, scenarios } = this.props;
-            // const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
-            const median = quantileObj[stat][severity][key]['median']
-            const tenth = quantileObj[stat][severity][key]['tenth']
-            const ninetyith = quantileObj[stat][severity][key]['ninetyith']
-            // console.log(median, this.state.yScale(median), this.state.yScale(median) / (this.props.height - margin.bottom))
-            // console.log(quantileObj[stat][severity][key])
-            const severityText = this.props.stat === 'incidI' ? '' : `${capitalize(severity)} Severity<br>`;
-            // console.log( this.props.stat, severity, severityText)
-            const text =    `${scenarios[index].replace('_', ' ')}<br>` +
-                            severityText +
-                            `p90: ${addCommas(Math.ceil(ninetyith))}<br>` +
-                            `median: ${addCommas(Math.ceil(median))}<br>` +
-                            `p10: ${addCommas(Math.ceil(tenth))}<br>`
-    
-            const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
-
-            this.setState({ hoveredRect, rectIsHovered: true, tooltipText })
-            this.props.handleCalloutInfo( statLabel, median, tenth, ninetyith, true );
-            this.props.handleScenarioHover( index );
-        }
-    }
-
-    handleHighlightLeave = () => {
-        const hoveredRect = {
-            'severity': '',
-            'scenario': '',
-            'index': 0
-        }
-        this.setState({ hoveredRect, rectIsHovered: false })
-        this.props.handleCalloutLeave();
-        this.props.handleScenarioHover( null );
     }
 
     drawSummaryStats = () => {
@@ -213,7 +171,7 @@ class Chart extends Component {
                                         <rect 
                                             d={value}
                                             key={`bar-${severity}-${key}`}
-                                            className={'bars'}
+                                            className={`bar-${severity}-${key}`}
                                             width={barWidth}
                                             height={this.state.yScale(0) - this.state.yScale(value.median)}
                                             x={(margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key)}
@@ -294,9 +252,48 @@ class Chart extends Component {
         )
     }
 
-    updateSummaryStats = () => {
-        if(this.chartRef.current) {
+    handleHighlightEnter = (event, severity, key, index) => {
+        if (!this.state.rectIsHovered) {
+            event.stopPropagation();
+            // console.log(severity, key, index)
+            const hoveredRect = {
+                'severity': severity,
+                'scenario': key,
+                'index': index
+            }
+            const { quantileObj }  = this.state;
+            const { stat, statLabel, scenarios } = this.props;
+            // const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
+            const median = quantileObj[stat][severity][key]['median']
+            const tenth = quantileObj[stat][severity][key]['tenth']
+            const ninetyith = quantileObj[stat][severity][key]['ninetyith']
+            // console.log(median, this.state.yScale(median), this.state.yScale(median) / (this.props.height - margin.bottom))
+            // console.log(quantileObj[stat][severity][key])
+            const severityText = this.props.stat === 'incidI' ? '' : `${capitalize(severity)} Severity<br>`;
+            // console.log( this.props.stat, severity, severityText)
+            const text =    `${scenarios[index].replace('_', ' ')}<br>` +
+                            severityText +
+                            `p90: ${addCommas(Math.ceil(ninetyith))}<br>` +
+                            `median: ${addCommas(Math.ceil(median))}<br>` +
+                            `p10: ${addCommas(Math.ceil(tenth))}<br>`
+    
+            const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
+
+            this.setState({ hoveredRect, rectIsHovered: true, tooltipText })
+            this.props.handleCalloutInfo( statLabel, median, tenth, ninetyith, true );
+            this.props.handleScenarioHover( index );
         }
+    }
+
+    handleHighlightLeave = () => {
+        const hoveredRect = {
+            'severity': '',
+            'scenario': '',
+            'index': 0
+        }
+        this.setState({ hoveredRect, rectIsHovered: false })
+        this.props.handleCalloutLeave();
+        this.props.handleScenarioHover( null );
     }
 
     render() {
