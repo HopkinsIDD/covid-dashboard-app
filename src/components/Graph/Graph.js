@@ -301,7 +301,7 @@ class Graph extends Component {
         const i0 = i1 - 1;
         const i = xm - this.props.dates[i0] > this.props.dates[i1] - xm ? i1 : i0;
         const s = least(this.props.series, d => Math.abs(d.vals[i] - ym));
-        console.log(s)
+        // console.log(s)
         if (s) {
             const hoveredIdx = this.props.series.findIndex( sim => sim.name === s.name)
             // console.log(hoveredIdx)
@@ -310,7 +310,7 @@ class Graph extends Component {
             const peakIndex = maxIndex(s.vals)
             const tooltipXPos = this.props.xScale(this.props.dates[peakIndex])
             const tooltipYPos = this.props.yScale(peak)
-            console.log(peakIndex, peak, tooltipXPos, tooltipYPos)
+            // console.log(peakIndex, peak, tooltipXPos, tooltipYPos)
             this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `R0: ${s.r0}`, tooltipXPos, tooltipYPos })
         } 
     }
