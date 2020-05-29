@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
-import { Layout, Row, Col } from 'antd';
+import { Row, Col } from 'antd';
 import SearchBar from './SearchBar';
-import { styles, COUNTYNAMES } from '../../utils/constants';
+import { styles } from '../../utils/constants';
 
 class Search extends Component {
     constructor(props) {
@@ -55,9 +55,7 @@ class Search extends Component {
     }
 
     render() {
-        const { Content } = Layout;
-        const { geoid, stat, countySelected } = this.props;
-        const placeholder = countySelected ? COUNTYNAMES[geoid] : "Search for your state or county";
+        const { geoid, stat } = this.props;
 
         return (
             <Fragment>
@@ -81,7 +79,6 @@ class Search extends Component {
                                 geoid={geoid}
                                 // onFileUpload={this.handleUpload}
                                 onCountySelect={this.handleCountySelect}
-                                placeholder={placeholder}
                                 style={styles.SearchBar}
                                 size="large"
                             />

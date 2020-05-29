@@ -51,8 +51,8 @@ h1, h2, h3, h4 {
 }
 
 .brand {
-  width: 35%;
-  padding-top: 2%
+  max-width: 11rem;
+  padding-top: 0.2rem;
 }
 
 .App-header {

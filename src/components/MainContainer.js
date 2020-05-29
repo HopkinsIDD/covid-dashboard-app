@@ -42,7 +42,6 @@ class MainContainer extends Component {
             yAxisLabel: '',
             stat: STATS[0],
             geoid: '06085', 
-            countySelected: false,
             SCENARIOS: [],
             scenario: {},
             scenarioList: [],           
@@ -374,7 +373,6 @@ class MainContainer extends Component {
         this.setState({
             dataset,
             geoid: i.geoid,
-            countySelected: true,
             SCENARIOS,
             scenarioList,
             scenarioListChart,
@@ -599,7 +597,6 @@ class MainContainer extends Component {
                 <Search
                     stat={this.state.stat}
                     geoid={this.state.geoid}
-                    countySelected={this.state.countySelected}
                     onFileUpload={this.handleUpload}
                     onCountySelect={this.handleCountySelect}>
                 </Search>
