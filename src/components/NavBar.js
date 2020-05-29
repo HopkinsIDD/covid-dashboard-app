@@ -6,6 +6,7 @@ import { ReactComponent as GraphLogo } from '../assets/graph.svg';
 import { ReactComponent as ChartLogo } from '../assets/chart.svg';
 import { ReactComponent as MapLogo } from '../assets/globe.svg';
 import { ReactComponent as MethodsLogo } from '../assets/book.svg';
+// import { ReactComponent as JHLogo } from '../assets/logo-john-hopkins.svg';
 class NavBar extends Component {
 
   render() {
@@ -17,6 +18,7 @@ class NavBar extends Component {
           </Col>
           <Col className="gutter-row mini-search" span={6}>
             <img className="brand" src={brand} alt="Brand" />
+            {/* <JHLogo height="24" throwIfNamespace={false} /> */}
           </Col>
           <Col className="gutter-row nav-menu" offset={7} span={10}>
             <ul style={{ marginTop: '5px' }}>
