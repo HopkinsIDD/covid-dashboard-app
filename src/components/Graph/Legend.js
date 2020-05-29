@@ -9,7 +9,7 @@ function Legend(props) {
                     <rect
                         x={props.x}
                         y={props.y}
-                        width={165}
+                        width={160}
                         height={50}
                         fill={graphBkgd}
                         fillOpacity={0.5}
@@ -62,7 +62,7 @@ function Legend(props) {
                     <rect
                         x={props.x}
                         y={props.y}
-                        width={165}
+                        width={160}
                         height={50}
                         fill={graphBkgd}
                         fillOpacity={0.5}
