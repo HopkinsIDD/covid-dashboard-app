@@ -7,7 +7,20 @@ import { ReactComponent as ChartLogo } from '../assets/chart.svg';
 import { ReactComponent as MapLogo } from '../assets/globe.svg';
 import { ReactComponent as MethodsLogo } from '../assets/book.svg';
 // import { ReactComponent as JHLogo } from '../assets/logo-john-hopkins.svg';
+import { green } from '../utils/constants.js'
 class NavBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hovered: null,
+      active: null,
+      class: ''
+    }
+  }
+
+  handleClick = () => {
+
+  }
 
   render() {
     return (
@@ -26,19 +39,37 @@ class NavBar extends Component {
                 <a href="#scenario-comparisons">
                   <GraphLogo 
                     height="24" 
-                    // onMouseEnter={this.handleMouseEnter}
-                    // onMouseLeave={this.handleMouseLeave}
+                    className="nav-hover"
+                    onMouseClick={this.handleMouseClick}
                     />
                 </a>
               </li>
               <li style={{ paddingRight: '10px'}}>
-                <a href="#stats"><ChartLogo height="24"/></a>
+                <a href="#stats">
+                  <ChartLogo 
+                  height="24"
+                  className="nav-hover"
+                  onMouseClick={this.handleMouseClick}
+                  />
+                </a>
               </li>
               <li style={{ paddingRight: '20px'}}>
-                <a href="#map"><MapLogo height="24"/></a>
+                <a href="#map">
+                  <MapLogo 
+                  height="24"
+                  className="nav-hover"
+                  onMouseClick={this.handleMouseClick}
+                  />
+                </a>
               </li>
               <li>
-                <a href="#methods"><MethodsLogo height="24"/></a>
+                <a href="#methods">
+                  <MethodsLogo
+                    height="24"
+                    className="nav-hover-methods"
+                    onMouseClick={this.handleMouseClick}
+                  />
+                </a>
               </li>
             </ul>
           </Col>

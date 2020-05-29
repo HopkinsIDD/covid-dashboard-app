@@ -153,6 +153,22 @@ a:hover {
   font-weight: bold;
 }
 
+.nav-hover:hover path, .nav-hover:hover circle, .nav-hover:hover ellipse, .nav-hover:hover rect, .nav-hover:hover line {
+  stroke: white;
+}
+
+.nav-active path, .nav-active circle, .nav-active ellipse, .nav-activerect, .nav-active line {
+  stroke: #4ddaba;
+}
+
+.nav-hover-methods:hover path {
+  fill: white;
+}
+
+.nav-active-methods path {
+  fill: #4ddaba;
+}
+
 .tick {
   font-family: 'PT Sans', sans-serif;
 }
