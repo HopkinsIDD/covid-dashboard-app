@@ -3,6 +3,7 @@ import { min, max, quantile } from 'd3-array';
 import { scaleLinear, scaleBand, scalePow } from 'd3-scale';
 import { select, transition } from 'd3-selection';
 import { easeCubicOut } from 'd3-ease'
+import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
 import { getDateIdx, addCommas, capitalize } from '../../utils/utils';
@@ -180,6 +181,7 @@ class Chart extends Component {
                                             stroke={this.state.hoveredRect.severity === severity &&
                                                 this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
                                             strokeWidth={4}
+                                            style={{ pointerEvents: 'none' }}
                                         >
                                         </rect>
                                         <line
@@ -190,6 +192,7 @@ class Chart extends Component {
                                             y2={this.state.yScale(value.tenth)}
                                             stroke={gray}
                                             strokeWidth={1}
+                                            style={{ pointerEvents: 'none' }}
                                         >
                                         </line>
                                         <line
@@ -200,6 +203,7 @@ class Chart extends Component {
                                             y2={this.state.yScale(value.ninetyith)}
                                             stroke={gray}
                                             strokeWidth={1}
+                                            style={{ pointerEvents: 'none' }}
                                         >
                                         </line>
                                         <line
@@ -210,9 +214,9 @@ class Chart extends Component {
                                             y2={this.state.yScale(value.tenth)}
                                             stroke={gray}
                                             strokeWidth={1}
+                                            style={{ pointerEvents: 'none' }}
                                         >
                                         </line>
-                                        {/* debug red rect highlight */}
                                         <Tooltip
                                             key={`tooltip-chart-${i}-${j}`}
                                             title={this.state.tooltipText}
@@ -220,6 +224,7 @@ class Chart extends Component {
                                                     this.state.hoveredRect.scenario === key ? true : false}
                                             data-html="true"
                                         >
+                                            {/* debug red rect highlight */}
                                             <rect
                                                 d={value}
                                                 key={`bar-${severity}-${key}-hover`}
@@ -232,7 +237,7 @@ class Chart extends Component {
                                                 fill={'red'}
                                                 fillOpacity={0}
                                                 stroke={'red'}
-                                                strokeOpacity={0}
+                                                strokeOpacity={0.5}
                                                 strokeWidth={4}
                                                 style={{ cursor: 'pointer'}}
                                                 onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
@@ -252,9 +257,13 @@ class Chart extends Component {
         )
     }
 
-    handleHighlightEnter = (event, severity, key, index) => {
+    handleHighlightEnter = _.debounce((event, severity, key, index) => {
+        // console.log('chart highlight enter')
+        
         if (!this.state.rectIsHovered) {
-            event.stopPropagation();
+            // console.log('rect not hovered')
+            // event.stopPropagation();
+            // event.preventDefault();
             // console.log(severity, key, index)
             const hoveredRect = {
                 'severity': severity,
@@ -263,6 +272,7 @@ class Chart extends Component {
             }
             const { quantileObj }  = this.state;
             const { stat, statLabel, scenarios } = this.props;
+            // console.log(severity, key, index, stat, scenarios, scenarios[index])
             // const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
             const median = quantileObj[stat][severity][key]['median']
             const tenth = quantileObj[stat][severity][key]['tenth']
@@ -283,18 +293,22 @@ class Chart extends Component {
             this.props.handleCalloutInfo( statLabel, median, tenth, ninetyith, true );
             this.props.handleScenarioHover( index );
         }
-    }
+    }, 100)
 
-    handleHighlightLeave = () => {
-        const hoveredRect = {
-            'severity': '',
-            'scenario': '',
-            'index': 0
+    handleHighlightLeave = _.debounce(() => {
+        // console.log('chart highlight leave')
+        if (this.state.rectIsHovered) {
+            // console.log('rect is hovered')
+            const hoveredRect = {
+                'severity': '',
+                'scenario': '',
+                'index': 0
+            }
+            this.setState({ hoveredRect, rectIsHovered: false })
+            this.props.handleCalloutLeave();
+            this.props.handleScenarioHover( null );
         }
-        this.setState({ hoveredRect, rectIsHovered: false })
-        this.props.handleCalloutLeave();
-        this.props.handleScenarioHover( null );
-    }
+    }, 100)
 
     render() {
         // console.log(this.props.width, this.props.height)
