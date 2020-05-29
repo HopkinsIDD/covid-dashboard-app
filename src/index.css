@@ -73,10 +73,14 @@ h1, h2, h3, h4 {
   font-size: 36px;
   margin-bottom: 2rem;
 }
+
 .content-header {
-  font-size: 18px;
   text-align: left;
-  font-weight: bold;
+  color: #808080;
+  font-size: 14px;
+  margin-top: 0.8rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
   /* margin-bottom: 2rem; */
 }
 

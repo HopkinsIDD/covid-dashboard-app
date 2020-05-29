@@ -104,7 +104,7 @@ class ChartContainer extends Component {
         // const parameters = this.props.stats.map( s => s.key )
         return (
             <div>
-                <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]}`}</div>
+                <div className="scenario-title titleNarrow">Summary of</div>
                 <div className="filter-label threshold-label callout callout-row">
                     <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
                         {getReadableDate(this.props.summaryStart)}</span>&nbsp;to&nbsp;

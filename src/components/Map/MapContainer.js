@@ -98,7 +98,7 @@ class MapContainer extends Component {
         // const scenario = scenarioList.length > 0 ? scenarioList[0] : scenarioList
         return (
             <div>
-                <div className="scenario-title titleNarrow">{`${COUNTYNAMES[this.props.geoid]} - ${this.props.scenario.replace('_', ' ')}`}</div>
+                <div className="scenario-title titleNarrow">{this.props.scenario.replace('_', ' ')}</div>
                 <div className="filter-label threshold-label callout callout-row">
                     {`Snapshot on `}
                     <span className={this.props.dateSliderActive ? 'underline-active' : 'bold underline'}>

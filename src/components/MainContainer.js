@@ -20,7 +20,7 @@ import { buildScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { maxIndex } from 'd3-array';
-import { STATS, LEVELS, margin } from '../utils/constants';
+import { STATS, LEVELS, COUNTYNAMES, margin } from '../utils/constants';
 
 const dataset = require('../store/geo06085.json');
 const geojsonStats = require('../store/statsForMap.json')
@@ -604,7 +604,7 @@ class MainContainer extends Component {
                 {/* MainGraph Component */}
                 <Content id="scenario-comparisons" style={{ padding: '50px 0' }}>
                     <div className="content-section">
-                        <div className="content-header">Scenario Comparisons</div>
+                        <div className="content-header">{`${COUNTYNAMES[this.state.geoid]}`}</div>
                     </div>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16}>
@@ -701,7 +701,7 @@ class MainContainer extends Component {
                 {/* MainChart Component */}
                 <Content id="stats" style={{ background: '#fefefe', padding: '50px 0' }}>
                     <div className="content-section">
-                        <div className="content-header">Summary Across Scenarios</div>
+                        <div className="content-header">{`${COUNTYNAMES[this.state.geoid]}`}</div>
                     </div>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16}>
@@ -762,7 +762,7 @@ class MainContainer extends Component {
                 {/* MainMap Component */}
                 <Content id="map" style={{ padding: '50px 0' }}>
                     <div className="content-section">
-                        <div className="content-header">State-Wide Comparisons</div>
+                        <div className="content-header">{`${COUNTYNAMES[this.state.geoid]}`}</div>
                     </div>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16} style={{ paddingLeft: margin.yAxis + (2 * margin.left) + margin.right }}>
