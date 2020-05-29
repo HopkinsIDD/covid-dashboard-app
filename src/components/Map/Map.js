@@ -159,12 +159,12 @@ class Map extends Component {
         const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
 
         this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true, tooltipText })
-    }, 200)
+    }, 100)
 
     handleCountyLeave = _.debounce(() => {
         // console.log('left', feature.properties.name)
         this.setState({ hoveredCounty: null, countyIsHovered: false })
-    }, 200)
+    }, 100)
 
     drawLegend = () => {
         // const legendW = 100;
