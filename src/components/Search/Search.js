@@ -1,13 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
 import SearchBar from './SearchBar';
-import { styles } from '../../utils/constants';
+import { styles, COUNTYNAMES } from '../../utils/constants';
 
 class Search extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fileName: ''
+            fileName: '',
         }
     }
 
@@ -56,6 +56,9 @@ class Search extends Component {
 
     render() {
         const { Content } = Layout;
+        const { geoid, stat, countySelected } = this.props;
+        const placeholder = countySelected ? COUNTYNAMES[geoid] : "Search for your state or county";
+
         return (
             <Fragment>
             <div id="search-container" style={{ background: '#fefefe', padding: '5rem 0 0 0' }}>
@@ -74,10 +77,11 @@ class Search extends Component {
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row" span={18} style={{ paddingLeft: '9%'}}>
                             <SearchBar
-                                stat={this.props.stat}
-                                geoid={this.props.geoid}
+                                stat={stat}
+                                geoid={geoid}
                                 // onFileUpload={this.handleUpload}
                                 onCountySelect={this.handleCountySelect}
+                                placeholder={placeholder}
                                 style={styles.SearchBar}
                                 size="large"
                             />

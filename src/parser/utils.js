@@ -221,7 +221,7 @@ function combineCaliCounties() {
 
     const geo06019 = require('../store/geo06019.json');
     const oldKeys = Object.keys(geo06019);
-    const newKeys = ['USA_Lockdown1945', 'USA_LockdownHK', 'USA_Fatiguing'];
+    const newKeys = ['Scenario_D', 'Scenario_E', 'Scenario_F'];
     
     // rename scenarios of geo06019
     for (let i = 0; i < oldKeys.length; i ++) {

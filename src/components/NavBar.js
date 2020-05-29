@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import SearchBar from './Search/SearchBar';
-import { styles } from '../utils/constants';
+import { styles, COUNTYNAMES } from '../utils/constants';
 import logo from '../assets/logo.png'; 
+import brand from '../assets/idd.png'; 
 import { ReactComponent as GraphLogo } from '../assets/graph.svg';
 import { ReactComponent as ChartLogo } from '../assets/chart.svg';
 import { ReactComponent as MapLogo } from '../assets/globe.svg';
@@ -13,22 +14,32 @@ class NavBar extends Component {
     this.state = {
         showMiniSearch: false,
         divHeight: 0,
-        searchBar: ''
+        searchBar: '',
+        countyName: ''
     }
   }
 
   componentDidMount() {
     const divHeight = document.getElementById("search-container").clientHeight;
-    this.setState({divHeight});
+    const searchBar = <img className="brand" src={brand} alt="Brand" />;
+    const countyName = COUNTYNAMES[this.props.geoid];
+
+    this.setState({
+      divHeight, 
+      searchBar, 
+      countyName
+    });
 
     window.addEventListener('scroll', this.handleScroll, true);
   }
 
   componentDidUpdate(prevProps, prevState) {
 
-    if (this.state.showMiniSearch !== prevState.showMiniSearch) {
-      console.log('navbar component did update')
+    if (this.state.showMiniSearch !== prevState.showMiniSearch ||
+        this.props.geoid !== prevProps.geoid) {
+
       const { showMiniSearch } = this.state;
+      const countyName = COUNTYNAMES[this.props.geoid];
 
       let searchBar = '';
       // if (showMiniSearch) {
@@ -81,6 +92,7 @@ class NavBar extends Component {
           </Col>
           <Col className="gutter-row nav-menu" span={10}>
             <ul style={{ marginTop: '5px' }}>
+<<<<<<< HEAD
               <li style={{ paddingRight: '10px'}}>
                 <a href="#scenario-comparisons"><GraphLogo height="24" /></a>
               </li>
@@ -92,6 +104,19 @@ class NavBar extends Component {
               </li>
               <li>
                 <a href="#methods"><MethodsLogo height="24"/></a>
+=======
+              <li style={styles.MenuIcons}>
+                <a href="#scenario-comparisons"><GraphLogo height="28" /></a>
+              </li>
+              <li style={styles.MenuIcons}>
+                <a href="#stats"><ChartLogo height="28"/></a>
+              </li>
+              <li style={styles.MenuIcons}>
+                <a href="#map"><MapLogo height="28"/></a>
+              </li>
+              <li style={styles.MenuIcons}>
+                <a href="#methods"><MethodsLogo height="28"/></a>
+>>>>>>> f8c9806d7bcf05ff9e2e1d6a3a1e60b075c2c45f
               </li>
             </ul>
           </Col>

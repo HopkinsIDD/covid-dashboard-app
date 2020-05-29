@@ -47,7 +47,12 @@ h1, h2, h3, h4 {
 
 .logo {
   max-width: 2rem;
-  padding-top: 0.4rem;
+  padding-top: 0.6rem;
+}
+
+.brand {
+  width: 35%;
+  padding-top: 2%
 }
 
 .App-header {
@@ -159,6 +164,7 @@ a:hover {
 .nav-menu {
   text-align: right;
   padding-right: 3%;
+  
 }
 
 .titleNarrow {
@@ -652,6 +658,10 @@ input[type=range]::-moz-focus-outer {
 /* CSS overides from libraries */
 .selection {
   stroke-opacity: 0;
+}
+
+.ant-select-selector {
+  background-color: transparent;
 }
 
 .ant-slider-mark-text {

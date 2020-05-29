@@ -3,7 +3,7 @@ const constants = require('../constants');
 
 test('returns expected dates array', () => {
     const dir = 'src/parser/fixtures/';
-    const scenarios = ['USA_Lockdown1918'];
+    const scenarios = ['Scenario_A'];
 
     const expected = [
         '2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'
@@ -13,7 +13,7 @@ test('returns expected dates array', () => {
 
 test('returns expected initialized object', () => {
     const geoids = ['06085', '06019', '36005', '36081'];
-    const scenarios = ['USA_Lockdown1918', 'USA_Uncontrolled'];
+    const scenarios = ['Scenario_A', 'Scenario_C'];
     const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
 
     const obj = utils.initObj(geoids, scenarios, dates);
@@ -40,7 +40,7 @@ test('return expected index mapping', () => {
 // test('return expected aggregation by state', () => {
 //     const parsedObj = {
 //         '06085': {
-//             'USA_Uncontrolled': {
+//             'Scenario_C': {
 //                 'high': {
 //                     'incidI': {
 //                         'peak': 0,
@@ -54,7 +54,7 @@ test('return expected index mapping', () => {
 //             }
 //         },
 //         '06019': {
-//             'USA_Uncontrolled': {
+//             'Scenario_C': {
 //                 'high': {
 //                     'incidI': {
 //                         'peak': 0,
@@ -68,7 +68,7 @@ test('return expected index mapping', () => {
 //             }
 //         }
 //     };
-//     const scenarios = ['USA_Uncontrolled'];
+//     const scenarios = ['Scenario_C'];
 //     const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
 
 
@@ -76,7 +76,7 @@ test('return expected index mapping', () => {
 
 //     const expected = {
 //     '06': {
-//         'USA_Uncontrolled': {
+//         'Scenario_C': {
 //             'high': {
 //                 'incidI': {
 //                     'peak': 0,
@@ -90,7 +90,7 @@ test('return expected index mapping', () => {
 //         }
 //     },
 //     '06085': {
-//         'USA_Uncontrolled': {
+//         'Scenario_C': {
 //             'high': {
 //                 'incidI': {
 //                     'peak': 0,
@@ -104,7 +104,7 @@ test('return expected index mapping', () => {
 //         }
 //     },
 //     '06019': {
-//         'USA_Uncontrolled': {
+//         'Scenario_C': {
 //             'high': {
 //                 'incidI': {
 //                     'peak': 0,
