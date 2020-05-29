@@ -92,7 +92,6 @@ class NavBar extends Component {
           </Col>
           <Col className="gutter-row nav-menu" span={10}>
             <ul style={{ marginTop: '5px' }}>
-<<<<<<< HEAD
               <li style={{ paddingRight: '10px'}}>
                 <a href="#scenario-comparisons"><GraphLogo height="24" /></a>
               </li>
@@ -104,19 +103,6 @@ class NavBar extends Component {
               </li>
               <li>
                 <a href="#methods"><MethodsLogo height="24"/></a>
-=======
-              <li style={styles.MenuIcons}>
-                <a href="#scenario-comparisons"><GraphLogo height="28" /></a>
-              </li>
-              <li style={styles.MenuIcons}>
-                <a href="#stats"><ChartLogo height="28"/></a>
-              </li>
-              <li style={styles.MenuIcons}>
-                <a href="#map"><MapLogo height="28"/></a>
-              </li>
-              <li style={styles.MenuIcons}>
-                <a href="#methods"><MethodsLogo height="28"/></a>
->>>>>>> f8c9806d7bcf05ff9e2e1d6a3a1e60b075c2c45f
               </li>
             </ul>
           </Col>
