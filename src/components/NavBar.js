@@ -88,7 +88,6 @@ class NavBar extends Component {
           </Col>
           <Col className="gutter-row mini-search" span={12}>
             {this.state.searchBar}
-            <h1 className="titleNarrow">Covid-19 Scenario Interventions</h1>
           </Col>
           <Col className="gutter-row nav-menu" span={10}>
             <ul style={{ marginTop: '5px' }}>
