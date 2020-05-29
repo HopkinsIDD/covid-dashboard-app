@@ -69,7 +69,7 @@ class Search extends Component {
                     </div>
                 </div>
             </div>  
-            <div id="search-container" style={{ background: '#fefefe', position:'sticky', top: 50, zIndex: 10 }}>
+            <div id="search-container" style={{ background: '#fefefe' }}>
                 <div className="dropdown">
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row" span={18} style={{ paddingLeft: '9%'}}>
