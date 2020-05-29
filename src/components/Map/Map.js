@@ -4,6 +4,7 @@ import { scaleLinear } from 'd3-scale';
 import { max } from 'd3-array';
 import { axisRight } from 'd3-axis';
 import { select } from 'd3-selection';
+import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
 
@@ -134,13 +135,14 @@ class Map extends Component {
                         className='counties'
                         onMouseEnter={(e) => this.handleCountyEnter(e, d)}
                         onMouseLeave={() => this.handleCountyLeave(d)}
+                        onMouseDrag={() => this.handleCountyLeave(d)}
                     />
                 </Tooltip>
             )})
          return counties
     }
 
-    handleCountyEnter = (event, feature) => {
+    handleCountyEnter = _.debounce((event, feature) => {
         event.preventDefault()
         // console.log('entered', feature.properties.name)
         // console.log(feature)
@@ -157,12 +159,12 @@ class Map extends Component {
         const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
 
         this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true, tooltipText })
-    }
+    }, 200)
 
-    handleCountyLeave = () => {
+    handleCountyLeave = _.debounce(() => {
         // console.log('left', feature.properties.name)
         this.setState({ hoveredCounty: null, countyIsHovered: false })
-    }
+    }, 200)
 
     drawLegend = () => {
         // const legendW = 100;
