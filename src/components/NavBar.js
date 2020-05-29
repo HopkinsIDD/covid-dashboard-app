@@ -23,7 +23,13 @@ class NavBar extends Component {
           <Col className="gutter-row nav-menu" offset={7} span={10}>
             <ul style={{ marginTop: '5px' }}>
               <li style={{ paddingRight: '10px'}}>
-                <a href="#scenario-comparisons"><GraphLogo height="24" /></a>
+                <a href="#scenario-comparisons">
+                  <GraphLogo 
+                    height="24" 
+                    // onMouseEnter={this.handleMouseEnter}
+                    // onMouseLeave={this.handleMouseLeave}
+                    />
+                </a>
               </li>
               <li style={{ paddingRight: '10px'}}>
                 <a href="#stats"><ChartLogo height="24"/></a>

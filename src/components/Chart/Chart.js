@@ -41,7 +41,6 @@ class Chart extends Component {
         if (prevProps.summaryStart !== this.props.summaryStart || 
             prevProps.summaryEnd !== this.props.summaryEnd ||
             prevProps.dataset !== this.props.dataset ||
-            prevProps.scenarios !== this.props.scenarios ||
             prevProps.stats !== this.props.stats ||
             prevProps.width !== this.props.width ||
             prevProps.height !== this.props.height) {
@@ -49,7 +48,8 @@ class Chart extends Component {
                 const calc = this.calculateQuantiles();
                 this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
         }
-        if (prevProps.scale !== this.props.scale) {
+        if (prevProps.scenarios !== this.props.scenarios ||
+            prevProps.scale !== this.props.scale) {
             console.log('componentDidUpdate scale check')
             const calc = this.calculateQuantiles();
             // this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
@@ -134,9 +134,9 @@ class Chart extends Component {
                     barNodes.selectAll(`.bar-${severity}-${key}`)
                         .transition()
                         .duration(500)
-                        // .attr("x", (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key))
+                        .attr("x", (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key))
                         .attr("y", yScale(value.median))
-                        // .attr("width", barWidth)
+                        .attr("width", barWidth)
                         .attr("height", yScale(0) - yScale(value.median))
                         .ease(easeCubicOut)
                     .on("end", () => {
@@ -146,8 +146,9 @@ class Chart extends Component {
                     barNodes.selectAll(`.vertline-${severity}-${key}`)
                         .transition()
                         .duration(500)
+                        .attr("x1", (barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
                         .attr("y1", yScale(value.ninetyith))
-                        // .attr("width", barWidth)
+                        .attr("x2", (barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
                         .attr("y2", yScale(value.tenth))
                         .ease(easeCubicOut)
                     .on("end", () => {
@@ -157,8 +158,9 @@ class Chart extends Component {
                     barNodes.selectAll(`.topline-${severity}-${key}`)
                         .transition()
                         .duration(500)
+                        .attr("x1", (whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
                         .attr("y1", yScale(value.ninetyith))
-                        // .attr("width", barWidth)
+                        .attr("x2", (barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
                         .attr("y2", yScale(value.ninetyith))
                         .ease(easeCubicOut)
                     .on("end", () => {
@@ -168,8 +170,9 @@ class Chart extends Component {
                     barNodes.selectAll(`.bottomline-${severity}-${key}`)
                         .transition()
                         .duration(500)
+                        .attr("x1", (whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
                         .attr("y1", yScale(value.tenth))
-                        // .attr("width", barWidth)
+                        .attr("x2", (barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
                         .attr("y2", yScale(value.tenth))
                         .ease(easeCubicOut)
                     .on("end", () => {
