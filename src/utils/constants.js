@@ -15,18 +15,24 @@ export const mapLowColors = ['#deebf7', '#e5f5e0', '#fee6ce', '#fee0d2']
 export const mapHighColors = ['#3885fa', '#008769', '#e6550d', '#de2d26']
 
 export const styles = {
-    SearchBar: {
-        width: "75%"
+    Container: {
+        background: '#fefefe',
+        padding: '5rem 0'
     },
-    MiniSearchBar: {
-        paddingTop: "0.4rem",
-        width: "15rem",
-        backgroundColor: "transparent", // This is not showing up!
-        // color: "white"
+    SearchBar: {
+        width: '75%'
     },
     MenuIcons: {
         paddingRight: '10px'
+    },
+    Switch: {
+        marginTop: '16px',
+        paddingLeft: '12px',
+    },
+    UploadSwitch: {
+        paddingLeft: '12px'
     }
+    
 };
   
 export const STATS = [
@@ -58,8 +64,8 @@ export const COUNTIES = [
 ];
 
 export const COUNTYNAMES = {
-    '06': 'California, CA',
-    '36': 'New York, NY',
+    '06': 'California',
+    '36': 'New York',
     '06037': 'Los Angeles County, CA',
     '06085': 'Santa Clara County, CA',
     '06075': 'San Francisco County, CA',
