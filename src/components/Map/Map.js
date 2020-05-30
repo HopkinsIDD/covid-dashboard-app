@@ -45,21 +45,13 @@ class Map extends Component {
 
     calculateScales = () => {
         const { stat, countyBoundaries, statsForCounty, scenario } = this.props;
-        // console.log(stat);
-        // console.log(dateIdx);
-        // console.log(countyBoundaries);
-        // console.log(geoid);
-        // console.log(statsForCounty);
-        // console.log(scenario);
         const normalizedStatsAll = []
         
         // iterate over this.props.countyBoundaries to plot up boundaries
         // join each geoid to statsForCounty[geoid][scenario][stat][dateIdx]
         for (let i = 0; i < countyBoundaries.features.length; i++) {
-            // console.log(countyBoundaries.features[i].properties)
             const geoid = countyBoundaries.features[i].properties.geoid;
             const population = countyBoundaries.features[i].properties.population;
-            // console.log(geoid)
             // check to see if stats exist for this county
             if (statsForCounty[geoid]) {
                 const statArray = statsForCounty[geoid][scenario][stat]
