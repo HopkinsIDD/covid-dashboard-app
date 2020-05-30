@@ -2,14 +2,27 @@ import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import logo from '../assets/logo.png'; 
 import brand from '../assets/brand.png'; 
-import { ReactComponent as GraphLogo } from '../assets/graph.svg';
-import { ReactComponent as ChartLogo } from '../assets/chart.svg';
-import { ReactComponent as MapLogo } from '../assets/globe.svg';
-import { ReactComponent as MethodsLogo } from '../assets/book.svg';
+import MenuItem from './MenuItem';
 // import { ReactComponent as JHLogo } from '../assets/logo-john-hopkins.svg';
+import { isThisTypeNode } from 'typescript';
+
 class NavBar extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      active: null,
+      links: ['#scenario-comparisons', '#stats', '#map', '#methods']
+    }
+  }
+
+  handleMouseClick = (index) => {
+    // console.log('clicked')
+    // console.log(index)
+    this.setState({ active: index })
+  }
 
   render() {
+    console.log(this.state.active)
     return (
       <div id="navbar" className="App-header">
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -18,22 +31,26 @@ class NavBar extends Component {
           </Col>
           <Col className="gutter-row mini-search" span={6}>
             <img className="brand" src={brand} alt="Brand" />
-            {/* <JHLogo height="24" throwIfNamespace={false} /> */}
           </Col>
           <Col className="gutter-row nav-menu" offset={7} span={10}>
             <ul style={{ marginTop: '5px' }}>
-              <li style={{ paddingRight: '10px'}}>
-                <a href="#scenario-comparisons"><GraphLogo height="24" /></a>
-              </li>
-              <li style={{ paddingRight: '10px'}}>
-                <a href="#stats"><ChartLogo height="24"/></a>
-              </li>
-              <li style={{ paddingRight: '20px'}}>
-                <a href="#map"><MapLogo height="24"/></a>
-              </li>
-              <li>
-                <a href="#methods"><MethodsLogo height="24"/></a>
-              </li>
+              {this.state.links.map( (link, index) => {
+                console.log(index, 'active', this.state.active === index)
+                return (
+                  <li style={{ paddingRight: (index < this.state.links.length - 1) ? '10px': '0px' }}>
+                    <a href={link}>
+                      <MenuItem  
+                        height="24"
+                        active={this.state.active === index ? true : false}
+                        activeClass={index === 3 ? "nav-active-methods" : "nav-active"}
+                        hoverClass={index === 3 ? "nav-hover-methods" : "nav-hover"}
+                        handleMouseClick={this.handleMouseClick}
+                        menuItem={index}
+                      />
+                    </a>
+                  </li>
+                )
+              })}
             </ul>
           </Col>
         </Row>
@@ -43,3 +60,4 @@ class NavBar extends Component {
 }
 
 export default NavBar;
+
