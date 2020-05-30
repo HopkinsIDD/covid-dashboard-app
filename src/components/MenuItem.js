@@ -15,6 +15,7 @@ class MenuItem extends Component {
       if (this.props.menuItem === 0) {
         return( <GraphLogo 
           height={this.props.height}
+          style={{ paddingTop: '10px'}}
           className={this.props.active ? this.props.activeClass : this.props.hoverClass}
           onClick={() => this.handleClickEvent(this.props.menuItem)}
         />
@@ -23,6 +24,7 @@ class MenuItem extends Component {
       if (this.props.menuItem === 1) {
         return( <ChartLogo 
           height={this.props.height}
+          style={{ paddingTop: '10px'}}
           className={this.props.active ? this.props.activeClass : this.props.hoverClass}
           onClick={() => this.handleClickEvent(this.props.menuItem)}
         />
@@ -31,6 +33,7 @@ class MenuItem extends Component {
       if (this.props.menuItem === 2) {
         return( <MapLogo 
           height={this.props.height}
+          style={{ paddingTop: '10px'}}
           className={this.props.active ? this.props.activeClass : this.props.hoverClass}
           onClick={() => this.handleClickEvent(this.props.menuItem)}
         />
@@ -39,6 +42,7 @@ class MenuItem extends Component {
       if (this.props.menuItem === 3) {
         return( <MethodsLogo 
           height={this.props.height}
+          style={{ paddingTop: '10px'}}
           className={this.props.active ? this.props.activeClass : this.props.hoverClass}
           onClick={() => this.handleClickEvent(this.props.menuItem)}
         />
