@@ -22,7 +22,6 @@ class NavBar extends Component {
   }
 
   render() {
-    console.log(this.state.active)
     return (
       <div id="navbar" className="App-header">
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
@@ -35,7 +34,7 @@ class NavBar extends Component {
           <Col className="gutter-row nav-menu" offset={7} span={10}>
             <ul style={{ marginTop: '5px' }}>
               {this.state.links.map( (link, index) => {
-                console.log(index, 'active', this.state.active === index)
+                // console.log(index, 'active', this.state.active === index)
                 return (
                   <li style={{ paddingRight: (index < this.state.links.length - 1) ? '10px': '0px' }}>
                     <a href={link}>
