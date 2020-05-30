@@ -157,7 +157,7 @@ a:hover {
   stroke: white;
 }
 
-.nav-active path, .nav-active circle, .nav-active ellipse, .nav-activerect, .nav-active line {
+.nav-active path, .nav-active circle, .nav-active ellipse, .nav-active rect, .nav-active line {
   stroke: #4ddaba;
 }
 
