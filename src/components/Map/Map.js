@@ -135,7 +135,7 @@ class Map extends Component {
                         className='counties'
                         onMouseEnter={(e) => this.handleCountyEnter(e, d)}
                         onMouseLeave={() => this.handleCountyLeave(d)}
-                        onMouseDrag={() => this.handleCountyLeave(d)}
+                        onMouseDown={() => this.handleCountyLeave(d)}
                     />
                 </Tooltip>
             )})
