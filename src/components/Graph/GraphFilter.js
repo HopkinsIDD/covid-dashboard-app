@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import Scenarios from '../Filters/Scenarios';
 import Indicators from '../Filters/Indicators';
-import Overlays from '../Filters/Overlays';
+import Switch from '../Filters/Switch';
 import R0 from '../Filters/R0';
 import SeverityContainer from '../Filters/SeverityContainer'
 import Sliders from '../Filters/Sliders';
@@ -46,7 +46,7 @@ class GraphFilter extends Component {
 
     render() {
         return (
-            <div>
+            <Fragment>
                 <Scenarios
                     view="graph"
                     SCENARIOS={this.props.SCENARIOS}
@@ -58,8 +58,7 @@ class GraphFilter extends Component {
                     stat={this.props.stat}
                     onButtonClick={this.handleButtonClick}
                 />        
-                <Overlays 
-                    showConfBounds={this.props.showConfBounds}
+                <Switch 
                     onConfClick={this.handleConfClick}
                 /> 
                 <R0
@@ -89,7 +88,7 @@ class GraphFilter extends Component {
                     onDateSliderChange={this.handleDateSliderChange}
                     onSliderMouseEvent={this.props.onSliderMouseEvent}
                 />
-            </div>   
+            </Fragment>   
         )
     }
 }

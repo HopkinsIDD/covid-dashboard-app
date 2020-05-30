@@ -18,7 +18,6 @@ class MapContainer extends Component {
     }
   
     componentDidMount() {
-        // TODO: which scenario to display? default is first scenario (preprocessed)
         const children = [];
         const dateIdx = getDateIdx(this.props.firstDate, this.props.selectedDate);
 

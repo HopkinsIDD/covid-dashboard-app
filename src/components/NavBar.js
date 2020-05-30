@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import logo from '../assets/logo.png'; 
-import brand from '../assets/idd.png'; 
+import brand from '../assets/brand.png'; 
 import { ReactComponent as GraphLogo } from '../assets/graph.svg';
 import { ReactComponent as ChartLogo } from '../assets/chart.svg';
 import { ReactComponent as MapLogo } from '../assets/globe.svg';

@@ -2,13 +2,13 @@ import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
 import _ from 'lodash';
 
-import NavBar from './NavBar';
 import Search from './Search/Search'
 import GraphContainer from './Graph/GraphContainer';
 import ChartContainer from './Chart/ChartContainer';
 import MapContainer from './Map/MapContainer';
-import Brush from './Filters/Brush';
+import Methodology from './Methodology';
 
+import Brush from './Filters/Brush';
 import GraphFilter from './Graph/GraphFilter';
 import Scenarios from './Filters/Scenarios';
 import IndicatorSelection from './Chart/IndicatorSelection';
@@ -94,12 +94,8 @@ class MainContainer extends Component {
         this.updateGraphDimensions()
         this.updateMapContainerDimensions()
         
-        // instantiate all scenario lists for selected geoID
-        const SCENARIOS = buildScenarios(dataset);  // constant for geoID
-        const scenario = SCENARIOS[0];              // initial scenario view
-        const scenarioMap = SCENARIOS[0].key;       // scenario view for map
-        const scenarioList = [scenario];            // updated based on selection
-        const scenarioListChart = SCENARIOS.map(s => s.name);
+        const [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap] =
+            this.instantiateScenarios(dataset);
 
         // add default stats to chart
         const statListChart = STATS.slice(0,2)
@@ -115,10 +111,6 @@ class MainContainer extends Component {
         const seriesPeaks = series.map(sim => sim.max);
         const [seriesMin, seriesMax] = getRange(series, seriesPeaks);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
-        
-        // add scenario to severity list
-        const sevList = _.cloneDeep(this.state.severityList);
-        sevList[0].scenario = scenario.key;
 
         // iterate through SeriesList
         const simsOver = this.updateThresholdIterate(
@@ -157,9 +149,14 @@ class MainContainer extends Component {
         const summaryStart = new Date();
         summaryStart.setDate(summaryStart.getDate() - 14); 
 
+        // add scenario to severity list
+        const sevList = _.cloneDeep(this.state.severityList);
+        sevList[0].scenario = scenario.key;
+
         // instantiates countyBoundaries
         const state = this.state.geoid.slice(0, 2);
         const countyBoundaries = require('../store/countyBoundaries.json')[state];
+        console.log('countyBoundaries in Main', countyBoundaries)
         const statsForCounty = geojsonStats[state];
         const mapCurrentDateIndex = allTimeDates.findIndex( date => formatDate(date) === formatDate(new Date()));
 
@@ -294,6 +291,16 @@ class MainContainer extends Component {
         window.removeEventListener('resize', this.updateMapContainerDimensions)
     }
 
+    instantiateScenarios(dataset) {
+        const SCENARIOS = buildScenarios(dataset);  // constant for geoID
+        const scenario = SCENARIOS[0];              // initial scenario in Graph
+        const scenarioList = [scenario];            // updated based on selection
+        const scenarioListChart = SCENARIOS.map(s => s.name);
+        const scenarioMap = SCENARIOS[0].key;       // initial scenario in Map
+        
+        return [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap];
+    }
+
     updateGraphDimensions = () => {
         const graphW = this.graphEl.clientWidth - margin.yAxis;
         const graphH = this.graphEl.clientHeight;
@@ -349,30 +356,22 @@ class MainContainer extends Component {
         return simsOver;
     }
 
-    handleCountySelect = (i) => {
-
-        const dataset = require(`../store/geo${i.geoid}.json`);
-
-        // re-initialize scenarios
-        const SCENARIOS = buildScenarios(dataset); 
-        const scenario = SCENARIOS[0];
-        const scenarioList = [scenario]; 
-        const scenarioListChart = SCENARIOS.map(s => s.name);
-        const scenarioMap = SCENARIOS[0].key;       
-
+    initializeGeoid(geoid, dataset) {
+        const [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap] =
+            this.instantiateScenarios(dataset);
 
         // re-initialize severity
         const severityList = [_.cloneDeep(LEVELS[0])];
         severityList[0].scenario = scenario.key;
 
         // re-initialize countyBoundaries
-        const state = i.geoid.slice(0, 2);
+        const state = geoid.slice(0, 2);
         const countyBoundaries = require('../store/countyBoundaries.json')[state];
         const statsForCounty = geojsonStats[state];
 
         this.setState({
             dataset,
-            geoid: i.geoid,
+            geoid,
             SCENARIOS,
             scenarioList,
             scenarioListChart,
@@ -383,8 +382,15 @@ class MainContainer extends Component {
             r0: [0, 4]
         })
     }
+
+    handleCountySelect = (i) => {
+        const dataset = require(`../store/geo${i.geoid}.json`);
+        this.initializeGeoid(i.geoid, dataset);
+    }
     
-    handleUpload = (i) => {this.setState({dataset: i})};
+    handleUpload = (dataset, geoid) => {
+        this.initializeGeoid(geoid, dataset);
+    };
 
     handleButtonClick = (i) => {
         const yAxisLabel = `Daily ${i.name}`;
@@ -583,16 +589,10 @@ class MainContainer extends Component {
 
     render() {
         const { Content } = Layout;
+        const countyName = `${COUNTYNAMES[this.state.geoid]}`;
         // console.log('animateTransition', this.state.animateTransition)
         return (
             <Layout>
-                {/* Navigation Bar */}
-                <NavBar 
-                    stat={this.state.stat}
-                    geoid={this.state.geoid}
-                    onCountySelect={this.handleCountySelect}>                
-                </NavBar>
-
                 {/* Search Component */}
                 <Search
                     stat={this.state.stat}
@@ -604,7 +604,7 @@ class MainContainer extends Component {
                 {/* MainGraph Component */}
                 <Content id="scenario-comparisons" style={{ padding: '50px 0' }}>
                     <div className="content-section">
-                        <div className="content-header">{`${COUNTYNAMES[this.state.geoid]}`}</div>
+                        <div className="content-header">{countyName}</div>
                     </div>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16}>
@@ -701,7 +701,7 @@ class MainContainer extends Component {
                 {/* MainChart Component */}
                 <Content id="stats" style={{ background: '#fefefe', padding: '50px 0' }}>
                     <div className="content-section">
-                        <div className="content-header">{`${COUNTYNAMES[this.state.geoid]}`}</div>
+                        <div className="content-header">{countyName}</div>
                     </div>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16}>
@@ -762,7 +762,7 @@ class MainContainer extends Component {
                 {/* MainMap Component */}
                 <Content id="map" style={{ padding: '50px 0' }}>
                     <div className="content-section">
-                        <div className="content-header">{`${COUNTYNAMES[this.state.geoid]}`}</div>
+                        <div className="content-header">{countyName}</div>
                     </div>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16} style={{ paddingLeft: margin.yAxis + (2 * margin.left) + margin.right }}>
@@ -807,6 +807,10 @@ class MainContainer extends Component {
                         </Col>
                     </Row>
                 </Content>
+
+                {/* Methodology Component */}
+                <Methodology />
+
             </Layout>
         )
     }
