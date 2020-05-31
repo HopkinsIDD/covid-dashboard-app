@@ -61,10 +61,6 @@ class GraphFilter extends Component {
                 <Switch 
                     onConfClick={this.handleConfClick}
                 /> 
-                <R0
-                    r0={this.props.r0}
-                    onR0Change={this.handleR0Change}
-                />
                 <SeverityContainer
                     stat={this.props.stat}
                     severityList={this.props.severityList}
@@ -72,6 +68,10 @@ class GraphFilter extends Component {
                     onSeveritiesClick={this.handleSeveritiesClick}
                     onSeveritiesHover={this.handleSeveritiesHover}
                     onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
+                />
+                <R0
+                    r0={this.props.r0}
+                    onR0Change={this.handleR0Change}
                 />
                 <Sliders 
                     stat={this.props.stat}

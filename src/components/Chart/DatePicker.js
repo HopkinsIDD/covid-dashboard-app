@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { DatePicker } from 'antd';
+import { styles } from '../../utils/constants';
 
 class Chart extends Component {
     handleChange = (dates) => {
@@ -45,6 +46,8 @@ class Chart extends Component {
                 <RangePicker
                     // defaultValue={[moment(this.props.summaryStart, dateFormat), moment(this.props.summaryEnd, dateFormat)]}
                     disabledDate={this.disabledDate} 
+                    style={styles.Selector}
+                    renderExtraFooter={() => "Select a summary period in weekly increments"}
                     onChange={this.handleChange}
                     onOpenChange={this.handleOpen}
                 />
