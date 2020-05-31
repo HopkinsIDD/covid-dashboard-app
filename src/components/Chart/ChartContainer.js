@@ -89,6 +89,7 @@ class ChartContainer extends Component {
     }
 
     handleScenarioHighlight = (scenarioIdx) => {
+        // console.log('Chart Container scenarioIdx', scenarioIdx)
         if (scenarioIdx !== null) {
             this.setState({ hoveredScenarioIdx: scenarioIdx })
         } else {
@@ -112,7 +113,7 @@ class ChartContainer extends Component {
                         {getReadableDate(this.props.summaryEnd)}</span>
                 </div>
                 <div className="chart-callout" style={{ display: 'block !important'}}>
-                    {this.state.rectIsHovered &&
+                    {(this.state.rectIsHovered && this.state.hoveredScenarioIdx) &&
                                 <SummaryLabel 
                                     classProps={'filter-label threshold-label callout'}
                                     summaryStart={this.props.summaryStart}

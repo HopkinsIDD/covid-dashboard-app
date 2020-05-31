@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="44px" height="28px" viewBox="0 0 77 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
     <title>Scenario Comparisons</title>
-    <g id="Dashboard-Wires---fourth-pass" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Desktop-HD" transform="translate(-1030.000000, -66.000000)" stroke="#EBEBEB" stroke-width="2">
-            <g id="Group" transform="translate(1030.000000, 67.000000)">
+        <g id="Desktop-HD" transform="translate(-1030.000000, -66.000000)" stroke="#DDDDDD" stroke-width="2" fill="none" fill-rule="evenodd">
+            <g id="scenario-comparison" transform="translate(1030.000000, 67.000000)">
                 <path d="M7,35.6015132 C11.2901412,35.6015132 18.1543672,39.2863513 25.8766214,24.2455739 C33.5988757,9.20479645 33.5988757,4 38.8463234,4 C44.0937712,4 42.5586378,10.6676779 49.9807499,24.2455739 C57.4028619,37.8234698 64.0246241,35.6015132 71,35.6015132" id="Path-3"></path>
                 <path d="M13,35.6513241 C17.2901412,35.6513241 24.1543672,38.8755574 31.8766214,25.7148771 C39.5988757,12.5541969 39.5988757,8 44.8463234,8 C50.0937712,8 48.5586378,13.8342182 55.9807499,25.7148771 C63.4028619,37.5955361 70.0246241,35.6513241 77,35.6513241" id="Path-3-Copy"></path>
                 <path d="M0,35.5517024 C4.29014124,35.5517024 11.1543672,39.6971452 18.8766214,22.7762706 C26.5988757,5.855396 26.5988757,0 31.8463234,0 C37.0937712,0 35.5586378,7.50113765 42.9807499,22.7762706 C50.4028619,38.0514035 57.0246241,35.5517024 64,35.5517024" id="Path-3-Copy-2"></path>
             </g>
         </g>
-    </g>
 </svg>

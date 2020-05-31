@@ -3,6 +3,7 @@ import { min, max, quantile } from 'd3-array';
 import { scaleLinear, scaleBand, scalePow } from 'd3-scale';
 import { select, transition } from 'd3-selection';
 import { easeCubicOut } from 'd3-ease'
+import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
 import { getDateIdx, addCommas, capitalize } from '../../utils/utils';
@@ -23,6 +24,7 @@ class Chart extends Component {
         }
         this.tooltipRef = React.createRef();
         this.chartRef = React.createRef();
+        this.chartYAxisRef = React.createRef();
     }
     componentDidMount() {
         // console.log('componentDidMount');
@@ -39,7 +41,6 @@ class Chart extends Component {
         if (prevProps.summaryStart !== this.props.summaryStart || 
             prevProps.summaryEnd !== this.props.summaryEnd ||
             prevProps.dataset !== this.props.dataset ||
-            prevProps.scenarios !== this.props.scenarios ||
             prevProps.stats !== this.props.stats ||
             prevProps.width !== this.props.width ||
             prevProps.height !== this.props.height) {
@@ -47,7 +48,8 @@ class Chart extends Component {
                 const calc = this.calculateQuantiles();
                 this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
         }
-        if (prevProps.scale !== this.props.scale) {
+        if (prevProps.scenarios !== this.props.scenarios ||
+            prevProps.scale !== this.props.scale) {
             console.log('componentDidUpdate scale check')
             const calc = this.calculateQuantiles();
             // this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
@@ -123,19 +125,58 @@ class Chart extends Component {
             const whiskerMargin = barWidth * 0.2;
             // update paths with new data
             const barNodes = select(this.chartRef.current)
+            console.log(this.chartYAxisRef.current)
+            // this.chartYAxisRef.props.scale = yScale
+            // this.chartYAxisRef.updateAxis()
 
             this.state.severities.map( (severity, i) => {
                 Object.entries(quantileObj[this.props.stat][severity]).map( ([key, value]) => {
                     barNodes.selectAll(`.bar-${severity}-${key}`)
                         .transition()
                         .duration(500)
-                        // .attr("x", (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key))
+                        .attr("x", (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key))
                         .attr("y", yScale(value.median))
-                        // .attr("width", barWidth)
+                        .attr("width", barWidth)
                         .attr("height", yScale(0) - yScale(value.median))
                         .ease(easeCubicOut)
                     .on("end", () => {
                         console.log('bar rect transition ended')
+                        // this.setState({ quantileObj, xScale, yScale, scaleDomains })
+                    })
+                    barNodes.selectAll(`.vertline-${severity}-${key}`)
+                        .transition()
+                        .duration(500)
+                        .attr("x1", (barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
+                        .attr("y1", yScale(value.ninetyith))
+                        .attr("x2", (barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
+                        .attr("y2", yScale(value.tenth))
+                        .ease(easeCubicOut)
+                    .on("end", () => {
+                        console.log('vertical line transition ended')
+                        // this.setState({ quantileObj, xScale, yScale, scaleDomains })
+                    })
+                    barNodes.selectAll(`.topline-${severity}-${key}`)
+                        .transition()
+                        .duration(500)
+                        .attr("x1", (whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
+                        .attr("y1", yScale(value.ninetyith))
+                        .attr("x2", (barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
+                        .attr("y2", yScale(value.ninetyith))
+                        .ease(easeCubicOut)
+                    .on("end", () => {
+                        console.log('top line transition ended')
+                        // this.setState({ quantileObj, xScale, yScale, scaleDomains })
+                    })
+                    barNodes.selectAll(`.bottomline-${severity}-${key}`)
+                        .transition()
+                        .duration(500)
+                        .attr("x1", (whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
+                        .attr("y1", yScale(value.tenth))
+                        .attr("x2", (barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(key)))
+                        .attr("y2", yScale(value.tenth))
+                        .ease(easeCubicOut)
+                    .on("end", () => {
+                        console.log('bottom line transition ended')
                         this.setState({ quantileObj, xScale, yScale, scaleDomains })
                     })
                 })
@@ -180,39 +221,45 @@ class Chart extends Component {
                                             stroke={this.state.hoveredRect.severity === severity &&
                                                 this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
                                             strokeWidth={4}
+                                            style={{ pointerEvents: 'none' }}
                                         >
                                         </rect>
                                         <line
                                             key={`vertline-${severity}-${key}`}
+                                            className={`vertline-${severity}-${key}`}
                                             x1={(barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                             y1={this.state.yScale(value.ninetyith)}
                                             x2={(barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                             y2={this.state.yScale(value.tenth)}
                                             stroke={gray}
                                             strokeWidth={1}
+                                            style={{ pointerEvents: 'none' }}
                                         >
                                         </line>
                                         <line
                                             key={`topline-${severity}-${key}`}
+                                            className={`topline-${severity}-${key}`}
                                             x1={(whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                             y1={this.state.yScale(value.ninetyith)}
                                             x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                             y2={this.state.yScale(value.ninetyith)}
                                             stroke={gray}
                                             strokeWidth={1}
+                                            style={{ pointerEvents: 'none' }}
                                         >
                                         </line>
                                         <line
                                             key={`bottomline-${severity}-${key}`}
+                                            className={`bottomline-${severity}-${key}`}
                                             x1={(whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                             y1={this.state.yScale(value.tenth)}
                                             x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
                                             y2={this.state.yScale(value.tenth)}
                                             stroke={gray}
                                             strokeWidth={1}
+                                            style={{ pointerEvents: 'none' }}
                                         >
                                         </line>
-                                        {/* debug red rect highlight */}
                                         <Tooltip
                                             key={`tooltip-chart-${i}-${j}`}
                                             title={this.state.tooltipText}
@@ -220,6 +267,7 @@ class Chart extends Component {
                                                     this.state.hoveredRect.scenario === key ? true : false}
                                             data-html="true"
                                         >
+                                            {/* debug red rect highlight */}
                                             <rect
                                                 d={value}
                                                 key={`bar-${severity}-${key}-hover`}
@@ -252,9 +300,13 @@ class Chart extends Component {
         )
     }
 
-    handleHighlightEnter = (event, severity, key, index) => {
+    handleHighlightEnter = _.debounce((event, severity, key, index) => {
+        // console.log('chart highlight enter')
+        
         if (!this.state.rectIsHovered) {
-            event.stopPropagation();
+            // console.log('rect not hovered')
+            // event.stopPropagation();
+            // event.preventDefault();
             // console.log(severity, key, index)
             const hoveredRect = {
                 'severity': severity,
@@ -263,6 +315,7 @@ class Chart extends Component {
             }
             const { quantileObj }  = this.state;
             const { stat, statLabel, scenarios } = this.props;
+            // console.log(severity, key, index, stat, scenarios, scenarios[index])
             // const formatDate = timeFormat('%b %d, %Y'); //timeFormat('%Y-%m-%d')
             const median = quantileObj[stat][severity][key]['median']
             const tenth = quantileObj[stat][severity][key]['tenth']
@@ -283,18 +336,22 @@ class Chart extends Component {
             this.props.handleCalloutInfo( statLabel, median, tenth, ninetyith, true );
             this.props.handleScenarioHover( index );
         }
-    }
+    }, 100)
 
-    handleHighlightLeave = () => {
-        const hoveredRect = {
-            'severity': '',
-            'scenario': '',
-            'index': 0
+    handleHighlightLeave = _.debounce(() => {
+        // console.log('chart highlight leave')
+        if (this.state.rectIsHovered) {
+            // console.log('rect is hovered')
+            const hoveredRect = {
+                'severity': '',
+                'scenario': '',
+                'index': 0
+            }
+            this.setState({ hoveredRect, rectIsHovered: false })
+            this.props.handleCalloutLeave();
+            this.props.handleScenarioHover( null );
         }
-        this.setState({ hoveredRect, rectIsHovered: false })
-        this.props.handleCalloutLeave();
-        this.props.handleScenarioHover( null );
-    }
+    }, 100)
 
     render() {
         // console.log(this.props.width, this.props.height)
@@ -322,6 +379,7 @@ class Chart extends Component {
                                 {this.props.statLabel}
                             </text>
                             <Axis 
+                                ref={this.chartYAxisRef}
                                 width={this.props.width}
                                 height={this.props.height - margin.chartTop - margin.bottom}
                                 orientation={'left'}
