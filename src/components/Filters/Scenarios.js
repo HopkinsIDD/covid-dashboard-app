@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
+import { styles } from '../../utils/constants';
 
 class Scenarios extends Component {
     constructor(props) {
@@ -136,31 +137,24 @@ class Scenarios extends Component {
 
     render() {
         let defaultScenario;
-        let style;
         let graphTags;
-        // console.log(this.props.view)
-        // console.log(this.props.scenarioList)
         if (this.props.view === 'graph') {
             defaultScenario = [this.props.scenarioList[0].key];
             graphTags = this.props.scenarioList.map( s => s.key )
-            // console.log('scenarioList', this.props.scenarioList)
         } else if (this.props.view === 'chart') {
             defaultScenario = this.props.SCENARIOS.map(s => s.name);
             graphTags = this.props.scenarioList
-            style = { width: '80%' };
         } else {
             defaultScenario = [this.props.scenario]
             graphTags = defaultScenario
-            style = { width: '70%' };
         }
         
-        // console.log(this.props.view, defaultScenario)
         return (
             <div>
                 <div className="param-header">SCENARIOS</div>
                 <Select
                     mode={this.props.view === 'map' ? "" : "multiple"}
-                    style={style}
+                    style={styles.Selector}
                     defaultValue={defaultScenario}
                     value={graphTags}
                     maxTagTextLength={12}
