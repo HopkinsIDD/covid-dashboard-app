@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
-import logo from '../assets/logo.png'; 
-import brand from '../assets/brand.png'; 
+// import logo from '../assets/logo.png'; 
+// import brand from '../assets/brand.png'; 
 import { ReactComponent as AltLogo } from '../assets/logo-idd-jhsph.svg';
-import { ReactComponent as JHLogo } from '../assets/logo-john-hopkins.svg';
+// import { ReactComponent as JHLogo } from '../assets/logo-john-hopkins.svg';
 import MenuItem from './MenuItem';
 // import { ReactComponent as JHLogo } from '../assets/logo-john-hopkins.svg';
-import { isThisTypeNode } from 'typescript';
+// import { isThisTypeNode } from 'typescript';
 
 class NavBar extends Component {
   constructor(props) {
@@ -31,10 +31,10 @@ class NavBar extends Component {
             <AltLogo height="60" throwIfNamespace={false} style={{paddingTop: '8px'}} />
             {/* <img className="logo" src={logo} alt="Logo" />  */}
           </Col>
-          <Col className="gutter-row mini-search" span={1} style={{paddingTop: '4px'}}>
-          <JHLogo height="65" throwIfNamespace={false} />
+          {/* <Col className="gutter-row mini-search" span={1} style={{paddingTop: '4px'}}> */}
+          {/* <JHLogo height="65" throwIfNamespace={false} /> */}
             {/* <img className="brand" src={brand} alt="Brand" /> */}
-          </Col>
+          {/* </Col> */}
           <Col className="gutter-row nav-menu" offset={7} span={10}>
             <ul style={{ marginTop: '5px' }}>
               {this.state.links.map( (link, index) => {
