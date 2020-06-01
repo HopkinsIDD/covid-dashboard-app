@@ -2,7 +2,7 @@ const fs = require('fs');
 const _ = require('lodash');
 const constants = require('./constants');
 
-function initObj(geoids, scenarios, dates) {
+function initObj(geoids, scenarios, severities, parameters, dates) {
     // build structure of final Object
     const obj = {};
 
@@ -12,10 +12,10 @@ function initObj(geoids, scenarios, dates) {
         for (let scenario of scenarios) {
             obj[geoid][scenario] = {'dates': dates};
 
-            for (let sev of constants.severities ) {
+            for (let sev of severities ) {
                 obj[geoid][scenario][sev] = {};
     
-                for (let param of constants.parameters) {
+                for (let param of parameters) {
                     obj[geoid][scenario][sev][param] = {
                         'peak': 0,
                         'sims': {},

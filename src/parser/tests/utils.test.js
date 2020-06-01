@@ -16,7 +16,13 @@ test('returns expected initialized object', () => {
     const scenarios = ['Scenario_A', 'Scenario_C'];
     const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
 
-    const obj = utils.initObj(geoids, scenarios, dates);
+    const obj = utils.initObj(
+        geoids,
+        scenarios,
+        constants.severities,
+        constants.parameters,
+        dates
+        );
     const expected = require('../resources/expectedInitObj.json');
 
     expect(obj).toStrictEqual(expected);
@@ -35,94 +41,27 @@ test('return expected index mapping', () => {
 });
 
 test('return expected aggregation by state', () => {
+    const geoids = ['06085', '06019'];
+    const states = ['06'];
     const scenarios = ['Scenario_C'];
     const severities = ['high'];
     const parameters = ['incidI'];
     const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
+    
+    const parsedObj = require('../resources/inputStateAgg.json');
+    const finalObj = require('../resources/finalObjStateAgg.json');
+    const expected = require('../resources/expectedAggByState.json');
 
-    const parsedObj = {
-        '06085': {
-            'Scenario_C': {
-                'dates': dates,
-                'high': {
-                    'incidI': {
-                        'peak': 0,
-                        'sims': {
-                            '1': [ 0, 1, 2, 5, 1 ], 
-                            '10': [1, 3, 5, 9, 3 ]
-                        },
-                        'conf': {}
-                    }
-                }
-            }
-        },
-        '06019': {
-            'Scenario_C': {
-                'dates': dates,
-                'high': {
-                    'incidI': {
-                        'peak': 0,
-                        'sims': {
-                            '1': [ 2, 2, 3, 7, 8 ], 
-                            '10': [5, 8, 9, 9, 2 ]
-                        },
-                        'conf': {}
-                    }
-                }
-            }
-        }
-    };
+    utils.aggregateByState(
+        parsedObj, 
+        finalObj,
+        states,
+        geoids,
+        scenarios, 
+        severities,
+        parameters,
+        dates
+        );
 
-
-
-    utils.aggregateByState(parsedObj, scenarios, severities, parameters, dates);
-
-    const expected = {
-    '06': {
-        'Scenario_C': {
-            'dates': dates,
-            'high': {
-                'incidI': {
-                    'peak': 0,
-                    'sims': {
-                        '1': [ 2, 3, 5, 12, 9 ], 
-                        '10': [ 6, 11, 14, 18, 5 ]
-                    },
-                    'conf': {}
-                }
-            }
-        }
-    },
-    '06085': {
-        'Scenario_C': {
-            'dates': dates,
-            'high': {
-                'incidI': {
-                    'peak': 0,
-                    'sims': {
-                        '1': [ 0, 1, 2, 5, 1 ], 
-                        '10': [1, 3, 5, 9, 3 ]
-                    },
-                    'conf': {}
-                }
-            }
-        }
-    },
-    '06019': {
-        'Scenario_C': {
-            'dates': dates,
-            'high': {
-                'incidI': {
-                    'peak': 0,
-                    'sims': {
-                        '1': [ 2, 2, 3, 7, 8 ], 
-                        '10': [5, 8, 9, 9, 2 ]
-                    },
-                    'conf': {}
-                }
-            }
-        }
-    }
-};
     expect(parsedObj).toStrictEqual(expected);
 });
