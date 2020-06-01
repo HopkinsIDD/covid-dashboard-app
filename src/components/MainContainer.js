@@ -91,10 +91,10 @@ class MainContainer extends Component {
         // console.log('componentDidMount')
         console.log('dataset', dataset)
         
-        window.addEventListener('resize', this.updateGraphDimensions)
-        window.addEventListener('resize', this.updateMapContainerDimensions)
-        this.updateGraphDimensions()
-        this.updateMapContainerDimensions()
+        // window.addEventListener('resize', this.updateGraphDimensions)
+        // window.addEventListener('resize', this.updateMapContainerDimensions)
+        // this.updateGraphDimensions()
+        // this.updateMapContainerDimensions()
         
         const [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap] =
             this.instantiateScenarios(dataset);
