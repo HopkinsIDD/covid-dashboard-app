@@ -7,8 +7,6 @@ import { margin, COUNTYNAMES } from '../../utils/constants';
 
 class MainGraph extends Component {
     render() {
-        console.log('seriesList', this.props.seriesList)
-        console.log('dates', this.props.dates)
         const { Content } = Layout;
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
