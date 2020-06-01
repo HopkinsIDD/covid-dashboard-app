@@ -7,7 +7,7 @@ import ScaleToggle from './ScaleToggle';
 import IndicatorSelection from './IndicatorSelection';
 import { margin, COUNTYNAMES } from '../../utils/constants';
 
-class GraphFilter extends Component {
+class MainChart extends Component {
     render() {
         const { Content } = Layout;
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
@@ -74,4 +74,4 @@ class GraphFilter extends Component {
     }
 }
 
-export default GraphFilter;
+export default MainChart;
