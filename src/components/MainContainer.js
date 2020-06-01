@@ -5,17 +5,12 @@ import _ from 'lodash';
 import Search from './Search/Search'
 import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
-// import GraphContainer from './Graph/GraphContainer';
-import ChartContainer from './Chart/ChartContainer';
 import MapContainer from './Map/MapContainer';
 import Methodology from './Methodology';
 
 // import Brush from './Filters/Brush';
 // import GraphFilter from './Graph/GraphFilter';
 import Scenarios from './Filters/Scenarios';
-import IndicatorSelection from './Chart/IndicatorSelection';
-import DatePicker from './Chart/DatePicker';
-import ScaleToggle from './Chart/ScaleToggle';
 import DateSlider from './Map/DateSlider';
 
 import { buildScenarios, getRange } from '../utils/utils'
@@ -613,6 +608,8 @@ class MainContainer extends Component {
                         scenarioList={this.state.scenarioList}
                         severity={this.state.severity}
                         r0={this.state.r0}
+                        animateTransition={this.state.animateTransition}
+                        toggleAnimateTransition={this.toggleAnimateTransition}
                         simNum={this.state.simNum}
                         showConfBounds={this.state.showConfBounds}
                         confBoundsList={this.state.confBoundsList}
@@ -628,7 +625,10 @@ class MainContainer extends Component {
                         height={this.state.graphH}
                         scenarioClickCounter={this.state.scenarioClickCounter}
                         scenarioHovered={this.state.scenarioHovered}
-                        series={this.state.allTimeSeries}
+                        statSliderActive={this.state.statSliderActive}
+                        dateSliderActive={this.state.dateSliderActive}
+                        allTimeSeries={this.state.allTimeSeries}
+                        allTimeDates={this.state.allTimeDates}
                         x={margin.yAxis}
                         y={0}
                         onBrushChange={this.handleBrushRange}
@@ -636,13 +636,14 @@ class MainContainer extends Component {
                         onBrushEnd={this.handleBrushEnd}
                         SCENARIOS={this.state.SCENARIOS}
                         scenario={this.state.scenario}
-                        onScenarioClick={this.handleScenarioClick}
+                        onScenarioClickGraph={this.handleScenarioClickGraph}
                         onButtonClick={this.handleButtonClick}
                         onConfClick={this.handleConfClick}
                         severityList={this.state.severityList}
                         onSeveritiesClick={this.handleSeveritiesClick}
                         onSeveritiesHover={this.handleSeveritiesHover}
                         onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
+                        onHandleR0Change={this.handleR0Change}
                         seriesMax={this.state.seriesMax}
                         seriesMin={this.state.seriesMin}
                         dateThresholdIdx={this.state.dateThresholdIdx}
@@ -650,6 +651,7 @@ class MainContainer extends Component {
                         lastDate={this.state.lastDate}
                         onStatSliderChange={this.handleStatSliderChange}
                         onDateSliderChange={this.handleDateSliderChange}
+                        onSliderMouseEvent={this.handleSliderMouseEvent}
                     />
                 </div>
                 }

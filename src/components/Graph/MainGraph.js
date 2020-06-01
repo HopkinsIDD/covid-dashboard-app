@@ -7,6 +7,8 @@ import { margin, COUNTYNAMES } from '../../utils/constants';
 
 class MainGraph extends Component {
     render() {
+        console.log('seriesList', this.props.seriesList)
+        console.log('dates', this.props.dates)
         const { Content } = Layout;
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
@@ -41,8 +43,8 @@ class MainGraph extends Component {
                                     percExceedenceList={this.props.percExceedenceList}
                                     dateRange={this.props.dateRange}
                                     brushActive={this.props.brushActive}
-                                    width={this.props.graphW}
-                                    height={this.props.graphH}
+                                    width={this.props.width}
+                                    height={this.props.height}
                                     scenarioClickCounter={this.props.scenarioClickCounter}
                                     scenarioHovered={this.props.scenarioHovered}
                                     statSliderActive={this.props.statSliderActive}
@@ -51,7 +53,7 @@ class MainGraph extends Component {
                                 <Brush
                                     series={this.props.allTimeSeries}
                                     dates={this.props.allTimeDates}
-                                    width={this.props.graphW}
+                                    width={this.props.width}
                                     height={80}
                                     x={margin.yAxis}
                                     y={0}
@@ -60,9 +62,9 @@ class MainGraph extends Component {
                                     dateRange={this.props.dateRange}
                                     dateThreshold={this.props.dateThreshold}
                                     statThreshold={this.props.statThreshold}
-                                    onBrushChange={this.handleBrushRange}
-                                    onBrushStart={this.handleBrushStart}
-                                    onBrushEnd={this.handleBrushEnd}
+                                    onBrushChange={this.props.onBrushChange}
+                                    onBrushStart={this.props.onBrushStart}
+                                    onBrushEnd={this.props.onBrushEnd}
                                 />
                             </div>
                         </div>
@@ -73,18 +75,18 @@ class MainGraph extends Component {
                             SCENARIOS={this.props.SCENARIOS}
                             scenario={this.props.scenario}
                             scenarioList={this.props.scenarioList}
-                            onScenarioClickGraph={this.handleScenarioClickGraph}
+                            onScenarioClickGraph={this.props.handleScenarioClickGraph}
                             stat={this.props.stat}
-                            onButtonClick={this.handleButtonClick}
+                            onButtonClick={this.props.handleButtonClick}
                             showConfBounds={this.props.showConfBounds}
-                            onConfClick={this.handleConfClick}
+                            onConfClick={this.props.handleConfClick}
                             severityList={this.props.severityList}
-                            onSeveritiesClick={this.handleSeveritiesClick}
-                            onSeveritiesHover={this.handleSeveritiesHover}
-                            onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
+                            onSeveritiesClick={this.props.handleSeveritiesClick}
+                            onSeveritiesHover={this.props.handleSeveritiesHover}
+                            onSeveritiesHoverLeave={this.props.handleSeveritiesHoverLeave}
                             dates={this.props.dates}
                             r0={this.props.r0}
-                            onHandleR0Change={this.handleR0Change}
+                            onHandleR0Change={this.props.handleR0Change}
                             seriesMax={this.props.seriesMax}
                             seriesMin={this.props.seriesMin}
                             statThreshold={this.props.statThreshold}
@@ -93,9 +95,9 @@ class MainGraph extends Component {
                             firstDate={this.props.firstDate}
                             lastDate={this.props.lastDate}
                             dateRange={this.props.dateRange}
-                            onStatSliderChange={this.handleStatSliderChange}
-                            onDateSliderChange={this.handleDateSliderChange}
-                            onSliderMouseEvent={this.handleSliderMouseEvent}
+                            onStatSliderChange={this.props.handleStatSliderChange}
+                            onDateSliderChange={this.props.handleDateSliderChange}
+                            onSliderMouseEvent={this.props.handleSliderMouseEvent}
                             />
                     </Col>
                 </Row>

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'; 
 import { min, max, quantile } from 'd3-array';
 import { scaleLinear, scaleBand, scalePow } from 'd3-scale';
-import { select, transition } from 'd3-selection';
+import { select } from 'd3-selection';
 import { easeCubicOut } from 'd3-ease'
 import _ from 'lodash';
 import { Tooltip } from 'antd';
