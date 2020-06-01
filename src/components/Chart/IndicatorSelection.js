@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
+import { STATS } from '../../utils/constants';
 
 class IndicatorSelection extends Component {
     constructor(props) {
@@ -12,7 +13,7 @@ class IndicatorSelection extends Component {
 
     componentDidMount() {
         const children = [];
-        const statsForChart = Array.from(this.props.STATS);
+        const statsForChart = Array.from(STATS);
         const { Option } = Select;
 
         const keys = Object.values(this.props.statListChart).map(stat => stat.key);
@@ -50,13 +51,13 @@ class IndicatorSelection extends Component {
     }
 
     componentDidUpdate(prevProp) {
-      if (prevProp.STATS !== this.props.STATS ||
+      if (prevProp.STATS !== STATS ||
           prevProp.statListChart !== this.props.statListChart) {
 
           const { statListChart } = this.props;
 
           const keys = Object.values(statListChart).map(stat => stat.key);
-          const statsForChart = Array.from(this.props.STATS);
+          const statsForChart = Array.from(STATS);
           
           if (this.props.statListChart.length >= 3) {
             statsForChart.map(stat => {
