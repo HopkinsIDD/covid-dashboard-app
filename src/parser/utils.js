@@ -116,23 +116,20 @@ function returnFilesBySev(files, severity) {
     return filesBySev;
 }
 
-function aggregateByState(parsedObj, scenarios, dates) {
+function aggregateByState(parsedObj, finalObj, states, geoids, scenarios, severities, parameters, dates) {
+    // finalObj: initialized Obj with states as keys
+    // parsedObj: object with all parsed data, finalObj to be added to this Obj
     // add state geoid with sims aggregated by county geoid to parsedObj
-
-    const allGeoids = Object.keys(parsedObj);
-    const states = [...new Set(allGeoids.map(geoid => geoid.slice(0, 2)))];
-    const finalObj = module.exports.initObj(states, scenarios, dates);
 
     for (let state of states) {
 
-        const geoids = allGeoids.filter(g => g.slice(0, 2) === state);
         for (let geoid of geoids) { 
 
             for (let scen of scenarios) {
 
-                for (let sev of constants.severities ) {
+                for (let sev of severities ) {
 
-                    for (let param of constants.parameters) {
+                    for (let param of parameters) {
 
                         if (Object.keys(finalObj[state][scen][sev][param].sims).length === 0) {
                             finalObj[state][scen][sev][param].sims = _.cloneDeep(parsedObj[geoid][scen][sev][param].sims);
