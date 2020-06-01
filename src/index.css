@@ -417,6 +417,7 @@ ul {
 
 .callout-row {
   min-height: 41px;
+  margin-top: 12px;
 }
 
 .resetRow {

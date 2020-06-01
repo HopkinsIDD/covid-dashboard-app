@@ -40,7 +40,7 @@ class DateSlider extends Component {
         <div>
           <div className="param-header">DATE SELECTOR</div>
           <div className="filter-label">
-              Selected Date: &nbsp; <span className='callout'>{getReadableDate(this.props.selectedDate)}</span>
+              <span className='callout'>{getReadableDate(this.props.selectedDate)}</span>
           </div>
           <div className="slidecontainer">
             <input
@@ -49,7 +49,6 @@ class DateSlider extends Component {
                 min={0}
                 max={this.props.endIndex.toString()}
                 defaultValue={this.props.currentDateIndex.toString()}
-                // value={statThreshold.toString()}
                 ref={ref => this.dateInput = ref}
                 onChange={
                     () => {this.props.onMapSliderChange(this.dateInput.value)}
