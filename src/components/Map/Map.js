@@ -11,11 +11,9 @@ import Axis from '../Graph/Axis';
 import { gray, lightgray } from '../../utils/constants';
 import { addCommas } from '../../utils/utils';
 
-
 const legendW = 60;
-// const lowColor = '#f9f9f9'
-// const highColor = '#e6550d'
-const gradientMargin = 30;
+const gradientMargin = 20;
+const gradientW = legendW/4;
 
 class Map extends Component {
     constructor(props) {
@@ -33,14 +31,18 @@ class Map extends Component {
         this.tooltipRef = React.createRef();
     }
     componentDidMount() {
-        this.calculateScales();
+        const gradientH = this.props.width - gradientMargin;
+        this.setState({ gradientH }, () => this.calculateScales());
+        
     }
 
     componentDidUpdate(prevProps, prevState) {
         if (prevProps.countyBoundaries !== this.props.countyBoundaries ||
             prevProps.statsForCounty !== this.props.statsForCounty ||
             prevProps.scenario !== this.props.scenario) {
-                this.calculateScales();
+                const gradientH = this.props.width - gradientMargin;
+                this.setState({ gradientH }, () => this.calculateScales());
+                
         }
     }
 
@@ -80,7 +82,8 @@ class Map extends Component {
         // console.log(maxValNorm)
         const minValNorm = maxValNorm * 0.3333;
         // console.log(stat, maxVal)
-        const yScale = scaleLinear().range([(this.props.height - (2 * gradientMargin))/2, 0]).domain([0, maxValNorm])
+        console.log(this.state.gradientH)
+        const yScale = scaleLinear().range([this.state.gradientH, 0]).domain([0, maxValNorm])
         this.axis = axisRight().scale(yScale)
         
         if (this.axisRef.current) {
@@ -94,13 +97,14 @@ class Map extends Component {
     drawCounties = () => {
         // console.log(this.state.countyBoundaries)
         // optimize projection for CA or NY
+        // TODO add to constants file for other states
         const parallels = (this.props.geoid.slice(0,2) === '06') ? [34, 40.5] : [40.5, 41.5]
         const rotation = (this.props.geoid.slice(0,2) === '06') ? [120, 0] : [74, 0]
         
         const projection = geoConicEqualArea()
             .parallels(parallels)
             .rotate(rotation)
-            .fitSize([this.props.width - legendW, this.props.height * 0.75], this.state.countyBoundaries)
+            .fitSize([this.props.width - legendW, this.props.height], this.state.countyBoundaries)
 
         const pathGenerator = geoPath().projection(projection)
 	    const ramp = scaleLinear().domain([ 0, this.state.maxValNorm ]).range([this.props.lowColor, this.props.highColor])
@@ -168,7 +172,7 @@ class Map extends Component {
         return (
             <Fragment>
                 <div className='titleNarrow map-title'>{`${this.props.statLabel} per 10K people`}</div>
-                <svg width={legendW} height={this.props.height/1.5}>
+                <svg width={legendW} height={this.props.height}>
                      {/* debug green svg */}
                      {/* <rect
                         x={0}
@@ -195,24 +199,24 @@ class Map extends Component {
                         </linearGradient>
                     </defs>
                     <rect
-                        width={legendW/4}
-                        height={(this.props.height - (2 * gradientMargin))/ 2}
-                        transform={`translate(0, ${gradientMargin/2})`}
+                        width={gradientW}
+                        height={this.state.gradientH}
+                        transform={`translate(0, ${gradientMargin})`}
                         style={{ fill: `url(#map-legend-gradient-${this.props.stat}` }}
                     >
                     </rect>
-                    <g ref={this.axisRef}  transform={`translate(${legendW/4}, ${gradientMargin/2})`} />
+                    <g ref={this.axisRef}  transform={`translate(${gradientW}, ${gradientMargin})`} />
                     <Axis 
                         // keyVal={this.props.keyVal}
-                        width={legendW/2}
-                        height={this.props.height - (2 * gradientMargin)}
+                        width={gradientW}
+                        height={this.state.gradientH}
                         orientation={'right'}
                         scale={this.state.yScale}
-                        x={legendW/2}
-                        y={this.props.height - gradientMargin}
+                        x={gradientW}
+                        y={this.state.gradientH}
                     />
                 </svg>
-                <svg width={this.props.width - legendW} height={this.props.height * 0.75} className={`mapSVG-${this.props.stat}`}>
+                <svg width={this.props.width - legendW} height={this.props.height} className={`mapSVG-${this.props.stat}`}>
                     <g style={{ stroke: '#00ff00'}}>
                         {/* debug green svg */}
                         {/* <rect
