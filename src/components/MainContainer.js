@@ -603,9 +603,21 @@ class MainContainer extends Component {
 
                 {/* MainGraph Component */}
                 <Content id="scenario-comparisons" style={{ padding: '50px 0' }}>
-                    <div className="content-section">
-                        <div className="content-header">{countyName}</div>
-                    </div>
+                    <Col className="gutter-row container" span={16}>
+                        <div className="content-section">
+                            <div>
+                                The&nbsp;
+                                <a href="http://www.iddynamics.jhsph.edu/">
+                                Johns Hopkins IDD Working Group</a> has generated model 
+                                simulations for {this.state.SCENARIOS.length} intervention 
+                                scenarios from January 2020 to June 2021. Each scenario 
+                                is represented by multiple simulation curves, and each curve 
+                                represents one possible outcome based on a given set of parameters. 
+                                Each curve is just as likely to occur as another. 
+                            </div>
+                            <div className="content-header">{countyName}</div>
+                        </div>
+                    </Col>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16}>
                             <div
@@ -700,9 +712,21 @@ class MainContainer extends Component {
                 {/* <TestDivider /> */}
                 {/* MainChart Component */}
                 <Content id="stats" style={{ background: '#fefefe', padding: '50px 0' }}>
-                    <div className="content-section">
-                        <div className="content-header">{countyName}</div>
-                    </div>
+                    <Col className="gutter-row container" span={16}>
+                        <div className="content-section">
+                            <div>
+                                Use this tool to plan for expected infections, hospitalizations,
+                                ICU cases, ventilators needed, and deaths in your municipality.
+                                For example, if you would like to know how many people will 
+                                be hospitalized in 6 weeks, select hospitalizations  
+                                as the indicator, today as the start date, and 6 weeks out
+                                as the end date. Then, compare expected hospitalization 
+                                numbers across all {this.state.SCENARIOS.length}&nbsp;
+                                intervention scenarios at varying degrees of severity.
+                            </div>
+                            <div className="content-header">{countyName}</div>
+                        </div>
+                    </Col>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16}>
 
@@ -761,9 +785,13 @@ class MainContainer extends Component {
 
                 {/* MainMap Component */}
                 <Content id="map" style={{ padding: '50px 0' }}>
-                    <div className="content-section">
-                        <div className="content-header">{countyName}</div>
-                    </div>
+
+                    <Col className="gutter-row container" span={16}>
+                        <div className="content-section">
+                            <div className="content-header">{countyName}</div>
+                        </div>
+                    </Col>
+
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16} style={{ paddingLeft: margin.yAxis + (2 * margin.left) + margin.right }}>
                             {this.state.dataLoaded &&

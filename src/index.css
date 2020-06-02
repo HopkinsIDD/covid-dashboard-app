@@ -71,7 +71,7 @@ h1, h2, h3, h4 {
 .content-section {
   font-size: 16px;
   text-align: left;
-  padding-left: 8%;
+  padding: 0 0 1rem;
 }
 
 .title-header {
@@ -84,9 +84,8 @@ h1, h2, h3, h4 {
   color: #808080;
   font-size: 14px;
   margin-top: 0.8rem;
-  margin-bottom: 0.25rem;
   text-transform: uppercase;
-  /* margin-bottom: 2rem; */
+  margin-top: 2rem;
 }
 
 .filter-description {
@@ -125,14 +124,8 @@ li a {
   text-decoration: none;
 }
 
-li a:not(.active):hover {
-  color: lightgray;
-  text-decoration: none;
-}
-
 a:hover {
-  color: white;
-  text-decoration: none;
+  text-decoration: underline;
 }
 
 .active {

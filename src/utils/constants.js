@@ -20,7 +20,8 @@ export const styles = {
         padding: '5rem 0'
     },
     SearchBar: {
-        width: '75%'
+        width: '60%',
+        maxWidth: '50rem'
     },
     Selector: {
         width: '80%'
