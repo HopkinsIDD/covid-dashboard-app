@@ -123,7 +123,7 @@ class Map extends Component {
                             cursor: 'pointer'
                         }}
                         className='counties'
-                        onMouseEnter={(e) => this.handleCountyEnter(e, d)}
+                        onMouseEnter={(e) => this.handleCountyEnter(d)}
                         onMouseLeave={() => this.handleCountyLeave(d)}
                         onMouseDown={() => this.handleCountyLeave(d)}
                     />
@@ -132,8 +132,8 @@ class Map extends Component {
          return counties
     }
 
-    handleCountyEnter = _.debounce((event, feature) => {
-        event.preventDefault()
+    handleCountyEnter = _.debounce((feature) => {
+        // event.preventDefault()
         // console.log('entered', feature.properties.name)
         // console.log(feature)
         let statInfo = ''
