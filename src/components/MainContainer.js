@@ -657,7 +657,7 @@ class MainContainer extends Component {
                     <MainChart 
                         geoid={this.state.geoid}
                         width={this.state.graphW - margin.left - margin.right}
-                        height={this.state.graphH * 1.15} 
+                        height={this.state.graphH} 
                         dataset={this.state.dataset}
                         dataLoaded={this.state.dataLoaded}
                         scenarios={this.state.scenarioListChart}
@@ -687,7 +687,6 @@ class MainContainer extends Component {
                     <MainMap
                         width={this.state.mapContainerW - margin.left - margin.right}
                         height={this.state.mapContainerH}
-                        dataset={this.state.dataset}
                         scenario={this.state.scenarioMap}
                         geoid={this.state.geoid}
                         firstDate={this.state.firstDate}
