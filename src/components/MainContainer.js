@@ -299,8 +299,8 @@ class MainContainer extends Component {
     }
 
     updateGraphDimensions = () => {
-        const graphW = (window.innerWidth * 0.6585) - margin.yAxis;
-        const graphH = window.innerHeight;
+        const graphW = (window.innerWidth * 0.6585) - margin.yAxis; // this.graphEl.clientWidth - margin.yAxis;
+        const graphH = window.innerHeight * 0.53;
         this.setState({ graphW, graphH, animateTransition: false });
       }
 
