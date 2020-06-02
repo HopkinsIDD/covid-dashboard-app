@@ -1,15 +1,12 @@
-import React, { Component, Fragment } from 'react';
-import { Layout, Row, Col } from 'antd';
+import React, { Component } from 'react';
+import { Layout } from 'antd';
 import _ from 'lodash';
 
 import Search from './Search/Search'
 import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
-import MapContainer from './Map/MapContainer';
+import MainMap from './Map/MainMap';
 import Methodology from './Methodology';
-
-import Scenarios from './Filters/Scenarios';
-import DateSlider from './Map/DateSlider';
 
 import { instantiateScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
@@ -291,7 +288,7 @@ class MainContainer extends Component {
 
     updateMapContainerDimensions = () => {
         const mapContainerW = ((window.innerWidth * 0.6585) - margin.yAxis) - ( 3 * (margin.left)) - (3 * (margin.right));
-        const mapContainerH = window.innerHeight * 0.8;
+        const mapContainerH = window.innerHeight * 0.35;
         this.setState({ mapContainerW, mapContainerH });
     }
 
@@ -661,54 +658,34 @@ class MainContainer extends Component {
                 }
 
                 {/* MainMap Component */}
-                <Content id="map" style={{ padding: '50px 0' }}>
-                    <div className="content-section">
-                        <div className="content-header">{countyName}</div>
-                    </div>
-                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                        <Col className="gutter-row container" span={16} style={{ paddingLeft: margin.yAxis + (2 * margin.left) + margin.right }}>
-                            {this.state.dataLoaded &&
-                            <div className="map-container">
-                                <MapContainer
-                                    width={this.state.mapContainerW - margin.left - margin.right}
-                                    height={this.state.mapContainerH}
-                                    dataset={this.state.dataset}
-                                    scenario={this.state.scenarioMap}
-                                    geoid={this.state.geoid}
-                                    firstDate={this.state.firstDate}
-                                    selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
-                                    countyBoundaries={this.state.countyBoundaries}
-                                    statsForCounty={this.state.statsForCounty}
-                                    dateSliderActive={this.state.dateSliderActiveMap}
-                                />
-                            </div>
-                            }
-                        </Col>
-
-                        <Col className="gutter-row filters" span={6}>
-                            {this.state.dataLoaded &&
-                            <Fragment>
-                                <Scenarios
-                                    view="map"
-                                    // temporary fix for different scenario array lengths between dataset and map
-                                    SCENARIOS={this.state.SCENARIOS.length > 3 ? this.state.SCENARIOS.slice(0, 3) : this.state.SCENARIOS}
-                                    scenario={this.state.scenarioMap}
-                                    onScenarioClickMap={this.handleScenarioClickMap}
-                                />
-                                <DateSlider
-                                    dates={this.state.allTimeDates}
-                                    endIndex={(this.state.allTimeDates.length - 1).toString()}
-                                    currentDateIndex={this.state.mapCurrentDateIndex.toString()}
-                                    selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
-                                    onMapSliderChange={this.handleMapSliderChange}
-                                    onSliderMouseEvent={this.handleSliderMouseEvent}
-                                />
-                            </Fragment>
-                             }
-                        </Col>
-                    </Row>
-                </Content>
-
+                {this.state.dataLoaded &&
+                <div>
+                    <MainMap
+                        width={this.state.mapContainerW - margin.left - margin.right}
+                        height={this.state.mapContainerH}
+                        dataset={this.state.dataset}
+                        scenario={this.state.scenarioMap}
+                        geoid={this.state.geoid}
+                        firstDate={this.state.firstDate}
+                        selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
+                        countyBoundaries={this.state.countyBoundaries}
+                        statsForCounty={this.state.statsForCounty}
+                        dateSliderActive={this.state.dateSliderActiveMap}
+                        view="map"
+                        // temporary fix for different scenario array lengths between dataset and map
+                        SCENARIOS={this.state.SCENARIOS.length > 3 ? this.state.SCENARIOS.slice(0, 3) : this.state.SCENARIOS}
+                        scenario={this.state.scenarioMap}
+                        onScenarioClickMap={this.handleScenarioClickMap}
+                        dates={this.state.allTimeDates}
+                        endIndex={(this.state.allTimeDates.length - 1).toString()}
+                        currentDateIndex={this.state.mapCurrentDateIndex.toString()}
+                        selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
+                        onMapSliderChange={this.handleMapSliderChange}
+                        onSliderMouseEvent={this.handleSliderMouseEvent}
+                    />
+                </div>
+                }
+                
                 {/* Methodology Component */}
                 <Methodology />
 
