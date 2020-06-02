@@ -27,11 +27,10 @@ class Map extends Component {
             hoveredCounty: null,
             tooltipText: ''
         }
-        this.axisRef = React.createRef();
         this.tooltipRef = React.createRef();
     }
     componentDidMount() {
-        const gradientH = this.props.width - gradientMargin;
+        const gradientH = (this.props.width - gradientMargin) / 2;
         this.setState({ gradientH }, () => this.calculateScales());
         
     }
@@ -40,7 +39,7 @@ class Map extends Component {
         if (prevProps.countyBoundaries !== this.props.countyBoundaries ||
             prevProps.statsForCounty !== this.props.statsForCounty ||
             prevProps.scenario !== this.props.scenario) {
-                const gradientH = this.props.width - gradientMargin;
+                const gradientH = (this.props.width - gradientMargin) / 2;
                 this.setState({ gradientH }, () => this.calculateScales());
                 
         }
@@ -84,11 +83,6 @@ class Map extends Component {
         // console.log(stat, maxVal)
         console.log(this.state.gradientH)
         const yScale = scaleLinear().range([this.state.gradientH, 0]).domain([0, maxValNorm])
-        this.axis = axisRight().scale(yScale)
-        
-        if (this.axisRef.current) {
-            select(this.axisRef.current).call(this.axis)
-        }
         // console.log(countyBoundaries)
         this.setState({ minVal, maxVal, countyBoundaries, yScale, minValNorm, maxValNorm })
         // console.log(Object.values(this.props.statsForCounty)[stat])
@@ -205,15 +199,13 @@ class Map extends Component {
                         style={{ fill: `url(#map-legend-gradient-${this.props.stat}` }}
                     >
                     </rect>
-                    <g ref={this.axisRef}  transform={`translate(${gradientW}, ${gradientMargin})`} />
                     <Axis 
-                        // keyVal={this.props.keyVal}
                         width={gradientW}
                         height={this.state.gradientH}
                         orientation={'right'}
                         scale={this.state.yScale}
                         x={gradientW}
-                        y={this.state.gradientH}
+                        y={gradientMargin}
                     />
                 </svg>
                 <svg width={this.props.width - legendW} height={this.props.height} className={`mapSVG-${this.props.stat}`}>
