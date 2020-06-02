@@ -29,10 +29,10 @@ class FileUploader extends Component {
     }
 
     validateSize = (file) => {
-        const size = 1024 * 1024 * 100;  //100mb
+        const mbMaxSize = 1024 * 1024 * 100;  //100mb
         let error = '';
-        if (file.size > size) {
-            error = `File is too large, please upload a file less than ${size}`;
+        if (file.size > mbMaxSize) {
+            error = `File is too large, please upload a file less than ${mbMaxSize}`;
             alert(error);
         } else {
             return true;
