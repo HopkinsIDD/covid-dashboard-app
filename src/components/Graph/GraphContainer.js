@@ -78,7 +78,7 @@ class GraphContainer extends Component {
 
       // this deals with re-scaling and re-drawing graphs on window resize
       if (prevProp.width !== this.props.width || prevProp.height !== this.props.height) {
-        console.log('componentDidUpdate width');
+        // console.log('componentDidUpdate width');
         const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
         const graphHeight = height;
         // console.log('graphWidth is', graphWidth)

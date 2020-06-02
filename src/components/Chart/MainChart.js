@@ -5,7 +5,7 @@ import Scenarios from '../Filters/Scenarios';
 import DatePicker from './DatePicker';
 import ScaleToggle from './ScaleToggle';
 import IndicatorSelection from './IndicatorSelection';
-import { margin, COUNTYNAMES } from '../../utils/constants';
+import { COUNTYNAMES } from '../../utils/constants';
 
 class MainChart extends Component {
     
@@ -19,15 +19,12 @@ class MainChart extends Component {
                 </div>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                     <Col className="gutter-row container" span={16}>
-
-                        {this.props.dataLoaded &&
                         <div className="map-container">
                             <ChartContainer
                                 geoid={this.props.geoid}
                                 width={this.props.width}
                                 height={this.props.height} 
                                 dataset={this.props.dataset}
-                                dataLoaded={this.props.dataLoaded}
                                 scenarios={this.props.scenarioList}
                                 stats={this.props.stats}
                                 firstDate={this.props.firstDate}
@@ -37,12 +34,10 @@ class MainChart extends Component {
                                 datePickerActive={this.props.datePickerActiveChart}
                             />
                         </div>
-                        } 
                     </Col>
 
                     <Col className="gutter-row filters" span={6}>
                         <Fragment>
-                            {this.props.dataLoaded &&
                             <Fragment>
                                 <Scenarios 
                                     view="chart"
@@ -56,7 +51,6 @@ class MainChart extends Component {
                                     onStatClickChart={this.props.onStatClickChart}
                                 />
                             </Fragment>
-                            }
                             <DatePicker 
                                 firstDate={this.props.firstDate}
                                 summaryStart={this.props.summaryStart}

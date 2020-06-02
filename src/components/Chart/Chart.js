@@ -44,13 +44,13 @@ class Chart extends Component {
             prevProps.stats !== this.props.stats ||
             prevProps.width !== this.props.width ||
             prevProps.height !== this.props.height) {
-                console.log('componentDidUpdate main check')
+                // console.log('componentDidUpdate main check')
                 const calc = this.calculateQuantiles();
                 this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
         }
         if (prevProps.scenarios !== this.props.scenarios ||
             prevProps.scale !== this.props.scale) {
-            console.log('componentDidUpdate scale check')
+            // console.log('componentDidUpdate scale check')
             const calc = this.calculateQuantiles();
             // this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
             this.updateSummaryStats(calc.quantileObj, calc.xScale, calc.yScale, calc.scaleDomains);
@@ -117,20 +117,20 @@ class Chart extends Component {
     }
 
     updateSummaryStats = (quantileObj, xScale, yScale, scaleDomains) => {
-        console.log('updateSummaryStats')
+        // console.log('updateSummaryStats')
         if (this.chartRef.current) {
-            console.log('ref check, update Summary stats')
+            // console.log('ref check, update Summary stats')
             const barWidth = ((this.props.width / this.state.severities.length) / this.props.scenarios.length) - margin.left - margin.right;
             const barMargin = 10;
             const whiskerMargin = barWidth * 0.2;
             // update paths with new data
             const barNodes = select(this.chartRef.current)
-            console.log(this.chartYAxisRef.current)
+            // console.log(this.chartYAxisRef.current)
             // this.chartYAxisRef.props.scale = yScale
             // this.chartYAxisRef.updateAxis()
 
             this.state.severities.map( (severity, i) => {
-                Object.entries(quantileObj[this.props.stat][severity]).map( ([key, value]) => {
+                Object.entries(quantileObj[this.props.stat][severity]).forEach( ([key, value]) => {
                     barNodes.selectAll(`.bar-${severity}-${key}`)
                         .transition()
                         .duration(500)

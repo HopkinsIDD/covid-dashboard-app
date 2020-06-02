@@ -351,7 +351,7 @@ class Graph extends Component {
                         {
                         // visible simPaths
                         this.state.simPaths.map( (simPath, i) => {
-                            const simIsHovered = (i === this.state.hoveredSimPathId)
+                            /* const simIsHovered = (i === this.state.hoveredSimPathId) */
                             return (
                                 <path
                                     d={simPath}

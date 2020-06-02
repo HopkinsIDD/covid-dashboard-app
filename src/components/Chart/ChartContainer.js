@@ -2,18 +2,15 @@ import React, { Component } from 'react';
 import Chart from '../Chart/Chart';
 import SummaryLabel from '../Chart/SummaryLabel';
 import ChartLegend from '../Chart/ChartLegend';
-// import { scaleLinear } from 'd3-scale';
-import { COUNTYNAMES, scenarioColors, blue } from '../../utils/constants'
+import { scenarioColors, blue } from '../../utils/constants'
 import { getReadableDate } from '../../utils/utils'
 
 class ChartContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // TODO: depending on performance, may add more or less
             parameters: [],
             parameterLabels: [],
-            // severities: ['high', 'med', 'low'],
             children: {},
             hoveredScenarioIdx: null
         }
@@ -32,7 +29,7 @@ class ChartContainer extends Component {
             || prevProps.scale !== this.props.scale
             || prevProps.width !== this.props.width 
             || prevProps.height !== this.props.height) {
-            console.log('ComponentDidUpdate Summary Start or End or Dataset')
+            // console.log('ComponentDidUpdate Summary Start or End or Dataset')
             this.drawSummaryStatCharts();
         }
     }
@@ -89,7 +86,6 @@ class ChartContainer extends Component {
     }
 
     handleScenarioHighlight = (scenarioIdx) => {
-        // console.log('Chart Container scenarioIdx', scenarioIdx)
         if (scenarioIdx !== null) {
             this.setState({ hoveredScenarioIdx: scenarioIdx })
         } else {
@@ -102,7 +98,6 @@ class ChartContainer extends Component {
         // const scenarios = Object.keys(this.props.dataset);
         // const parameters = this.props.stats.map( s => s.key )
         // if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
-        // const parameters = this.props.stats.map( s => s.key )
         return (
             <div>
                 <div className="scenario-title titleNarrow">Summary of</div>
@@ -128,36 +123,32 @@ class ChartContainer extends Component {
                 </div>
                 <div className="chart-legend-container">
                     <div className="chart-legend">
-                    {this.props.dataLoaded &&
-                        this.props.scenarios.map( (scenario, index) => {
-                            return (
-                                <div key={`chart-item-${scenario}`} className="chart-item">
-                                    <div
-                                        key={`legend-box-${scenario}`}
-                                        className='legend-box'
-                                        style={ {background: scenarioColors[index], 
-                                                border: 'solid',
-                                                borderColor: this.state.hoveredScenarioIdx === index ? blue : scenarioColors[index],
-                                                width: '12px', 
-                                                height: '12px', 
-                                                marginRight: '5px'}}
-                                    ></div>
-                                    <div
-                                        key={`legend-label-${scenario}`}
-                                        className="titleNarrow"
-                                    >{scenario.replace('_',' ')} </div>
-                                </div>
-                            )
-                        })
+                    {this.props.scenarios.map( (scenario, index) => {
+                        return (
+                            <div key={`chart-item-${scenario}`} className="chart-item">
+                                <div
+                                    key={`legend-box-${scenario}`}
+                                    className='legend-box'
+                                    style={ {background: scenarioColors[index], 
+                                            border: 'solid',
+                                            borderColor: this.state.hoveredScenarioIdx === index ? blue : scenarioColors[index],
+                                            width: '12px', 
+                                            height: '12px', 
+                                            marginRight: '5px'}}
+                                ></div>
+                                <div
+                                    key={`legend-label-${scenario}`}
+                                    className="titleNarrow"
+                                >{scenario.replace('_',' ')} </div>
+                            </div>
+                        )
+                    })
                     }
                     </div>
                     <ChartLegend />
                 </div>
                 {/* {Object.keys(this.state.children).length === this.props.stats.length &&  */}
                 {this.state.parameters.map( (param, i) => {
-                    // console.log(param)
-                    // console.log(this.state.children)
-                    // console.log(this.state.children[param])
                     return (
                         <div className="row" key={`chart-row-${param}`}>
                             <div className="chart" key={`chart-${param}`}>

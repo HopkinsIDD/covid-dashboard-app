@@ -29,7 +29,7 @@ class Chart extends Component {
     }
 
     handleOpen = (datePickerOpen) => {
-        console.log('datePickerOpen', datePickerOpen)
+        // console.log('datePickerOpen', datePickerOpen)
         this.props.onHandleDatePicker(datePickerOpen)
     }
     

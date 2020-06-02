@@ -153,9 +153,9 @@ class MainContainer extends Component {
         // instantiates countyBoundaries
         const state = this.state.geoid.slice(0, 2);
         const countyBoundaries = require('../store/countyBoundaries.json')[state];
-        console.log('countyBoundaries in Main', countyBoundaries)
         const statsForCounty = geojsonStats[state];
-        const mapCurrentDateIndex = allTimeDates.findIndex( date => formatDate(date) === formatDate(new Date()));
+        const mapCurrentDateIndex = allTimeDates
+            .findIndex( date => formatDate(date) === formatDate(new Date()));
 
         this.setState({
             dataset,
@@ -587,7 +587,6 @@ class MainContainer extends Component {
     render() {
         const { Content } = Layout;
         const countyName = `${COUNTYNAMES[this.state.geoid]}`;
-        // console.log('animateTransition', this.state.animateTransition)
         return (
             <Layout>
                 {/* Search Component */}
@@ -664,7 +663,6 @@ class MainContainer extends Component {
                         width={this.state.graphW - margin.left - margin.right}
                         height={this.state.graphH * 1.15} 
                         dataset={this.state.dataset}
-                        dataLoaded={this.state.dataLoaded}
                         scenarios={this.state.scenarioListChart}
                         stats={this.state.statListChart}
                         firstDate={this.state.firstDate}

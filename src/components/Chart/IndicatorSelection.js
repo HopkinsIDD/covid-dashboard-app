@@ -52,7 +52,7 @@ class IndicatorSelection extends Component {
 
     componentDidUpdate(prevProp) {
       if (prevProp.statListChart !== this.props.statListChart) {
-            console.log('componentDidUpdate')
+            // console.log('componentDidUpdate')
 
           const { statListChart } = this.props;
 
