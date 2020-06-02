@@ -5,7 +5,7 @@ import Scenarios from '../Filters/Scenarios';
 import DatePicker from './DatePicker';
 import ScaleToggle from './ScaleToggle';
 import IndicatorSelection from './IndicatorSelection';
-import { COUNTYNAMES } from '../../utils/constants';
+import { styles, COUNTYNAMES } from '../../utils/constants';
 
 class MainChart extends Component {
     
@@ -13,7 +13,7 @@ class MainChart extends Component {
         const { Content } = Layout;
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
-            <Content id="stats" style={{ background: '#fefefe', padding: '50px 0' }}>
+            <Content id="stats" style={styles.ContainerWhite}>
                 <div className="content-section">
                     <div className="content-header">{countyName}</div>
                 </div>

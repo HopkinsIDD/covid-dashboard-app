@@ -3,14 +3,14 @@ import { Layout, Row, Col } from 'antd';
 import GraphContainer from './GraphContainer';
 import GraphFilter from './GraphFilter';
 import Brush from '../Filters/Brush';
-import { margin, COUNTYNAMES } from '../../utils/constants';
+import { styles, margin, COUNTYNAMES } from '../../utils/constants';
 
 class MainGraph extends Component {
     render() {
         const { Content } = Layout;
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
-            <Content id="scenario-comparisons" style={{ padding: '50px 0' }}>
+            <Content id="scenario-comparisons" style={styles.ContainerGray}>
                 <div className="content-section">
                     <div className="content-header">{countyName}</div>
                 </div>
@@ -69,12 +69,11 @@ class MainGraph extends Component {
                             onScenarioClickGraph={this.props.onScenarioClickGraph}
                             stat={this.props.stat}
                             onButtonClick={this.props.onButtonClick}
-                            showConfBounds={this.props.showConfBounds}
                             onConfClick={this.props.onConfClick}
                             severityList={this.props.severityList}
-                            onSeveritiesClick={this.props.handleSeveritiesClick}
-                            onSeveritiesHover={this.props.handleSeveritiesHover}
-                            onSeveritiesHoverLeave={this.props.handleSeveritiesHoverLeave}
+                            onSeveritiesClick={this.props.onSeveritiesClick}
+                            onSeveritiesHover={this.props.onSeveritiesHover}
+                            onSeveritiesHoverLeave={this.props.onSeveritiesHoverLeave}
                             dates={this.props.dates}
                             r0={this.props.r0}
                             onHandleR0Change={this.props.onHandleR0Change}

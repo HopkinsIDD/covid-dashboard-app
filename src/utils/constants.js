@@ -15,8 +15,11 @@ export const mapLowColors = ['#deebf7', '#e5f5e0', '#fee6ce', '#fee0d2']
 export const mapHighColors = ['#3885fa', '#008769', '#e6550d', '#de2d26']
 
 export const styles = {
-    Container: {
+    ContainerWhite: {
         background: '#fefefe',
+        padding: '5rem 0'
+    },
+    ContainerGray: {
         padding: '5rem 0'
     },
     SearchBar: {
