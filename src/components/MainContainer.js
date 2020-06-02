@@ -86,10 +86,10 @@ class MainContainer extends Component {
         // console.log('componentDidMount')
         console.log('dataset', dataset)
         
-        // window.addEventListener('resize', this.updateGraphDimensions)
-        // window.addEventListener('resize', this.updateMapContainerDimensions)
-        // this.updateGraphDimensions()
-        // this.updateMapContainerDimensions()
+        window.addEventListener('resize', this.updateGraphDimensions)
+        window.addEventListener('resize', this.updateMapContainerDimensions)
+        this.updateGraphDimensions()
+        this.updateMapContainerDimensions()
         
         const [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap] =
             this.instantiateScenarios(dataset);
@@ -181,7 +181,7 @@ class MainContainer extends Component {
             countyBoundaries,
             statsForCounty,
             summaryStart,
-            mapCurrentDateIndex
+            mapCurrentDateIndex,
             // graphW,
             // graphH
         }, () => {
@@ -299,14 +299,14 @@ class MainContainer extends Component {
     }
 
     updateGraphDimensions = () => {
-        const graphW = this.graphEl.clientWidth - margin.yAxis;
-        const graphH = this.graphEl.clientHeight;
+        const graphW = (window.innerWidth * 0.6585) - margin.yAxis;
+        const graphH = window.innerHeight;
         this.setState({ graphW, graphH, animateTransition: false });
       }
 
     updateMapContainerDimensions = () => {
-        const mapContainerW = (this.graphEl.clientWidth  - margin.yAxis) - ( 3 * (margin.left)) - (3 * (margin.right));
-        const mapContainerH = this.graphEl.clientHeight * 0.8;
+        const mapContainerW = ((window.innerWidth * 0.6585) - margin.yAxis) - ( 3 * (margin.left)) - (3 * (margin.right));
+        const mapContainerH = window.innerHeight * 0.8;
         this.setState({ mapContainerW, mapContainerH });
     }
 
