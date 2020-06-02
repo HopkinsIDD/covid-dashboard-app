@@ -468,6 +468,7 @@ class Graph extends Component {
                             width={this.props.width}
                             height={this.props.height}
                             orientation={'bottom'}
+                            view={'graph'}
                             scale={this.props.xScale}
                             x={0}
                             y={this.props.height - margin.bottom}

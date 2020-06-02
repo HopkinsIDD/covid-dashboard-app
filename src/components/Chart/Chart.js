@@ -395,6 +395,18 @@ class Chart extends Component {
                         ref={this.chartRef}
                         >
                         {this.drawSummaryStats()}
+                        <Axis 
+                            ref={this.chartXAxisRef}
+                            view={'chart'}
+                            width={this.props.width}
+                            height={this.props.height}
+                            orientation={'bottom'}
+                            scale={this.state.xScale}
+                            x={0}
+                            y={this.props.height - margin.bottom + 1}
+                            tickNum={this.props.scenarios.length}
+                            axisVisible={false}
+                        />
                         </svg>
                     </Fragment>
                   }
