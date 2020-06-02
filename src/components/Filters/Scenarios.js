@@ -125,7 +125,7 @@ class Scenarios extends Component {
             this.props.onScenarioClick(event);
         } else if (this.props.view === 'chart') {
             this.props.onScenarioClickChart(event)
-        } else {
+        } else { // === 'map'
             this.props.onScenarioClickMap(event)
         }
     }

@@ -22,6 +22,9 @@ export const styles = {
     ContainerGray: {
         padding: '5rem 0'
     },
+    ContainerMap: {
+        paddingLeft: margin.yAxis + (2 * margin.left) + margin.right
+    },
     SearchBar: {
         width: '75%'
     },

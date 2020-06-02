@@ -2,8 +2,6 @@ import React, { Component, Fragment } from 'react';
 import { geoConicEqualArea, geoPath } from 'd3-geo';
 import { scaleLinear } from 'd3-scale';
 import { max } from 'd3-array';
-import { axisRight } from 'd3-axis';
-import { select } from 'd3-selection';
 import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
@@ -81,7 +79,7 @@ class Map extends Component {
         // console.log(maxValNorm)
         const minValNorm = maxValNorm * 0.3333;
         // console.log(stat, maxVal)
-        console.log(this.state.gradientH)
+        // console.log(this.state.gradientH)
         const yScale = scaleLinear().range([this.state.gradientH, 0]).domain([0, maxValNorm])
         // console.log(countyBoundaries)
         this.setState({ minVal, maxVal, countyBoundaries, yScale, minValNorm, maxValNorm })

@@ -12,7 +12,7 @@ import { instantiateScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { maxIndex } from 'd3-array';
-import { STATS, LEVELS, COUNTYNAMES, margin } from '../utils/constants';
+import { STATS, LEVELS, margin } from '../utils/constants';
 
 const dataset = require('../store/geo06085.json');
 const geojsonStats = require('../store/statsForMap.json')
@@ -38,7 +38,6 @@ class MainContainer extends Component {
             scenario: {},
             scenarioList: [],           
             scenarioListChart: [],
-            scenarioMap: '',         
             severity: _.cloneDeep(LEVELS[0]), 
             severityList: [_.cloneDeep(LEVELS[0])],
             scenarioHovered: '',
@@ -48,8 +47,6 @@ class MainContainer extends Component {
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: new Date(),
-            dateSliderActive: false,
-            dateSliderActiveMap: false,
             datePickerActiveChart: false,
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             firstDate: '',
@@ -63,17 +60,14 @@ class MainContainer extends Component {
             showActual: false,
             summaryStart: new Date(),
             summaryEnd: new Date(),
-            countyBoundaries: { "type": "FeatureCollection", "features": []},
-            statsForCounty: {},
             graphW: 0,
             graphH: 0,
-            mapContainerW: 0,
-            mapContainerH: 0,
             brushActive: false,
             animateTransition: true,
             scenarioClickCounter: 0,
             summaryScale: 'power',
-            mapCurrentDateIndex: 0
+            mapContainerW: 0,
+            mapContainerH: 0,
         };
     };
 
@@ -146,11 +140,11 @@ class MainContainer extends Component {
         sevList[0].scenario = scenario.key;
 
         // instantiates countyBoundaries
-        const state = this.state.geoid.slice(0, 2);
-        const countyBoundaries = require('../store/countyBoundaries.json')[state];
-        const statsForCounty = geojsonStats[state];
-        const mapCurrentDateIndex = allTimeDates
-            .findIndex( date => formatDate(date) === formatDate(new Date()));
+        // const state = this.state.geoid.slice(0, 2);
+        // const countyBoundaries = require('../store/countyBoundaries.json')[state];
+        // const statsForCounty = geojsonStats[state];
+        // const mapCurrentDateIndex = allTimeDates
+        //     .findIndex( date => formatDate(date) === formatDate(new Date()));
 
         this.setState({
             dataset,
@@ -173,10 +167,10 @@ class MainContainer extends Component {
             lastDate,
             percExceedenceList,
             confBoundsList: [filteredConfBounds],
-            countyBoundaries,
-            statsForCounty,
+            // countyBoundaries,
+            // statsForCounty,
             summaryStart,
-            mapCurrentDateIndex,
+            // mapCurrentDateIndex,
             // graphW,
             // graphH
         }, () => {
@@ -429,11 +423,11 @@ class MainContainer extends Component {
         })        
     }
 
-    handleScenarioClickMap = (item) => {
-        this.setState({
-            scenarioMap : item
-        })        
-    }
+    // handleScenarioClickMap = (item) => {
+    //     this.setState({
+    //         scenarioMap : item
+    //     })        
+    // }
 
     handleSeveritiesClick = (i) => {
         let newSevList = _.cloneDeep(this.state.severityList);
@@ -520,9 +514,9 @@ class MainContainer extends Component {
         this.setState({summaryStart: start, summaryEnd: end});
     };
 
-    handleMapSliderChange = (index) => {
-        this.setState({mapCurrentDateIndex: +index})
-    }
+    // handleMapSliderChange = (index) => {
+    //     this.setState({mapCurrentDateIndex: +index})
+    // }
 
     handleSliderMouseEvent = (type, slider, view) => {
         if (view === 'graph') {
@@ -539,14 +533,15 @@ class MainContainer extends Component {
                     this.setState({ dateSliderActive: false })
                 }
             }
-        } else {
-            // map date slider
-            if (type === 'mousedown') {
-                this.setState({ dateSliderActiveMap: true })
-            } else {
-                this.setState({ dateSliderActiveMap: false })
-            }
         } 
+        // else {
+        //     // map date slider
+        //     if (type === 'mousedown') {
+        //         this.setState({ dateSliderActiveMap: true })
+        //     } else {
+        //         this.setState({ dateSliderActiveMap: false })
+        //     }
+        // } 
     }
 
     handleDatePicker = (datePickerOpen) => {
@@ -558,8 +553,6 @@ class MainContainer extends Component {
     }
 
     render() {
-        const { Content } = Layout;
-        const countyName = `${COUNTYNAMES[this.state.geoid]}`;
         return (
             <Layout>
                 {/* Search Component */}
@@ -661,27 +654,10 @@ class MainContainer extends Component {
                 {this.state.dataLoaded &&
                 <div>
                     <MainMap
+                        geoid={this.state.geoid}
+                        dataset={this.state.dataset}
                         width={this.state.mapContainerW - margin.left - margin.right}
                         height={this.state.mapContainerH}
-                        dataset={this.state.dataset}
-                        scenario={this.state.scenarioMap}
-                        geoid={this.state.geoid}
-                        firstDate={this.state.firstDate}
-                        selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
-                        countyBoundaries={this.state.countyBoundaries}
-                        statsForCounty={this.state.statsForCounty}
-                        dateSliderActive={this.state.dateSliderActiveMap}
-                        view="map"
-                        // temporary fix for different scenario array lengths between dataset and map
-                        SCENARIOS={this.state.SCENARIOS.length > 3 ? this.state.SCENARIOS.slice(0, 3) : this.state.SCENARIOS}
-                        scenario={this.state.scenarioMap}
-                        onScenarioClickMap={this.handleScenarioClickMap}
-                        dates={this.state.allTimeDates}
-                        endIndex={(this.state.allTimeDates.length - 1).toString()}
-                        currentDateIndex={this.state.mapCurrentDateIndex.toString()}
-                        selectedDate={this.state.allTimeDates[this.state.mapCurrentDateIndex]}
-                        onMapSliderChange={this.handleMapSliderChange}
-                        onSliderMouseEvent={this.handleSliderMouseEvent}
                     />
                 </div>
                 }
