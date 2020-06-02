@@ -681,7 +681,7 @@ class MainContainer extends Component {
                         onStatClickChart={this.handleStatClickChart}
                         onHandleSummaryDates={this.handleSummaryDates}
                         onHandleDatePicker={this.handleDatePicker}
-                        onScaleToggle={this.handleScaleToggle}
+                        onHandleScaleToggle={this.handleScaleToggle}
                     />
                 </div>
                 }

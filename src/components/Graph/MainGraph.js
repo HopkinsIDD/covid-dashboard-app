@@ -24,7 +24,7 @@ class MainGraph extends Component {
                             severity={this.props.severity}
                             r0={this.props.r0}
                             animateTransition={this.props.animateTransition}
-                            toggleAnimateTransition={this.toggleAnimateTransition}
+                            toggleAnimateTransition={this.props.toggleAnimateTransition}
                             simNum={this.props.simNum}
                             showConfBounds={this.props.showConfBounds}
                             confBoundsList={this.props.confBoundsList}
@@ -51,7 +51,7 @@ class MainGraph extends Component {
                             x={margin.yAxis}
                             y={0}
                             animateTransition={this.props.animateTransition}
-                            toggleAnimateTransition={this.toggleAnimateTransition}
+                            toggleAnimateTransition={this.props.toggleAnimateTransition}
                             dateRange={this.props.dateRange}
                             dateThreshold={this.props.dateThreshold}
                             statThreshold={this.props.statThreshold}
@@ -66,18 +66,18 @@ class MainGraph extends Component {
                             SCENARIOS={this.props.SCENARIOS}
                             scenario={this.props.scenario}
                             scenarioList={this.props.scenarioList}
-                            onScenarioClickGraph={this.props.handleScenarioClickGraph}
+                            onScenarioClickGraph={this.props.onScenarioClickGraph}
                             stat={this.props.stat}
-                            onButtonClick={this.props.handleButtonClick}
+                            onButtonClick={this.props.onButtonClick}
                             showConfBounds={this.props.showConfBounds}
-                            onConfClick={this.props.handleConfClick}
+                            onConfClick={this.props.onConfClick}
                             severityList={this.props.severityList}
                             onSeveritiesClick={this.props.handleSeveritiesClick}
                             onSeveritiesHover={this.props.handleSeveritiesHover}
                             onSeveritiesHoverLeave={this.props.handleSeveritiesHoverLeave}
                             dates={this.props.dates}
                             r0={this.props.r0}
-                            onHandleR0Change={this.props.handleR0Change}
+                            onHandleR0Change={this.props.onHandleR0Change}
                             seriesMax={this.props.seriesMax}
                             seriesMin={this.props.seriesMin}
                             statThreshold={this.props.statThreshold}
@@ -86,9 +86,9 @@ class MainGraph extends Component {
                             firstDate={this.props.firstDate}
                             lastDate={this.props.lastDate}
                             dateRange={this.props.dateRange}
-                            onStatSliderChange={this.props.handleStatSliderChange}
-                            onDateSliderChange={this.props.handleDateSliderChange}
-                            onSliderMouseEvent={this.props.handleSliderMouseEvent}
+                            onStatSliderChange={this.props.onStatSliderChange}
+                            onDateSliderChange={this.props.onDateSliderChange}
+                            onSliderMouseEvent={this.props.onSliderMouseEvent}
                             />
                     </Col>
                 </Row>
