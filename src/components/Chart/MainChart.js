@@ -8,9 +8,12 @@ import IndicatorSelection from './IndicatorSelection';
 import { margin, COUNTYNAMES } from '../../utils/constants';
 
 class MainChart extends Component {
+    
     render() {
         const { Content } = Layout;
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
+        console.log(this.props.width, this.props.height)
+        console.log(this.props.scenarioList)
         return (
             <Content id="stats" style={{ background: '#fefefe', padding: '50px 0' }}>
                 <div className="content-section">
@@ -23,11 +26,12 @@ class MainChart extends Component {
                         <div className="map-container">
                             <ChartContainer
                                 geoid={this.props.geoid}
-                                width={this.props.graphW - margin.left - margin.right}
-                                height={this.props.graphH * 1.15} 
+                                width={this.props.width}
+                                height={this.props.height} 
                                 dataset={this.props.dataset}
-                                scenarios={this.props.scenarioListChart}
-                                stats={this.props.statListChart}
+                                dataLoaded={this.props.dataLoaded}
+                                scenarios={this.props.scenarioList}
+                                stats={this.props.stats}
                                 firstDate={this.props.firstDate}
                                 summaryStart={this.props.summaryStart}
                                 summaryEnd={this.props.summaryEnd}
@@ -35,7 +39,7 @@ class MainChart extends Component {
                                 datePickerActive={this.props.datePickerActiveChart}
                             />
                         </div>
-                        }
+                        } 
                     </Col>
 
                     <Col className="gutter-row filters" span={6}>
@@ -50,7 +54,7 @@ class MainChart extends Component {
                                     onScenarioClickChart={this.handleScenarioClickChart}
                                 />
                                 <IndicatorSelection
-                                    statListChart={this.props.statListChart}
+                                    statListChart={this.props.stats}
                                     onStatClickChart={this.handleStatClickChart}
                                 />
                             </Fragment>

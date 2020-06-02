@@ -664,6 +664,7 @@ class MainContainer extends Component {
                         width={this.state.graphW - margin.left - margin.right}
                         height={this.state.graphH * 1.15} 
                         dataset={this.state.dataset}
+                        dataLoaded={this.state.dataLoaded}
                         scenarios={this.state.scenarioListChart}
                         stats={this.state.statListChart}
                         firstDate={this.state.firstDate}
@@ -676,7 +677,7 @@ class MainContainer extends Component {
                         scenario={this.state.scenario}
                         scenarioList={this.state.scenarioListChart}
                         onScenarioClickChart={this.handleScenarioClickChart}
-                        statListChart={this.state.statListChart}
+                        // statListChart={this.state.statListChart}
                         onStatClickChart={this.handleStatClickChart}
                         onHandleSummaryDates={this.handleSummaryDates}
                         onHandleDatePicker={this.handleDatePicker}

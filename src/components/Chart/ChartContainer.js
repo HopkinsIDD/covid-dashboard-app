@@ -103,6 +103,7 @@ class ChartContainer extends Component {
         // const parameters = this.props.stats.map( s => s.key )
         // if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
         // const parameters = this.props.stats.map( s => s.key )
+        console.log(this.props.width, this.props.height)
         return (
             <div>
                 <div className="scenario-title titleNarrow">Summary of</div>
@@ -128,7 +129,7 @@ class ChartContainer extends Component {
                 </div>
                 <div className="chart-legend-container">
                     <div className="chart-legend">
-                    {
+                    {this.props.dataLoaded &&
                         this.props.scenarios.map( (scenario, index) => {
                             return (
                                 <div key={`chart-item-${scenario}`} className="chart-item">

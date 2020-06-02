@@ -51,8 +51,8 @@ class IndicatorSelection extends Component {
     }
 
     componentDidUpdate(prevProp) {
-      if (prevProp.STATS !== STATS ||
-          prevProp.statListChart !== this.props.statListChart) {
+      if (prevProp.statListChart !== this.props.statListChart) {
+            console.log('componentDidUpdate')
 
           const { statListChart } = this.props;
 
@@ -89,6 +89,7 @@ class IndicatorSelection extends Component {
               )
               children.push(child);
           }
+
           this.setState({
               statsForChart,
               children
