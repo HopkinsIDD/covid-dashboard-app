@@ -20,7 +20,6 @@ class MainMap extends Component {
                       <MapContainer
                           width={this.props.width}
                           height={this.props.height}
-                          dataset={this.props.dataset}
                           scenario={this.props.scenario}
                           geoid={this.props.geoid}
                           firstDate={this.props.firstDate}
