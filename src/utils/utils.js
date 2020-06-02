@@ -3,7 +3,26 @@ import { timeDay } from 'd3-time';
 import { timeFormat } from 'd3-time-format';
 ///////////////// UTILS ///////////////////
 
+
+export function instantiateScenarios(dataset) {
+  // Instantiates scenarios used for all views
+
+  // constant for given geoid
+  const SCENARIOS = buildScenarios(dataset);  
+
+  // initial scenario and scenarioList for Graph
+  const scenario = SCENARIOS[0];             
+  const scenarioList = [scenario]; 
+             
+  const scenarioListChart = SCENARIOS.map(s => s.name);
+  const scenarioMap = SCENARIOS[0].key;       
+  
+  return [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap];
+}
+
 export function buildScenarios(dataset) {
+  // Instantiates constant scenarios used for a given geoid
+
   const keys = Object.keys(dataset); 
   const scenarioArray = []; 
   for (let i = 0; i < keys.length; i++) {
@@ -25,11 +44,8 @@ export function addCommas(x) {
   return parts.join(".");
 }
 
-export function getRange(series, seriesPeaks) {
+export function getRange(seriesPeaks) {
   // return range [min, max] of all sims given a series
-  // const seriesMaxPeaks = series.map( sim => {
-  //   return max(sim.vals)
-  // });
   const seriesPeakExtent = extent(seriesPeaks)
 
   // take out rounding until display

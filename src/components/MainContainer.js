@@ -8,12 +8,10 @@ import MainChart from './Chart/MainChart';
 import MapContainer from './Map/MapContainer';
 import Methodology from './Methodology';
 
-// import Brush from './Filters/Brush';
-// import GraphFilter from './Graph/GraphFilter';
 import Scenarios from './Filters/Scenarios';
 import DateSlider from './Map/DateSlider';
 
-import { buildScenarios, getRange } from '../utils/utils'
+import { instantiateScenarios, getRange } from '../utils/utils'
 import { utcParse, timeFormat } from 'd3-time-format'
 import { timeDay } from 'd3-time'
 import { maxIndex } from 'd3-array';
@@ -92,7 +90,7 @@ class MainContainer extends Component {
         this.updateMapContainerDimensions()
         
         const [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap] =
-            this.instantiateScenarios(dataset);
+            instantiateScenarios(dataset);
 
         // add default stats to chart
         const statListChart = STATS.slice(0,2)
@@ -106,7 +104,7 @@ class MainContainer extends Component {
         const lastDate = dates[dates.length - 1];
         
         const seriesPeaks = series.map(sim => sim.max);
-        const [seriesMin, seriesMax] = getRange(series, seriesPeaks);
+        const [seriesMin, seriesMax] = getRange(seriesPeaks);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
 
         // iterate through SeriesList
@@ -232,10 +230,7 @@ class MainContainer extends Component {
                 });
 
                 const seriesPeaks = filteredSeriesForStatThreshold.map(sim => sim.max);
-                const [seriesMin, seriesMax] = getRange(
-                    filteredSeriesForStatThreshold,
-                    seriesPeaks
-                    );
+                const [seriesMin, seriesMax] = getRange(seriesPeaks);
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
                 // update dateThreshold before updating statThreshold?
@@ -286,16 +281,6 @@ class MainContainer extends Component {
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateGraphDimensions)
         window.removeEventListener('resize', this.updateMapContainerDimensions)
-    }
-
-    instantiateScenarios(dataset) {
-        const SCENARIOS = buildScenarios(dataset);  // constant for geoID
-        const scenario = SCENARIOS[0];              // initial scenario in Graph
-        const scenarioList = [scenario];            // updated based on selection
-        const scenarioListChart = SCENARIOS.map(s => s.name);
-        const scenarioMap = SCENARIOS[0].key;       // initial scenario in Map
-        
-        return [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap];
     }
 
     updateGraphDimensions = () => {
@@ -355,7 +340,7 @@ class MainContainer extends Component {
 
     initializeGeoid(geoid, dataset) {
         const [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap] =
-            this.instantiateScenarios(dataset);
+            instantiateScenarios(dataset);
 
         // re-initialize severity
         const severityList = [_.cloneDeep(LEVELS[0])];
@@ -527,28 +512,19 @@ class MainContainer extends Component {
     handleScaleToggle = (scale) => {this.setState({ summaryScale: scale })}
 
     handleConfClick = () => {
-        this.setState(prevState => ({
-            showConfBounds: !prevState.showConfBounds
-        }));
+        this.setState(prevState => ({showConfBounds: !prevState.showConfBounds}));
     };
 
     handleActualClick = () => {
-        this.setState(prevState => ({
-            showActual: !prevState.showActual
-        }));
+        this.setState(prevState => ({showActual: !prevState.showActual}));
     };
 
     handleSummaryDates = (start, end) => {
-        this.setState({
-            summaryStart: start,
-            summaryEnd: end
-        });
+        this.setState({summaryStart: start, summaryEnd: end});
     };
 
     handleMapSliderChange = (index) => {
-        this.setState({
-            mapCurrentDateIndex: +index
-        })
+        this.setState({mapCurrentDateIndex: +index})
     }
 
     handleSliderMouseEvent = (type, slider, view) => {
