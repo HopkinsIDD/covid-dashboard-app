@@ -12,8 +12,6 @@ class MainChart extends Component {
     render() {
         const { Content } = Layout;
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
-        console.log(this.props.width, this.props.height)
-        console.log(this.props.scenarioList)
         return (
             <Content id="stats" style={{ background: '#fefefe', padding: '50px 0' }}>
                 <div className="content-section">
@@ -35,7 +33,7 @@ class MainChart extends Component {
                                 firstDate={this.props.firstDate}
                                 summaryStart={this.props.summaryStart}
                                 summaryEnd={this.props.summaryEnd}
-                                scale={this.props.summaryScale}
+                                scale={this.props.scale}
                                 datePickerActive={this.props.datePickerActiveChart}
                             />
                         </div>
@@ -51,11 +49,11 @@ class MainChart extends Component {
                                     SCENARIOS={this.props.SCENARIOS}
                                     scenario={this.props.scenario}
                                     scenarioList={this.props.scenarioListChart}
-                                    onScenarioClickChart={this.handleScenarioClickChart}
+                                    onScenarioClickChart={this.props.onScenarioClickChart}
                                 />
                                 <IndicatorSelection
                                     statListChart={this.props.stats}
-                                    onStatClickChart={this.handleStatClickChart}
+                                    onStatClickChart={this.props.onStatClickChart}
                                 />
                             </Fragment>
                             }
@@ -63,12 +61,12 @@ class MainChart extends Component {
                                 firstDate={this.props.firstDate}
                                 summaryStart={this.props.summaryStart}
                                 summaryEnd={this.props.summaryEnd}
-                                onHandleSummaryDates={this.handleSummaryDates}
-                                onHandleDatePicker={this.handleDatePicker}
+                                onHandleSummaryDates={this.props.onHandleSummaryDates}
+                                onHandleDatePicker={this.props.onHandleDatePicker}
                             />
                             <ScaleToggle
-                                scale={this.props.summaryScale}
-                                onScaleToggle={this.handleScaleToggle}
+                                scale={this.props.scale}
+                                onScaleToggle={this.props.onHandleScaleToggle}
                             />
                         </Fragment>
                     </Col>

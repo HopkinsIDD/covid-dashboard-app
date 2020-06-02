@@ -140,7 +140,7 @@ class Chart extends Component {
                         .attr("height", yScale(0) - yScale(value.median))
                         .ease(easeCubicOut)
                     .on("end", () => {
-                        console.log('bar rect transition ended')
+                        // console.log('bar rect transition ended')
                         // this.setState({ quantileObj, xScale, yScale, scaleDomains })
                     })
                     barNodes.selectAll(`.vertline-${severity}-${key}`)
@@ -152,7 +152,7 @@ class Chart extends Component {
                         .attr("y2", yScale(value.tenth))
                         .ease(easeCubicOut)
                     .on("end", () => {
-                        console.log('vertical line transition ended')
+                        // console.log('vertical line transition ended')
                         // this.setState({ quantileObj, xScale, yScale, scaleDomains })
                     })
                     barNodes.selectAll(`.topline-${severity}-${key}`)
@@ -164,7 +164,7 @@ class Chart extends Component {
                         .attr("y2", yScale(value.ninetyith))
                         .ease(easeCubicOut)
                     .on("end", () => {
-                        console.log('top line transition ended')
+                        // console.log('top line transition ended')
                         // this.setState({ quantileObj, xScale, yScale, scaleDomains })
                     })
                     barNodes.selectAll(`.bottomline-${severity}-${key}`)
@@ -176,7 +176,7 @@ class Chart extends Component {
                         .attr("y2", yScale(value.tenth))
                         .ease(easeCubicOut)
                     .on("end", () => {
-                        console.log('bottom line transition ended')
+                        // console.log('bottom line transition ended')
                         this.setState({ quantileObj, xScale, yScale, scaleDomains })
                     })
                 })

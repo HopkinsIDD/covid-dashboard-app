@@ -103,7 +103,6 @@ class ChartContainer extends Component {
         // const parameters = this.props.stats.map( s => s.key )
         // if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
         // const parameters = this.props.stats.map( s => s.key )
-        console.log(this.props.width, this.props.height)
         return (
             <div>
                 <div className="scenario-title titleNarrow">Summary of</div>
