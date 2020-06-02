@@ -301,7 +301,7 @@ class MainContainer extends Component {
 
     updateMapContainerDimensions = () => {
         const mapContainerW = ((window.innerWidth * 0.6585) - margin.yAxis) - ( 3 * (margin.left)) - (3 * (margin.right));
-        const mapContainerH = window.innerHeight * 0.8;
+        const mapContainerH = window.innerHeight * 0.4;
         this.setState({ mapContainerW, mapContainerH });
     }
 
