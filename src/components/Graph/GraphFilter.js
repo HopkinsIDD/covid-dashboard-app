@@ -8,42 +8,6 @@ import Sliders from '../Filters/Sliders';
 
 
 class GraphFilter extends Component {
-    handleScenarioClick = (i) => {
-        this.props.onScenarioClickGraph(i);
-    }
-
-    handleButtonClick = (i) => {
-        this.props.onButtonClick(i);
-    }
-    
-    handleConfClick = () => {
-        this.props.onConfClick();
-    }
-
-    handleSeveritiesClick = (i) => {
-        this.props.onSeveritiesClick(i);
-    }
-
-    handleSeveritiesHover = (i) => {
-        this.props.onSeveritiesHover(i);
-    }
-
-    handleSeveritiesHoverLeave= () => {
-        this.props.onSeveritiesHoverLeave();
-    }
-
-    handleR0Change= (e) => {
-        this.props.onHandleR0Change(e);
-    }
-
-    handleStatSliderChange = (i) => {
-        this.props.onStatSliderChange(i);
-    }
-
-    handleDateSliderChange = (i) => {
-        this.props.onDateSliderChange(i);
-    }
-
     render() {
         return (
             <Fragment>
@@ -52,26 +16,26 @@ class GraphFilter extends Component {
                     SCENARIOS={this.props.SCENARIOS}
                     scenario={this.props.scenario}
                     scenarioList={this.props.scenarioList}
-                    onScenarioClick={this.handleScenarioClick}
+                    onScenarioClick={this.props.onScenarioClickGraph}
                 />
                 <Indicators
                     stat={this.props.stat}
-                    onButtonClick={this.handleButtonClick}
+                    onButtonClick={this.props.onButtonClick}
                 />        
                 <Switch 
-                    onConfClick={this.handleConfClick}
+                    onConfClick={this.props.onConfClick}
                 /> 
                 <SeverityContainer
                     stat={this.props.stat}
                     severityList={this.props.severityList}
                     scenarioList={this.props.scenarioList}
-                    onSeveritiesClick={this.handleSeveritiesClick}
-                    onSeveritiesHover={this.handleSeveritiesHover}
-                    onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave}
+                    onSeveritiesClick={this.props.onSeveritiesClick}
+                    onSeveritiesHover={this.props.onSeveritiesHover}
+                    onSeveritiesHoverLeave={this.props.onSeveritiesHoverLeave}
                 />
                 <R0
                     r0={this.props.r0}
-                    onR0Change={this.handleR0Change}
+                    onR0Change={this.props.onHandleR0Change}
                 />
                 <Sliders 
                     stat={this.props.stat}
@@ -84,8 +48,8 @@ class GraphFilter extends Component {
                     firstDate={this.props.firstDate}
                     lastDate={this.props.lastDate}
                     dateRange={this.props.dateRange}
-                    onStatSliderChange={this.handleStatSliderChange}
-                    onDateSliderChange={this.handleDateSliderChange}
+                    onStatSliderChange={this.props.onStatSliderChange}
+                    onDateSliderChange={this.props.onDateSliderChange}
                     onSliderMouseEvent={this.props.onSliderMouseEvent}
                 />
             </Fragment>   

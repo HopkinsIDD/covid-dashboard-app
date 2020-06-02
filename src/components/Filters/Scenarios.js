@@ -52,18 +52,13 @@ class Scenarios extends Component {
                 const keys = Object.values(scenarioList).map(scen => scen.key);
                 const scenariosGraph = Array.from(this.props.SCENARIOS);
                 
-                if (this.props.scenarioList.length >= 2) {
-                    scenariosGraph.map(scenario => {
-                        if (keys.includes(scenario.key)) {
-                            return scenario.disabled = false;
-                        } else {
-                            return scenario.disabled = true;
-                            }
-                      })
-                } else {
-                    scenariosGraph.map(scenario => {return scenario.disabled = false})
-                }
-    
+                scenariosGraph.map(scenario => {
+                    if (keys.includes(scenario.key) || scenarioList.length < 2) {
+                        return scenario.disabled = false;
+                    } else {
+                        return scenario.disabled = true;
+                        }
+                })
                 const children = [];
                 const { Option } = Select;
         
