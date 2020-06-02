@@ -5,10 +5,115 @@ import Scenarios from '../Filters/Scenarios';
 import DatePicker from './DatePicker';
 import ScaleToggle from './ScaleToggle';
 import IndicatorSelection from './IndicatorSelection';
-import { styles, COUNTYNAMES } from '../../utils/constants';
+
+import { styles, STATS, COUNTYNAMES } from '../../utils/constants';
+import { buildScenarios } from '../../utils/utils';
+import { utcParse } from 'd3-time-format'
+const parseDate = utcParse('%Y-%m-%d')
+
 
 class MainChart extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            dataset: {},
+            dataLoaded: false,
+            dates: [],
+            allTimeDates: [],
+            yAxisLabel: '',
+            SCENARIOS: [],
+            // scenario: {},
+            scenarioListChart: [],
+            statSliderActive: false,
+            statListChart: [],
+            datePickerActiveChart: false,
+            firstDate: '',
+            summaryStart: new Date(),
+            summaryEnd: new Date(),
+            summaryScale: 'power',
+        };
+    };
+
+    componentDidMount() {
+        const { dataset } = this.props;
+        this.initializeChart(dataset)
+    };
+
+    componentDidUpdate(prevProp) {
+        const { dataset } = this.props;
+
+        if (dataset !== prevProp.dataset) {
+            this.initializeChart(dataset)
+        }
+    };
+
+    initializeChart(dataset) {
+        // instantiate scenarios 
+        const SCENARIOS = buildScenarios(dataset);  
+        const scenarioListChart = SCENARIOS.map(s => s.name);
+
+        // instantiate default 2 indicator stats
+        const statListChart = STATS.slice(0,2)
+
+        // instantiate start and end date (past 2 weeks) for summary stats
+        const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
+        const firstDate = dates[0];
+        const summaryStart = new Date(); // TODO: make one line here
+        // TODO: update variable names to remove words "chart" and "summary"
+        summaryStart.setDate(summaryStart.getDate() - 14); 
+
+        this.setState({
+            dates,
+            SCENARIOS,
+            scenarioListChart,
+            statListChart,
+            firstDate, // TODO: get rid of this
+            summaryStart,
+        }
+        // TODO: here in case you need it
+        // , () => {
+        //     this.setState({
+        //         dataLoaded: true
+        //     });
+        // }
+        )
+    }
+
+    handleScenarioClickChart = (items) => {
+        let scenarioListChart = [];
+        for (let item of items) {
+            scenarioListChart.push(item)
+        }
+
+        this.setState({
+            scenarioListChart
+        })        
+    }
     
+    handleStatClickChart = (items) => {
+        // items is Array of scenario names
+        let newChartStats = []
+
+        for (let item of items) {
+            const chartStat = STATS.filter(s => s.key === item)[0];
+            newChartStats.push(chartStat)
+        }
+
+        this.setState({
+            statListChart: newChartStats
+        })
+    }
+
+    handleSummaryDates = (start, end) => {
+        this.setState({summaryStart: start, summaryEnd: end});
+    };
+
+    handleDatePicker = (datePickerOpen) => {
+        this.setState({ datePickerActiveChart: datePickerOpen })
+    }
+
+    handleScaleToggle = (scale) => {this.setState({ summaryScale: scale })}
+
     render() {
         const { Content } = Layout;
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
@@ -25,13 +130,13 @@ class MainChart extends Component {
                                 width={this.props.width}
                                 height={this.props.height} 
                                 dataset={this.props.dataset}
-                                scenarios={this.props.scenarioList}
-                                stats={this.props.stats}
-                                firstDate={this.props.firstDate}
-                                summaryStart={this.props.summaryStart}
-                                summaryEnd={this.props.summaryEnd}
-                                scale={this.props.scale}
-                                datePickerActive={this.props.datePickerActiveChart}
+                                scenarios={this.state.scenarioListChart}
+                                stats={this.state.statListChart}
+                                firstDate={this.state.firstDate}
+                                summaryStart={this.state.summaryStart}
+                                summaryEnd={this.state.summaryEnd}
+                                scale={this.state.summaryScale}
+                                datePickerActive={this.state.datePickerActiveChart}
                             />
                         </div>
                     </Col>
@@ -41,26 +146,26 @@ class MainChart extends Component {
                             <Fragment>
                                 <Scenarios 
                                     view="chart"
-                                    SCENARIOS={this.props.SCENARIOS}
-                                    scenario={this.props.scenario}
-                                    scenarioList={this.props.scenarioListChart}
-                                    onScenarioClickChart={this.props.onScenarioClickChart}
+                                    SCENARIOS={this.state.SCENARIOS}
+                                    scenario={this.state.SCENARIOS[0]} // TODO: fix this
+                                    scenarioList={this.state.scenarioListChart}
+                                    onScenarioClickChart={this.handleScenarioClickChart}
                                 />
                                 <IndicatorSelection
-                                    statListChart={this.props.stats}
-                                    onStatClickChart={this.props.onStatClickChart}
+                                    statListChart={this.state.statListChart}
+                                    onStatClickChart={this.handleStatClickChart}
                                 />
                             </Fragment>
                             <DatePicker 
-                                firstDate={this.props.firstDate}
-                                summaryStart={this.props.summaryStart}
-                                summaryEnd={this.props.summaryEnd}
-                                onHandleSummaryDates={this.props.onHandleSummaryDates}
-                                onHandleDatePicker={this.props.onHandleDatePicker}
+                                firstDate={this.state.firstDate}
+                                summaryStart={this.state.summaryStart}
+                                summaryEnd={this.state.summaryEnd}
+                                onHandleSummaryDates={this.handleSummaryDates}
+                                onHandleDatePicker={this.handleDatePicker}
                             />
                             <ScaleToggle
-                                scale={this.props.scale}
-                                onScaleToggle={this.props.onHandleScaleToggle}
+                                scale={this.state.summaryScale}
+                                onScaleToggle={this.handleScaleToggle}
                             />
                         </Fragment>
                     </Col>

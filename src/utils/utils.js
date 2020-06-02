@@ -3,7 +3,7 @@ import { timeDay } from 'd3-time';
 import { timeFormat } from 'd3-time-format';
 ///////////////// UTILS ///////////////////
 
-
+// TODO: most likely remove this function
 export function instantiateScenarios(dataset) {
   // Instantiates scenarios used for all views
 

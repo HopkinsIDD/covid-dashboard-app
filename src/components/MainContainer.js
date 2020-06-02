@@ -75,6 +75,7 @@ class MainContainer extends Component {
         // console.log('componentDidMount')
         console.log('dataset', dataset)
         
+        // shift to Children or keep in MainContainer?
         window.addEventListener('resize', this.updateGraphDimensions)
         window.addEventListener('resize', this.updateMapContainerDimensions)
         this.updateGraphDimensions()
@@ -412,16 +413,16 @@ class MainContainer extends Component {
         })        
     };
 
-    handleScenarioClickChart = (items) => {
-        let scenarioListChart = [];
-        for (let item of items) {
-            scenarioListChart.push(item)
-        }
+    // handleScenarioClickChart = (items) => {
+    //     let scenarioListChart = [];
+    //     for (let item of items) {
+    //         scenarioListChart.push(item)
+    //     }
 
-        this.setState({
-            scenarioListChart
-        })        
-    }
+    //     this.setState({
+    //         scenarioListChart
+    //     })        
+    // }
 
     // handleScenarioClickMap = (item) => {
     //     this.setState({
@@ -500,7 +501,7 @@ class MainContainer extends Component {
 
     handleBrushEnd = () => {this.setState({brushActive: false, animateTransition: true})}
 
-    handleScaleToggle = (scale) => {this.setState({ summaryScale: scale })}
+    // handleScaleToggle = (scale) => {this.setState({ summaryScale: scale })}
 
     handleConfClick = () => {
         this.setState(prevState => ({showConfBounds: !prevState.showConfBounds}));
@@ -510,9 +511,9 @@ class MainContainer extends Component {
         this.setState(prevState => ({showActual: !prevState.showActual}));
     };
 
-    handleSummaryDates = (start, end) => {
-        this.setState({summaryStart: start, summaryEnd: end});
-    };
+    // handleSummaryDates = (start, end) => {
+    //     this.setState({summaryStart: start, summaryEnd: end});
+    // };
 
     // handleMapSliderChange = (index) => {
     //     this.setState({mapCurrentDateIndex: +index})
@@ -544,9 +545,9 @@ class MainContainer extends Component {
         // } 
     }
 
-    handleDatePicker = (datePickerOpen) => {
-        this.setState({ datePickerActiveChart: datePickerOpen })
-    }
+    // handleDatePicker = (datePickerOpen) => {
+    //     this.setState({ datePickerActiveChart: datePickerOpen })
+    // }
 
     toggleAnimateTransition = () => {
         this.setState({ animateTransition: !this.state.animateTransition })
@@ -624,11 +625,11 @@ class MainContainer extends Component {
                 {/* MainChart Component */}
                 {this.state.dataLoaded &&
                 <div>
-                    <MainChart 
+                    <MainChart // TODO: remove unneeded props (once mounted in MainChart itself)
                         geoid={this.state.geoid}
+                        dataset={this.state.dataset}
                         width={this.state.graphW - margin.left - margin.right}
                         height={this.state.graphH * 1.15} 
-                        dataset={this.state.dataset}
                         scenarios={this.state.scenarioListChart}
                         stats={this.state.statListChart}
                         firstDate={this.state.firstDate}
