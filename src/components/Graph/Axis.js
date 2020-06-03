@@ -79,6 +79,10 @@ class Axis extends Component {
               .duration(1000)
               .call(this.axis);
         }
+
+       
+        if (this.props.view !== 'graph') select(this.axisRef.current).call(this.axis).call(g => g.select(".domain").remove());
+      
       }
     }
 
