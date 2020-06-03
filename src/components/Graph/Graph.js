@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Tooltip } from 'antd'
 import Axis from './Axis'
 import Legend from './Legend'
-// import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least, max, maxIndex } from 'd3-array'
 import { select } from 'd3-selection'
@@ -62,7 +61,7 @@ class Graph extends Component {
             // console.log('componentDidUpdate SERIES change');
             const { series, dates, animateTransition, width } = this.props;
             const { lineGenerator, areaGenerator } = prevState;
-            console.log('animateTransition', animateTransition)
+            // console.log('animateTransition', animateTransition)
 
             this.updateSimPaths(series, dates, lineGenerator, animateTransition, width);
             if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
