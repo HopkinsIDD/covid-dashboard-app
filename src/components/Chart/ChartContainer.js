@@ -113,7 +113,7 @@ class ChartContainer extends Component {
                         {getReadableDate(this.props.summaryEnd)}</span>
                 </div>
                 <div className="chart-callout" style={{ display: 'block !important'}}>
-                    {(this.state.rectIsHovered && this.state.hoveredScenarioIdx) &&
+                    {this.state.hoveredScenarioIdx !== null &&
                                 <SummaryLabel 
                                     classProps={'filter-label threshold-label callout'}
                                     summaryStart={this.props.summaryStart}
