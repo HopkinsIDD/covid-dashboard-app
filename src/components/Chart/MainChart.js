@@ -103,9 +103,21 @@ class MainChart extends Component {
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <Content id="stats" style={styles.ContainerWhite}>
-                <div className="content-section">
-                    <div className="content-header">{countyName}</div>
-                </div>
+                <Col className="gutter-row container" span={16}>
+                    <div className="content-section">
+                        <div>
+                            Use this tool to plan for expected infections, hospitalizations,
+                            ICU cases, ventilators needed, and deaths in your municipality.
+                            For example, if you would like to know how many people will 
+                            be hospitalized in 6 weeks, select hospitalizations  
+                            as the indicator, today as the start date, and 6 weeks out
+                            as the end date. Then, compare expected hospitalization 
+                            numbers across all {this.state.SCENARIOS.length}&nbsp;
+                            intervention scenarios at varying degrees of severity.
+                        </div>
+                        <div className="content-header">{countyName}</div>
+                    </div>
+                </Col>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                     <Col className="gutter-row container" span={16}>
                         <div className="map-container">

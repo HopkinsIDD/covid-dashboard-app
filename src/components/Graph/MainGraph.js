@@ -341,9 +341,21 @@ class MainGraph extends Component {
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <Content id="scenario-comparisons" style={styles.ContainerGray}>
-                <div className="content-section">
-                    <div className="content-header">{countyName}</div>
-                </div>
+                <Col className="gutter-row container" span={16}>
+                    <div className="content-section">
+                        <div>
+                            The&nbsp;
+                            <a href="http://www.iddynamics.jhsph.edu/">
+                            Johns Hopkins IDD Working Group</a> has generated model 
+                            simulations for {this.state.SCENARIOS.length} intervention 
+                            scenarios from January 2020 to June 2021. Each scenario 
+                            is represented by multiple simulation curves, and each curve 
+                            represents one possible outcome based on a given set of parameters. 
+                            Each curve is just as likely to occur as another. 
+                        </div>
+                        <div className="content-header">{countyName}</div>
+                    </div>
+                </Col>
                 {this.state.dataLoaded &&
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                     <Col className="gutter-row container" span={16}>
