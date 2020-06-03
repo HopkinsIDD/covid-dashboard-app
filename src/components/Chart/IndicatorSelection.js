@@ -16,9 +16,9 @@ class IndicatorSelection extends Component {
         const statsForChart = Array.from(STATS);
         const { Option } = Select;
 
-        const keys = Object.values(this.props.statListChart).map(stat => stat.key);
+        const keys = Object.values(this.props.statList).map(stat => stat.key);
         
-        if (this.props.statListChart.length >= 2) {
+        if (this.props.statList.length >= 2) {
           statsForChart.map(stat => {
             if (keys.includes(stat.key)) {
                 return stat.disabled = false;
@@ -51,15 +51,15 @@ class IndicatorSelection extends Component {
     }
 
     componentDidUpdate(prevProp) {
-      if (prevProp.statListChart !== this.props.statListChart) {
+      if (prevProp.statList !== this.props.statList) {
             // console.log('componentDidUpdate')
 
-          const { statListChart } = this.props;
+          const { statList } = this.props;
 
-          const keys = Object.values(statListChart).map(stat => stat.key);
+          const keys = Object.values(statList).map(stat => stat.key);
           const statsForChart = Array.from(STATS);
           
-          if (this.props.statListChart.length >= 3) {
+          if (this.props.statList.length >= 3) {
             statsForChart.map(stat => {
               if (keys.includes(stat.key)) {
                   return stat.disabled = false;
@@ -106,15 +106,15 @@ class IndicatorSelection extends Component {
     render() {
         
         // console.log(this.props.view, defaultScenario)
-        // console.log(this.props.statListChart)
+        // console.log(this.props.statList)
         return (
             <div>
                 <div className="param-header">INDICATORS</div>
                 <Select
                     mode="multiple"
                     style={{ width: '80%' }}
-                    defaultValue={this.props.statListChart.map(s => s.key)}
-                    value={this.props.statListChart.map(s => s.key)}
+                    defaultValue={this.props.statList.map(s => s.key)}
+                    value={this.props.statList.map(s => s.key)}
                     maxTagTextLength={12}
                     onChange={this.handleChange}>
                     {this.state.children.map(child => child.checkbox)}

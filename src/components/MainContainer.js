@@ -37,17 +37,14 @@ class MainContainer extends Component {
             SCENARIOS: [],
             scenario: {},
             scenarioList: [],           
-            scenarioListChart: [],
             severity: _.cloneDeep(LEVELS[0]), 
             severityList: [_.cloneDeep(LEVELS[0])],
             scenarioHovered: '',
             statThreshold: 0,
             statSliderActive: false,
-            statListChart: [],
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: new Date(),
-            datePickerActiveChart: false,
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             firstDate: '',
             lastDate: '',
@@ -58,14 +55,11 @@ class MainContainer extends Component {
             confBounds: {},
             confBoundsList: [{}],
             showActual: false,
-            summaryStart: new Date(),
-            summaryEnd: new Date(),
             graphW: 0,
             graphH: 0,
             brushActive: false,
             animateTransition: true,
             scenarioClickCounter: 0,
-            summaryScale: 'power',
             mapContainerW: 0,
             mapContainerH: 0,
         };
@@ -83,9 +77,6 @@ class MainContainer extends Component {
         
         const [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap] =
             instantiateScenarios(dataset);
-
-        // add default stats to chart
-        const statListChart = STATS.slice(0,2)
 
         // instantiate initial series and dates
         const { severity, stat } = this.state;
@@ -140,21 +131,11 @@ class MainContainer extends Component {
         const sevList = _.cloneDeep(this.state.severityList);
         sevList[0].scenario = scenario.key;
 
-        // instantiates countyBoundaries
-        // const state = this.state.geoid.slice(0, 2);
-        // const countyBoundaries = require('../store/countyBoundaries.json')[state];
-        // const statsForCounty = geojsonStats[state];
-        // const mapCurrentDateIndex = allTimeDates
-        //     .findIndex( date => formatDate(date) === formatDate(new Date()));
-
         this.setState({
             dataset,
             SCENARIOS,
             scenario,
-            scenarioMap,
             scenarioList,
-            scenarioListChart,
-            statListChart,
             dates: newDates,
             allTimeDates,
             seriesList: [filteredSeries],
@@ -168,12 +149,6 @@ class MainContainer extends Component {
             lastDate,
             percExceedenceList,
             confBoundsList: [filteredConfBounds],
-            // countyBoundaries,
-            // statsForCounty,
-            summaryStart,
-            // mapCurrentDateIndex,
-            // graphW,
-            // graphH
         }, () => {
             this.setState({
                 dataLoaded: true
@@ -375,21 +350,6 @@ class MainContainer extends Component {
         })
     };
 
-    handleStatClickChart = (items) => {
-        // items is Array of scenario names
-        let newChartStats = []
-
-        for (let item of items) {
-            const chartStat = STATS.filter(s => s.key === item)[0];
-            newChartStats.push(chartStat)
-        }
-
-        this.setState({
-            statListChart: newChartStats
-        })
-        
-    }
-
     handleScenarioClickGraph = (items) => {
         // items is Array of scenario names
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
@@ -412,23 +372,6 @@ class MainContainer extends Component {
             r0: [0, 4]
         })        
     };
-
-    // handleScenarioClickChart = (items) => {
-    //     let scenarioListChart = [];
-    //     for (let item of items) {
-    //         scenarioListChart.push(item)
-    //     }
-
-    //     this.setState({
-    //         scenarioListChart
-    //     })        
-    // }
-
-    // handleScenarioClickMap = (item) => {
-    //     this.setState({
-    //         scenarioMap : item
-    //     })        
-    // }
 
     handleSeveritiesClick = (i) => {
         let newSevList = _.cloneDeep(this.state.severityList);
@@ -511,14 +454,6 @@ class MainContainer extends Component {
         this.setState(prevState => ({showActual: !prevState.showActual}));
     };
 
-    // handleSummaryDates = (start, end) => {
-    //     this.setState({summaryStart: start, summaryEnd: end});
-    // };
-
-    // handleMapSliderChange = (index) => {
-    //     this.setState({mapCurrentDateIndex: +index})
-    // }
-
     handleSliderMouseEvent = (type, slider, view) => {
         if (view === 'graph') {
             if (slider === 'stat') {
@@ -535,19 +470,7 @@ class MainContainer extends Component {
                 }
             }
         } 
-        // else {
-        //     // map date slider
-        //     if (type === 'mousedown') {
-        //         this.setState({ dateSliderActiveMap: true })
-        //     } else {
-        //         this.setState({ dateSliderActiveMap: false })
-        //     }
-        // } 
     }
-
-    // handleDatePicker = (datePickerOpen) => {
-    //     this.setState({ datePickerActiveChart: datePickerOpen })
-    // }
 
     toggleAnimateTransition = () => {
         this.setState({ animateTransition: !this.state.animateTransition })
@@ -624,44 +547,21 @@ class MainContainer extends Component {
 
                 {/* MainChart Component */}
                 {this.state.dataLoaded &&
-                <div>
-                    <MainChart // TODO: remove unneeded props (once mounted in MainChart itself)
-                        geoid={this.state.geoid}
-                        dataset={this.state.dataset}
-                        width={this.state.graphW - margin.left - margin.right}
-                        height={this.state.graphH * 1.15} 
-                        scenarios={this.state.scenarioListChart}
-                        stats={this.state.statListChart}
-                        firstDate={this.state.firstDate}
-                        summaryStart={this.state.summaryStart}
-                        summaryEnd={this.state.summaryEnd}
-                        scale={this.state.summaryScale}
-                        datePickerActive={this.state.datePickerActiveChart}
-                        view="chart"
-                        SCENARIOS={this.state.SCENARIOS}
-                        scenario={this.state.scenario}
-                        scenarioList={this.state.scenarioListChart}
-                        onScenarioClickChart={this.handleScenarioClickChart}
-                        // statListChart={this.state.statListChart}
-                        onStatClickChart={this.handleStatClickChart}
-                        onHandleSummaryDates={this.handleSummaryDates}
-                        onHandleDatePicker={this.handleDatePicker}
-                        onHandleScaleToggle={this.handleScaleToggle}
-                    />
-                </div>
-                }
+                <MainChart 
+                    geoid={this.state.geoid}
+                    dataset={this.state.dataset}
+                    width={this.state.graphW - margin.left - margin.right}
+                    height={this.state.graphH * 1.15} 
+                />}
 
                 {/* MainMap Component */}
                 {this.state.dataLoaded &&
-                <div>
-                    <MainMap
-                        geoid={this.state.geoid}
-                        dataset={this.state.dataset}
-                        width={this.state.mapContainerW - margin.left - margin.right}
-                        height={this.state.mapContainerH}
-                    />
-                </div>
-                }
+                <MainMap
+                    geoid={this.state.geoid}
+                    dataset={this.state.dataset}
+                    width={this.state.mapContainerW - margin.left - margin.right}
+                    height={this.state.mapContainerH}
+                />}
                 
                 {/* Methodology Component */}
                 <Methodology />

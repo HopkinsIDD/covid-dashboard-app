@@ -20,9 +20,9 @@ class ChartContainer extends Component {
         this.drawSummaryStatCharts();
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.summaryStart !== this.props.summaryStart 
-            || prevProps.summaryEnd !== this.props.summaryEnd
+    componentDidUpdate(prevProps) {
+        if (prevProps.start !== this.props.start 
+            || prevProps.end !== this.props.end
             || prevProps.dataset !== this.props.dataset
             || prevProps.scenarios !== this.props.scenarios
             || prevProps.stats !== this.props.stats
@@ -40,35 +40,30 @@ class ChartContainer extends Component {
         const parameterLabels = this.props.stats.map( stat => stat.name )
             
         for (let [index, param] of parameters.entries()) {
+            const child = {
+                key: `${param}-chart`,
+                chart: {},
+            }
 
-            // for (let severity of this.state.severities) {
-                const child = {
-                    key: `${param}-chart`,
-                    chart: {},
-                }
-
-                child.chart = 
-                    <Chart
-                        key={`${param}-chart`}
-                        dataset={this.props.dataset}
-                        scenarios={this.props.scenarios}
-                        firstDate={this.props.firstDate}
-                        summaryStart={this.props.summaryStart}
-                        summaryEnd={this.props.summaryEnd}
-                        // severity={severity}
-                        stat={param}
-                        statLabel={parameterLabels[index]}
-                        stats={this.props.stats}
-                        width={this.props.width}
-                        height={this.props.height / parameters.length}
-                        handleCalloutInfo={this.handleCalloutInfo}
-                        handleCalloutLeave={this.handleCalloutLeave}
-                        handleScenarioHover={this.handleScenarioHighlight}
-                        scale={this.props.scale}
-                    />
-                
-                children[param] = child;
-            // }
+            child.chart = 
+                <Chart
+                    key={`${param}-chart`}
+                    dataset={this.props.dataset}
+                    scenarios={this.props.scenarios}
+                    firstDate={this.props.firstDate}
+                    start={this.props.start}
+                    end={this.props.end}
+                    stat={param}
+                    statLabel={parameterLabels[index]}
+                    stats={this.props.stats}
+                    width={this.props.width}
+                    height={this.props.height / parameters.length}
+                    handleCalloutInfo={this.handleCalloutInfo}
+                    handleCalloutLeave={this.handleCalloutLeave}
+                    handleScenarioHover={this.handleScenarioHighlight}
+                    scale={this.props.scale}
+                />
+            children[param] = child;
         } 
         this.setState({
             children,
@@ -93,32 +88,28 @@ class ChartContainer extends Component {
         }
     }
 
-
     render() {
-        // const scenarios = Object.keys(this.props.dataset);
-        // const parameters = this.props.stats.map( s => s.key )
-        // if (this.state.hoveredScenarioIdx) console.log(this.props.scenarios[this.state.hoveredScenarioIdx])
         return (
             <div>
                 <div className="scenario-title titleNarrow">Summary of</div>
                 <div className="filter-label threshold-label callout callout-row">
                     <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
-                        {getReadableDate(this.props.summaryStart)}</span>&nbsp;to&nbsp;
+                        {getReadableDate(this.props.start)}</span>&nbsp;to&nbsp;
                     <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
-                        {getReadableDate(this.props.summaryEnd)}</span>
+                        {getReadableDate(this.props.end)}</span>
                 </div>
                 <div className="chart-callout" style={{ display: 'block !important'}}>
                     {(this.state.rectIsHovered && this.state.hoveredScenarioIdx) &&
-                                <SummaryLabel 
-                                    classProps={'filter-label threshold-label callout'}
-                                    summaryStart={this.props.summaryStart}
-                                    summaryEnd={this.props.summaryEnd}
-                                    scenario={this.props.scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
-                                    label={this.state.statLabel.toLowerCase()}
-                                    median={this.state.median}
-                                    tenth={this.state.tenth}
-                                    ninetyith={this.state.ninetyith}
-                                />
+                        <SummaryLabel 
+                            classProps={'filter-label threshold-label callout'}
+                            start={this.props.start}
+                            end={this.props.end}
+                            scenario={this.props.scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
+                            label={this.state.statLabel.toLowerCase()}
+                            median={this.state.median}
+                            tenth={this.state.tenth}
+                            ninetyith={this.state.ninetyith}
+                        />
                     }
                 </div>
                 <div className="chart-legend-container">
@@ -147,7 +138,6 @@ class ChartContainer extends Component {
                     </div>
                     <ChartLegend />
                 </div>
-                {/* {Object.keys(this.state.children).length === this.props.stats.length &&  */}
                 {this.state.parameters.map( (param, i) => {
                     return (
                         <div className="row" key={`chart-row-${param}`}>

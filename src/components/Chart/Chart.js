@@ -34,12 +34,12 @@ class Chart extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log(this.props.summaryStart, this.props.summaryEnd)
+        // console.log(this.props.start, this.props.end)
         // console.log('componentDidUpdate')
         // console.log(prevProps)
         // console.log(this.props)
-        if (prevProps.summaryStart !== this.props.summaryStart || 
-            prevProps.summaryEnd !== this.props.summaryEnd ||
+        if (prevProps.start !== this.props.start || 
+            prevProps.end !== this.props.end ||
             prevProps.dataset !== this.props.dataset ||
             prevProps.stats !== this.props.stats ||
             prevProps.width !== this.props.width ||
@@ -58,12 +58,12 @@ class Chart extends Component {
     }
 
     calculateQuantiles = () => {
-        const { dataset, firstDate, summaryStart, summaryEnd, stat, width, height, scenarios } = this.props;
+        const { dataset, firstDate, start, end, stat, width, height, scenarios } = this.props;
         const { severities } = this.state;
         const quantileObj = {}
         
-        const startIdx = getDateIdx(firstDate, summaryStart);
-        const endIdx = getDateIdx(firstDate, summaryEnd);
+        const startIdx = getDateIdx(firstDate, start);
+        const endIdx = getDateIdx(firstDate, end);
         // console.log(startIdx, endIdx);
         let globalMaxVal = 0;
         // console.log(scenarios)

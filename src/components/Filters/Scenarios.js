@@ -85,8 +85,7 @@ class Scenarios extends Component {
         } else if (this.props.view === 'chart') {
 
             if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
-                prevProp.scenarioList !== this.props.scenarioList ||
-                prevProp.scenario !== this.props.scenario) {
+                prevProp.scenarioList !== this.props.scenarioList) {
 
                 const children = [];
                 const scenariosChart = Array.from(this.props.SCENARIOS);
@@ -139,7 +138,7 @@ class Scenarios extends Component {
         } else if (this.props.view === 'chart') {
             defaultScenario = this.props.SCENARIOS.map(s => s.name);
             graphTags = this.props.scenarioList
-        } else {
+        } else { // === 'map'
             defaultScenario = [this.props.scenario]
             graphTags = defaultScenario
         }

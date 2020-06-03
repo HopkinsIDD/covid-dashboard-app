@@ -29,7 +29,6 @@ class Chart extends Component {
     }
 
     handleOpen = (datePickerOpen) => {
-        // console.log('datePickerOpen', datePickerOpen)
         this.props.onHandleDatePicker(datePickerOpen)
     }
     
@@ -38,13 +37,10 @@ class Chart extends Component {
         // defautValue for DatePicker might be buggy.
         // these values console out with the right defaults here
         // but both render as the value for summaryEnd in the DatePicker
-        // console.log(moment(this.props.summaryStart, dateFormat))
-        // console.log(moment(this.props.summaryEnd, dateFormat))
         return (
             <div>
                 <div className="param-header">DATE RANGE</div>
                 <RangePicker
-                    // defaultValue={[moment(this.props.summaryStart, dateFormat), moment(this.props.summaryEnd, dateFormat)]}
                     disabledDate={this.disabledDate} 
                     style={styles.Selector}
                     renderExtraFooter={() => "Select a summary period in weekly increments"}
