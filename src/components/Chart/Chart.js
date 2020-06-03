@@ -301,7 +301,7 @@ class Chart extends Component {
     }
 
     handleHighlightEnter = _.debounce((event, severity, key, index) => {
-        // console.log('chart highlight enter')
+        console.log('chart highlight enter')
         
         if (!this.state.rectIsHovered) {
             // console.log('rect not hovered')
@@ -323,7 +323,6 @@ class Chart extends Component {
             // console.log(median, this.state.yScale(median), this.state.yScale(median) / (this.props.height - margin.bottom))
             // console.log(quantileObj[stat][severity][key])
             const severityText = this.props.stat === 'incidI' ? '' : `${capitalize(severity)} Severity<br>`;
-            // console.log( this.props.stat, severity, severityText)
             const text =    `${scenarios[index].replace('_', ' ')}<br>` +
                             severityText +
                             `p90: ${addCommas(Math.ceil(ninetyith))}<br>` +
@@ -395,6 +394,18 @@ class Chart extends Component {
                         ref={this.chartRef}
                         >
                         {this.drawSummaryStats()}
+                        <Axis 
+                            ref={this.chartXAxisRef}
+                            view={'chart'}
+                            width={this.props.width}
+                            height={this.props.height}
+                            orientation={'bottom'}
+                            scale={this.state.xScale}
+                            x={0}
+                            y={this.props.height - margin.bottom + 1}
+                            tickNum={this.props.scenarios.length}
+                            axisVisible={false}
+                        />
                         </svg>
                     </Fragment>
                   }
