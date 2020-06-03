@@ -1,20 +1,17 @@
-const constants = require('./constants');
 
 module.exports = {
 
-    toD3format: function toD3format(result, scenarios) {
+    toD3format: function toD3format(result, scenarios, severities, parameters) {
         // transform via mutation each simObj to D3-friendly format
-        const severities = constants.severities;
-        const parameters = constants.parameters;
         const geoids = Object.keys(result);
         
         for (let g = 0; g < geoids.length; g ++) {
 
             for (let s = 0; s < scenarios.length; s ++) {
     
-                for (let v = 0; v < constants.severities.length; v ++) {
+                for (let v = 0; v < severities.length; v ++) {
         
-                    for (let p = 0; p < constants.parameters.length; p ++) {
+                    for (let p = 0; p < parameters.length; p ++) {
 
                         const objToTransform = result[geoids[g]][scenarios[s]][severities[v]][parameters[p]]['sims'];
                         const d3obj = this.transformD3(objToTransform);

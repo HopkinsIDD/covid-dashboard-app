@@ -40,7 +40,13 @@ function parseDirectories(dir, geoids, scenarios, dates) {
     // parses entire model package of multiple scenario dirs, returns result Obj
 
     console.log('start:', new Date()); 
-    const result = utils.initObj(geoids, scenarios, dates);
+    const result = utils.initObj(
+        geoids,
+        scenarios,
+        constants.severities,
+        constants.parameters,
+        dates
+        );
         
     for (let scenario of scenarios) {
         console.log('-----> parsing scenario...', scenario)

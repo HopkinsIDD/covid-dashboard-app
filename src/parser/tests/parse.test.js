@@ -1,7 +1,7 @@
 // const fs = require('fs');
 const parse = require('../parse');
 const utils = require('../utils');
-// const constants = require('../constants');
+const constants = require('../constants');
 
 test('return correctly parsed obj for 1 simulation file', () => {
     const filePath = 'src/parser/fixtures/Scenario_A/high_death-1.csv';
@@ -13,7 +13,14 @@ test('return correctly parsed obj for 1 simulation file', () => {
     const getIdx = require('../resources/expectedIdxMap.json');
     const expected = require('../resources/expectedParseSim.json');
     
-    let result = utils.initObj(geoids, [scenario], dates);
+    let result = utils.initObj(
+        geoids,
+        [scenario],
+        constants.severities,
+        constants.parameters,
+        dates
+        );
+
     parse.parseSim(filePath, result, geoids, scenario, severity, getIdx)
     
     expect(result).toStrictEqual(expected);

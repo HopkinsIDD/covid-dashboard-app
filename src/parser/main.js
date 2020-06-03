@@ -13,10 +13,12 @@ const utils = require('./utils');
 const quantile = require('./quantiles');
 const transform = require('./transform');
 const geostat = require('./geostat');
-// const constants = require('./constants')
+const constants = require('./constants')
 
 function buildDataset(dir, geoids) {
 
+    const parameters = constants.parameters;
+    const severities = constants.severities;
     const scenarios = fs.readdirSync(dir)
         .filter(file => file !== '.DS_Store');
         // .slice(0,1); 
@@ -35,14 +37,35 @@ function buildDataset(dir, geoids) {
         dates
         );
 
-    // add state-level sims
-    utils.aggregateByState(parsedObj, scenarios, dates);
+    // add state-level sims, init obj that just contains states to pass in
+    const states = [...new Set(geoids.map(geoid => geoid.slice(0, 2)))];
+    const finalObj = module.exports.initObj(states, scenarios, dates);
+    utils.aggregateByState(
+        parsedObj, 
+        finalObj,
+        states,
+        geoids,
+        scenarios, 
+        severities,
+        parameters,
+        dates
+        );
 
     // transform each simObj to D3-friendly format
-    transform.toD3format(parsedObj, scenarios);
+    transform.toD3format(
+        parsedObj,
+        scenarios,
+        severities,
+        parameters
+        );
     
     // quantiles should be based on all sims
-    quantile.addQuantiles(parsedObj, dates);
+    quantile.addQuantiles(
+        parsedObj, 
+        scenarios,
+        severities,
+        parameters,
+        dates);
 
     // reduce number of sims to ~20 
     utils.reduceSims(dir, parsedObj);
