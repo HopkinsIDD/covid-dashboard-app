@@ -31,7 +31,6 @@ class Search extends Component {
 
     render() {
         const { showFileUpload } = this.state;
-        const { geoid, stat } = this.props;
         const { Content } = Layout;
         return (
             <Content>
@@ -41,28 +40,27 @@ class Search extends Component {
                             <div className="title-header">
                                 COVID-19 Intervention Scenario Modeling
                             </div>
-                            <div>
-                                Find your state or county in our registry 
-                                to start comparing scenarios now.
-                            </div>
-                            <div className="dropdown">
-                                <SearchBar
-                                    stat={stat}
-                                    geoid={geoid}
-                                    onCountySelect={this.handleCountySelect}
-                                    style={styles.SearchBar}
-                                    size="large"
-                                />
-                            </div>
-                            <UploadSwitch   
-                                showFileUpload={this.state.showFileUpload}
-                                onUploadToggle={this.handleUploadToggle}/>
-                            <br />
-                            {showFileUpload ? 
-                                <FileUploader onUpload={this.handleUpload}/> 
-                                : null
-                            }
+                        <div>
+                            Find your state or county in our registry 
+                            to start comparing scenarios now.
                         </div>
+                        <div className="dropdown">
+                            <SearchBar
+                                geoid={this.props.geoid}
+                                onCountySelect={this.handleCountySelect}
+                                style={styles.SearchBar}
+                                size="large"
+                            />
+                        </div>
+                        <UploadSwitch   
+                            showFileUpload={this.state.showFileUpload}
+                            onUploadToggle={this.handleUploadToggle}/>
+                        <br />
+                        {showFileUpload ? 
+                            <FileUploader onUpload={this.handleUpload}/> 
+                            : null
+                        }
+                    </div>
                     </Col>
                 </div>  
             </Content>

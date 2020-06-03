@@ -6,64 +6,63 @@ class DateSlider extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      endIndex: 0,
-      marks: {}
+      marks: {},
+      dateIndex: ''
     }
   }
 
   componentDidMount() {
-    const { endIndex } = this.props;
-    const formattedFirstDate = getReadableDate(this.props.dates[0])
-    const formattedLastDate = getReadableDate(this.props.dates[+endIndex])
+    const { dates } = this.props;
+    const dateIndex = (dates.length - 1).toString();
+    const formattedFirstDate = getReadableDate(dates[0])
+    const formattedLastDate = getReadableDate(dates[+dateIndex])
     const marks = {
       0 : {
         label: formattedFirstDate
       }
     }
-    marks[endIndex] = {
+    marks[dateIndex] = {
       label: formattedLastDate
     }
-    this.setState({ marks })
+    this.setState({ marks, dateIndex })
   }
 
   formatDateTooltip = (value) => {
     return `${value}: ${getReadableDate(this.props.dates[value])}`
   }
   
-  handleDateMouseEvent = (e) => {
-    this.props.onSliderMouseEvent(e.type, 'date', 'map')
-  }
-
   render() {
-    // console.log('0', this.props.endIndex)
+    const { dates, currentDateIndex } = this.props;
     return (
         <div>
           <div className="param-header">DATE SELECTOR</div>
           <div className="filter-label">
-              <span className='callout'>{getReadableDate(this.props.selectedDate)}</span>
+              <span className='callout'>
+                {getReadableDate(dates[currentDateIndex])}
+              </span>
           </div>
           <div className="slidecontainer">
             <input
                 id="mapDateSlider"
                 type="range"
                 min={0}
-                max={this.props.endIndex.toString()}
-                defaultValue={this.props.currentDateIndex.toString()}
+                max={this.state.dateIndex.toString()}
+                defaultValue={currentDateIndex.toString()}
                 ref={ref => this.dateInput = ref}
                 onChange={
                     () => {this.props.onMapSliderChange(this.dateInput.value)}
                 }
-                onMouseDown={this.handleDateMouseEvent}
-                onMouseUp={this.handleDateMouseEvent}>
+                onMouseDown={(e) => this.props.onSliderMouseEvent(e.type)}
+                onMouseUp={(e) => this.props.onSliderMouseEvent(e.type)}>
             </input> 
             <div className="slider-label-row slider-label">
               <p className="filter-label callout">
                   {/* {firstDateStr} */}
-                  {getReadableDate(this.props.dates[0])}
+                  {getReadableDate(dates[0])}
               </p>
               <p className="filter-label slider-max callout">
                   {/* {lastDateStr} */}
-                  {getReadableDate(timeDay.offset(this.props.dates[this.props.dates.length - 1], -1))}
+                  {getReadableDate(timeDay.offset(dates[dates.length - 1], -1))}
               </p>
           </div>
         </div>

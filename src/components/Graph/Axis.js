@@ -35,10 +35,22 @@ class Axis extends Component {
         select(this.axisRef.current).call(this.axis)
       }
     } else {
-      this.axis = axisBottom().scale(this.props.scale)
-        .tickFormat(timeFormat('%b-%d'))
-        .ticks(this.props.width / 60)
-        .tickSizeOuter(0);
+      if (this.props.view === 'graph') {
+        this.axis = axisBottom().scale(this.props.scale)
+          .tickFormat(timeFormat('%b-%d'))
+          .ticks(this.props.width / 60)
+          .tickSizeOuter(0);
+      } else if (this.props.view === 'chart') {
+        this.axis = axisBottom().scale(this.props.scale)
+          .tickFormat(d => d.replace('_', ' '))
+          .ticks(this.props.width / 60)
+          .tickSizeOuter(0);
+      } else {
+        this.axis = axisBottom().scale(this.props.scale)
+          .ticks(this.props.width / 60)
+          .tickSizeOuter(0);
+      }
+      
 
       if (this.axisRef.current) {
           select(this.axisRef.current).call(this.axis).call(g => g.select(".domain").remove());
@@ -67,6 +79,10 @@ class Axis extends Component {
               .duration(1000)
               .call(this.axis);
         }
+
+       
+        if (this.props.view !== 'graph') select(this.axisRef.current).call(this.axis).call(g => g.select(".domain").remove());
+      
       }
     }
 

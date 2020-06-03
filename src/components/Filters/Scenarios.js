@@ -52,18 +52,13 @@ class Scenarios extends Component {
                 const keys = Object.values(scenarioList).map(scen => scen.key);
                 const scenariosGraph = Array.from(this.props.SCENARIOS);
                 
-                if (this.props.scenarioList.length >= 2) {
-                    scenariosGraph.map(scenario => {
-                        if (keys.includes(scenario.key)) {
-                            return scenario.disabled = false;
-                        } else {
-                            return scenario.disabled = true;
-                            }
-                      })
-                } else {
-                    scenariosGraph.map(scenario => {return scenario.disabled = false})
-                }
-    
+                scenariosGraph.map(scenario => {
+                    if (keys.includes(scenario.key) || scenarioList.length < 2) {
+                        return scenario.disabled = false;
+                    } else {
+                        return scenario.disabled = true;
+                        }
+                })
                 const children = [];
                 const { Option } = Select;
         
@@ -90,8 +85,7 @@ class Scenarios extends Component {
         } else if (this.props.view === 'chart') {
 
             if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
-                prevProp.scenarioList !== this.props.scenarioList ||
-                prevProp.scenario !== this.props.scenario) {
+                prevProp.scenarioList !== this.props.scenarioList) {
 
                 const children = [];
                 const scenariosChart = Array.from(this.props.SCENARIOS);
@@ -130,7 +124,7 @@ class Scenarios extends Component {
             this.props.onScenarioClick(event);
         } else if (this.props.view === 'chart') {
             this.props.onScenarioClickChart(event)
-        } else {
+        } else { // === 'map'
             this.props.onScenarioClickMap(event)
         }
     }
@@ -144,7 +138,7 @@ class Scenarios extends Component {
         } else if (this.props.view === 'chart') {
             defaultScenario = this.props.SCENARIOS.map(s => s.name);
             graphTags = this.props.scenarioList
-        } else {
+        } else { // === 'map'
             defaultScenario = [this.props.scenario]
             graphTags = defaultScenario
         }

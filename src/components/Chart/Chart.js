@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'; 
 import { min, max, quantile } from 'd3-array';
 import { scaleLinear, scaleBand, scalePow } from 'd3-scale';
-import { select, transition } from 'd3-selection';
+import { select } from 'd3-selection';
 import { easeCubicOut } from 'd3-ease'
 import _ from 'lodash';
 import { Tooltip } from 'antd';
@@ -27,30 +27,31 @@ class Chart extends Component {
         this.chartYAxisRef = React.createRef();
     }
     componentDidMount() {
-        // console.log('componentDidMount');
+        // console.log('Chart componentDidMount');
         const calc = this.calculateQuantiles();
         this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
         
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log(this.props.summaryStart, this.props.summaryEnd)
-        // console.log('componentDidUpdate')
+        // console.log(this.props.start, this.props.end)
+        // console.log('Chart componentDidUpdate')
         // console.log(prevProps)
         // console.log(this.props)
-        if (prevProps.summaryStart !== this.props.summaryStart || 
-            prevProps.summaryEnd !== this.props.summaryEnd ||
+        if (prevProps.start !== this.props.start || 
+            prevProps.end !== this.props.end ||
             prevProps.dataset !== this.props.dataset ||
             prevProps.stats !== this.props.stats ||
             prevProps.width !== this.props.width ||
             prevProps.height !== this.props.height) {
-                console.log('componentDidUpdate main check')
-                const calc = this.calculateQuantiles();
-                this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
+            // console.log('Chart componentDidUpdate', this.props)
+
+            const calc = this.calculateQuantiles();
+            this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
         }
         if (prevProps.scenarios !== this.props.scenarios ||
             prevProps.scale !== this.props.scale) {
-            console.log('componentDidUpdate scale check')
+            // console.log('componentDidUpdate scale check')
             const calc = this.calculateQuantiles();
             // this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
             this.updateSummaryStats(calc.quantileObj, calc.xScale, calc.yScale, calc.scaleDomains);
@@ -58,33 +59,28 @@ class Chart extends Component {
     }
 
     calculateQuantiles = () => {
-        const { dataset, firstDate, summaryStart, summaryEnd, stat, width, height, scenarios } = this.props;
+        const { dataset, firstDate, start, end, stat, width, height, scenarios } = this.props;
         const { severities } = this.state;
         const quantileObj = {}
         
-        const startIdx = getDateIdx(firstDate, summaryStart);
-        const endIdx = getDateIdx(firstDate, summaryEnd);
+        const startIdx = getDateIdx(firstDate, start);
+        const endIdx = getDateIdx(firstDate, end);
         // console.log(startIdx, endIdx);
         let globalMaxVal = 0;
-        // console.log(scenarios)
+        // console.log('Chart scenarios', scenarios)
+        // console.log('Chart dataset', dataset)
         // console.log(stat)
         quantileObj[stat] = {};
         for (let severity of severities) {
             // console.log(severity)
             quantileObj[stat][severity] = {};
             for (let scenario of scenarios) {
-                // console.log(scenario)
-                // every Chart has a given stat passed down from ChartContainer
-                // every Chart will contain all scenarios and all severities
-                // startIdx and endIdx specify the time range on which we want to calc quantiles
-                // every sim.vals array will be sliced on this timeRange 
-                // then every day of a simulation will be summed up returning an Array of sim sums 
-                // then d3.quantiles can be applied to the Array to create final desired obj
-                
+                // catch in case scenarios hasn't updated yet
+                // if (!(scenario in dataset)) { return }
+
                 const sumArray = dataset[scenario][severity][stat].sims.map(sim => {
                     return sim.vals.slice(startIdx, endIdx).reduce((a, b) => a + b, 0)
                 } );
-                // console.log(scenario, stat, severity, sumArray)
                 const minVal = min(sumArray)
                 const maxVal = max(sumArray)
                 const tenth = quantile(sumArray, 0.10)
@@ -117,20 +113,20 @@ class Chart extends Component {
     }
 
     updateSummaryStats = (quantileObj, xScale, yScale, scaleDomains) => {
-        console.log('updateSummaryStats')
+        // console.log('updateSummaryStats')
         if (this.chartRef.current) {
-            console.log('ref check, update Summary stats')
+            // console.log('ref check, update Summary stats')
             const barWidth = ((this.props.width / this.state.severities.length) / this.props.scenarios.length) - margin.left - margin.right;
             const barMargin = 10;
             const whiskerMargin = barWidth * 0.2;
             // update paths with new data
             const barNodes = select(this.chartRef.current)
-            console.log(this.chartYAxisRef.current)
+            // console.log(this.chartYAxisRef.current)
             // this.chartYAxisRef.props.scale = yScale
             // this.chartYAxisRef.updateAxis()
 
             this.state.severities.map( (severity, i) => {
-                Object.entries(quantileObj[this.props.stat][severity]).map( ([key, value]) => {
+                Object.entries(quantileObj[this.props.stat][severity]).forEach( ([key, value]) => {
                     barNodes.selectAll(`.bar-${severity}-${key}`)
                         .transition()
                         .duration(500)
@@ -140,7 +136,7 @@ class Chart extends Component {
                         .attr("height", yScale(0) - yScale(value.median))
                         .ease(easeCubicOut)
                     .on("end", () => {
-                        console.log('bar rect transition ended')
+                        // console.log('bar rect transition ended')
                         // this.setState({ quantileObj, xScale, yScale, scaleDomains })
                     })
                     barNodes.selectAll(`.vertline-${severity}-${key}`)
@@ -152,7 +148,7 @@ class Chart extends Component {
                         .attr("y2", yScale(value.tenth))
                         .ease(easeCubicOut)
                     .on("end", () => {
-                        console.log('vertical line transition ended')
+                        // console.log('vertical line transition ended')
                         // this.setState({ quantileObj, xScale, yScale, scaleDomains })
                     })
                     barNodes.selectAll(`.topline-${severity}-${key}`)
@@ -164,7 +160,7 @@ class Chart extends Component {
                         .attr("y2", yScale(value.ninetyith))
                         .ease(easeCubicOut)
                     .on("end", () => {
-                        console.log('top line transition ended')
+                        // console.log('top line transition ended')
                         // this.setState({ quantileObj, xScale, yScale, scaleDomains })
                     })
                     barNodes.selectAll(`.bottomline-${severity}-${key}`)
@@ -176,7 +172,7 @@ class Chart extends Component {
                         .attr("y2", yScale(value.tenth))
                         .ease(easeCubicOut)
                     .on("end", () => {
-                        console.log('bottom line transition ended')
+                        // console.log('bottom line transition ended')
                         this.setState({ quantileObj, xScale, yScale, scaleDomains })
                     })
                 })
@@ -323,7 +319,6 @@ class Chart extends Component {
             // console.log(median, this.state.yScale(median), this.state.yScale(median) / (this.props.height - margin.bottom))
             // console.log(quantileObj[stat][severity][key])
             const severityText = this.props.stat === 'incidI' ? '' : `${capitalize(severity)} Severity<br>`;
-            // console.log( this.props.stat, severity, severityText)
             const text =    `${scenarios[index].replace('_', ' ')}<br>` +
                             severityText +
                             `p90: ${addCommas(Math.ceil(ninetyith))}<br>` +
@@ -395,6 +390,18 @@ class Chart extends Component {
                         ref={this.chartRef}
                         >
                         {this.drawSummaryStats()}
+                        <Axis 
+                            ref={this.chartXAxisRef}
+                            view={'chart'}
+                            width={this.props.width}
+                            height={this.props.height}
+                            orientation={'bottom'}
+                            scale={this.state.xScale}
+                            x={0}
+                            y={this.props.height - margin.bottom + 1}
+                            tickNum={this.props.scenarios.length}
+                            axisVisible={false}
+                        />
                         </svg>
                     </Fragment>
                   }

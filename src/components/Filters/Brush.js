@@ -34,7 +34,7 @@ class Brush extends Component {
           [margin.left, margin.top],
           [this.state.width - margin.right, this.state.height - margin.bottom]
         ])
-        .on('start', this.brushStart)
+        .on('start', this.props.onBrushStart())
         .on('end', this.brushEnded)
         .on('brush', this.brushed)
   }
@@ -208,11 +208,6 @@ class Brush extends Component {
                                 .domain([0, maxVal]).nice();
     return { xScale, yScale }
 }
-
-  brushStart = () => {
-    // console.log(event)
-    this.props.onBrushStart();
-  }
 
   brushed = () => {
     // console.log(event)
