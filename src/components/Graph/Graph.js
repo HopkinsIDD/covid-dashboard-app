@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { Tooltip } from 'antd'
 import Axis from './Axis'
 import Legend from './Legend'
-// import { scaleLinear, scaleUtc } from 'd3-scale'
 import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least, max, maxIndex } from 'd3-array'
 import { select } from 'd3-selection'
@@ -62,7 +61,7 @@ class Graph extends Component {
             // console.log('componentDidUpdate SERIES change');
             const { series, dates, animateTransition, width } = this.props;
             const { lineGenerator, areaGenerator } = prevState;
-            console.log('animateTransition', animateTransition)
+            // console.log('animateTransition', animateTransition)
 
             this.updateSimPaths(series, dates, lineGenerator, animateTransition, width);
             if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
@@ -351,7 +350,7 @@ class Graph extends Component {
                         {
                         // visible simPaths
                         this.state.simPaths.map( (simPath, i) => {
-                            const simIsHovered = (i === this.state.hoveredSimPathId)
+                            /* const simIsHovered = (i === this.state.hoveredSimPathId) */
                             return (
                                 <path
                                     d={simPath}
@@ -468,6 +467,7 @@ class Graph extends Component {
                             width={this.props.width}
                             height={this.props.height}
                             orientation={'bottom'}
+                            view={'graph'}
                             scale={this.props.xScale}
                             x={0}
                             y={this.props.height - margin.bottom}

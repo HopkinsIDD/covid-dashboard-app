@@ -3,10 +3,7 @@ import { Row, Col } from 'antd';
 // import logo from '../assets/logo.png'; 
 // import brand from '../assets/brand.png'; 
 import { ReactComponent as AltLogo } from '../assets/logo-idd-jhsph.svg';
-// import { ReactComponent as JHLogo } from '../assets/logo-john-hopkins.svg';
 import MenuItem from './MenuItem';
-// import { ReactComponent as JHLogo } from '../assets/logo-john-hopkins.svg';
-// import { isThisTypeNode } from 'typescript';
 
 class NavBar extends Component {
   constructor(props) {
@@ -18,8 +15,6 @@ class NavBar extends Component {
   }
 
   handleMouseClick = (index) => {
-    // console.log('clicked')
-    // console.log(index)
     this.setState({ active: index })
   }
 
@@ -28,19 +23,13 @@ class NavBar extends Component {
       <div id="navbar" className="App-header">
         <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
           <Col className="gutter-row" span={6}>
-            <AltLogo height="60" throwIfNamespace={false} style={{paddingTop: '8px'}} />
-            {/* <img className="logo" src={logo} alt="Logo" />  */}
+            <AltLogo height="60" throwifnamespace="false" style={{paddingTop: '8px'}} />
           </Col>
-          {/* <Col className="gutter-row mini-search" span={1} style={{paddingTop: '4px'}}> */}
-          {/* <JHLogo height="65" throwIfNamespace={false} /> */}
-            {/* <img className="brand" src={brand} alt="Brand" /> */}
-          {/* </Col> */}
           <Col className="gutter-row nav-menu" offset={7} span={10}>
             <ul style={{ marginTop: '5px' }}>
               {this.state.links.map( (link, index) => {
-                // console.log(index, 'active', this.state.active === index)
                 return (
-                  <li style={{ paddingRight: (index < this.state.links.length - 1) ? '10px': '0px' }}>
+                  <li key={link} style={{ paddingRight: (index < this.state.links.length - 1) ? '10px': '0px' }}>
                     <a href={link}>
                       <MenuItem  
                         height={index === 2 ? "36" : "40"}

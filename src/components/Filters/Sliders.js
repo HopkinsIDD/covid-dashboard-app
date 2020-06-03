@@ -35,7 +35,7 @@ class Sliders extends Component {
     }
 
     handleStatChange = (i) => {
-        console.log(i)
+        // console.log(i)
         this.props.onStatSliderChange(i);
     }
 
