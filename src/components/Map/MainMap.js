@@ -85,10 +85,11 @@ class MainMap extends Component {
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <Content id="map" style={styles.ContainerGray}>
-                <Col className="gutter-row container" span={16}>
+                  <Col className="gutter-row container" span={16}>
                     <div className="content-section">
                         <div className="content-header">{countyName}</div>
                     </div>
+                    </Col>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16} style={styles.ContainerMap}>
                             <div className="map-container">
@@ -127,7 +128,6 @@ class MainMap extends Component {
                             }
                         </Col>
                     </Row>
-                </Col>
             </Content>
         )
     }
