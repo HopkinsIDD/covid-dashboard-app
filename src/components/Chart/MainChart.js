@@ -16,7 +16,7 @@ class MainChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataset: {},
+            dataLoaded: false,
             dates: [],
             SCENARIOS: [],
             scenarioList: [],
@@ -29,11 +29,14 @@ class MainChart extends Component {
     };
 
     componentDidMount() {
+        // console.log('MainChart componentDidMount')
         const { dataset } = this.props;
         this.initializeChart(dataset)
     };
 
     componentDidUpdate(prevProp) {
+        // console.log('MainChart componentDidUpdate dataset', this.props.dataset)
+
         const { dataset } = this.props;
 
         if (dataset !== prevProp.dataset) {
@@ -45,6 +48,7 @@ class MainChart extends Component {
         // instantiate scenarios 
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioList = SCENARIOS.map(s => s.name);
+        // console.log('MainChart scenarioList', scenarioList)
 
         // instantiate default 2 indicator stats
         const statList = STATS.slice(0,2)
@@ -60,6 +64,10 @@ class MainChart extends Component {
             scenarioList,
             statList,
             start,
+        }, () => {
+            this.setState({
+                dataLoaded: true
+            });
         })
     }
 
@@ -101,6 +109,7 @@ class MainChart extends Component {
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                     <Col className="gutter-row container" span={16}>
                         <div className="map-container">
+                            {this.state.dataLoaded &&
                             <ChartContainer
                                 geoid={this.props.geoid}
                                 width={this.props.width}
@@ -114,6 +123,7 @@ class MainChart extends Component {
                                 scale={this.state.scale}
                                 datePickerActive={this.state.datePickerActive}
                             />
+                            }
                         </div>
                     </Col>
 

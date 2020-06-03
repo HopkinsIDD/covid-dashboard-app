@@ -35,19 +35,18 @@ class GraphContainer extends Component {
             <Graph
                 key={`${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`}
                 keyVal={`${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`}
-                stat={this.props.stat}
                 geoid={this.props.geoid}
+                series={this.props.seriesList[0]}
+                dates={this.props.dates}
                 scenario={this.props.scenario}
                 severity={this.props.severity}
+                stat={this.props.stat}
                 r0={this.props.r0}
                 animateTransition={this.props.animateTransition}
                 toggleAnimateTransition={this.props.toggleAnimateTransition}
                 simNum={this.props.simNum}
                 showConfBounds={this.props.showConfBounds}
                 confBounds={this.props.confBoundsList[0]}
-                showActual={this.props.showActual}
-                series={this.props.seriesList[0]}
-                dates={this.props.dates}
                 statThreshold={this.props.statThreshold}
                 dateThreshold={this.props.dateThreshold}
                 dateRange={this.props.dateRange}
@@ -185,7 +184,7 @@ class GraphContainer extends Component {
       return (
           <div className="graph-wrapper">
               <div className="y-axis-label titleNarrow graph-yLabel">
-                  {this.props.yAxisLabel}
+                  {`Daily ${this.props.stat.name}`}
               </div>
               <div className="graph-title-row">
               

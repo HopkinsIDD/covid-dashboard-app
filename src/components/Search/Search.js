@@ -31,7 +31,6 @@ class Search extends Component {
 
     render() {
         const { showFileUpload } = this.state;
-        const { geoid, stat } = this.props;
         const { Content } = Layout;
         return (
             <Content>
@@ -46,8 +45,7 @@ class Search extends Component {
                         </div>
                         <div className="dropdown">
                             <SearchBar
-                                stat={stat}
-                                geoid={geoid}
+                                geoid={this.props.geoid}
                                 onCountySelect={this.handleCountySelect}
                                 style={styles.SearchBar}
                                 size="large"

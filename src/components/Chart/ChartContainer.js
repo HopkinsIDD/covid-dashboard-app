@@ -9,6 +9,7 @@ class ChartContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            dataLoaded: false,
             parameters: [],
             parameterLabels: [],
             children: {},
@@ -34,11 +35,13 @@ class ChartContainer extends Component {
         }
     }
 
+    // TODO: REname this function
     drawSummaryStatCharts = () => {
         const { children } = this.state;
         const parameters = this.props.stats.map( stat => stat.key )
         const parameterLabels = this.props.stats.map( stat => stat.name )
-            
+        // console.log('ChartContainer scenarios', this.props.scenarios)
+
         for (let [index, param] of parameters.entries()) {
             const child = {
                 key: `${param}-chart`,
@@ -69,6 +72,10 @@ class ChartContainer extends Component {
             children,
             parameters,
             parameterLabels
+        }, () => {
+            this.setState({
+                dataLoaded: true
+            });
         })
     }
 
@@ -138,7 +145,7 @@ class ChartContainer extends Component {
                     </div>
                     <ChartLegend />
                 </div>
-                {this.state.parameters.map( (param, i) => {
+                {this.state.dataLoaded && this.state.parameters.map( (param, i) => {
                     return (
                         <div className="row" key={`chart-row-${param}`}>
                             <div className="chart" key={`chart-${param}`}>

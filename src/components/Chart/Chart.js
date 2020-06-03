@@ -27,7 +27,7 @@ class Chart extends Component {
         this.chartYAxisRef = React.createRef();
     }
     componentDidMount() {
-        // console.log('componentDidMount');
+        // console.log('Chart componentDidMount');
         const calc = this.calculateQuantiles();
         this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
         
@@ -35,7 +35,7 @@ class Chart extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         // console.log(this.props.start, this.props.end)
-        // console.log('componentDidUpdate')
+        // console.log('Chart componentDidUpdate')
         // console.log(prevProps)
         // console.log(this.props)
         if (prevProps.start !== this.props.start || 
@@ -44,9 +44,10 @@ class Chart extends Component {
             prevProps.stats !== this.props.stats ||
             prevProps.width !== this.props.width ||
             prevProps.height !== this.props.height) {
-                // console.log('componentDidUpdate main check')
-                const calc = this.calculateQuantiles();
-                this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
+            // console.log('Chart componentDidUpdate', this.props)
+
+            const calc = this.calculateQuantiles();
+            this.setState({ quantileObj: calc.quantileObj, xScale: calc.xScale, yScale: calc.yScale, scaleDomains: calc.scaleDomains })
         }
         if (prevProps.scenarios !== this.props.scenarios ||
             prevProps.scale !== this.props.scale) {
@@ -66,25 +67,20 @@ class Chart extends Component {
         const endIdx = getDateIdx(firstDate, end);
         // console.log(startIdx, endIdx);
         let globalMaxVal = 0;
-        // console.log(scenarios)
+        // console.log('Chart scenarios', scenarios)
+        // console.log('Chart dataset', dataset)
         // console.log(stat)
         quantileObj[stat] = {};
         for (let severity of severities) {
             // console.log(severity)
             quantileObj[stat][severity] = {};
             for (let scenario of scenarios) {
-                // console.log(scenario)
-                // every Chart has a given stat passed down from ChartContainer
-                // every Chart will contain all scenarios and all severities
-                // startIdx and endIdx specify the time range on which we want to calc quantiles
-                // every sim.vals array will be sliced on this timeRange 
-                // then every day of a simulation will be summed up returning an Array of sim sums 
-                // then d3.quantiles can be applied to the Array to create final desired obj
-                
+                // catch in case scenarios hasn't updated yet
+                // if (!(scenario in dataset)) { return }
+
                 const sumArray = dataset[scenario][severity][stat].sims.map(sim => {
                     return sim.vals.slice(startIdx, endIdx).reduce((a, b) => a + b, 0)
                 } );
-                // console.log(scenario, stat, severity, sumArray)
                 const minVal = min(sumArray)
                 const maxVal = max(sumArray)
                 const tenth = quantile(sumArray, 0.10)
@@ -301,7 +297,7 @@ class Chart extends Component {
     }
 
     handleHighlightEnter = _.debounce((event, severity, key, index) => {
-        console.log('chart highlight enter')
+        // console.log('chart highlight enter')
         
         if (!this.state.rectIsHovered) {
             // console.log('rect not hovered')
