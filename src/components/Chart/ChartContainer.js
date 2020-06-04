@@ -3,13 +3,8 @@ import { Row, Col } from 'antd';
 import Chart from '../Chart/Chart';
 import SummaryLabel from '../Chart/SummaryLabel';
 import ChartLegend from '../Chart/ChartLegend';
-<<<<<<< HEAD
-import { COUNTYNAMES } from '../../utils/constants'
-import { getReadableDate } from '../../utils/utils'
-=======
-import { scenarioColors, blue } from '../../utils/constants'
+import { scenarioColors, blue, COUNTYNAMES } from '../../utils/constants'
 import { formatTitle, getReadableDate } from '../../utils/utils'
->>>>>>> longer-names
 
 class ChartContainer extends Component {
     constructor(props) {
