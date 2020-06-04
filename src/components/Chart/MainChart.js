@@ -111,7 +111,7 @@ class MainChart extends Component {
                             numbers across all {this.state.SCENARIOS.length}&nbsp;
                             intervention scenarios at varying degrees of severity.
                         </div>
-                        <div className="content-header">{countyName}</div>
+                        {/* <div className="content-header">{countyName}</div> */}
                     </div>
                 </Col>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>

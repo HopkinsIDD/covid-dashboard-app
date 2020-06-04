@@ -3,7 +3,7 @@ import { Layout, Row, Col } from 'antd';
 import MapContainer from './MapContainer';
 import Scenarios from '../Filters/Scenarios';
 import DateSlider from './DateSlider';
-import { styles, COUNTYNAMES } from '../../utils/constants';
+import { styles } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
 import { utcParse, timeFormat } from 'd3-time-format'
 
@@ -82,14 +82,8 @@ class MainMap extends Component {
     render() {
         const { Content } = Layout;
         const { dates, currentDateIndex, SCENARIOS } = this.state;
-        const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <Content id="map" style={styles.ContainerGray}>
-                  <Col className="gutter-row container" span={16}>
-                    <div className="content-section">
-                        <div className="content-header">{countyName}</div>
-                    </div>
-                    </Col>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
                         <Col className="gutter-row container" span={16} style={styles.ContainerMap}>
                             <div className="map-container">

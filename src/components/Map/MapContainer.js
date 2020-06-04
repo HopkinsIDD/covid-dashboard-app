@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { getDateIdx, getReadableDate } from '../../utils/utils';
-import { mapLowColors, mapHighColors } from '../../utils/constants';
+import { mapLowColors, mapHighColors, COUNTYNAMES } from '../../utils/constants';
 
 // const lowColors = ['#deebf7', '#e5f5e0', '#fee6ce'] 
 // const highColors = ['#3885fa', '#008769', '#e6550d']
@@ -95,9 +95,12 @@ class MapContainer extends Component {
     render() {
         // const { scenarioList } = this.props
         // const scenario = scenarioList.length > 0 ? scenarioList[0] : scenarioList
+        const scenarioTitle = this.props.scenario.replace('_', ' ')
+        const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <div>
-                <div className="scenario-title titleNarrow">{this.props.scenario.replace('_', ' ')}</div>
+                <div className="scenario-title titleNarrow">{countyName}</div> 
+                <div className="scenario-title">{scenarioTitle}</div>
                 <div className="filter-label threshold-label callout callout-row">
                     {`Snapshot on `}
                     <span className={this.props.dateSliderActive ? 'underline-active' : 'bold underline'}>

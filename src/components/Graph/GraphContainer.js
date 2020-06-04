@@ -4,7 +4,7 @@ import Axis from './Axis';
 import ThresholdLabel from '../Graph/ThresholdLabel';
 import { scaleLinear, scaleUtc } from 'd3-scale';
 import { max, extent } from 'd3-array';
-import { margin } from '../../utils/constants';
+import { margin, COUNTYNAMES } from '../../utils/constants';
 
 
 class GraphContainer extends Component {
@@ -181,6 +181,7 @@ class GraphContainer extends Component {
   render() {
       const { children } = this.state;
       const { scenarioList, scenarioHovered } = this.props;
+      const countyName = `${COUNTYNAMES[this.props.geoid]}`;
       return (
           <div className="graph-wrapper">
               <div className="y-axis-label titleNarrow graph-yLabel">
@@ -194,15 +195,13 @@ class GraphContainer extends Component {
                     const isActive = scenario.name === scenarioHovered ? ' title-active' : '';
                     return (this.props.scenarioList && scenarioList.length > 1) ? 
                             <div key={scenario.key} style={{ width: this.props.width - margin.right}}>
-                                <div className={"scenario-title titleNarrow" + isActive}>
-                                    <span className="">{scenarioTitle}</span>
-                                </div>
+                                <div className={"scenario-title titleNarrow"}>{countyName}</div> 
+                                <div className={"scenario-title" + isActive}>{scenarioTitle}</div>
                             </div>
                          :
                             <div key={scenario.key} style={{ width: this.props.width - margin.right}}>
-                                <div className="scenario-title titleNarrow">
-                                    <span className="">{scenarioTitle}</span>
-                                </div>
+                                <div className="scenario-title titleNarrow">{countyName}</div> 
+                                <div className="scenario-title">{scenarioTitle}</div>
                             </div>
                 } )}
             </div>

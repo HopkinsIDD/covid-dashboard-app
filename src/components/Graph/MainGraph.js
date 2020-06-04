@@ -321,7 +321,7 @@ class MainGraph extends Component {
 
     render() {
         const { Content } = Layout;
-        const countyName = `${COUNTYNAMES[this.props.geoid]}`;
+        // const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <Content id="scenario-comparisons" style={styles.ContainerGray}>
                 <Col className="gutter-row container" span={16}>
@@ -335,7 +335,7 @@ class MainGraph extends Component {
                             represents one possible outcome based on a given set of parameters. 
                             Each curve is just as likely to occur as another. 
                         </div>
-                        <div className="content-header">{countyName}</div>
+                        {/* <div className="content-header">{countyName}</div> */}
                     </div>
                 </Col>
                 {this.state.dataLoaded &&

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Chart from '../Chart/Chart';
 import SummaryLabel from '../Chart/SummaryLabel';
 import ChartLegend from '../Chart/ChartLegend';
-import { scenarioColors, blue } from '../../utils/constants'
+import { scenarioColors, blue, COUNTYNAMES } from '../../utils/constants'
 import { getReadableDate } from '../../utils/utils'
 
 class ChartContainer extends Component {
@@ -96,9 +96,10 @@ class ChartContainer extends Component {
     }
 
     render() {
+        const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <div>
-                <div className="scenario-title titleNarrow">Summary of</div>
+                <div className="scenario-title titleNarrow">{countyName}</div>
                 <div className="filter-label threshold-label callout callout-row">
                     <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
                         {getReadableDate(this.props.start)}</span>&nbsp;to&nbsp;
