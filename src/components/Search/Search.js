@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Layout, Col } from 'antd';
+import { Layout, Col, Row, Switch } from 'antd';
 import SearchBar from './SearchBar';
 import FileUploader from './FileUploader';
-import UploadSwitch from './UploadSwitch';
+// import UploadSwitch from './UploadSwitch';
 import { styles } from '../../utils/constants';
 
 class Search extends Component {
@@ -19,19 +19,20 @@ class Search extends Component {
     }
 
     handleUpload = (event, name) => {
-        console.log('handling Upload in Search', event, name)
+        console.log('handleUpload', event, name)
         this.props.onFileUpload(event, name);
     }
 
     handleUploadToggle = () => {
-        this.setState(prevState => ({
-            showFileUpload: !prevState.showFileUpload
-        }));
-    }
+        this.setState({showFileUpload: !this.state.showFileUpload})
+    };
 
     render() {
         const { showFileUpload } = this.state;
         const { Content } = Layout;
+        const uploadMessage = showFileUpload ? 
+            "Upload File provided by the Johns Hopkins IDD Working Group, for example, geo06085.json" : 
+            "Upload File";
         return (
             <Content>
                 <div id="search-container" className="search-container">
@@ -52,14 +53,17 @@ class Search extends Component {
                                 size="large"
                             />
                         </div>
-                        <UploadSwitch   
-                            showFileUpload={this.state.showFileUpload}
-                            onUploadToggle={this.handleUploadToggle}/>
+                        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={styles.UploadSwitch}>
+                            <Switch
+                                style={{ 'marginTop': '0.1rem' }}
+                                onChange={this.handleUploadToggle}
+                                size="small"/>
+                            <div className="upload-toggle">{uploadMessage}</div>
+                        </Row>   
                         <br />
                         {showFileUpload ? 
                             <FileUploader onUpload={this.handleUpload}/> 
-                            : null
-                        }
+                            : null}
                     </div>
                     </Col>
                 </div>  

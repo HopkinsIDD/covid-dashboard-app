@@ -24,16 +24,15 @@ class FileUploader extends Component {
     }
 
     validateFile = (json) => {
-        // TODO: validation step
-        console.log(json)
+        console.log(`validateFile(): ${json})`);
+        return true;
     }
 
     validateSize = (file) => {
         const mbMaxSize = 1024 * 1024 * 100;  //100mb
-        let error = '';
         if (file.size > mbMaxSize) {
-            error = `File is too large, please upload a file less than ${mbMaxSize}`;
-            alert(error);
+            alert(`File is too large, please upload a file less than ${mbMaxSize}`);
+            return false;
         } else {
             return true;
         }
@@ -48,7 +47,6 @@ class FileUploader extends Component {
                     <Button>
                         <UploadOutlined /> Click to Upload
                     </Button>
-
                 </Upload> 
             </Col> 
         )
