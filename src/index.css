@@ -60,7 +60,8 @@ h1, h2, h3, h4 {
   padding: 0% 5%;
   z-index: 10;
   position: sticky;
-  top: 0
+  top: 0;
+  height: 4.2rem;
 }
 
 .container {
@@ -99,39 +100,9 @@ code {
     monospace;
 }
 
-.row {
-  flex-wrap: nowrap;
-  margin-right: 0px;
-  margin-left: 0px;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-li {
-  display: inline;
-  line-height: 2.8rem;
-}
-
 li a {
-  font-size: 18px;
-  color: white;
-  text-align: center;
   padding: 8px;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-.active {
-  color: white;
-  font-weight: bold;
-}
+} 
 
 .siteTitle {
   font-size: 1.8rem;
@@ -218,13 +189,6 @@ ul {
 .dropdown-toggle::after {
   content: none;
 }
-
-.search-container {
-  background: #fefefe;
-  padding: 5rem 0 2rem 0;
-  min-height: 24rem;
-}
-
 .search-bar {
   font-size: 1.2rem;
   color: gray;

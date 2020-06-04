@@ -14,27 +14,30 @@ export const scenarioColors = ['#4ddaba', '#b6f5e7','#19b18e', '#e0fdf7', '#0087
 export const mapLowColors = ['#deebf7', '#e5f5e0', '#fee6ce', '#fee0d2'] 
 export const mapHighColors = ['#3885fa', '#008769', '#e6550d', '#de2d26']
 
+// ant design components are inline styled (and resist styling via css classes)
 export const styles = {
     ContainerWhite: {
         background: '#fefefe',
         padding: '5rem 0',
-        minHeight: '80vh'
+        minHeight: '24rem'
     },
     ContainerGray: {
         padding: '5rem 0'
     },
-    ContainerMap: {
+    MapContainer: {
         paddingLeft: margin.yAxis + (2 * margin.left) + margin.right
     },
     SearchBar: {
-        width: '60%',
+        width: '100%',
         maxWidth: '50rem'
+    },
+    Menu: { 
+        display: 'inline', 
+        lineHeight: '2.8rem', 
+        paddingRight: '10px'
     },
     Selector: {
         width: '80%'
-    },
-    MenuIcons: {
-        paddingRight: '10px'
     },
     Switch: {
         marginTop: '16px',
