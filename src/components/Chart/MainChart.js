@@ -96,7 +96,6 @@ class MainChart extends Component {
 
     render() {
         const { Content } = Layout;
-        const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <Content id="stats" style={styles.ContainerWhite}>
                 <Col className="gutter-row container" span={16}>
