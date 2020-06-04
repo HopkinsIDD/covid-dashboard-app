@@ -115,8 +115,8 @@ buildDataset(dir, geoids)
 
 
 // build expectedParseSim.json for Jest Test
-// const filePath = 'src/parser/fixtures/Scenario_A/high_death-1.csv';
-// const scenario = 'Scenario_A';
+// const filePath = 'src/parser/fixtures/USA_Phased_Reopening_Scenario/high_death-1.csv';
+// const scenario = 'USA_Phased_Reopening_Scenario';
 // const geoids = ['06085', '06019', '36005', '36081'];
 // const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
 // let result = utils.initObj(geoids, [scenario], dates);

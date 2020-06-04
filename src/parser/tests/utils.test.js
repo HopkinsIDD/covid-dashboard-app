@@ -3,7 +3,7 @@ const constants = require('../constants');
 
 test('returns expected dates array', () => {
     const dir = 'src/parser/fixtures/';
-    const scenarios = ['Scenario_A'];
+    const scenarios = ['USA_Phased_Reopening_Scenario'];
 
     const expected = [
         '2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'
@@ -13,7 +13,7 @@ test('returns expected dates array', () => {
 
 test('returns expected initialized object', () => {
     const geoids = ['06085', '06019', '36005', '36081'];
-    const scenarios = ['Scenario_A', 'Scenario_C'];
+    const scenarios = ['USA_Phased_Reopening_Scenario', 'USA_Minor_Restrictions_Scenario'];
     const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
 
     const obj = utils.initObj(
@@ -43,7 +43,7 @@ test('return expected index mapping', () => {
 test('return expected aggregation by state', () => {
     const geoids = ['06085', '06019'];
     const states = ['06'];
-    const scenarios = ['Scenario_C'];
+    const scenarios = ['USA_Minor_Restrictions_Scenario'];
     const severities = ['high'];
     const parameters = ['incidI'];
     const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
