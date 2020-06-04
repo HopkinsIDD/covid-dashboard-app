@@ -4,8 +4,8 @@ const utils = require('../utils');
 const constants = require('../constants');
 
 test('return correctly parsed obj for 1 simulation file', () => {
-    const filePath = 'src/parser/fixtures/USA_Phased_Reopening_Scenario/high_death-1.csv';
-    const scenario = 'USA_Phased_Reopening_Scenario';
+    const filePath = 'src/parser/fixtures/Scenario_A/high_death-1.csv';
+    const scenario = 'Scenario_A';
     const geoids = ['06085', '06019', '36005', '36081'];
     const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
     const severity = 'high'; 
@@ -30,7 +30,7 @@ test('return correctly parsed obj for 1 simulation file', () => {
 //     // Not returning what I expect
 //     const dir = 'src/parser/fixtures/';
 //     const geoids = ['06085', '06019', '36005', '36081'];
-//     const scenarios = ['USA_Phased_Reopening_Scenario', 'USA_Minor_Restrictions_Scenario'];
+//     const scenarios = ['Scenario_A', 'Scenario_C'];
 //     const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
     
 //     const expected = require('../resources/expectedParseDirs.json');

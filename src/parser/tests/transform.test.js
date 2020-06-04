@@ -2,7 +2,7 @@
 
 // TODO: add test back in once r0 has been added to dataset
 test('return expected transform to D3 format', () => {
-    // const scenarios = ['USA_Minor_Restrictions_Scenario'];
+    // const scenarios = ['Scenario_C'];
     // const severities = ['high'];
     // const parameters = ['incidI'];
     // const parsedObj = require('../resources/parsedObjStateAgg.json');
