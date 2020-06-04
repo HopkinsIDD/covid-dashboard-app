@@ -15,6 +15,7 @@ class MainMap extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            datasetMap: {},
             dates: [],
             SCENARIOS: [],
             scenario: '',         
@@ -54,6 +55,7 @@ class MainMap extends Component {
             .findIndex(date => formatDate(date) === formatDate(new Date()));
 
         this.setState({
+            datasetMap: dataset, 
             dates,
             SCENARIOS,
             scenario,
@@ -61,9 +63,7 @@ class MainMap extends Component {
             statsForCounty,
             currentDateIndex,
         }, () => {
-            this.setState({
-                dataLoaded: true
-            });
+            this.setState({dataLoaded: true});
         })
     }
 
@@ -95,7 +95,7 @@ class MainMap extends Component {
                             <div className="map-container">
                                 <MapContainer
                                     geoid={this.props.geoid}
-                                    dataset={this.props.dataset}
+                                    dataset={this.state.datasetMap}
                                     width={this.props.width}
                                     height={this.props.height}
                                     scenario={this.state.scenario}
