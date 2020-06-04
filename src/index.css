@@ -528,11 +528,8 @@ input[type=range]::-moz-focus-outer {
 }
 
 .tooltip {
-  position: relative;
-  display: inline-block;
-  opacity: 1;
-  z-index: 0;
   cursor: pointer;
+  color: #1890ff;
 }
 
 .tooltip-text {

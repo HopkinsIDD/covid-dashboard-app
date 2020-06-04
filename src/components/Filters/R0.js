@@ -15,7 +15,10 @@ class R0 extends Component {
         const { r0 } = this.props;
         return (
             <div>
-                <div className="param-header">REPRODUCTIVE NUMBER</div>
+                <div className="param-header">
+                    REPRODUCTIVE NUMBER 
+                    <span className="tooltip"> &#9432;</span>
+                </div>
                 <div className="filter-label">
                     <span className='callout'>R<sub>0</sub> between {r0[0]} - {r0[1]}</span>
                 </div>
