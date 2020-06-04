@@ -98,7 +98,7 @@ class MainChart extends Component {
         const { Content } = Layout;
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
-            <Content id="stats" style={styles.ContainerWhite}>
+            <Content id="exploration" style={styles.ContainerWhite}>
                 <Col className="gutter-row container" span={16}>
                     <div className="content-section">
                         <div>
@@ -106,7 +106,7 @@ class MainChart extends Component {
                             ICU cases, ventilators needed, and deaths in your municipality.
                             For example, if you would like to know how many people will 
                             be hospitalized in 6 weeks, select hospitalizations  
-                            as the indicator, today as the start date, and 6 weeks out
+                            from the indicator dropdown, today as the start date, and 6 weeks out
                             as the end date. Then, compare expected hospitalization 
                             numbers across all {this.state.SCENARIOS.length}&nbsp;
                             intervention scenarios at varying degrees of severity.
