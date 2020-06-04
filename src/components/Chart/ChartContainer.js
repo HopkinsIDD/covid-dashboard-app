@@ -113,9 +113,9 @@ class ChartContainer extends Component {
                 </Row>
                 <Row justify="end">
                     <div className="chart-callout" style={{ display: 'block !important'}}>
-                        {(this.state.rectIsHovered && this.state.hoveredScenarioIdx) &&
+                        {this.state.hoveredScenarioIdx !== null &&
                             <SummaryLabel 
-                                classProps={'filter-label threshold-label callout'}
+                                classProps={'filter-label callout'}
                                 start={this.props.start}
                                 end={this.props.end}
                                 scenario={this.props.scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
