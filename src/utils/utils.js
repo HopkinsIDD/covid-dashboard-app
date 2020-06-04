@@ -2,6 +2,7 @@ import { extent } from 'd3-array';
 import { timeDay } from 'd3-time';
 import { timeFormat } from 'd3-time-format';
 const formatDate = timeFormat('%Y-%m-%d');
+
 ///////////////// UTILS ///////////////////
 
 // TODO: most likely remove this function
@@ -87,4 +88,3 @@ export function capitalize(s) {
 }
 
 export const getReadableDate = timeFormat('%b %d, %Y');
-

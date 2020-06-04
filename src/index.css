@@ -528,41 +528,29 @@ input[type=range]::-moz-focus-outer {
 }
 
 .tooltip {
+  position: relative;
+  display: inline-block;
   cursor: pointer;
   color: #1890ff;
 }
 
-.tooltip-text {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: left;
-  border-radius: 6px;
-  padding: 5px 0;
+.tooltip .tooltip-text {
+  width: 16rem;
+  background-color: white;
+  color: rgba(0, 0, 0, 0.65);
+  border-radius: 3px;
+  padding: 0.4rem;
   position: absolute;
-  z-index: 1;
-  opacity: 0.7;
-  left: 200%;
   bottom: 100%;
-  margin-left: -60px;
-  padding-left: 50%;
-  font-size: 12px;
-  pointer-events: none;
-}
-
-.tooltip:hover .tooltip-text {
-  visibility: visible;
+  margin-left: -10rem;
+  z-index: 1;
+  border: 1px solid rgba(0, 0, 0, 0.65);
 }
 
 .chart-container {
   margin-top: 10rem;
   border: 1px solid red;
 }
-
-.chart {
-  /* border: 1px solid blue; */
-} 
 
 .chart-callout {
   display: block !important;

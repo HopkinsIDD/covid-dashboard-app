@@ -115,15 +115,12 @@ class Sliders extends Component {
                     <p className="filter-label slider-max callout" style={styles.SliderLabel}>
                         {getMonth(timeDay.offset(dateRange[1], -1))}
                     </p>
-                    <span className="tooltip-text">
-                    Slide the date threshold to visualize the percent chance daily 
-                    {stat.name}s exceed the selected value by a given date.</span>
                 </div>
 
-                <div className="filter-description">
+                {/* <div className="filter-description">
                     Slide over indicator value and day to see how likely daily&nbsp;
                     {stat.name} will exceed a certain number by a given day.
-                </div>
+                </div> */}
             </div>
         )
     }
