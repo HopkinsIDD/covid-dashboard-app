@@ -17,7 +17,8 @@ export const mapHighColors = ['#3885fa', '#008769', '#e6550d', '#de2d26']
 export const styles = {
     ContainerWhite: {
         background: '#fefefe',
-        padding: '5rem 0'
+        padding: '5rem 0',
+        minHeight: '80vh'
     },
     ContainerGray: {
         padding: '5rem 0'

@@ -8,7 +8,7 @@ import MainChart from './Chart/MainChart';
 import MainMap from './Map/MainMap';
 import Methodology from './Methodology';
 
-const dataset = require('../store/geo36005.json');
+const dataset = require('../store/geo06085.json');
 
 
 class MainContainer extends Component {
@@ -17,7 +17,7 @@ class MainContainer extends Component {
         this.state = {
             dataset: {},
             dataLoaded: false, 
-            geoid: '36005', 
+            geoid: '06085', 
             graphW: 0,
             graphH: 0,
             mapContainerW: 0,
@@ -26,9 +26,7 @@ class MainContainer extends Component {
     };
 
     componentDidMount() {
-        // console.log('componentDidMount')
-        console.log('dataset', dataset)
-        
+        // console.log('MainContainer componentDidMount')
         window.addEventListener('resize', this.updateGraphDimensions);
         window.addEventListener('resize', this.updateMapContainerDimensions);
 
@@ -63,6 +61,7 @@ class MainContainer extends Component {
     };
     
     handleUpload = (dataset, geoid) => {
+        console.log('Main handleUpload', geoid, dataset)
         this.setState({dataset, geoid})
     };
 

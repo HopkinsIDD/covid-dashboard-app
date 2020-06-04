@@ -33,11 +33,8 @@ class Chart extends Component {
         
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        // console.log(this.props.start, this.props.end)
-        // console.log('Chart componentDidUpdate')
-        // console.log(prevProps)
-        // console.log(this.props)
+    componentDidUpdate(prevProps) {
+
         if (prevProps.start !== this.props.start || 
             prevProps.end !== this.props.end ||
             prevProps.dataset !== this.props.dataset ||
@@ -198,98 +195,98 @@ class Chart extends Component {
             </rect>
             {this.state.severities.map( (severity, i) => {
             return (
-                    <g key={`chart-group-${severity}`}>
-                        { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
-                            // console.log(severity, 'barPos', key, this.state.xScale(key))
-                            // console.log(this.props.stat, i, j, severity, this.state.yScale(value.median))
-                            if (!(this.props.stat === 'incidI' && (severity === 'high' || severity === 'low'))) {
-                                return (
-                                    <Fragment key={`chart-fragment-${severity}-${key}`}>
-                                        <rect 
+                <g key={`chart-group-${severity}`}>
+                    { Object.entries(this.state.quantileObj[this.props.stat][severity]).map( ([key, value], j) => {
+                        // console.log(severity, 'barPos', key, this.state.xScale(key))
+                        // console.log(this.props.stat, i, j, severity, this.state.yScale(value.median))
+                        if (!(this.props.stat === 'incidI' && (severity === 'high' || severity === 'low'))) {
+                            return (
+                                <Fragment key={`chart-fragment-${severity}-${key}`}>
+                                    <rect 
+                                        d={value}
+                                        key={`bar-${severity}-${key}`}
+                                        className={`bar-${severity}-${key}`}
+                                        width={barWidth}
+                                        height={this.state.yScale(0) - this.state.yScale(value.median)}
+                                        x={(margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key)}
+                                        y={this.state.yScale(value.median)}
+                                        fill={scenarioColors[j]}
+                                        stroke={this.state.hoveredRect.severity === severity &&
+                                            this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
+                                        strokeWidth={4}
+                                        style={{ pointerEvents: 'none' }}
+                                    >
+                                    </rect>
+                                    <line
+                                        key={`vertline-${severity}-${key}`}
+                                        className={`vertline-${severity}-${key}`}
+                                        x1={(barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y1={this.state.yScale(value.ninetyith)}
+                                        x2={(barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y2={this.state.yScale(value.tenth)}
+                                        stroke={gray}
+                                        strokeWidth={1}
+                                        style={{ pointerEvents: 'none' }}
+                                    >
+                                    </line>
+                                    <line
+                                        key={`topline-${severity}-${key}`}
+                                        className={`topline-${severity}-${key}`}
+                                        x1={(whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y1={this.state.yScale(value.ninetyith)}
+                                        x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y2={this.state.yScale(value.ninetyith)}
+                                        stroke={gray}
+                                        strokeWidth={1}
+                                        style={{ pointerEvents: 'none' }}
+                                    >
+                                    </line>
+                                    <line
+                                        key={`bottomline-${severity}-${key}`}
+                                        className={`bottomline-${severity}-${key}`}
+                                        x1={(whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y1={this.state.yScale(value.tenth)}
+                                        x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
+                                        y2={this.state.yScale(value.tenth)}
+                                        stroke={gray}
+                                        strokeWidth={1}
+                                        style={{ pointerEvents: 'none' }}
+                                    >
+                                    </line>
+                                    <Tooltip
+                                        key={`tooltip-chart-${i}-${j}`}
+                                        title={this.state.tooltipText}
+                                        visible={this.state.hoveredRect.severity === severity &&
+                                                this.state.hoveredRect.scenario === key ? true : false}
+                                        data-html="true"
+                                    >
+                                        {/* debug red rect highlight */}
+                                        <rect
                                             d={value}
-                                            key={`bar-${severity}-${key}`}
-                                            className={`bar-${severity}-${key}`}
+                                            key={`bar-${severity}-${key}-hover`}
+                                            className={'bars-hover'}
                                             width={barWidth}
-                                            height={this.state.yScale(0) - this.state.yScale(value.median)}
+                                            // height={this.state.yScale(0) - this.state.yScale(value.median)}
+                                            height={this.state.yScale(value.median) / (this.props.height - margin.bottom) > 0.9 ? 20 : this.state.yScale(0) - this.state.yScale(value.median)}
                                             x={(margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key)}
-                                            y={this.state.yScale(value.median)}
-                                            fill={scenarioColors[j]}
-                                            stroke={this.state.hoveredRect.severity === severity &&
-                                                this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
+                                            y={ this.state.yScale(value.median) / (this.props.height - margin.bottom) > 0.9 ? this.props.height - margin.bottom - 20 : this.state.yScale(value.median)}
+                                            fill={'red'}
+                                            fillOpacity={0}
+                                            stroke={'red'}
+                                            strokeOpacity={0}
                                             strokeWidth={4}
-                                            style={{ pointerEvents: 'none' }}
+                                            style={{ cursor: 'pointer'}}
+                                            onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
+                                            onMouseLeave={this.handleHighlightLeave}
                                         >
                                         </rect>
-                                        <line
-                                            key={`vertline-${severity}-${key}`}
-                                            className={`vertline-${severity}-${key}`}
-                                            x1={(barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
-                                            y1={this.state.yScale(value.ninetyith)}
-                                            x2={(barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
-                                            y2={this.state.yScale(value.tenth)}
-                                            stroke={gray}
-                                            strokeWidth={1}
-                                            style={{ pointerEvents: 'none' }}
-                                        >
-                                        </line>
-                                        <line
-                                            key={`topline-${severity}-${key}`}
-                                            className={`topline-${severity}-${key}`}
-                                            x1={(whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
-                                            y1={this.state.yScale(value.ninetyith)}
-                                            x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
-                                            y2={this.state.yScale(value.ninetyith)}
-                                            stroke={gray}
-                                            strokeWidth={1}
-                                            style={{ pointerEvents: 'none' }}
-                                        >
-                                        </line>
-                                        <line
-                                            key={`bottomline-${severity}-${key}`}
-                                            className={`bottomline-${severity}-${key}`}
-                                            x1={(whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
-                                            y1={this.state.yScale(value.tenth)}
-                                            x2={(barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key))}
-                                            y2={this.state.yScale(value.tenth)}
-                                            stroke={gray}
-                                            strokeWidth={1}
-                                            style={{ pointerEvents: 'none' }}
-                                        >
-                                        </line>
-                                        <Tooltip
-                                            key={`tooltip-chart-${i}-${j}`}
-                                            title={this.state.tooltipText}
-                                            visible={this.state.hoveredRect.severity === severity &&
-                                                    this.state.hoveredRect.scenario === key ? true : false}
-                                            data-html="true"
-                                        >
-                                            {/* debug red rect highlight */}
-                                            <rect
-                                                d={value}
-                                                key={`bar-${severity}-${key}-hover`}
-                                                className={'bars-hover'}
-                                                width={barWidth}
-                                                // height={this.state.yScale(0) - this.state.yScale(value.median)}
-                                                height={this.state.yScale(value.median) / (this.props.height - margin.bottom) > 0.9 ? 20 : this.state.yScale(0) - this.state.yScale(value.median)}
-                                                x={(margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key)}
-                                                y={ this.state.yScale(value.median) / (this.props.height - margin.bottom) > 0.9 ? this.props.height - margin.bottom - 20 : this.state.yScale(value.median)}
-                                                fill={'red'}
-                                                fillOpacity={0}
-                                                stroke={'red'}
-                                                strokeOpacity={0}
-                                                strokeWidth={4}
-                                                style={{ cursor: 'pointer'}}
-                                                onMouseEnter={(e) => this.handleHighlightEnter(e, severity, key, j)}
-                                                onMouseLeave={this.handleHighlightLeave}
-                                            >
-                                            </rect>
-                                        </Tooltip>
-                                    </Fragment>
-                                )
-                            }
-                        })
-                    }
-                    </g>
+                                    </Tooltip>
+                                </Fragment>
+                            )
+                        }
+                    })
+                }
+                </g>
                 )
             })}
             </Fragment>

@@ -1,6 +1,7 @@
 import { extent } from 'd3-array';
 import { timeDay } from 'd3-time';
 import { timeFormat } from 'd3-time-format';
+const formatDate = timeFormat('%Y-%m-%d');
 ///////////////// UTILS ///////////////////
 
 // TODO: most likely remove this function
@@ -36,6 +37,27 @@ export function buildScenarios(dataset) {
     scenarioArray.push(obj);
   }
   return scenarioArray;
+}
+
+export function returnSimsOverThreshold(series, statThreshold, dates, dateThreshold) {
+  // Marks which simulations in a series are above threshold given stat and date
+
+  const dateIndex = dates.findIndex(
+      date => formatDate(date) === formatDate(dateThreshold)
+      );
+  let simsOver = 0;
+  Object.values(series).forEach((sim) => {
+      let simOver = false;
+      for (let i = 0; i < dateIndex; i++) {
+          if (sim.vals[i] > statThreshold){
+              simsOver = simsOver + 1;
+              simOver = true;
+              break;
+          }
+      }
+      simOver ? sim.over = true : sim.over = false
+  })
+  return simsOver;
 }
 
 export function addCommas(x) {
