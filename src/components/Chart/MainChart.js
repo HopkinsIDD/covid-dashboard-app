@@ -16,7 +16,7 @@ class MainChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            dataLoaded: false,
+            datasetChart: {},
             dates: [],
             SCENARIOS: [],
             scenarioList: [],
@@ -25,18 +25,16 @@ class MainChart extends Component {
             start: new Date(),
             end: new Date(),
             scale: 'power',
+            dataLoaded: false
         };
     };
 
     componentDidMount() {
-        // console.log('MainChart componentDidMount')
         const { dataset } = this.props;
         this.initializeChart(dataset)
     };
 
     componentDidUpdate(prevProp) {
-        // console.log('MainChart componentDidUpdate dataset', this.props.dataset)
-
         const { dataset } = this.props;
 
         if (dataset !== prevProp.dataset) {
@@ -45,12 +43,9 @@ class MainChart extends Component {
     };
 
     initializeChart(dataset) {
-        // instantiate scenarios 
+        // instantiate scenarios, initial default indicators
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioList = SCENARIOS.map(s => s.name);
-        // console.log('MainChart scenarioList', scenarioList)
-
-        // instantiate default 2 indicator stats
         const statList = STATS.slice(0,2)
 
         // instantiate start and end date (past 2 weeks) for summary stats
@@ -58,16 +53,17 @@ class MainChart extends Component {
         const start = new Date(); 
         start.setDate(start.getDate() - 14); 
 
+        // dataset needs to be set to state at the same time as other props
+        // otherwise, children updates will occur at different times
         this.setState({
+            datasetChart: dataset, 
             dates,
             SCENARIOS,
             scenarioList,
             statList,
             start,
         }, () => {
-            this.setState({
-                dataLoaded: true
-            });
+            this.setState({dataLoaded: true});
         })
     }
 
@@ -126,7 +122,7 @@ class MainChart extends Component {
                                 geoid={this.props.geoid}
                                 width={this.props.width}
                                 height={this.props.height} 
-                                dataset={this.props.dataset}
+                                dataset={this.state.datasetChart}
                                 scenarios={this.state.scenarioList}
                                 stats={this.state.statList}
                                 firstDate={this.state.dates[0]}
