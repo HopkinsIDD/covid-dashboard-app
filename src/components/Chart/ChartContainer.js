@@ -3,7 +3,7 @@ import Chart from '../Chart/Chart';
 import SummaryLabel from '../Chart/SummaryLabel';
 import ChartLegend from '../Chart/ChartLegend';
 import { scenarioColors, blue } from '../../utils/constants'
-import { getReadableDate } from '../../utils/utils'
+import { formatTitle, getReadableDate } from '../../utils/utils'
 
 class ChartContainer extends Component {
     constructor(props) {
@@ -111,7 +111,7 @@ class ChartContainer extends Component {
                             classProps={'filter-label threshold-label callout'}
                             start={this.props.start}
                             end={this.props.end}
-                            scenario={this.props.scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
+                            scenario={formatTitle(this.props.scenarios[this.state.hoveredScenarioIdx])}
                             label={this.state.statLabel.toLowerCase()}
                             median={this.state.median}
                             tenth={this.state.tenth}
@@ -137,7 +137,7 @@ class ChartContainer extends Component {
                                 <div
                                     key={`legend-label-${scenario}`}
                                     className="titleNarrow"
-                                >{scenario.replace('_',' ')} </div>
+                                >{formatTitle(scenario)} </div>
                             </div>
                         )
                     })

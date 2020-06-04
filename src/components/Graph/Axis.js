@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { axisLeft, axisBottom, axisRight } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
 import { select } from 'd3-selection'
-import { addCommas } from '../../utils/utils.js'
+import { addCommas, formatTitle } from '../../utils/utils.js'
 
 class Axis extends Component {
   constructor(props) {
@@ -42,7 +42,7 @@ class Axis extends Component {
           .tickSizeOuter(0);
       } else if (this.props.view === 'chart') {
         this.axis = axisBottom().scale(this.props.scale)
-          .tickFormat(d => d.replace('_', ' '))
+          .tickFormat(d => formatTitle(d))
           .ticks(this.props.width / 60)
           .tickSizeOuter(0);
       } else {
