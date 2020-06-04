@@ -6,7 +6,7 @@ import { easeCubicOut } from 'd3-ease'
 import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
-import { getDateIdx, addCommas, capitalize } from '../../utils/utils';
+import { getDateIdx, formatTitle, addCommas, capitalize } from '../../utils/utils';
 import { margin, chartBkgd, gray, blue, scenarioColors } from '../../utils/constants'
 
 class Chart extends Component {
@@ -316,7 +316,7 @@ class Chart extends Component {
             // console.log(median, this.state.yScale(median), this.state.yScale(median) / (this.props.height - margin.bottom))
             // console.log(quantileObj[stat][severity][key])
             const severityText = this.props.stat === 'incidI' ? '' : `${capitalize(severity)} Severity<br>`;
-            const text =    `${scenarios[index].replace('_', ' ')}<br>` +
+            const text =    `${formatTitle(scenarios[index])}<br>` +
                             severityText +
                             `p90: ${addCommas(Math.ceil(ninetyith))}<br>` +
                             `median: ${addCommas(Math.ceil(median))}<br>` +

@@ -5,7 +5,7 @@ import ThresholdLabel from '../Graph/ThresholdLabel';
 import { scaleLinear, scaleUtc } from 'd3-scale';
 import { max, extent } from 'd3-array';
 import { margin, COUNTYNAMES } from '../../utils/constants';
-
+import { formatTitle } from '../../utils/utils';
 
 class GraphContainer extends Component {
   constructor(props) {
@@ -191,7 +191,7 @@ class GraphContainer extends Component {
               
               <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
                 {scenarioList.map((scenario, i) => {
-                    const scenarioTitle = scenario.name.replace('_', ' ');
+                    const scenarioTitle = formatTitle(scenario.name);
                     const isActive = scenario.name === scenarioHovered ? ' title-active' : '';
                     return (this.props.scenarioList && scenarioList.length > 1) ? 
                             <div key={scenario.key} style={{ width: this.props.width - margin.right}}>

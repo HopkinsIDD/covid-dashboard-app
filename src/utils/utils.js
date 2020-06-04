@@ -60,6 +60,13 @@ export function returnSimsOverThreshold(series, statThreshold, dates, dateThresh
   return simsOver;
 }
 
+export function formatTitle(title) {
+  // Formats scenario title, for now, removing '_' from names
+
+  return title.split('_').join(' ');
+
+}
+
 export function addCommas(x) {
   var parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
