@@ -16,7 +16,6 @@ launch.json
 # datasets
 /src/store/_archive
 /src/store/sims
-/src/assets/_archive
 
 # misc
 .DS_Store
