@@ -11,8 +11,8 @@ export const lightgray = '#d0d0d0';
 export const graphBkgd = '#fcfcfc';
 export const chartBkgd = '#f0f2f5';
 export const scenarioColors = ['#4ddaba', '#b6f5e7','#19b18e', '#e0fdf7', '#008769', '#acdacf']
-export const mapLowColors = ['#deebf7', '#e5f5e0', '#fee6ce', '#fee0d2'] 
-export const mapHighColors = ['#3885fa', '#008769', '#e6550d', '#de2d26']
+export const mapLowColors = ['#deebf7', '#E0F5F0', '#FFEDE3', '#FFE6EA']//'#e5f5e0', '#fee6ce', '#fee0d2', '#F6E3FF'] 
+export const mapHighColors = ['#3885fa', '#148C81', '#E6500D', '#DE264D'] //'#008769', '#e6550d', '#de2d26', '#A22DD5']
 
 export const styles = {
     ContainerWhite: {
