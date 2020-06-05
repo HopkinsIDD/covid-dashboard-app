@@ -53,7 +53,17 @@ class Axis extends Component {
       
 
       if (this.axisRef.current) {
-          select(this.axisRef.current).call(this.axis).call(g => g.select(".domain").remove());
+          if (this.props.view === 'chart') {
+            select(this.axisRef.current)
+              .call(this.axis)
+              .call(g => g.select(".domain").remove())
+            .selectAll('.tick text')
+            .call(this.wrap, this.props.scale.bandwidth() - 5)
+          } else {
+            select(this.axisRef.current)
+              .call(this.axis)
+              .call(g => g.select(".domain").remove());
+          }
       }
     }
   }
@@ -77,13 +87,58 @@ class Axis extends Component {
             axisNode
               .transition()
               .duration(1000)
-              .call(this.axis);
+              .call(this.axis)
         }
 
        
-        if (this.props.view !== 'graph') select(this.axisRef.current).call(this.axis).call(g => g.select(".domain").remove());
+        // if (this.props.view !== 'graph') {
+        //   select(this.axisRef.current)
+        //   .call(this.axis).call(g => g.select(".domain").remove());
+        // }
+
+        if (this.props.view === 'chart') {
+          console.log('in chart update')
+          select(this.axisRef.current)
+              .call(this.axis)
+              .call(g => g.select(".domain").remove())
+            .selectAll('.tick text')
+            .call(this.wrap, this.props.scale.bandwidth() - 5)
+        }
       
       }
+    }
+
+    wrap = (text, width) => {
+      console.log('calling text wrap function')
+      text.each(function() {
+        const text = select(this)
+        const words = text.text().split(/\s+/).reverse()
+        let word
+        let line = []
+        let lineNumber = 0
+        const lineHeight = 1.1 // ems
+        const y = text.attr("y")
+        const dy = parseFloat(text.attr("dy"))
+        let tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em")
+        // console.log(dy, lineNumber, lineHeight)
+        // console.log(words)
+        while (word = words.pop()) {
+          // console.log(word)
+          line.push(word)
+          tspan.text(line.join(" "))
+          if (tspan.node().getComputedTextLength() > width) {
+            console.log(dy, lineNumber, lineHeight)
+            console.log(tspan.node().getComputedTextLength(), tspan.text())
+            console.log(line)
+            line.pop()
+            tspan.text(line.join(" "))
+            line = [word]
+            tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", `${++lineNumber * lineHeight + dy}em`).text(word)
+            console.log(tspan)
+          }
+        }
+      })
+      // console.log(text)
     }
 
   render() {

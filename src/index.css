@@ -164,6 +164,8 @@ a:hover {
 
 .tick {
   font-family: 'PT Sans', sans-serif;
+  font-size: 10px;
+
 }
 
 .nav-subtitle {
@@ -606,7 +608,7 @@ input[type=range]::-moz-focus-outer {
 .chart-callout {
   display: block !important;
   min-height: 70px;
-  padding: 10px 0;
+  /* padding: 10px 0; */
 }
 
 .chart-legend-container {
