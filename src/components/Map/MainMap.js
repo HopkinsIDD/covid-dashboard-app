@@ -87,13 +87,14 @@ class MainMap extends Component {
             <Content id="geographic-map" style={styles.ContainerGray}>
                   <Col className="gutter-row container" span={16}>
                     <div className="content-section">
-                            <div>
+                            <div className="vis-content">
+                              <div className="titleNarrow description-header">A daily understanding of regional context</div>
                                 Hover over individual counties for more information
                                 for each indicator. Slide over the date selector to 
                                 view specific dates on the map. Use the right and
                                 left arrow keys to increase or decrease by day.
                             </div>
-                            <div className="content-header">{countyName}</div>
+                            {/* <div className="content-header">{countyName}</div> */}
                         </div>
                     </Col>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>

@@ -101,7 +101,8 @@ class MainChart extends Component {
             <Content id="exploration" style={styles.ContainerWhite}>
                 <Col className="gutter-row container" span={16}>
                     <div className="content-section">
-                        <div>
+                        <div className="vis-content" style={{ borderColor: '#f0f2f5' }}>
+                            <div className="titleNarrow description-header">A time-based summary you can customize</div>
                             Use this tool to plan for expected infections, hospitalizations,
                             ICU cases, ventilators needed, and deaths in your municipality.
                             For example, if you would like to know how many people will 
@@ -111,7 +112,7 @@ class MainChart extends Component {
                             numbers across all {this.state.SCENARIOS.length}&nbsp;
                             intervention scenarios at varying degrees of severity.
                         </div>
-                        <div className="content-header">{countyName}</div>
+                        {/* <div className="content-header">{countyName}</div> */}
                     </div>
                 </Col>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>

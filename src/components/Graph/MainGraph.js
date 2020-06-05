@@ -327,22 +327,24 @@ class MainGraph extends Component {
                 {/* text span is 1 grid value higher than Graph to allow text-wrapping */}
                 <Col className="gutter-row container" span={17}>
                     <div className="content-section">
-                        <div>
+                        <div className="vis-content">
+                            <div className="titleNarrow description-header">What can scenario modeling tell us?</div>
+                            This graph aims to display as much about the scenario model as possible.
                             Each intervention scenario is represented by multiple 
                             simulation curves, and each curve represents one 
                             possible outcome based on a given set of parameters. 
                             Each curve is just as likely to occur as another. 
-                            <br /><br />
-                            Select 2 intervention scenarios from the menu on
+                            {/* <br /><br />
+                            Select two intervention scenarios from the menu on
                             the right to compare side by side. Toggle between 
-                            different indicators such as hospitalizations and deaths
-                            as well as a scenario's level of severity. Filter simulations
-                            down to curves within a specific range of R<sub>0</sub>. Interact 
-                            by sliding over threshold values and dates to determine
-                            how likely an indicator, such as hospitalizations, will 
-                            exceed a certain number by a given date.
+                            different indicators such as hospitalizations and deaths,
+                            as well as the scenario's potential severity level. Filter 
+                            simulations down to curves within a specific range of R<sub>0</sub>. 
+                            Slide over threshold values and dates to determine
+                            how likely a given indicator, such as hospitalizations, 
+                            will exceed a certain number by a given date. */}
                         </div>
-                        <div className="content-header">{countyName}</div>
+                        {/* <div className="content-header">{countyName}</div> */}
                     </div>
                 </Col>
                 {this.state.dataLoaded &&

@@ -18,11 +18,11 @@ export const mapHighColors = ['#3885fa', '#008769', '#e6550d', '#de2d26']
 export const styles = {
     ContainerWhite: {
         background: '#fefefe',
-        padding: '5rem 0',
+        padding: '4rem 0',
         minHeight: '24rem'
     },
     ContainerGray: {
-        padding: '5rem 0'
+        padding: '4rem 0'
     },
     MapContainer: {
         paddingLeft: margin.yAxis + (2 * margin.left) + margin.right
