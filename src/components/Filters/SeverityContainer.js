@@ -91,11 +91,11 @@ class SeverityContainer extends Component {
                             </div>
                         )
                     })}
-                    <div className="filter-description">
+                    {/* <div className="filter-description">
                         Correspond to 1%, 0.5%, and 0.25% infection 
                         fatality rate, and 10%, 5% and 2.5%
                         hospitalization rate, resp.
-                    </div>
+                    </div> */}
                 </div>
             )
         } else {

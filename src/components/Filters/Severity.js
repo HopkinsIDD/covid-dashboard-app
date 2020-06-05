@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Radio } from 'antd';
+import TooltipHandler from '../Filters/TooltipHandler';
 import _ from 'lodash';
 import { LEVELS } from '../../utils/constants.js';
 import { capitalize } from '../../utils/utils.js';
@@ -9,6 +10,7 @@ class Severity extends Component {
         super(props);
         this.state = {
             children: [],
+            showTooltip: false
         }
     }
 
@@ -40,6 +42,10 @@ class Severity extends Component {
         this.props.onSeverityClick(itemClone);
     }
 
+    handleTooltipClick = () => {
+        this.setState({showTooltip: !this.state.showTooltip})
+    }
+
     handleMouseEnter = (e) => {
         this.props.onSeverityHover(e);
     }
@@ -56,7 +62,22 @@ class Severity extends Component {
             <div
                 onMouseEnter={() => this.handleMouseEnter(scenario.name)}
                 onMouseLeave={() => this.handleMouseLeave(scenario.name)}>
-                <div className="param-header">{title}</div>
+                <div className="param-header">{title}
+                    <TooltipHandler
+                        showTooltip={this.state.showTooltip}
+                        onClick={this.handleTooltipClick}
+                        >
+                        <div className="tooltip">&nbsp;&#9432;
+                            {this.state.showTooltip ?
+                            <span className="tooltip-text">
+                                High, medium, and low severity correspond
+                                to 1%, 0.5%, and 0.25% infection fatality rate (IFR), 
+                                and 10%, 5% and 2.5% hospitalization rate, respectively.                    
+                            </span> 
+                            : null}
+                        </div>
+                    </TooltipHandler>
+                </div>
                 <Radio.Group
                     value={severity.key} 
                     style={{ width: '80%' }}

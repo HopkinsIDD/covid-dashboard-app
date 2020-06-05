@@ -1,16 +1,15 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
-// import logo from '../assets/logo.png'; 
-// import brand from '../assets/brand.png'; 
 import { ReactComponent as AltLogo } from '../assets/logo-idd-jhsph.svg';
 import MenuItem from './MenuItem';
+import { styles } from '../utils/constants';
 
 class NavBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
       active: null,
-      links: ['#scenario-comparisons', '#stats', '#map', '#methods']
+      links: ['#interactive-graph', '#exploration', '#geographic-map', '#methods']
     }
   }
 
@@ -29,7 +28,7 @@ class NavBar extends Component {
             <ul style={{ marginTop: '5px' }}>
               {this.state.links.map( (link, index) => {
                 return (
-                  <li key={link} style={{ paddingRight: (index < this.state.links.length - 1) ? '10px': '0px' }}>
+                  <li key={link} style={styles.Menu}>
                     <a href={link}>
                       <MenuItem  
                         height={index === 2 ? "36" : "40"}
