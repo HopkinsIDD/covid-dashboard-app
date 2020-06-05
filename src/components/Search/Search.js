@@ -5,7 +5,6 @@ import FileUploader from './FileUploader';
 import { ReactComponent as GraphLogo } from '../../assets/graph.svg';
 import { ReactComponent as ChartLogo } from '../../assets/chart.svg';
 import { ReactComponent as MapLogo } from '../../assets/globe.svg';
-// import UploadSwitch from './UploadSwitch';
 import { styles } from '../../utils/constants';
 
 class Search extends Component {
@@ -52,9 +51,37 @@ class Search extends Component {
                             by: 
                         </div>
                         <ul>
-                            <li><span><GraphLogo className="nav-active" height={20} width={35} style={{ paddingRight: '5px', paddingTop: '5px'}}/></span>Interacting with individual simulation curves</li>
-                            <li><span><ChartLogo className="nav-active" height={20} width={25} style={{ paddingRight: '5px', paddingTop: '5px', marginRight: '8px'}}/></span>Exploring expected number of hospitalizations, deaths, etc. in the coming weeks</li>
-                            <li><span><MapLogo className="nav-active" height={20} width={30} style={{ paddingRight: '5px', paddingTop: '5px', marginRight: '3px'}}/></span>Visualizing state-wide trends</li>
+                            <li>
+                                <span>
+                                    <GraphLogo
+                                        className="nav-active"
+                                        height={20}
+                                        width={35}
+                                        style={styles.iconGraph}/>
+                                </span>
+                                Interacting with individual simulation curves
+                            </li>
+                            <li>
+                                <span>
+                                    <ChartLogo
+                                        className="nav-active"
+                                        height={20}
+                                        width={25}
+                                        style={styles.iconChart}/>
+                                </span>
+                                Exploring expected number of hospitalizations, 
+                                deaths, etc. in the coming weeks
+                            </li>
+                            <li>
+                                <span>
+                                    <MapLogo
+                                        className="nav-active"
+                                        height={20}
+                                        width={30}
+                                        style={styles.iconMap}/>
+                                </span>
+                                Visualizing state-wide trends
+                            </li>
                         </ul>
                         <br />
                         <div>

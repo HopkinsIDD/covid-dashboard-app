@@ -21,8 +21,7 @@ export const styles = {
         padding: '4rem 0',
         minHeight: '24rem'
     },
-    ContainerGray: {
-        padding: '4rem 0'
+    ContainerGray: { padding: '4rem 0'
     },
     MapContainer: {
         paddingLeft: margin.yAxis + (2 * margin.left) + margin.right
@@ -35,6 +34,20 @@ export const styles = {
         display: 'inline', 
         lineHeight: '2.8rem', 
         paddingRight: '10px'
+    },
+    iconGraph: { 
+        paddingRight: '5px', 
+        paddingTop: '5px' 
+    },
+    iconChart: { 
+        paddingRight: '5px', 
+        paddingTop: '5px', 
+        marginRight: '8px' 
+    },
+    iconMap: { 
+        paddingRight: '5px', 
+        paddingTop: '5px', 
+        marginRight: '3px' 
     },
     Selector: {
         width: '80%'
