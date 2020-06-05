@@ -9,7 +9,8 @@ import { brushX } from 'd3-brush'
 import { event } from 'd3-selection'
 import { max, extent } from 'd3-array'
 import { easeCubicOut } from 'd3-ease'
-import { margin, red, green } from '../../utils/constants'
+import { margin } from '../../utils/constants'
+import { green, red } from '../../utils/colors';
 
 class Brush extends Component {
   constructor(props) {
