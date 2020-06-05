@@ -79,8 +79,8 @@ class Sliders extends Component {
                     onMouseUp={this.handleStatMouseEvent}>
                 </input> 
                 <div className="slider-label-row slider-label" style={styles.Selector}>
-                    <p className="filter-label callout" style={styles.SliderLabel}>0</p>
-                    <p className="filter-label slider-max callout" style={styles.SliderLabel}>
+                    <p className="filter-label callout">0</p>
+                    <p className="filter-label slider-max callout">
                         {addCommas(seriesMax)}
                     </p>
                 </div>
@@ -100,25 +100,18 @@ class Sliders extends Component {
                     value={dateThresholdIdx}
                     style={styles.Selector}
                     ref={ref => this.dateInput = ref}
-                    onChange={
-                        () => {this.handleDateChange(this.dateInput.value)}
-                    }
+                    onChange={() => {this.handleDateChange(this.dateInput.value)}}
                     onMouseDown={this.handleDateMouseEvent}
                     onMouseUp={this.handleDateMouseEvent}>
                 </input>
                 <div className="slider-label-row slider-label" style={styles.Selector}>
-                    <p className="filter-label callout" style={styles.SliderLabel}>
+                    <p className="filter-label callout">
                         {getMonth(dateRange[0])}
                     </p>
-                    <p className="filter-label slider-max callout" style={styles.SliderLabel}>
+                    <p className="filter-label slider-max callout">
                         {getMonth(timeDay.offset(dateRange[1], -1))}
                     </p>
                 </div>
-
-                {/* <div className="filter-description">
-                    Slide over indicator value and day to see how likely daily&nbsp;
-                    {stat.name} will exceed a certain number by a given day.
-                </div> */}
             </div>
         )
     }

@@ -403,9 +403,6 @@ class MainGraph extends Component {
                         <Indicators
                             stat={this.state.stat}
                             onButtonClick={this.handleButtonClick} />        
-                        <Switch
-                            showConfBounds={this.state.showConfBounds}
-                            onConfClick={this.handleConfClick} /> 
                         <SeverityContainer
                             stat={this.state.stat}
                             severityList={this.state.severityList}
@@ -416,11 +413,14 @@ class MainGraph extends Component {
                         <R0
                             r0={this.state.r0}
                             onR0Change={this.handleR0Change} />
+                        <Switch
+                            showConfBounds={this.state.showConfBounds}
+                            onConfClick={this.handleConfClick} /> 
                         <Sliders 
                             stat={this.state.stat}
                             dates={this.state.dates}
                             seriesMax={this.state.seriesMax}
-                            // seriesMin={this.state.seriesMin}
+                            showConfBounds={this.state.showConfBounds}
                             statThreshold={this.state.statThreshold}
                             dateThreshold={this.state.dateThreshold}
                             dateThresholdIdx={this.state.dateThresholdIdx}
