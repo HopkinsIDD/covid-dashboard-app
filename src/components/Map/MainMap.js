@@ -88,7 +88,7 @@ class MainMap extends Component {
                   <Col className="gutter-row container" span={16}>
                     <div className="content-section">
                             <div className="vis-content">
-                              <div className="titleNarrow description-header">A daily understanding of regional context</div>
+                              <div className="titleNarrow description-header">A daily look at regional context</div>
                                 Hover over individual counties for more information
                                 for each indicator. Slide over the date selector to 
                                 view specific dates on the map. Use the right and
