@@ -20,12 +20,9 @@ class Chart extends Component {
     }
 
     disabledDate = (dateMoment) => {
+        // prevent user from selecting beyond modeled date range
         const date = dateMoment._d;
-        return (
-            date < this.props.firstDate || 
-            date > this.props.lastDate ||
-            date.getDay() > 0
-            );
+        return date < this.props.firstDate || date > this.props.lastDate;
     }
 
     handleOpen = (datePickerOpen) => {
@@ -43,7 +40,7 @@ class Chart extends Component {
                 <RangePicker
                     disabledDate={this.disabledDate} 
                     style={styles.Selector}
-                    renderExtraFooter={() => "Select a summary period in weekly increments"}
+                    // renderExtraFooter={() => "Select a summary period in weekly increments"}
                     onChange={this.handleChange}
                     onOpenChange={this.handleOpen}
                 />
