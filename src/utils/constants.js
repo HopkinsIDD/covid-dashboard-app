@@ -59,9 +59,6 @@ export const styles = {
     UploadSwitch: {
         paddingLeft: '12px'
     },
-    SliderLabel: {
-        marginTop: '12px'
-    },
     MarksR0: {
         0: {
             style: {

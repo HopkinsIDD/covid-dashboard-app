@@ -49,7 +49,7 @@ class R0 extends Component {
                     <span className='callout'>R<sub>0</sub> between {r0[0]} - {r0[1]}</span>
                 </div>
                 <Slider
-                    style={{ width: '80%' }}
+                    style={styles.Selector}
                     range
                     marks={styles.MarksR0}
                     min={0}
