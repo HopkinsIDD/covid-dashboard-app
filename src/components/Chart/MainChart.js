@@ -6,7 +6,7 @@ import DatePicker from './DatePicker';
 import ScaleToggle from './ScaleToggle';
 import IndicatorSelection from './IndicatorSelection';
 
-import { styles, STATS, COUNTYNAMES } from '../../utils/constants';
+import { styles, STATS } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
 import { utcParse } from 'd3-time-format'
 const parseDate = utcParse('%Y-%m-%d')
@@ -96,7 +96,6 @@ class MainChart extends Component {
 
     render() {
         const { Content } = Layout;
-        const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <Content id="exploration" style={styles.ContainerWhite}>
                 <Col className="gutter-row container" span={16}>
@@ -109,10 +108,9 @@ class MainChart extends Component {
                             be hospitalized in 6 weeks, select hospitalizations  
                             from the indicator dropdown, today as the start date, and 6 weeks out
                             as the end date. Then, compare expected hospitalization 
-                            numbers across all {this.state.SCENARIOS.length}&nbsp;
+                            numbers across all 
                             intervention scenarios at varying degrees of severity.
                         </div>
-                        {/* <div className="content-header">{countyName}</div> */}
                     </div>
                 </Col>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>

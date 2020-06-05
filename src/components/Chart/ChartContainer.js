@@ -98,8 +98,9 @@ class ChartContainer extends Component {
     render() {
         return (
             <div>
-                <div className="scenario-title titleNarrow">Summary of</div>
+                {/* <div className="scenario-title titleNarrow">Summary of</div> */}
                 <div className="filter-label threshold-label callout callout-row">
+                    {`Snapshot from `}
                     <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
                         {getReadableDate(this.props.start)}</span>&nbsp;to&nbsp;
                     <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>

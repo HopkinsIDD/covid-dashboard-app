@@ -53,7 +53,7 @@ class Sliders extends Component {
     }
 
     render() {
-        const { stat, statThreshold, seriesMin, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
+        const { stat, statThreshold, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
         const roundedStat = Math.ceil(statThreshold / 100) * 100;
         
         return (

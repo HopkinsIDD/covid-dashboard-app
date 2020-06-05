@@ -3,7 +3,7 @@ import { Layout, Row, Col } from 'antd';
 import MapContainer from './MapContainer';
 import Scenarios from '../Filters/Scenarios';
 import DateSlider from './DateSlider';
-import { styles, COUNTYNAMES } from '../../utils/constants';
+import { styles } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
 import { utcParse, timeFormat } from 'd3-time-format'
 
@@ -82,7 +82,6 @@ class MainMap extends Component {
     render() {
         const { Content } = Layout;
         const { dates, currentDateIndex, SCENARIOS } = this.state;
-        const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <Content id="geographic-map" style={styles.ContainerGray}>
                   <Col className="gutter-row container" span={16}>
@@ -94,7 +93,6 @@ class MainMap extends Component {
                                 view specific dates on the map. Use the right and
                                 left arrow keys to increase or decrease by day.
                             </div>
-                            {/* <div className="content-header">{countyName}</div> */}
                         </div>
                     </Col>
                     <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
