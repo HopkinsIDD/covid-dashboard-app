@@ -334,7 +334,7 @@ class MainGraph extends Component {
                             simulation curves, and each curve represents one 
                             possible outcome based on a given set of parameters. 
                             Each curve is just as likely to occur as another. 
-                            {/* <br /><br />
+                            <br /><br />
                             Select two intervention scenarios from the menu on
                             the right to compare side by side. Toggle between 
                             different indicators such as hospitalizations and deaths,
@@ -342,7 +342,7 @@ class MainGraph extends Component {
                             simulations down to curves within a specific range of R<sub>0</sub>. 
                             Slide over threshold values and dates to determine
                             how likely a given indicator, such as hospitalizations, 
-                            will exceed a certain number by a given date. */}
+                            will exceed a certain number by a given date.
                         </div>
                         {/* <div className="content-header">{countyName}</div> */}
                     </div>
