@@ -82,7 +82,7 @@ class MainGraph extends Component {
             const idxMax = timeDay.count(this.state.dates[0], this.state.dateRange[1]);
             const filteredDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
             const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
-            const dateThreshold = filteredDates[dateThresholdIdx]
+            const dateThreshold = filteredDates[dateThresholdIdx];
             let statThreshold = 0
             let sliderMin = 100000000000
             let sliderMax = 0
@@ -103,7 +103,8 @@ class MainGraph extends Component {
                 const [seriesMin, seriesMax] = getRange(seriesPeaks);
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
-                if (i === 0) statThreshold = Math.ceil(seriesMax / 1.2);
+                // default smart value for statThreshold calculation
+                if (i === 0) statThreshold = seriesMin;
 
                 const simsOver = returnSimsOverThreshold(
                     newSeries, statThreshold, this.state.allTimeDates, dateThreshold);
@@ -419,7 +420,7 @@ class MainGraph extends Component {
                             stat={this.state.stat}
                             dates={this.state.dates}
                             seriesMax={this.state.seriesMax}
-                            seriesMin={this.state.seriesMin}
+                            // seriesMin={this.state.seriesMin}
                             statThreshold={this.state.statThreshold}
                             dateThreshold={this.state.dateThreshold}
                             dateThresholdIdx={this.state.dateThresholdIdx}

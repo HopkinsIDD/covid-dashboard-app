@@ -68,7 +68,7 @@ class Sliders extends Component {
                 <input
                     id="statThreshold"
                     type="range"
-                    min={seriesMin.toString()}
+                    min="0"
                     max={seriesMax.toString()}
                     value={statThreshold.toString()}
                     step={100}
@@ -79,9 +79,7 @@ class Sliders extends Component {
                     onMouseUp={this.handleStatMouseEvent}>
                 </input> 
                 <div className="slider-label-row slider-label" style={styles.Selector}>
-                    <p className="filter-label callout" style={styles.SliderLabel}>
-                        {addCommas(seriesMin)}
-                    </p>
+                    <p className="filter-label callout" style={styles.SliderLabel}>0</p>
                     <p className="filter-label slider-max callout" style={styles.SliderLabel}>
                         {addCommas(seriesMax)}
                     </p>
