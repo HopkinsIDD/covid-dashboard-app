@@ -553,16 +553,30 @@ input[type=range]::-moz-focus-outer {
 }
 
 .tooltip .tooltip-text {
-  width: 16rem;
-  background-color: white;
-  color: rgba(0, 0, 0, 0.65);
-  border-radius: 3px;
-  padding: 0.4rem;
+  width: 14rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 5px;
+  padding: 0.5rem;
   position: absolute;
   bottom: 100%;
-  margin-left: -10rem;
+  margin-left: -7.4rem;
+  margin-bottom: 0.5rem;
   z-index: 1;
-  border: 1px solid rgba(0, 0, 0, 0.65);
+  /* border: 1px solid rgba(0, 0, 0, 0.65); */
+}
+
+.tooltip-text::before {
+  content: '';
+  position: absolute;
+  display: block;    
+  width: 0px;        
+  left: 50%;
+  bottom: 0;
+  border: 10px solid transparent;
+  border-bottom: 0;
+  border-top: 10px solid rgba(0, 0, 0, 0.75);
+  transform: translate(-50%, calc(100% + 0px));
 }
 
 .chart-container {
