@@ -170,6 +170,11 @@ li a {
 
 ul {
   list-style-type: none;
+  padding: 10px 0 0 30px;
+}
+
+li {
+  margin-bottom: 10px;
 }
 
 .filters {
