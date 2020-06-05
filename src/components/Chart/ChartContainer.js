@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
+import { Row, Col } from 'antd';
 import Chart from '../Chart/Chart';
 import SummaryLabel from '../Chart/SummaryLabel';
 import ChartLegend from '../Chart/ChartLegend';
-import { scenarioColors, blue } from '../../utils/constants'
+import { COUNTYNAMES } from '../../utils/constants'
 import { getReadableDate } from '../../utils/utils'
 
 class ChartContainer extends Component {
@@ -96,56 +97,42 @@ class ChartContainer extends Component {
     }
 
     render() {
+        const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
-            <div>
-                {/* <div className="scenario-title titleNarrow">Summary of</div> */}
-                <div className="filter-label threshold-label callout callout-row">
-                    {`Snapshot from `}
-                    <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
-                        {getReadableDate(this.props.start)}</span>&nbsp;to&nbsp;
-                    <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
-                        {getReadableDate(this.props.end)}</span>
-                </div>
-                <div className="chart-callout" style={{ display: 'block !important'}}>
-                    {(this.state.rectIsHovered && this.state.hoveredScenarioIdx) &&
-                        <SummaryLabel 
-                            classProps={'filter-label threshold-label callout'}
-                            start={this.props.start}
-                            end={this.props.end}
-                            scenario={this.props.scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
-                            label={this.state.statLabel.toLowerCase()}
-                            median={this.state.median}
-                            tenth={this.state.tenth}
-                            ninetyith={this.state.ninetyith}
-                        />
-                    }
-                </div>
-                <div className="chart-legend-container">
-                    <div className="chart-legend">
-                    {this.props.scenarios.map( (scenario, index) => {
-                        return (
-                            <div key={`chart-item-${scenario}`} className="chart-item">
-                                <div
-                                    key={`legend-box-${scenario}`}
-                                    className='legend-box'
-                                    style={ {background: scenarioColors[index], 
-                                            border: 'solid',
-                                            borderColor: this.state.hoveredScenarioIdx === index ? blue : scenarioColors[index],
-                                            width: '12px', 
-                                            height: '12px', 
-                                            marginRight: '5px'}}
-                                ></div>
-                                <div
-                                    key={`legend-label-${scenario}`}
-                                    className="titleNarrow"
-                                >{scenario.replace('_',' ')} </div>
-                            </div>
-                        )
-                    })
-                    }
+            <Fragment>
+                <Row>
+                    <Col span={24}>
+                        <div className="scenario-title titleNarrow">{countyName}</div>
+                        <div className="filter-label threshold-label callout callout-row">
+                            {`Snapshot from `}
+                            <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
+                                {getReadableDate(this.props.start)}</span>&nbsp;to&nbsp;
+                            <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
+                                {getReadableDate(this.props.end)}</span>
+                        </div>
+                    </Col>
+                </Row>
+                <Row justify="end">
+                    <div className="chart-callout" style={{ display: 'block !important'}}>
+                        {this.state.hoveredScenarioIdx !== null &&
+                            <SummaryLabel 
+                                classProps={'filter-label callout'}
+                                start={this.props.start}
+                                end={this.props.end}
+                                scenario={this.props.scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
+                                label={this.state.statLabel.toLowerCase()}
+                                median={this.state.median}
+                                tenth={this.state.tenth}
+                                ninetyith={this.state.ninetyith}
+                            />
+                        }
                     </div>
-                    <ChartLegend />
-                </div>
+
+                    <div className="chart-legend-container">
+                        <ChartLegend />
+                    </div>
+                </Row>
+                <Row>
                 {this.state.dataLoaded && this.state.parameters.map( (param, i) => {
                     return (
                         <div className="row" key={`chart-row-${param}`}>
@@ -155,7 +142,8 @@ class ChartContainer extends Component {
                         </div>
                     )
                 })}
-            </div>
+                </Row>
+            </Fragment>
         )
     }
 }
