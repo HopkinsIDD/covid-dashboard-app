@@ -342,7 +342,9 @@ class MainGraph extends Component {
                             different indicators such as hospitalizations and deaths,
                             as well as the scenario's potential severity level. Filter 
                             simulations down to curves within a specific range of R<sub>0</sub>. 
-                            Slide over threshold values and dates to determine
+                            You can also choose between exploring exceedence thresholds
+                            and displaying confidence bounds. To explore exceedence, 
+                            use the threshold sliders to change values and dates to determine
                             how likely a given indicator, such as hospitalizations, 
                             will exceed a certain number by a given date.
                         </div>
@@ -403,9 +405,6 @@ class MainGraph extends Component {
                         <Indicators
                             stat={this.state.stat}
                             onButtonClick={this.handleButtonClick} />        
-                        <Switch
-                            showConfBounds={this.state.showConfBounds}
-                            onConfClick={this.handleConfClick} /> 
                         <SeverityContainer
                             stat={this.state.stat}
                             severityList={this.state.severityList}
@@ -416,11 +415,14 @@ class MainGraph extends Component {
                         <R0
                             r0={this.state.r0}
                             onR0Change={this.handleR0Change} />
+                        <Switch
+                            showConfBounds={this.state.showConfBounds}
+                            onConfClick={this.handleConfClick} /> 
                         <Sliders 
                             stat={this.state.stat}
                             dates={this.state.dates}
                             seriesMax={this.state.seriesMax}
-                            // seriesMin={this.state.seriesMin}
+                            showConfBounds={this.state.showConfBounds}
                             statThreshold={this.state.statThreshold}
                             dateThreshold={this.state.dateThreshold}
                             dateThresholdIdx={this.state.dateThresholdIdx}

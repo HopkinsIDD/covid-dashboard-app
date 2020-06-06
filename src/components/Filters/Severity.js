@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Radio } from 'antd';
 import TooltipHandler from '../Filters/TooltipHandler';
 import _ from 'lodash';
-import { LEVELS } from '../../utils/constants.js';
+import { LEVELS, styles } from '../../utils/constants.js';
 import { capitalize } from '../../utils/utils.js';
 
 class Severity extends Component {
@@ -80,7 +80,7 @@ class Severity extends Component {
                 </div>
                 <Radio.Group
                     value={severity.key} 
-                    style={{ width: '80%' }}
+                    style={styles.Selector}
                     onChange={this.handleChange}>
                     {this.state.children.map(child => child.button)}
                 </Radio.Group>

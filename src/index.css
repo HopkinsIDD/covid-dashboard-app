@@ -27,6 +27,7 @@ html,body
   height: 100%;
   padding: 0px;
   overflow-x: hidden; 
+  scroll-behavior: smooth;
 }
 
 body {
@@ -191,7 +192,7 @@ li {
 }
 
 .filters {
-  padding-top: 1rem;
+  padding-top: 4rem;
   margin-left: 1.4rem;
 }
 
@@ -271,7 +272,6 @@ li {
 .filter-label {
   font-size: 12px;
   margin-bottom: 0px;
-  margin-top: 3px;
 }
 
 .threshold-label {
@@ -369,8 +369,7 @@ li {
 .param-header {
   color: #808080;
   font-size: 14px;
-  margin-top: 0.8rem;
-  margin-bottom: 0.25rem;
+  margin: 1rem 0 0.1rem;
 }
 
 .graph-wrapper {
@@ -545,6 +544,25 @@ input[type=range]::-moz-focus-outer {
   border: 0;
 }
 
+input[type=range]:disabled {
+  background: transparent;
+  cursor: not-allowed;
+}
+
+input[type=range]:disabled::-moz-range-thumb {
+  border: 1px solid #ffffff;
+  height: 18px;
+  width: 18px;
+  border-radius: 25px;
+  background: #d2d2d2;
+  cursor: not-allowed;
+}
+
+.disabled {
+  color: #9b9b9b;
+  cursor: not-allowed;
+}
+
 .tooltip {
   position: relative;
   display: inline-block;
@@ -559,6 +577,7 @@ input[type=range]::-moz-focus-outer {
   border-radius: 5px;
   padding: 0.5rem;
   position: absolute;
+  left: -50px;
   bottom: 100%;
   margin-left: -7.4rem;
   margin-bottom: 0.5rem;
@@ -571,7 +590,7 @@ input[type=range]::-moz-focus-outer {
   position: absolute;
   display: block;    
   width: 0px;        
-  left: 50%;
+  left: 80%;
   bottom: 0;
   border: 10px solid transparent;
   border-bottom: 0;

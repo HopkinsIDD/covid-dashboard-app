@@ -58,7 +58,7 @@ class Chart extends Component {
     calculateQuantiles = () => {
         const { dataset, firstDate, start, end, stat, width, height, scenarios } = this.props;
         const { severities } = this.state;
-        const quantileObj = {}
+        let quantileObj = {[stat]: {}};
         
         const startIdx = getDateIdx(firstDate, start);
         const endIdx = getDateIdx(firstDate, end);
@@ -67,7 +67,6 @@ class Chart extends Component {
         // console.log('Chart scenarios', scenarios)
         // console.log('Chart dataset', dataset)
         // console.log(stat)
-        quantileObj[stat] = {};
         for (let severity of severities) {
             // console.log(severity)
             quantileObj[stat][severity] = {};

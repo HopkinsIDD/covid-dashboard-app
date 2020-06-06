@@ -55,9 +55,10 @@ class Sliders extends Component {
     render() {
         const { stat, statThreshold, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
         const roundedStat = Math.ceil(statThreshold / 100) * 100;
+        const isDisabled = this.props.showConfBounds ? "disabled" : "";
         
         return (
-            <div className="slider-menu">
+            <div className={`slider-menu ${isDisabled}`}>
                 {/* Stat Threshold */}
                 <div className="param-header">THRESHOLD</div>
                 <div className="filter-label">
@@ -74,13 +75,14 @@ class Sliders extends Component {
                     step={100}
                     style={styles.Selector}
                     ref={ref => this.statInput = ref}
+                    disabled={isDisabled}
                     onChange={() => {this.handleStatChange(this.statInput.value)}}
                     onMouseDown={this.handleStatMouseEvent}
                     onMouseUp={this.handleStatMouseEvent}>
                 </input> 
                 <div className="slider-label-row slider-label" style={styles.Selector}>
-                    <p className="filter-label callout" style={styles.SliderLabel}>0</p>
-                    <p className="filter-label slider-max callout" style={styles.SliderLabel}>
+                    <p className="filter-label callout">0</p>
+                    <p className="filter-label slider-max callout">
                         {addCommas(seriesMax)}
                     </p>
                 </div>
@@ -100,25 +102,19 @@ class Sliders extends Component {
                     value={dateThresholdIdx}
                     style={styles.Selector}
                     ref={ref => this.dateInput = ref}
-                    onChange={
-                        () => {this.handleDateChange(this.dateInput.value)}
-                    }
+                    disabled={isDisabled}
+                    onChange={() => {this.handleDateChange(this.dateInput.value)}}
                     onMouseDown={this.handleDateMouseEvent}
                     onMouseUp={this.handleDateMouseEvent}>
                 </input>
                 <div className="slider-label-row slider-label" style={styles.Selector}>
-                    <p className="filter-label callout" style={styles.SliderLabel}>
+                    <p className="filter-label callout">
                         {getMonth(dateRange[0])}
                     </p>
-                    <p className="filter-label slider-max callout" style={styles.SliderLabel}>
+                    <p className="filter-label slider-max callout">
                         {getMonth(timeDay.offset(dateRange[1], -1))}
                     </p>
                 </div>
-
-                {/* <div className="filter-description">
-                    Slide over indicator value and day to see how likely daily&nbsp;
-                    {stat.name} will exceed a certain number by a given day.
-                </div> */}
             </div>
         )
     }
