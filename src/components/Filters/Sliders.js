@@ -55,9 +55,10 @@ class Sliders extends Component {
     render() {
         const { stat, statThreshold, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
         const roundedStat = Math.ceil(statThreshold / 100) * 100;
+        const isDisabled = this.props.showConfBounds ? "disabled" : "";
         
         return (
-            <div className="slider-menu">
+            <div className={`slider-menu ${isDisabled}`}>
                 {/* Stat Threshold */}
                 <div className="param-header">THRESHOLD</div>
                 <div className="filter-label">
@@ -74,6 +75,7 @@ class Sliders extends Component {
                     step={100}
                     style={styles.Selector}
                     ref={ref => this.statInput = ref}
+                    disabled={isDisabled}
                     onChange={() => {this.handleStatChange(this.statInput.value)}}
                     onMouseDown={this.handleStatMouseEvent}
                     onMouseUp={this.handleStatMouseEvent}>
@@ -100,6 +102,7 @@ class Sliders extends Component {
                     value={dateThresholdIdx}
                     style={styles.Selector}
                     ref={ref => this.dateInput = ref}
+                    disabled={isDisabled}
                     onChange={() => {this.handleDateChange(this.dateInput.value)}}
                     onMouseDown={this.handleDateMouseEvent}
                     onMouseUp={this.handleDateMouseEvent}>

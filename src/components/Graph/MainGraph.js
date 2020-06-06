@@ -342,7 +342,9 @@ class MainGraph extends Component {
                             different indicators such as hospitalizations and deaths,
                             as well as the scenario's potential severity level. Filter 
                             simulations down to curves within a specific range of R<sub>0</sub>. 
-                            Slide over threshold values and dates to determine
+                            You can also choose between exploring exceedence thresholds
+                            and displaying confidence bounds. To explore exceedence, 
+                            use the threshold sliders to change values and dates to determine
                             how likely a given indicator, such as hospitalizations, 
                             will exceed a certain number by a given date.
                         </div>
