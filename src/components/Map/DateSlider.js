@@ -66,10 +66,6 @@ class DateSlider extends Component {
               </p>
           </div>
         </div>
-        <div className="filter-description">
-          Slide to select a date for the geographic maps. 
-          Use right and left arrow keys to increase or decrease by day.
-        </div>
       </div>
     )
   }

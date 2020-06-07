@@ -27,6 +27,7 @@ html,body
   height: 100%;
   padding: 0px;
   overflow-x: hidden; 
+  scroll-behavior: smooth;
 }
 
 body {
@@ -60,7 +61,8 @@ h1, h2, h3, h4 {
   padding: 0% 5%;
   z-index: 10;
   position: sticky;
-  top: 0
+  top: 0;
+  height: 4.2rem;
 }
 
 .container {
@@ -72,6 +74,14 @@ h1, h2, h3, h4 {
   font-size: 16px;
   text-align: left;
   padding: 0 0 1rem;
+}
+
+.vis-content {
+  background-color: #fcfcfc;
+  width: 75%;
+  border: 5px solid white;
+  padding: 1rem;
+  margin: 0 auto 3rem auto;
 }
 
 .title-header {
@@ -88,6 +98,11 @@ h1, h2, h3, h4 {
   margin-top: 2rem;
 }
 
+.description-header {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+}
+
 .filter-description {
   font-size: 13px;
   max-width: 95%;
@@ -99,39 +114,9 @@ code {
     monospace;
 }
 
-.row {
-  flex-wrap: nowrap;
-  margin-right: 0px;
-  margin-left: 0px;
-}
-
-ul {
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-}
-
-li {
-  display: inline;
-  line-height: 2.8rem;
-}
-
 li a {
-  font-size: 18px;
-  color: white;
-  text-align: center;
   padding: 8px;
-  text-decoration: none;
-}
-
-a:hover {
-  text-decoration: underline;
-}
-
-.active {
-  color: white;
-  font-weight: bold;
-}
+} 
 
 .siteTitle {
   font-size: 1.8rem;
@@ -199,10 +184,15 @@ a:hover {
 
 ul {
   list-style-type: none;
+  padding: 10px 0 0 30px;
+}
+
+li {
+  margin-bottom: 10px;
 }
 
 .filters {
-  padding-top: 1rem;
+  padding-top: 4rem;
   margin-left: 1.4rem;
 }
 
@@ -218,13 +208,6 @@ ul {
 .dropdown-toggle::after {
   content: none;
 }
-
-.search-container {
-  background: #fefefe;
-  padding: 5rem 0 2rem 0;
-  min-height: 24rem;
-}
-
 .search-bar {
   font-size: 1.2rem;
   color: gray;
@@ -289,7 +272,6 @@ ul {
 .filter-label {
   font-size: 12px;
   margin-bottom: 0px;
-  margin-top: 3px;
 }
 
 .threshold-label {
@@ -387,8 +369,7 @@ ul {
 .param-header {
   color: #808080;
   font-size: 14px;
-  margin-top: 0.8rem;
-  margin-bottom: 0.25rem;
+  margin: 1rem 0 0.1rem;
 }
 
 .graph-wrapper {
@@ -563,45 +544,64 @@ input[type=range]::-moz-focus-outer {
   border: 0;
 }
 
+input[type=range]:disabled {
+  background: transparent;
+  cursor: not-allowed;
+}
+
+input[type=range]:disabled::-moz-range-thumb {
+  border: 1px solid #ffffff;
+  height: 18px;
+  width: 18px;
+  border-radius: 25px;
+  background: #d2d2d2;
+  cursor: not-allowed;
+}
+
+.disabled {
+  color: #9b9b9b;
+  cursor: not-allowed;
+}
+
 .tooltip {
   position: relative;
   display: inline-block;
-  opacity: 1;
-  z-index: 0;
   cursor: pointer;
+  color: #1890ff;
 }
 
-.tooltip-text {
-  visibility: hidden;
-  width: 120px;
-  background-color: black;
-  color: #fff;
-  text-align: left;
-  border-radius: 6px;
-  padding: 5px 0;
+.tooltip .tooltip-text {
+  width: 14rem;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.75);
+  border-radius: 5px;
+  padding: 0.5rem;
   position: absolute;
-  z-index: 1;
-  opacity: 0.7;
-  left: 200%;
+  left: -50px;
   bottom: 100%;
-  margin-left: -60px;
-  padding-left: 50%;
-  font-size: 12px;
-  pointer-events: none;
+  margin-left: -7.4rem;
+  margin-bottom: 0.5rem;
+  z-index: 1;
+  /* border: 1px solid rgba(0, 0, 0, 0.65); */
 }
 
-.tooltip:hover .tooltip-text {
-  visibility: visible;
+.tooltip-text::before {
+  content: '';
+  position: absolute;
+  display: block;    
+  width: 0px;        
+  left: 80%;
+  bottom: 0;
+  border: 10px solid transparent;
+  border-bottom: 0;
+  border-top: 10px solid rgba(0, 0, 0, 0.75);
+  transform: translate(-50%, calc(100% + 0px));
 }
 
 .chart-container {
   margin-top: 10rem;
   border: 1px solid red;
 }
-
-.chart {
-  /* border: 1px solid blue; */
-} 
 
 .chart-callout {
   display: block !important;
