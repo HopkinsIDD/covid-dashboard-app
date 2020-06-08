@@ -63,7 +63,7 @@ function parseDirectories(dir, geoids, scenarios, dates) {
 
         // parse by sim file
         for (let file of files) {
-            const severity = file.split('_')[0];
+            const severity = file.split('_')[1].split('-')[0];
             const filePath = scenarioDir + file;
             console.log(file)
 
