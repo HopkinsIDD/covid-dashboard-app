@@ -14,7 +14,6 @@ import { styles, margin, STATS, LEVELS } from '../../utils/constants';
 import { buildScenarios, returnSimsOverThreshold, getRange } from '../../utils/utils';
 import { utcParse, } from 'd3-time-format';
 import { timeDay } from 'd3-time';
-import { extent } from 'd3-array';
 
 const parseDate = utcParse('%Y-%m-%d');
 // const formatDate = timeFormat('%Y-%m-%d');
