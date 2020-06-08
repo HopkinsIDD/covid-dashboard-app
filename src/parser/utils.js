@@ -154,6 +154,29 @@ function aggregateByState(parsedObj, finalObj, states, geoids, scenarios, severi
     }
 }
 
+function returnR0(dir, scenario, severity, sim) {
+    // TODO: filename and structure will probably need to be changed
+
+    const zeros = '0'.repeat(9 - sim.toString().length);
+    const path = `src/store/model_parameters/`
+    const fileName = `${scenario}_${severity}-${zeros}${sim}.spar.csv`;
+
+    // return value of R0
+    try {
+        const data = fs.readFileSync(`${path}${fileName}`, 'UTF-8');
+        const lines = data.split(/\r?\n/);
+    
+        for (let line of lines) {
+            const lineArray = line.split(',');
+            if (lineArray[1] === 'R0') {
+                return parseFloat(parseFloat(lineArray[0]).toFixed(2));
+            }
+        }
+    } catch (err) {
+        console.error(err);
+    };
+}
+
 function calcReduceInt(fileLength) {
     // returns int a sim number must be divisible by
     // in order to be included in final dataset
@@ -249,6 +272,7 @@ module.exports = {
     notHeaderOrEmpty,
     returnFilesBySev,
     aggregateByState,
+    returnR0,
     calcReduceInt,
     reduceSims,
     writeToFile,
