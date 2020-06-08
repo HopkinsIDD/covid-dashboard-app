@@ -34,11 +34,6 @@ class Map extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        
-        // if (prevState.hoveredCounty !== this.state.hoveredCounty || prevState.countyIsHovered !== this.state.countyIsHovered) {
-        //     console.log('prevState', prevState.countyIsHovered, 'this.state', this.state.countyIsHovered)
-        //     console.log('prevState', prevState.hoveredCounty, 'this.state', this.state.hoveredCounty)
-        // }
         if (prevProps.countyBoundaries !== this.props.countyBoundaries ||
             prevProps.statsForCounty !== this.props.statsForCounty ||
             prevProps.scenario !== this.props.scenario) {
@@ -259,7 +254,7 @@ class Map extends Component {
                             strokeWidth='1'
                             strokeOpacity={0}
                             onMouseMove={this.handleMouseMove}
-                            onMouseEnter={() => console.log('mouseenter')}
+                            // onMouseEnter={() => console.log('mouseenter')}
                             onMouseLeave={this.handleMouseMove}
                         /> 
                         {this.state.countyBoundaries.features && this.drawCounties()}
