@@ -112,7 +112,6 @@ class Map extends Component {
 	    const ramp = scaleLinear().domain([ 0, this.state.maxValNorm ]).range([this.props.lowColor, this.props.highColor])
 
         const counties = this.state.countyBoundaries.features.map((d,i) => {
-            // if (this.state.hoveredCounty === d.properties.geoid) console.log(this.state.hoveredCounty === d.properties.geoid, this.state.hoveredCounty, d.properties.geoid, d.properties.name)
             // console.log(this.props.stat, d.properties[this.props.stat][this.props.dateIdx])
             return (
                 <Tooltip
