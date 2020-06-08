@@ -173,6 +173,11 @@ class Map extends Component {
     }, 10)
 
     handleCountyLeave = _.debounce((feature) => {
+        const tooltips = document.querySelectorAll('.ant-tooltip')
+        tooltips.forEach(tooltip => {
+            // console.log(tooltip)
+            tooltip.style.visibility = "hidden"
+        })
         // console.log('LEFT', feature.properties.name, feature.properties.geoid)
         // console.log('countyIsHovered', this.state.countyIsHovered, 'hoveredCounty', this.state.hoveredCounty)
         if (this.state.hoveredCounty === feature.properties.geoid) {

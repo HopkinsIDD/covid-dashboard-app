@@ -294,7 +294,6 @@ class Chart extends Component {
 
     handleHighlightEnter = _.debounce((event, severity, key, index) => {
         // console.log('chart highlight enter')
-        
         if (!this.state.rectIsHovered) {
             // console.log('rect not hovered')
             // event.stopPropagation();
