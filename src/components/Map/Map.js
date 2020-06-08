@@ -120,9 +120,8 @@ class Map extends Component {
                     title={this.state.tooltipText}
                     visible={this.state.hoveredCounty === d.properties.geoid}
                     data-html="true"
-                    onVisibleChange={(e) => console.log('visibility change', e)}
+                    // onVisibleChange={(e) => console.log('visibility change', e)}
                     destroyTooltipOnHide={true}
-                    // getPopupContainer={(t) => console.log(t)}
                 >
                     <path
                         key={`county-boundary-${i}`}
@@ -137,10 +136,6 @@ class Map extends Component {
                         className='counties'
                         onMouseEnter={() => this.handleCountyEnter(d)}
                         onMouseLeave={() => this.handleCountyLeave(d)}
-                        onMouseDown={(e) => console.log(d.properties.name, 'MOUSEDOWN', e)}
-                        onMouseUp={() => console.log(d.properties.name, 'MOUSEUP')}
-                        onClick={() => console.log(d.properties.name, 'CLICK')}
-                        onFocus={() => console.log(d.properties.name, 'FOCUS')}
                     />
                 </Tooltip>
             )})
