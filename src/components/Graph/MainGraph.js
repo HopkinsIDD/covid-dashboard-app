@@ -13,7 +13,8 @@ import Sliders from '../Filters/Sliders';
 import { styles, margin, STATS, LEVELS } from '../../utils/constants';
 import { buildScenarios, returnSimsOverThreshold, getRange } from '../../utils/utils';
 import { utcParse, } from 'd3-time-format';
-import { timeDay } from 'd3-time'
+import { timeDay } from 'd3-time';
+import { extent } from 'd3-array';
 
 const parseDate = utcParse('%Y-%m-%d');
 // const formatDate = timeFormat('%Y-%m-%d');
@@ -78,8 +79,8 @@ class MainGraph extends Component {
             const { dataset } = this.props;
             const { stat, severityList, scenarioList, r0 } = this.state;
             // filter series and dates by dateRange
-            const idxMin = timeDay.count(this.state.dates[0], this.state.dateRange[0]);
-            const idxMax = timeDay.count(this.state.dates[0], this.state.dateRange[1]);
+            const idxMin = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[0]);
+            const idxMax = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[1]);
             const filteredDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
             const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
             const dateThreshold = filteredDates[dateThresholdIdx];
