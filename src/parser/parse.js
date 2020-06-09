@@ -2,7 +2,7 @@ const fs = require('fs');
 const utils = require('./utils');
 const constants = require('./constants');
 
-function parseSim(path, result, geoids, scenario, sev, getIdx) {
+function parseSim(path, result, geoids, scenario, sev, sim, getIdx) {
     // returns Object of Array series of sim values by geoID
     // getIdx: Obj index mapping of selected parameters
     // reduceInt: int that sim must be divisible by to be included in final set
@@ -13,7 +13,7 @@ function parseSim(path, result, geoids, scenario, sev, getIdx) {
     
         for (let line of lines) {
             const geoid = line.split(',')[getIdx['geoid']];
-            const sim = line.split(',')[getIdx['sim_num']];
+            // const sim = line.split(',')[getIdx['sim_num']];
             
             // only include specified geoid
             if (geoids.includes(geoid) && utils.notHeaderOrEmpty(line)) {
@@ -64,11 +64,12 @@ function parseDirectories(dir, geoids, scenarios, dates) {
         // parse by sim file
         for (let file of files) {
             const severity = file.split('_')[1].split('-')[0];
+            const sim = parseInt(file.split('-')[1].split('.')[0]);
             const filePath = scenarioDir + file;
             console.log(file)
 
             parseSim(
-                filePath, result, geoids, scenario, severity, getIdx)
+                filePath, result, geoids, scenario, severity, sim, getIdx)
         }
     };
 
