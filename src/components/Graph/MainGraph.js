@@ -89,7 +89,8 @@ class MainGraph extends Component {
 
             for (let i = 0; i < scenarioList.length; i++) {
                 const copy = Array.from(
-                    dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
+                    dataset[scenarioList[i].key][severityList[i].key][stat.key].sims.slice(0, 20)
+                    ); 
 
                 // filter down sims on reproductive number
                 const newSeries = copy.filter(s => { return (s.r0 > r0[0] && s.r0 < r0[1]) });
@@ -145,7 +146,7 @@ class MainGraph extends Component {
         // instantiate scenarios, dates, series, severities
         const SCENARIOS = buildScenarios(dataset);  
         const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
-        const series = dataset[SCENARIOS[0].key][severity.key][stat.key].sims;
+        const series = dataset[SCENARIOS[0].key][severity.key][stat.key].sims.slice(0, 20);
         const seriesPeaks = series.map(sim => sim.max);
         const [seriesMin, seriesMax] = getRange(seriesPeaks);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
