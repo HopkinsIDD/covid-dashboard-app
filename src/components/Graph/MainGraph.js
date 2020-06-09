@@ -41,7 +41,9 @@ class MainGraph extends Component {
             dateThreshold: new Date(),
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             r0: [0, 4],
+            r0active: [0, 4],
             simNum: '150',
+            displaySims: 50,
             percExceedenceList: [],
             showConfBounds: false,
             confBounds: {},
@@ -68,7 +70,7 @@ class MainGraph extends Component {
             this.state.scenarioList !== prevState.scenarioList ||
             this.state.severityList !== prevState.severityList ||
             this.state.dateRange !== prevState.dateRange ||
-            this.state.r0 !== prevState.r0) {
+            this.state.r0active !== prevState.r0active) {
 
             const filteredSeriesList = []
             const percExceedenceList = []
@@ -76,7 +78,7 @@ class MainGraph extends Component {
             let brushSeries
             
             const { dataset } = this.props;
-            const { stat, severityList, scenarioList, r0 } = this.state;
+            const { stat, severityList, scenarioList, r0active } = this.state;
             // filter series and dates by dateRange
             const idxMin = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[0]);
             const idxMax = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[1]);
@@ -89,11 +91,13 @@ class MainGraph extends Component {
 
             for (let i = 0; i < scenarioList.length; i++) {
                 const copy = Array.from(
-                    dataset[scenarioList[i].key][severityList[i].key][stat.key].sims.slice(0, 20)
-                    ); 
+                    dataset[scenarioList[i].key][severityList[i].key][stat.key]
+                    .sims.slice(0, this.state.displaySims)); 
 
                 // filter down sims on reproductive number
-                const newSeries = copy.filter(s => { return (s.r0 > r0[0] && s.r0 < r0[1]) });
+                const r0min = r0active[0], r0max = r0active[1];
+                const newSeries = copy.filter(s => { 
+                    return (s.r0 > r0min && s.r0 < r0max)});
                     
                 const filteredSeriesForStatThreshold = newSeries.map( s => {
                     const newS = {...s}
@@ -146,7 +150,8 @@ class MainGraph extends Component {
         // instantiate scenarios, dates, series, severities
         const SCENARIOS = buildScenarios(dataset);  
         const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
-        const series = dataset[SCENARIOS[0].key][severity.key][stat.key].sims.slice(0, 20);
+        const series = dataset[SCENARIOS[0].key][severity.key][stat.key]
+            .sims.slice(0, this.state.displaySims);
         const seriesPeaks = series.map(sim => sim.max);
         const [seriesMin, seriesMax] = getRange(seriesPeaks);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
@@ -172,6 +177,8 @@ class MainGraph extends Component {
         // instantiate confidence bounds
         const confBounds = dataset[SCENARIOS[0].key][severity.key][stat.key].conf;
         const filteredConfBounds = confBounds.slice(idxMin, idxMax)
+        const r0array = dataset[SCENARIOS[0].key][severity.key][stat.key]
+            .sims.map(sim => sim.r0);
 
         this.setState({
             SCENARIOS,
@@ -187,7 +194,7 @@ class MainGraph extends Component {
             percExceedenceList: [percExceedence],
             confBoundsList: [filteredConfBounds],
             showConfBounds: false,
-            r0: [0, 4]
+            r0: [Math.min.apply(null, r0array), Math.max.apply(null, r0array)]
         }, () => {
             this.setState({dataLoaded: true});
         })
@@ -198,7 +205,6 @@ class MainGraph extends Component {
         this.setState({
             stat: i, 
             yAxisLabel,
-            r0: [0, 4]
         })
     };
 
@@ -221,7 +227,6 @@ class MainGraph extends Component {
             scenarioList: newScenarios,
             scenarioClickCounter: scenarioClkCntr,
             severityList: newSevs, 
-            r0: [0, 4]
         })        
     };
 
@@ -234,7 +239,6 @@ class MainGraph extends Component {
         })
         this.setState({
             severityList: newSevList, 
-            r0: [0, 4],
             animateTransition: true
         });
     };
@@ -244,7 +248,7 @@ class MainGraph extends Component {
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleR0Change = (e) => {
-        this.setState({ r0: e, animateTransition: false })
+        this.setState({ r0active: e, animateTransition: false })
     };
 
     handleStatSliderChange = (thresh) => {
@@ -415,6 +419,7 @@ class MainGraph extends Component {
                             onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave} />
                         <R0
                             r0={this.state.r0}
+                            r0active={this.state.r0active}
                             onR0Change={this.handleR0Change} />
                         <Switch
                             showConfBounds={this.state.showConfBounds}

@@ -8,13 +8,14 @@ class R0 extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showTooltip: false
+            showTooltip: false,
+            step: 0.1
         }
     }
     
     handleChange = (e) => {
         // prevent user from selecting no range
-        if (e[1] - e[0] < 1) {return;}
+        if (e[1] - e[0] < this.state.step) return
         this.props.onR0Change(e);
     }
 
@@ -22,8 +23,17 @@ class R0 extends Component {
         this.setState({showTooltip: !this.state.showTooltip})
     }
 
+    showMarks(min, max) {
+        return {
+            [min]: {style: styles.Marks, label: [min]}, 
+            [max]: {style: styles.Marks, label: [max]}
+        }
+    }
+ 
     render() {
-        const { r0 } = this.props;
+        const { r0, r0active } = this.props;
+        const min = r0[0], max = r0[1];
+        const activeMin = r0active[0], activeMax = r0active[1];
         return (
             <div>
                 <div className="param-header">REPRODUCTION NUMBER 
@@ -46,19 +56,21 @@ class R0 extends Component {
                     </TooltipHandler>
                 </div>
                 <div className="filter-label">
-                    <span className='callout'>R<sub>0</sub> between {r0[0]} - {r0[1]}</span>
+                    <span className='callout'>
+                        R<sub>0</sub> between {activeMin} - {activeMax}
+                    </span>
                 </div>
                 <Slider
                     style={styles.Selector}
                     range
-                    marks={styles.MarksR0}
-                    min={0}
-                    max={4} 
-                    step={0.5}
+                    marks={this.showMarks(min, max)}
+                    min={min}
+                    max={max} 
+                    step={this.state.step}
                     included={true}
                     tooltipVisible={false}
                     defaultValue={r0}
-                    value={r0}
+                    value={r0active}
                     onChange={this.handleChange}
                 />
             </div>

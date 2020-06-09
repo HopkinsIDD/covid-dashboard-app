@@ -59,27 +59,12 @@ export const styles = {
     UploadSwitch: {
         paddingLeft: '12px'
     },
-    MarksR0: {
-        0: {
-            style: {
-                fontFamily: 'Cousine, monospace',
-                fontSize: '12px',
-                marginTop: '3px',
-                color: 'rgba(0, 0, 0, 0.65)'
-            },
-            label: 0,
-            }, 
-        4: {
-            style: {
-                fontFamily: 'Cousine, monospace',
-                fontSize: '12px',
-                marginTop: '3px',
-                color: 'rgba(0, 0, 0, 0.65)'
-            },
-            label: 4,
-            }
+    Marks: {
+        fontFamily: 'Cousine, monospace',
+        fontSize: '12px',
+        marginTop: '3px',
+        color: 'rgba(0, 0, 0, 0.65)'
     }
-    
 };
 
 export const STATS = [

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { geoConicEqualArea, geoPath } from 'd3-geo';
 import { scaleLinear } from 'd3-scale';
-import { max, thresholdFreedmanDiaconis } from 'd3-array';
+import { max } from 'd3-array';
 import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
@@ -43,7 +43,7 @@ class Map extends Component {
         }
     }
 
-    componentDidUnmount() {
+    componentWillUnmount() {
         window.removeEventListener('scroll')
     }
 
