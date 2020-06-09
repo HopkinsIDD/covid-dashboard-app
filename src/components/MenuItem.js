@@ -3,6 +3,7 @@ import { ReactComponent as GraphLogo } from '../assets/graph.svg';
 import { ReactComponent as ChartLogo } from '../assets/chart.svg';
 import { ReactComponent as MapLogo } from '../assets/globe.svg';
 import { ReactComponent as MethodsLogo } from '../assets/book.svg';
+import { ReactComponent as AboutLogo } from '../assets/info.svg';
 
 class MenuItem extends Component {
 
@@ -33,7 +34,7 @@ class MenuItem extends Component {
       if (this.props.menuItem === 2) {
         return( <MapLogo 
           height={this.props.height}
-          style={{ paddingTop: '10px'}}
+          style={{ paddingTop: '10px', paddingRight: '5px'}}
           className={this.props.active ? this.props.activeClass : this.props.hoverClass}
           onClick={() => this.handleClickEvent(this.props.menuItem)}
         />
@@ -48,7 +49,15 @@ class MenuItem extends Component {
         />
         )
       }
-
+      if (this.props.menuItem === 4) {
+        return( <AboutLogo 
+          height={this.props.height}
+          style={{ paddingTop: '10px'}}
+          className={this.props.active ? this.props.activeClass : this.props.hoverClass}
+          onClick={() => this.handleClickEvent(this.props.menuItem)}
+        />
+        )
+      }
   }
 }
 

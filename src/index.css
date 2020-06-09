@@ -149,6 +149,7 @@ li a {
 
 .tick {
   font-family: 'PT Sans', sans-serif;
+  font-size: 12px;
 }
 
 .nav-subtitle {
@@ -270,7 +271,7 @@ li {
 }
 
 .filter-label {
-  font-size: 12px;
+  font-size: 13px;
   margin-bottom: 0px;
 }
 
@@ -354,6 +355,7 @@ li {
 
 .map-title {
   /* width: 80px; */
+  font-size: 1rem;
   padding: 0 0 15px 5px;
   text-align: left;
 }
@@ -671,6 +673,10 @@ input[type=range]:disabled::-moz-range-thumb {
   margin-bottom: 10vh;
 }
 
+.footer {
+  color: #dddddd;
+}
+
 /* CSS overides from libraries */
 .selection {
   stroke-opacity: 0;
@@ -727,3 +733,4 @@ input[type=range]:disabled::-moz-range-thumb {
 .antd-slider:hover {
   background-color: #3885fa;
 }
+
