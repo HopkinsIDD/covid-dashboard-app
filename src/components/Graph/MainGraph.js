@@ -10,7 +10,7 @@ import R0 from '../Filters/R0';
 import SeverityContainer from '../Filters/SeverityContainer'
 import Sliders from '../Filters/Sliders';
 
-import { styles, margin, STATS, LEVELS } from '../../utils/constants';
+import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
 import { buildScenarios, returnSimsOverThreshold, getRange } from '../../utils/utils';
 import { utcParse, } from 'd3-time-format';
 import { timeDay } from 'd3-time';
@@ -43,7 +43,6 @@ class MainGraph extends Component {
             r0: [0, 4],
             r0active: [0, 4],
             simNum: '150',
-            displaySims: 50,
             percExceedenceList: [],
             showConfBounds: false,
             confBounds: {},
@@ -90,22 +89,20 @@ class MainGraph extends Component {
             let sliderMax = 0
 
             for (let i = 0; i < scenarioList.length; i++) {
-                const copy = Array.from(
+                const newSeries = Array.from(
                     dataset[scenarioList[i].key][severityList[i].key][stat.key]
-                    .sims.slice(0, this.state.displaySims)); 
+                    .sims.slice(0, numDisplaySims)); 
 
-                // filter down sims on reproductive number
-                const r0min = r0active[0], r0max = r0active[1];
-                const newSeries = copy.filter(s => { 
-                    return (s.r0 > r0min && s.r0 < r0max)});
-                    
+                // setting default smart threshold based on seriesMin 
                 const filteredSeriesForStatThreshold = newSeries.map( s => {
                     const newS = {...s}
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 });
+                // array of all peaks in series
                 const seriesPeaks = filteredSeriesForStatThreshold.map(sim => sim.max);
                 const [seriesMin, seriesMax] = getRange(seriesPeaks);
+                // ensures side by side y-scale reflect both series
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
                 // default smart value for statThreshold calculation
@@ -113,17 +110,26 @@ class MainGraph extends Component {
 
                 const simsOver = returnSimsOverThreshold(
                     newSeries, statThreshold, this.state.allTimeDates, dateThreshold);
+                // brush visual only based on first scenario, for simplicity
                 if (i === 0) brushSeries = newSeries
 
-                const percExceedence = simsOver / newSeries.length;
-                percExceedenceList.push(percExceedence)
-
+                // filtering based on date
                 const filteredSeries = newSeries.map( s => { const newS = {...s}
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 })
-                filteredSeriesList.push(filteredSeries)
                 
+                // filter down sims on r0
+                const r0min = r0active[0], r0max = r0active[1];
+                const finalSeries = filteredSeries.filter(s => { 
+                    return (s.r0 > r0min && s.r0 < r0max)});
+
+                filteredSeriesList.push(finalSeries)
+
+                // TODO: may be problematic
+                const percExceedence = simsOver / finalSeries.length;
+                percExceedenceList.push(percExceedence)
+
                 const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
                 // ensure stat has confidence bounds array
                 if (confBounds && confBounds.length > 0) {
@@ -151,7 +157,7 @@ class MainGraph extends Component {
         const SCENARIOS = buildScenarios(dataset);  
         const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
         const series = dataset[SCENARIOS[0].key][severity.key][stat.key]
-            .sims.slice(0, this.state.displaySims);
+            .sims.slice(0, numDisplaySims);
         const seriesPeaks = series.map(sim => sim.max);
         const [seriesMin, seriesMax] = getRange(seriesPeaks);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;

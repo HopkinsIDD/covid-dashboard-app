@@ -33,6 +33,7 @@ class MainContainer extends Component {
         this.updateGraphDimensions();
         this.updateMapContainerDimensions();
         
+        console.log('dataset', dataset)
         this.setState({dataset}, () => {
             this.setState({dataLoaded: true});
         })
