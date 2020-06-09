@@ -183,8 +183,11 @@ class MainGraph extends Component {
         // instantiate confidence bounds
         const confBounds = dataset[SCENARIOS[0].key][severity.key][stat.key].conf;
         const filteredConfBounds = confBounds.slice(idxMin, idxMax)
+
+        // instantiate min and max of r0 based on dataset
         const r0array = dataset[SCENARIOS[0].key][severity.key][stat.key]
             .sims.map(sim => sim.r0);
+        const r0range = [Math.min.apply(null, r0array), Math.max.apply(null, r0array)];
 
         this.setState({
             SCENARIOS,
@@ -200,7 +203,8 @@ class MainGraph extends Component {
             percExceedenceList: [percExceedence],
             confBoundsList: [filteredConfBounds],
             showConfBounds: false,
-            r0: [Math.min.apply(null, r0array), Math.max.apply(null, r0array)]
+            r0: r0range,
+            r0active: r0range
         }, () => {
             this.setState({dataLoaded: true});
         })
