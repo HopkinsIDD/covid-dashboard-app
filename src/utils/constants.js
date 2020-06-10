@@ -53,8 +53,11 @@ export const styles = {
         width: '80%'
     },
     Switch: {
-        marginTop: '16px',
-        paddingLeft: '12px',
+        paddingLeft: '8px', 
+        paddingRight: '8px', 
+        paddingTop: '5px', 
+        lineHeight: '1.2rem', 
+        height: '50px'
     },
     UploadSwitch: {
         paddingLeft: '12px'
