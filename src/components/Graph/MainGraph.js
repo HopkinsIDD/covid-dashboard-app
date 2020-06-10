@@ -130,7 +130,7 @@ class MainGraph extends Component {
                 })
                 
                 filteredSeriesList.push(filteredSeries)
-                // console.log('update series', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
+                console.log('on brush change', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
 
                 // TODO: may be problematic
                 const percExceedence = simsOver / filteredSeries.length;
