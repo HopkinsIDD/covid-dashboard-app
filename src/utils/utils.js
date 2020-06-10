@@ -26,26 +26,26 @@ export function buildScenarios(dataset) {
   return scenarioArray;
 }
 
-export function filterR0(dataset, scenarios, stat, severityList, r0selected) {
-  // Return series List after filtering sims down based on selected R0
+// export function filterR0(dataset, scenarios, stat, severityList, r0selected) {
+//   // Return series List after filtering sims down based on selected R0
 
-  const seriesList = []
+//   const seriesList = []
 
-  for (let i = 0; i < scenarios.length; i++) {
-      const copy = Array.from(
-          dataset[scenarios[i].key][severityList[i].key][stat.key].sims);
+//   for (let i = 0; i < scenarios.length; i++) {
+//       const copy = Array.from(
+//           dataset[scenarios[i].key][severityList[i].key][stat.key].sims);
 
-      // filter down sims on r0
-      const r0min = r0selected[0], r0max = r0selected[1];
-      const series = copy.filter(s => { 
-          return (s.r0 > r0min && s.r0 < r0max)}).slice(0, numDisplaySims);
+//       // filter down sims on r0
+//       const r0min = r0selected[0], r0max = r0selected[1];
+//       const series = copy.filter(s => { 
+//           return (s.r0 > r0min && s.r0 < r0max)}).slice(0, numDisplaySims);
 
-      // console.log('r0 series', series.map(sim => {return `${sim.name}: ${sim.r0}`}))
+//       console.log('on r0 filter', series.map(sim => {return `${sim.name}: ${sim.r0}`}))
 
-      seriesList.push(series)
-  }
-  return seriesList
-}
+//       seriesList.push(series)
+//   }
+//   return seriesList
+// }
 
 export function returnSimsOverThreshold(series, statThreshold, dates, dateThreshold) {
   // Marks which simulations in a series are above threshold given stat and date

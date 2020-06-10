@@ -65,17 +65,11 @@ class MainGraph extends Component {
             this.initializeGraph(dataset, this.state.stat, this.state.severity)
         }
 
-        if (this.state.r0selected !== prevState.r0selected) {
-            const { scenarioList, stat, severityList, r0selected } = this.state;
-            const seriesList = filterR0(
-                dataset, scenarioList, stat, severityList, r0selected);
-            this.setState({seriesList})
-        }
-
         if (this.state.stat !== prevState.stat ||
             this.state.scenarioList !== prevState.scenarioList ||
             this.state.severityList !== prevState.severityList ||
-            this.state.dateRange !== prevState.dateRange) {
+            this.state.dateRange !== prevState.dateRange ||
+            this.state.r0selected !== prevState.r0selected) {
 
             const filteredSeriesList = []
             const percExceedenceList = []
@@ -98,9 +92,12 @@ class MainGraph extends Component {
                 // filter down to the current r0selected range and THEN filter to numDisplaySims
                 const copy = Array.from(
                     dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
+
+                // filter down sims on r0
                 const r0min = r0selected[0], r0max = r0selected[1];
                 const series = copy.filter(s => { 
-                    return (s.r0 > r0min && s.r0 < r0max)}).slice(0, numDisplaySims);
+                    return (s.r0 > r0min && s.r0 < r0max)})
+                    .slice(0, numDisplaySims);
              
                 // setting default smart threshold based on seriesMin 
                 const filteredSeriesForStatThreshold = series.map( s => {
@@ -130,7 +127,7 @@ class MainGraph extends Component {
                 })
                 
                 filteredSeriesList.push(filteredSeries)
-                // console.log('update series', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
+                // console.log('on brush change', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
 
                 // TODO: may be problematic
                 const percExceedence = simsOver / filteredSeries.length;
@@ -265,7 +262,7 @@ class MainGraph extends Component {
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleR0Change = (e) => {
-        this.setState({ r0selected: e, animateTransition: false })
+        this.setState({ r0selected: e, animateTransition: true })
     };
 
     handleStatSliderChange = (thresh) => {
