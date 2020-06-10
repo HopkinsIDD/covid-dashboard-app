@@ -3,7 +3,7 @@
 // name: display name for visualization
 
 // how many sim curves should be displayed in Graph
-export const numDisplaySims = 50;  
+export const numDisplaySims = 5;  
 export const margin = { yAxis: 80, top: 10, right: 10, bottom: 30, left: 10, chartTop: 15 };
 export const red = '#d31d30';
 export const green = '#4ddaba';

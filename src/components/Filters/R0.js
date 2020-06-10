@@ -31,9 +31,9 @@ class R0 extends Component {
     }
  
     render() {
-        const { r0, r0active } = this.props;
-        const min = r0[0], max = r0[1];
-        const activeMin = r0active[0], activeMax = r0active[1];
+        const { r0full, r0selected } = this.props;
+        const min = r0full[0], max = r0full[1];
+        const activeMin = r0selected[0], activeMax = r0selected[1];
         return (
             <div>
                 <div className="param-header">REPRODUCTION NUMBER 
@@ -69,8 +69,8 @@ class R0 extends Component {
                     step={this.state.step}
                     included={true}
                     tooltipVisible={false}
-                    defaultValue={r0}
-                    value={r0active}
+                    defaultValue={r0full}
+                    value={r0selected}
                     onChange={this.handleChange}
                 />
             </div>

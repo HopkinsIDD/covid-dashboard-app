@@ -2,11 +2,12 @@ import React from 'react';
 import { addCommas, getReadableDate } from '../../utils/utils.js';
 
 function ThresholdLabel(props) {
+    const { r0full, r0selected } = props;
     const chance = Math.round(100 * props.percExceedence);
     const val = addCommas(Math.ceil(props.statThreshold / 100) * 100);
     const date = getReadableDate(props.dateThreshold);
 
-    if (props.r0.includes(0) && props.r0.includes(4)) {
+    if (r0selected[0] === r0full[0] && r0selected[1] === r0full[1] ) {
         return (
             <p className={props.classProps}>
                 <span className={props.statSliderActive || props.dateSliderActive ? 'underline-active' : 'bold underline'}>{chance}%</span>
