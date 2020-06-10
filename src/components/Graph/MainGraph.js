@@ -11,7 +11,7 @@ import SeverityContainer from '../Filters/SeverityContainer'
 import Sliders from '../Filters/Sliders';
 
 import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
-import { buildScenarios, filterR0, returnSimsOverThreshold, getRange } from '../../utils/utils';
+import { buildScenarios, returnSimsOverThreshold, getRange } from '../../utils/utils';
 import { utcParse, } from 'd3-time-format';
 import { timeDay } from 'd3-time';
 
@@ -93,7 +93,6 @@ class MainGraph extends Component {
                 const copy = Array.from(
                     dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
 
-                // filter down sims on r0
                 const r0min = r0selected[0], r0max = r0selected[1];
                 const series = copy.filter(s => { 
                     return (s.r0 > r0min && s.r0 < r0max)})
@@ -208,7 +207,7 @@ class MainGraph extends Component {
             confBoundsList: [filteredConfBounds],
             showConfBounds: false,
             r0full,
-            r0selected: r0full
+            r0selected: [2.2, 2.4]
         }, () => {
             this.setState({dataLoaded: true});
         })
