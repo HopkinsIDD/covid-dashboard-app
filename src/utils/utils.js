@@ -40,6 +40,8 @@ export function filterR0(dataset, scenarios, stat, severityList, r0selected) {
       const series = copy.filter(s => { 
           return (s.r0 > r0min && s.r0 < r0max)}).slice(0, numDisplaySims);
 
+      // console.log('r0 series', series.map(sim => {return `${sim.name}: ${sim.r0}`}))
+
       seriesList.push(series)
   }
   return seriesList

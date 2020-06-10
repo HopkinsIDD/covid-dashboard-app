@@ -83,7 +83,7 @@ class MainGraph extends Component {
             let brushSeries
             
             const { dataset } = this.props;
-            const { stat, severityList, scenarioList } = this.state;
+            const { stat, severityList, scenarioList, r0selected } = this.state;
             // filter series and dates by dateRange
             const idxMin = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[0]);
             const idxMax = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[1]);
@@ -95,12 +95,15 @@ class MainGraph extends Component {
             let sliderMax = 0
 
             for (let i = 0; i < scenarioList.length; i++) {
-                const newSeries = Array.from(
-                    dataset[scenarioList[i].key][severityList[i].key][stat.key]
-                    .sims.slice(0, numDisplaySims)); 
-
+                // filter down to the current r0selected range and THEN filter to numDisplaySims
+                const copy = Array.from(
+                    dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
+                const r0min = r0selected[0], r0max = r0selected[1];
+                const series = copy.filter(s => { 
+                    return (s.r0 > r0min && s.r0 < r0max)}).slice(0, numDisplaySims);
+             
                 // setting default smart threshold based on seriesMin 
-                const filteredSeriesForStatThreshold = newSeries.map( s => {
+                const filteredSeriesForStatThreshold = series.map( s => {
                     const newS = {...s}
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
@@ -115,19 +118,19 @@ class MainGraph extends Component {
                 if (i === 0) statThreshold = seriesMin;
 
                 const simsOver = returnSimsOverThreshold(
-                    newSeries, statThreshold, this.state.allTimeDates, dateThreshold);
+                    series, statThreshold, this.state.allTimeDates, dateThreshold);
                 // brush visual only based on first scenario, for simplicity
-                if (i === 0) brushSeries = newSeries
+                if (i === 0) brushSeries = series
 
                 // filtering based on date
                 // only dateRange change needs this ---> 
-                const filteredSeries = newSeries.map( s => { const newS = {...s}
+                const filteredSeries = series.map( s => { const newS = {...s}
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 })
                 
                 filteredSeriesList.push(filteredSeries)
-                console.log('filteredSeries', filteredSeries.map(sim => sim.name))
+                // console.log('update series', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
 
                 // TODO: may be problematic
                 const percExceedence = simsOver / filteredSeries.length;
@@ -183,6 +186,7 @@ class MainGraph extends Component {
             newS.vals = s.vals.slice(idxMin, idxMax)
             return newS
         })
+        // console.log('initialize series', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
         // instantiate confidence bounds
         const confBounds = dataset[SCENARIOS[0].key][severity.key][stat.key].conf;
         const filteredConfBounds = confBounds.slice(idxMin, idxMax)
