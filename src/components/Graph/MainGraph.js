@@ -39,7 +39,7 @@ class MainGraph extends Component {
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: new Date(),
-            dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
+            dateRange: [parseDate('2020-03-01'), parseDate('2020-07-27')],
             r0full: [0, 4],
             r0selected: [0, 4],
             simNum: '150',
