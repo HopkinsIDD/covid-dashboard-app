@@ -18,6 +18,7 @@ export const colors = {
     gray: '#9b9b9b',
     lightGray: '#d0d0d0',
     graphBkgd: '#fcfcfc',
+    chartBkgd: '#f0f2f5',
 
     // Names below are pulled from https://www.colorhexa.com. Duplicates are incremented
     verySoftCyan: '#b6f5e7',
