@@ -52,14 +52,14 @@ export const styles = {
     Selector: {
         width: '80%'
     },
-    Switch: {
+    Radio: {
         paddingLeft: '8px', 
         paddingRight: '8px', 
         paddingTop: '5px', 
         lineHeight: '1.2rem', 
         height: '50px'
     },
-    UploadSwitch: {
+    Switch: {
         paddingLeft: '12px'
     },
     MarksR0: {

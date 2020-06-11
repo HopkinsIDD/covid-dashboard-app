@@ -5,7 +5,7 @@ import GraphContainer from './GraphContainer';
 import Brush from '../Filters/Brush';
 import Scenarios from '../Filters/Scenarios';
 import Indicators from '../Filters/Indicators';
-import Switch from '../Filters/Switch';
+import ModeToggle from '../Filters/ModeToggle';
 import R0 from '../Filters/R0';
 import SeverityContainer from '../Filters/SeverityContainer'
 import Sliders from '../Filters/Sliders';
@@ -415,7 +415,7 @@ class MainGraph extends Component {
                         <R0
                             r0={this.state.r0}
                             onR0Change={this.handleR0Change} />
-                        <Switch
+                        <ModeToggle
                             showConfBounds={this.state.showConfBounds}
                             onConfClick={this.handleConfClick} /> 
                         <Sliders 
