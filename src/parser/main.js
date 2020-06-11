@@ -91,42 +91,7 @@ function buildDataset(dir, geoids) {
 }
 
 const dir = 'src/store/sims/';
+const geoids = [].concat(constants.geoidsCA, constants.geoidsNY);
 
-// all CA and NY counties 
-const geoids = [
-    '06001', '06003', '06005', '06007', '06009', '06011', '06013', '06015', '06017', 
-    '06019', '06021', '06023', '06025', '06027', '06029', '06031', '06033', '06035', 
-    '06037', '06039', '06041', '06043', '06045', '06047', '06049', '06051', '06053', 
-    '06055', '06057', '06059', '06061', '06063', '06065', '06067', '06069', '06071', 
-    '06073', '06075', '06077', '06079', '06081', '06083', '06085', '06087', '06089', 
-    '06091', '06093', '06095', '06097', '06099', '06101', '06103', '06105', '06107', 
-    '06109', '06111', '06113', '06115',
-    '36001', '36003', '36005', '36007', '36009', '36011', '36013', '36015', '36017', 
-    '36019', '36021', '36023', '36025', '36027', '36029', '36031', '36033', '36035', 
-    '36037', '36039', '36041', '36043', '36045', '36047', '36049', '36051', '36053', 
-    '36055', '36057', '36059', '36061', '36063', '36065', '36067', '36069', '36071', 
-    '36073', '36075', '36077', '36079', '36081', '36083', '36085', '36087', '36089', 
-    '36091', '36093', '36095', '36097', '36099', '36101', '36103', '36105', '36107', 
-    '36109', '36111', '36113', '36115', '36117', '36119', '36121', '36123']
-
-// const geoids = ['06085', '06095', '36001', '36003'];
 // TODO: geoids should default to all unless specified for testing
 buildDataset(dir, geoids)
-
-
-// build expectedParseSim.json for Jest Test
-// const filePath = 'src/parser/fixtures/Scenario_A/high_death-1.csv';
-// const scenario = 'Scenario_A';
-// const geoids = ['06085', '06019', '36005', '36081'];
-// const dates = ['2020-05-05', '2020-05-06', '2020-05-07', '2020-05-08', '2020-05-09'];
-// let result = utils.initObj(geoids, [scenario], dates);
-
-// const getIdx = require('./resources/expectedIdxMap.json');
-// const severity = 'high'; 
-
-// parse.parseSim(filePath, result, geoids, scenario, severity, getIdx)
-// const json = JSON.stringify(result);
-
-// fs.writeFileSync('src/parser/resources/expectedParseSim.json', json, 'utf8', function(err) {
-//     if (err) throw err;
-// })
