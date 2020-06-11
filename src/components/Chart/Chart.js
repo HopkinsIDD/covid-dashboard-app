@@ -59,7 +59,7 @@ class Chart extends Component {
     calculateQuantiles = () => {
         const { dataset, firstDate, start, end, stat, width, height, scenarios } = this.props;
         const { severities } = this.state;
-        const quantileObj = {}
+        let quantileObj = {[stat]: {}};
         
         const startIdx = getDateIdx(firstDate, start);
         const endIdx = getDateIdx(firstDate, end);
@@ -68,7 +68,6 @@ class Chart extends Component {
         // console.log('Chart scenarios', scenarios)
         // console.log('Chart dataset', dataset)
         // console.log(stat)
-        quantileObj[stat] = {};
         for (let severity of severities) {
             // console.log(severity)
             quantileObj[stat][severity] = {};
@@ -296,7 +295,6 @@ class Chart extends Component {
 
     handleHighlightEnter = _.debounce((event, severity, key, index) => {
         // console.log('chart highlight enter')
-        
         if (!this.state.rectIsHovered) {
             // console.log('rect not hovered')
             // event.stopPropagation();

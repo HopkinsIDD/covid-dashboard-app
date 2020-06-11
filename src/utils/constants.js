@@ -4,37 +4,53 @@
 
 export const margin = { yAxis: 80, top: 10, right: 10, bottom: 30, left: 10, chartTop: 15 };
 
+// ant design components are inline styled (and resist styling via css classes)
 export const styles = {
     ContainerWhite: {
         background: '#fefefe',
-        padding: '5rem 0',
-        minHeight: '80vh'
+        padding: '4rem 0',
+        minHeight: '24rem'
     },
-    ContainerGray: {
-        padding: '5rem 0'
+    ContainerGray: { padding: '4rem 0'
     },
-    ContainerMap: {
+    MapContainer: {
         paddingLeft: margin.yAxis + (2 * margin.left) + margin.right
     },
     SearchBar: {
-        width: '60%',
+        width: '100%',
         maxWidth: '50rem'
+    },
+    Menu: { 
+        display: 'inline', 
+        lineHeight: '2.8rem', 
+        paddingRight: '10px'
+    },
+    iconGraph: { 
+        paddingRight: '5px', 
+        paddingTop: '5px' 
+    },
+    iconChart: { 
+        paddingRight: '5px', 
+        paddingTop: '5px', 
+        marginRight: '8px' 
+    },
+    iconMap: { 
+        paddingRight: '5px', 
+        paddingTop: '5px', 
+        marginRight: '3px' 
     },
     Selector: {
         width: '80%'
     },
-    MenuIcons: {
-        paddingRight: '10px'
-    },
     Switch: {
-        marginTop: '16px',
-        paddingLeft: '12px',
+        paddingLeft: '8px', 
+        paddingRight: '8px', 
+        paddingTop: '5px', 
+        lineHeight: '1.2rem', 
+        height: '50px'
     },
     UploadSwitch: {
         paddingLeft: '12px'
-    },
-    SliderLabel: {
-        marginTop: '12px'
     },
     MarksR0: {
         0: {
@@ -58,13 +74,13 @@ export const styles = {
     }
     
 };
-  
+
 export const STATS = [
-    {'id': 1, 'key': 'incidI', 'name': 'Infections'},
-    {'id': 2, 'key': 'incidH', 'name': 'Hospitalizations'},
-    {'id': 3, 'key': 'incidICU', 'name': 'ICU Cases'},
-    {'id': 4, 'key': 'incidVent', 'name': 'Ventilators Used'},
-    {'id': 5, 'key': 'incidD', 'name': 'Deaths'},
+    {'id': 1, 'key': 'incidH', 'name': 'Hospitalizations'},
+    {'id': 2, 'key': 'incidD', 'name': 'Deaths'},
+    {'id': 3, 'key': 'incidI', 'name': 'Infections'},
+    {'id': 4, 'key': 'incidICU', 'name': 'ICU Cases'},
+    {'id': 5, 'key': 'incidVent', 'name': 'Ventilators Used'}
 ];
 
 export const LEVELS = [

@@ -52,12 +52,23 @@ class Sliders extends Component {
         this.props.onSliderMouseEvent(e.type, 'date', 'graph')
     }
 
+    getStepValue = (seriesMax) => {
+        if (seriesMax <= 20) {
+            return 1
+        } else if (seriesMax <= 500) {
+            return 10
+        } else {
+            return 100
+        }
+    }
+
     render() {
-        const { stat, statThreshold, seriesMin, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
-        const roundedStat = Math.ceil(statThreshold / 100) * 100;
-        
+        const { stat, statThreshold, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
+        const stepVal = this.getStepValue(seriesMax)
+        const roundedStat = Math.ceil(statThreshold / stepVal) * stepVal;
+        const isDisabled = this.props.showConfBounds ? "disabled" : "";
         return (
-            <div className="slider-menu">
+            <div className={`slider-menu ${isDisabled}`}>
                 {/* Stat Threshold */}
                 <div className="param-header">THRESHOLD</div>
                 <div className="filter-label">
@@ -71,16 +82,17 @@ class Sliders extends Component {
                     min="0"
                     max={seriesMax.toString()}
                     value={statThreshold.toString()}
-                    step={100}
+                    step={stepVal}
                     style={styles.Selector}
                     ref={ref => this.statInput = ref}
+                    disabled={isDisabled}
                     onChange={() => {this.handleStatChange(this.statInput.value)}}
                     onMouseDown={this.handleStatMouseEvent}
                     onMouseUp={this.handleStatMouseEvent}>
                 </input> 
                 <div className="slider-label-row slider-label" style={styles.Selector}>
-                    <p className="filter-label callout" style={styles.SliderLabel}>0</p>
-                    <p className="filter-label slider-max callout" style={styles.SliderLabel}>
+                    <p className="filter-label callout">0</p>
+                    <p className="filter-label slider-max callout">
                         {addCommas(seriesMax)}
                     </p>
                 </div>
@@ -100,27 +112,18 @@ class Sliders extends Component {
                     value={dateThresholdIdx}
                     style={styles.Selector}
                     ref={ref => this.dateInput = ref}
-                    onChange={
-                        () => {this.handleDateChange(this.dateInput.value)}
-                    }
+                    disabled={isDisabled}
+                    onChange={() => {this.handleDateChange(this.dateInput.value)}}
                     onMouseDown={this.handleDateMouseEvent}
                     onMouseUp={this.handleDateMouseEvent}>
                 </input>
                 <div className="slider-label-row slider-label" style={styles.Selector}>
-                    <p className="filter-label callout" style={styles.SliderLabel}>
+                    <p className="filter-label callout">
                         {getMonth(dateRange[0])}
                     </p>
-                    <p className="filter-label slider-max callout" style={styles.SliderLabel}>
+                    <p className="filter-label slider-max callout">
                         {getMonth(timeDay.offset(dateRange[1], -1))}
                     </p>
-                    <span className="tooltip-text">
-                    Slide the date threshold to visualize the percent chance daily 
-                    {stat.name}s exceed the selected value by a given date.</span>
-                </div>
-
-                <div className="filter-description">
-                    Slide over indicator value and day to see how likely daily&nbsp;
-                    {stat.name} will exceed a certain number by a given day.
                 </div>
             </div>
         )

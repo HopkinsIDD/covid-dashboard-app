@@ -10,10 +10,11 @@ import R0 from '../Filters/R0';
 import SeverityContainer from '../Filters/SeverityContainer'
 import Sliders from '../Filters/Sliders';
 
-import { styles, margin, STATS, LEVELS, COUNTYNAMES } from '../../utils/constants';
+import { styles, margin, STATS, LEVELS } from '../../utils/constants';
 import { buildScenarios, returnSimsOverThreshold, getRange } from '../../utils/utils';
 import { utcParse, } from 'd3-time-format';
-import { timeDay } from 'd3-time'
+import { timeDay } from 'd3-time';
+import { max } from 'd3-array';
 
 const parseDate = utcParse('%Y-%m-%d');
 // const formatDate = timeFormat('%Y-%m-%d');
@@ -78,8 +79,8 @@ class MainGraph extends Component {
             const { dataset } = this.props;
             const { stat, severityList, scenarioList, r0 } = this.state;
             // filter series and dates by dateRange
-            const idxMin = timeDay.count(this.state.dates[0], this.state.dateRange[0]);
-            const idxMax = timeDay.count(this.state.dates[0], this.state.dateRange[1]);
+            const idxMin = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[0]);
+            const idxMax = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[1]);
             const filteredDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
             const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
             const dateThreshold = filteredDates[dateThresholdIdx];
@@ -99,13 +100,13 @@ class MainGraph extends Component {
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 });
-                const seriesPeaks = filteredSeriesForStatThreshold.map(sim => sim.max);
+                const seriesPeaks = filteredSeriesForStatThreshold.map(sim => max(sim.vals));
                 const [seriesMin, seriesMax] = getRange(seriesPeaks);
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
                 // default smart value for statThreshold calculation
-                if (i === 0) statThreshold = seriesMin;
-
+                if (i === 0 && seriesMin < seriesMax/2) statThreshold = seriesMin;
+                if (i === 0 && seriesMin >= seriesMax/2) statThreshold = seriesMax/2;
                 const simsOver = returnSimsOverThreshold(
                     newSeries, statThreshold, this.state.allTimeDates, dateThreshold);
                 if (i === 0) brushSeries = newSeries
@@ -322,21 +323,32 @@ class MainGraph extends Component {
 
     render() {
         const { Content } = Layout;
-        // const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
-            <Content id="scenario-comparisons" style={styles.ContainerGray}>
-                <Col className="gutter-row container" span={16}>
+            <Content id="interactive-graph" style={styles.ContainerGray}>
+                {/* text span is 1 grid value higher than Graph to allow text-wrapping */}
+                <Col className="gutter-row container" span={18}>
                     <div className="content-section">
-                        <div>The&nbsp;
-                            <a href="http://www.iddynamics.jhsph.edu/">
-                            Johns Hopkins IDD Working Group</a> has generated model 
-                            simulations for {this.state.SCENARIOS.length} intervention 
-                            scenarios from January 2020 to June 2021. Each scenario 
-                            is represented by multiple simulation curves, and each curve 
-                            represents one possible outcome based on a given set of parameters. 
-                            Each curve is just as likely to occur as another. 
+                        <div className="vis-content">
+                            <div className="titleNarrow description-header">
+                                What can scenario modeling tell us?
+                            </div>
+                            This graph aims to display as much about the scenario model as possible.
+                            Each intervention scenario is represented by multiple 
+                            simulation curves - each of these curves represent one 
+                            possible outcome based on a given set of parameters. Each simulation 
+                            curve is just as likely to occur as another. 
+                            <br /><br />
+                            Select two intervention scenarios from the menu on
+                            the right to compare side by side. Toggle between 
+                            different indicators such as hospitalizations and deaths,
+                            as well as the scenario's potential severity level. Filter 
+                            simulations down to curves within a specific range of R<sub>0</sub>. 
+                            You can also choose between exploring exceedence thresholds
+                            and displaying confidence bounds. To explore exceedence, 
+                            use the threshold sliders to change values and dates to determine
+                            how likely a given indicator, such as hospitalizations, 
+                            will exceed a certain number by a given date.
                         </div>
-                        {/* <div className="content-header">{countyName}</div> */}
                     </div>
                 </Col>
                 {this.state.dataLoaded &&
@@ -394,9 +406,6 @@ class MainGraph extends Component {
                         <Indicators
                             stat={this.state.stat}
                             onButtonClick={this.handleButtonClick} />        
-                        <Switch
-                            showConfBounds={this.state.showConfBounds}
-                            onConfClick={this.handleConfClick} /> 
                         <SeverityContainer
                             stat={this.state.stat}
                             severityList={this.state.severityList}
@@ -407,11 +416,14 @@ class MainGraph extends Component {
                         <R0
                             r0={this.state.r0}
                             onR0Change={this.handleR0Change} />
+                        <Switch
+                            showConfBounds={this.state.showConfBounds}
+                            onConfClick={this.handleConfClick} /> 
                         <Sliders 
                             stat={this.state.stat}
                             dates={this.state.dates}
                             seriesMax={this.state.seriesMax}
-                            // seriesMin={this.state.seriesMin}
+                            showConfBounds={this.state.showConfBounds}
                             statThreshold={this.state.statThreshold}
                             dateThreshold={this.state.dateThreshold}
                             dateThresholdIdx={this.state.dateThresholdIdx}

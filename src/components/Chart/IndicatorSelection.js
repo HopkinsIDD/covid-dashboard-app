@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
-import { STATS } from '../../utils/constants';
+import { styles, STATS } from '../../utils/constants';
 
 class IndicatorSelection extends Component {
     constructor(props) {
@@ -112,7 +112,7 @@ class IndicatorSelection extends Component {
                 <div className="param-header">INDICATORS</div>
                 <Select
                     mode="multiple"
-                    style={{ width: '80%' }}
+                    style={styles.Selector}
                     defaultValue={this.props.statList.map(s => s.key)}
                     value={this.props.statList.map(s => s.key)}
                     maxTagTextLength={12}

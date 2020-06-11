@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Radio } from 'antd';
+import { styles } from '../../utils/constants';
 
 class ScaleToggle extends Component {
   handleChange = (e) => {
@@ -12,7 +13,7 @@ class ScaleToggle extends Component {
         <div className="param-header">Y-AXIS SCALE</div>
         <Radio.Group
           value={this.props.scale} 
-          style={{ width: '80%' }}
+          style={styles.Selector}
           onChange={this.handleChange}>
             <Radio.Button value='linear'>Linear</Radio.Button>
             <Radio.Button value='power'>Power</Radio.Button>

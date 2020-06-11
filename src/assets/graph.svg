@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="44px" height="28px" viewBox="0 0 77 38" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>Scenario Comparisons</title>
+    <title>Interactive Graph</title>
         <g id="Desktop-HD" transform="translate(-1030.000000, -66.000000)" stroke="#DDDDDD" stroke-width="2" fill="none" fill-rule="evenodd">
             <g id="scenario-comparison" transform="translate(1030.000000, 67.000000)">
                 <path d="M7,35.6015132 C11.2901412,35.6015132 18.1543672,39.2863513 25.8766214,24.2455739 C33.5988757,9.20479645 33.5988757,4 38.8463234,4 C44.0937712,4 42.5586378,10.6676779 49.9807499,24.2455739 C57.4028619,37.8234698 64.0246241,35.6015132 71,35.6015132" id="Path-3"></path>

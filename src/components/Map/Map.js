@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { geoConicEqualArea, geoPath } from 'd3-geo';
 import { scaleLinear } from 'd3-scale';
-import { max } from 'd3-array';
+import { max, thresholdFreedmanDiaconis } from 'd3-array';
 import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
@@ -30,7 +30,7 @@ class Map extends Component {
     componentDidMount() {
         const gradientH = (this.props.width - gradientMargin) / 2;
         this.setState({ gradientH }, () => this.calculateScales());
-        
+        window.addEventListener('scroll', this.handleWindowScrollTooltip)
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -41,6 +41,10 @@ class Map extends Component {
                 this.setState({ gradientH }, () => this.calculateScales());
                 
         }
+    }
+
+    componentDidUnmount() {
+        window.removeEventListener('scroll')
     }
 
     calculateScales = () => {
@@ -87,6 +91,7 @@ class Map extends Component {
     }
 
     drawCounties = () => {
+        // console.log('drawing counties')
         // console.log(this.state.countyBoundaries)
         // optimize projection for CA or NY
         // TODO add to constants file for other states
@@ -107,8 +112,10 @@ class Map extends Component {
                 <Tooltip
                     key={`tooltip-county-boundary-${i}`}
                     title={this.state.tooltipText}
-                    visible={this.state.hoveredCounty === d.properties.geoid && this.state.countyIsHovered ? true : false}
+                    visible={this.state.hoveredCounty === d.properties.geoid}
                     data-html="true"
+                    // onVisibleChange={(e) => console.log('visibility change', e)}
+                    destroyTooltipOnHide={true}
                 >
                     <path
                         key={`county-boundary-${i}`}
@@ -121,9 +128,8 @@ class Map extends Component {
                             cursor: 'pointer'
                         }}
                         className='counties'
-                        onMouseEnter={(e) => this.handleCountyEnter(d)}
+                        onMouseEnter={() => this.handleCountyEnter(d)}
                         onMouseLeave={() => this.handleCountyLeave(d)}
-                        onMouseDown={() => this.handleCountyLeave(d)}
                     />
                 </Tooltip>
             )})
@@ -131,28 +137,53 @@ class Map extends Component {
     }
 
     handleCountyEnter = _.debounce((feature) => {
+        const tooltips = document.querySelectorAll('.ant-tooltip')
+        tooltips.forEach(tooltip => {
+            // console.log(tooltip)
+            tooltip.style.visibility = "hidden"
+        })
+        // console.log('ENTERED', feature.properties.name, feature.properties.geoid)
+        // console.log('countyIsHovered', this.state.countyIsHovered, 'hoveredCounty', this.state.hoveredCounty)
         // event.preventDefault()
-        // console.log('entered', feature.properties.name)
-        // console.log(feature)
-        let statInfo = ''
-        if (feature.properties[this.props.stat].length > 0) {
-            statInfo = `${this.props.statLabel}: ${addCommas(feature.properties[this.props.stat][this.props.dateIdx])}`
-        } else {
-            statInfo = 'No Indicator Data'
+        if (this.state.hoveredCounty !== feature.properties.geoid) {
+            this.setState({ hoveredCounty: null, countyIsHovered: false })
         }
-        const text = `${feature.properties.name} County <br>
-                    Population: ${addCommas(feature.properties.population)} <br>
-                    ${statInfo}`
+        
+        // console.log(feature)
+        if (!this.state.countyIsHovered) {
+            let statInfo = ''
+            if (feature.properties[this.props.stat].length > 0) {
+                statInfo = `${this.props.statLabel}: ${addCommas(feature.properties[this.props.stat][this.props.dateIdx])}`
+            } else {
+                statInfo = 'No Indicator Data'
+            }
+            const text = `${feature.properties.name} County <br>
+                        Population: ${addCommas(feature.properties.population)} <br>
+                        ${statInfo}`
 
-        const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
+            const tooltipText = () =>  (<div dangerouslySetInnerHTML={{__html: text}}></div>)
 
-        this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true, tooltipText })
-    }, 100)
+            this.setState({ hoveredCounty: feature.properties.geoid, countyIsHovered: true, tooltipText })
+        }
+    }, 10)
 
-    handleCountyLeave = _.debounce(() => {
-        // console.log('left', feature.properties.name)
+    handleCountyLeave = _.debounce((feature) => {
+        const tooltips = document.querySelectorAll('.ant-tooltip')
+        tooltips.forEach(tooltip => {
+            // console.log(tooltip)
+            tooltip.style.visibility = "hidden"
+        })
+        // console.log('LEFT', feature.properties.name, feature.properties.geoid)
+        // console.log('countyIsHovered', this.state.countyIsHovered, 'hoveredCounty', this.state.hoveredCounty)
+        if (this.state.hoveredCounty === feature.properties.geoid) {
+            this.setState({ hoveredCounty: null, countyIsHovered: false })
+        }
+        
+    }, 10)
+
+    handleMouseMove = () => {
         this.setState({ hoveredCounty: null, countyIsHovered: false })
-    }, 100)
+    }
 
     drawLegend = () => {
         // const legendW = 100;
@@ -206,18 +237,26 @@ class Map extends Component {
                         y={gradientMargin}
                     />
                 </svg>
-                <svg width={this.props.width - legendW} height={this.props.height} className={`mapSVG-${this.props.stat}`}>
+                <svg 
+                    width={this.props.width - legendW}
+                    height={this.props.height}
+                    className={`mapSVG-${this.props.stat}`}
+                >
                     <g style={{ stroke: '#00ff00'}}>
                         {/* debug green svg */}
-                        {/* <rect
+                        <rect
                             x={0}
                             y={0}
                             width={this.props.width - legendW}
-                            height={this.props.height * 0.75}
+                            height={this.props.height}
                             fillOpacity={0}
                             stroke={'#00ff00'}
                             strokeWidth='1'
-                        />  */}
+                            strokeOpacity={0}
+                            onMouseMove={this.handleMouseMove}
+                            // onMouseEnter={() => console.log('mouseenter')}
+                            onMouseLeave={this.handleMouseMove}
+                        /> 
                         {this.state.countyBoundaries.features && this.drawCounties()}
                     </g>
                 </svg>

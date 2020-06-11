@@ -6,7 +6,7 @@ import DatePicker from './DatePicker';
 import ScaleToggle from './ScaleToggle';
 import IndicatorSelection from './IndicatorSelection';
 
-import { styles, STATS, COUNTYNAMES } from '../../utils/constants';
+import { styles, STATS } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
 import { utcParse } from 'd3-time-format'
 const parseDate = utcParse('%Y-%m-%d')
@@ -97,20 +97,20 @@ class MainChart extends Component {
     render() {
         const { Content } = Layout;
         return (
-            <Content id="stats" style={styles.ContainerWhite}>
+            <Content id="exploration" style={styles.ContainerWhite}>
                 <Col className="gutter-row container" span={16}>
                     <div className="content-section">
-                        <div>
+                        <div className="vis-content" style={{ borderColor: '#f0f2f5' }}>
+                            <div className="titleNarrow description-header">A time-based summary you can customize</div>
                             Use this tool to plan for expected infections, hospitalizations,
                             ICU cases, ventilators needed, and deaths in your municipality.
                             For example, if you would like to know how many people will 
                             be hospitalized in 6 weeks, select hospitalizations  
-                            as the indicator, today as the start date, and 6 weeks out
+                            from the indicator dropdown, today as the start date, and 6 weeks out
                             as the end date. Then, compare expected hospitalization 
-                            numbers across all {this.state.SCENARIOS.length}&nbsp;
+                            numbers across all 
                             intervention scenarios at varying degrees of severity.
                         </div>
-                        {/* <div className="content-header">{countyName}</div> */}
                     </div>
                 </Col>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>

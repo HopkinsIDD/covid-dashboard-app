@@ -82,7 +82,7 @@ function Legend(props) {
                             opacity={0.65}
                             className="titleNarrow"
                         >
-                            mean
+                            median
                         </text>
                     </g>
                 </g>
