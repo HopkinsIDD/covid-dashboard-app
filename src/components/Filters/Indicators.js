@@ -33,7 +33,7 @@ class Indicators extends Component {
 
     handleChange = (e) => {
         const item = STATS.filter(stat => stat.key === e)[0];
-        this.props.onButtonClick(item);
+        this.props.onIndicatorClick(item);
     }
 
     render() {

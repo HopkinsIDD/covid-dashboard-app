@@ -47,6 +47,8 @@ class GraphContainer extends Component {
                 simNum={this.props.simNum}
                 showConfBounds={this.props.showConfBounds}
                 confBounds={this.props.confBoundsList[0]}
+                showActual={this.props.showactual}
+                actual={this.props.actualList[0]}
                 statThreshold={this.props.statThreshold}
                 dateThreshold={this.props.dateThreshold}
                 dateRange={this.props.dateRange}
@@ -127,7 +129,8 @@ class GraphContainer extends Component {
                     simNum={this.props.simNum}
                     showConfBounds={this.props.showConfBounds}
                     confBounds={this.props.confBoundsList[i]}
-                    showActual={this.props.showActual}
+                    showActual={this.props.showactual}
+                    actual={this.props.actualList[i]}
                     series={this.props.seriesList[i]}
                     dates={this.props.dates}
                     statThreshold={this.props.statThreshold}

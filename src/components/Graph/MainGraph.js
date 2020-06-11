@@ -5,9 +5,10 @@ import GraphContainer from './GraphContainer';
 import Brush from '../Filters/Brush';
 import Scenarios from '../Filters/Scenarios';
 import Indicators from '../Filters/Indicators';
-import ModeToggle from '../Filters/ModeToggle';
-import R0 from '../Filters/R0';
 import SeverityContainer from '../Filters/SeverityContainer'
+import ActualSwitch from '../Filters/ActualSwitch';
+import R0 from '../Filters/R0';
+import ModeToggle from '../Filters/ModeToggle';
 import Sliders from '../Filters/Sliders';
 
 import { styles, margin, STATS, LEVELS } from '../../utils/constants';
@@ -41,10 +42,13 @@ class MainGraph extends Component {
             dateThreshold: new Date(),
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             r0: [0, 4],
+            actual: [],
+            showActual: false,
+            actualList: [[]],
             simNum: '150',
             percExceedenceList: [],
-            showConfBounds: false,
             confBounds: {},
+            showConfBounds: false,
             confBoundsList: [{}],
             brushActive: false,
             animateTransition: true,
@@ -73,6 +77,7 @@ class MainGraph extends Component {
             const filteredSeriesList = []
             const percExceedenceList = []
             const confBoundsList = [];
+            const actualList = [];
             let brushSeries
             
             const { dataset } = this.props;
@@ -126,6 +131,14 @@ class MainGraph extends Component {
                     const filteredConfBounds = confBounds.slice(idxMin, idxMax)
                     confBoundsList.push(filteredConfBounds);
                 }
+                // instantiate actuals data if data for specific indicator exists
+                let actual = [];
+                const indicator = stat.name.toLowerCase();
+                const actualJSON = require('../../store/actuals.json');
+                if (Object.keys(actualJSON).includes(indicator)) {
+                    actual = actualJSON[indicator][this.props.geoid];
+                }
+                actualList.push(actual);
             }
             this.setState({
                 seriesList: filteredSeriesList,
@@ -136,7 +149,9 @@ class MainGraph extends Component {
                 seriesMin: sliderMin,
                 seriesMax: sliderMax,
                 percExceedenceList,
-                confBoundsList
+                confBoundsList,
+                actualList,
+                showActual: false
             })
         }
     };
@@ -172,6 +187,14 @@ class MainGraph extends Component {
         const confBounds = dataset[SCENARIOS[0].key][severity.key][stat.key].conf;
         const filteredConfBounds = confBounds.slice(idxMin, idxMax)
 
+        // instantiate actuals data if data for specific indicator exists
+        let actual = [];
+        const indicator = stat.name.toLowerCase();
+        const actualJSON = require('../../store/actuals.json');
+        if (Object.keys(actualJSON).includes(indicator)) {
+            actual = actualJSON[indicator][this.props.geoid];
+        }
+
         this.setState({
             SCENARIOS,
             scenarioList: [SCENARIOS[0]],
@@ -185,14 +208,14 @@ class MainGraph extends Component {
             statThreshold,
             percExceedenceList: [percExceedence],
             confBoundsList: [filteredConfBounds],
-            showConfBounds: false,
-            r0: [0, 4]
+            r0: [0, 4],
+            actualList: [actual]
         }, () => {
             this.setState({dataLoaded: true});
         })
     }
 
-    handleButtonClick = (i) => {
+    handleIndicatorClick = (i) => {
         const yAxisLabel = `Daily ${i.name}`;
         this.setState({
             stat: i, 
@@ -244,6 +267,11 @@ class MainGraph extends Component {
 
     handleR0Change = (e) => {
         this.setState({ r0: e, animateTransition: false })
+    };
+
+    handleActualChange = () => {
+        this.setState({showActual: !this.state.showActual}); 
+        console.log(!this.state.showActual, this.state.actualList)
     };
 
     handleStatSliderChange = (thresh) => {
@@ -368,6 +396,8 @@ class MainGraph extends Component {
                             simNum={this.state.simNum}
                             showConfBounds={this.state.showConfBounds}
                             confBoundsList={this.state.confBoundsList}
+                            actualList={this.state.actualList}
+                            showActual={this.state.showActual}
                             statThreshold={this.state.statThreshold}
                             dateThreshold={this.state.dateThreshold}
                             percExceedenceList={this.state.percExceedenceList}
@@ -404,7 +434,7 @@ class MainGraph extends Component {
                             onScenarioClick={this.handleScenarioClickGraph} />
                         <Indicators
                             stat={this.state.stat}
-                            onButtonClick={this.handleButtonClick} />        
+                            onIndicatorClick={this.handleIndicatorClick} />        
                         <SeverityContainer
                             stat={this.state.stat}
                             severityList={this.state.severityList}
@@ -415,6 +445,8 @@ class MainGraph extends Component {
                         <R0
                             r0={this.state.r0}
                             onR0Change={this.handleR0Change} />
+                        <ActualSwitch
+                            onChange={this.handleActualChange} />
                         <ModeToggle
                             showConfBounds={this.state.showConfBounds}
                             onConfClick={this.handleConfClick} /> 
