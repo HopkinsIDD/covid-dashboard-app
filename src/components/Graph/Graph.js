@@ -428,7 +428,7 @@ class Graph extends Component {
                                 y1={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
                                 x2={this.props.width - margin.right}
                                 y2={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
-                                stroke={gray}
+                                stroke={colors.gray}
                                 className={'statThreshold'}
                                 strokeDasharray="4 2"
                             ></line>
