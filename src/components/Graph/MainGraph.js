@@ -105,10 +105,8 @@ class MainGraph extends Component {
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
                 // default smart value for statThreshold calculation
-                console.log(seriesMin, seriesMax, seriesMax/2)
                 if (i === 0 && seriesMin < seriesMax/2) statThreshold = seriesMin;
                 if (i === 0 && seriesMin >= seriesMax/2) statThreshold = seriesMax/2;
-                console.log(statThreshold)
                 const simsOver = returnSimsOverThreshold(
                     newSeries, statThreshold, this.state.allTimeDates, dateThreshold);
                 if (i === 0) brushSeries = newSeries

@@ -71,9 +71,18 @@ export function getRange(seriesPeaks) {
   // return range [min, max] of all peaks of sims given a series
   const seriesPeakExtent = extent(seriesPeaks)
 
+  let roundingVal;
+  if (seriesPeakExtent[1].toString().length < 2) {
+    roundingVal = 1
+  } else if (seriesPeakExtent[1].toString().length < 3) {
+    roundingVal = 10
+  } else {
+    roundingVal = 100
+  }
+
   // take out rounding until display
-  const minPeak = Math.ceil(seriesPeakExtent[0])
-  const maxPeak = Math.ceil(seriesPeakExtent[1])
+  const minPeak = Math.ceil(seriesPeakExtent[0] / roundingVal) * roundingVal;
+  const maxPeak = Math.ceil(seriesPeakExtent[1] / roundingVal) * roundingVal;
 
   return [minPeak, maxPeak];
 };
