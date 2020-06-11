@@ -53,9 +53,9 @@ class Sliders extends Component {
     }
 
     getStepValue = (seriesMax) => {
-        if (seriesMax <= 20) {
+        if (seriesMax <= 50) {
             return 1
-        } else if (seriesMax <= 500) {
+        } else if (seriesMax <= 1000) {
             return 10
         } else {
             return 100
