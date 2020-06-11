@@ -14,6 +14,7 @@ import { styles, margin, STATS, LEVELS } from '../../utils/constants';
 import { buildScenarios, returnSimsOverThreshold, getRange } from '../../utils/utils';
 import { utcParse, } from 'd3-time-format';
 import { timeDay } from 'd3-time';
+import { max } from 'd3-array';
 
 const parseDate = utcParse('%Y-%m-%d');
 // const formatDate = timeFormat('%Y-%m-%d');
@@ -99,13 +100,15 @@ class MainGraph extends Component {
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 });
-                const seriesPeaks = filteredSeriesForStatThreshold.map(sim => sim.max);
+                const seriesPeaks = filteredSeriesForStatThreshold.map(sim => max(sim.vals));
                 const [seriesMin, seriesMax] = getRange(seriesPeaks);
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
                 // default smart value for statThreshold calculation
-                if (i === 0) statThreshold = seriesMin;
-
+                console.log(seriesMin, seriesMax, seriesMax/2)
+                if (i === 0 && seriesMin < seriesMax/2) statThreshold = seriesMin;
+                if (i === 0 && seriesMin >= seriesMax/2) statThreshold = seriesMax/2;
+                console.log(statThreshold)
                 const simsOver = returnSimsOverThreshold(
                     newSeries, statThreshold, this.state.allTimeDates, dateThreshold);
                 if (i === 0) brushSeries = newSeries
