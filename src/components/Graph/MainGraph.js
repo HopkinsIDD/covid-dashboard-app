@@ -42,7 +42,6 @@ class MainGraph extends Component {
             dateThreshold: new Date(),
             dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
             r0: [0, 4],
-            actual: [],
             showActual: false,
             actualList: [[]],
             simNum: '150',
@@ -446,7 +445,8 @@ class MainGraph extends Component {
                             r0={this.state.r0}
                             onR0Change={this.handleR0Change} />
                         <ActualSwitch
-                            onChange={this.handleActualChange} />
+                            onChange={this.handleActualChange}
+                            actualList={this.state.actualList} />
                         <ModeToggle
                             showConfBounds={this.state.showConfBounds}
                             onConfClick={this.handleConfClick} /> 

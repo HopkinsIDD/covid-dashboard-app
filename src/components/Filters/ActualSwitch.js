@@ -16,11 +16,13 @@ class ActualSwitch extends Component {
     }
 
     render() {
+        const isDisabled = this.props.actualList[0].length === 0 ? true : false;
         return (
             <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={styles.Switch}>
                 <Switch
                     style={{ 'marginTop': '0.1rem' }}
                     onChange={this.props.onChange}
+                    disabled={isDisabled}
                     size="small"/>
                 <div className="upload-toggle">ACTUAL DATA
                     <TooltipHandler
