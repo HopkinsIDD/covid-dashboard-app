@@ -41,7 +41,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4 {
+h1, h2 {
   color: white;
   margin: 0;
 }
@@ -253,15 +253,6 @@ li {
   text-align: center;
   margin-bottom: 0px;
   font-size: 1.4rem;
-}
-
-.scenario-header {
-  margin-bottom: -0.5rem;
-}
-
-.switch {
-  margin-top: 16px;
-  padding-left: 12px;
 }
 
 .upload-toggle {
@@ -675,6 +666,7 @@ input[type=range]:disabled::-moz-range-thumb {
 
 .footer {
   color: #dddddd;
+  margin: 1.4rem 0;
 }
 
 /* CSS overides from libraries */
@@ -709,10 +701,6 @@ input[type=range]:disabled::-moz-range-thumb {
   top: 0px;
 }
 
-.ant-slider-dot-active {
-
-}
-
 .ant-slider-handle {
   width: 18px;
   height: 18px;
@@ -734,3 +722,7 @@ input[type=range]:disabled::-moz-range-thumb {
   background-color: #3885fa;
 }
 
+.methods-header {
+  margin: 2.4rem 0 0.4rem;
+  font-size: 1.4rem;
+}
