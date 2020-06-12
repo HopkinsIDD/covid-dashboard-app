@@ -1,7 +1,7 @@
 import { extent } from 'd3-array';
 import { timeDay } from 'd3-time';
 import { timeFormat } from 'd3-time-format';
-import { numDisplaySims } from './constants';
+// import { numDisplaySims } from './constants';
 const formatDate = timeFormat('%Y-%m-%d');
 
 
