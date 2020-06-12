@@ -30,13 +30,12 @@ class ActualSwitch extends Component {
                         onClick={this.handleTooltipClick}
                         >
                         <div className="tooltip">&nbsp;&#9432;
-                            {this.state.showTooltip ?
+                            {this.state.showTooltip &&
                             <span className="tooltip-text">
                                 Currently, actual data is only 
                                 available for the <i>death</i> indicator.
                                 Source: USA Facts.
-                            </span> 
-                            : null}
+                            </span> }
                         </div>
                     </TooltipHandler>
                 </div>
