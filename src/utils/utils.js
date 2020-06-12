@@ -1,26 +1,12 @@
 import { extent } from 'd3-array';
 import { timeDay } from 'd3-time';
 import { timeFormat } from 'd3-time-format';
+// import { numDisplaySims } from './constants';
 const formatDate = timeFormat('%Y-%m-%d');
+
 
 ///////////////// UTILS ///////////////////
 
-// TODO: most likely remove this function
-export function instantiateScenarios(dataset) {
-  // Instantiates scenarios used for all views
-
-  // constant for given geoid
-  const SCENARIOS = buildScenarios(dataset);  
-
-  // initial scenario and scenarioList for Graph
-  const scenario = SCENARIOS[0];             
-  const scenarioList = [scenario]; 
-             
-  const scenarioListChart = SCENARIOS.map(s => s.name);
-  const scenarioMap = SCENARIOS[0].key;       
-  
-  return [SCENARIOS, scenario, scenarioList, scenarioListChart, scenarioMap];
-}
 
 export function buildScenarios(dataset) {
   // Instantiates constant scenarios used for a given geoid
@@ -39,6 +25,27 @@ export function buildScenarios(dataset) {
   }
   return scenarioArray;
 }
+
+// export function filterR0(dataset, scenarios, stat, severityList, r0selected) {
+//   // Return series List after filtering sims down based on selected R0
+
+//   const seriesList = []
+
+//   for (let i = 0; i < scenarios.length; i++) {
+//       const copy = Array.from(
+//           dataset[scenarios[i].key][severityList[i].key][stat.key].sims);
+
+//       // filter down sims on r0
+//       const r0min = r0selected[0], r0max = r0selected[1];
+//       const series = copy.filter(s => { 
+//           return (s.r0 > r0min && s.r0 < r0max)}).slice(0, numDisplaySims);
+
+//       console.log('on r0 filter', series.map(sim => {return `${sim.name}: ${sim.r0}`}))
+
+//       seriesList.push(series)
+//   }
+//   return seriesList
+// }
 
 export function returnSimsOverThreshold(series, statThreshold, dates, dateThreshold) {
   // Marks which simulations in a series are above threshold given stat and date
@@ -71,9 +78,18 @@ export function getRange(seriesPeaks) {
   // return range [min, max] of all peaks of sims given a series
   const seriesPeakExtent = extent(seriesPeaks)
 
+  let roundingVal;
+  if (seriesPeakExtent[1].toString().length < 2) {
+    roundingVal = 1
+  } else if (seriesPeakExtent[1].toString().length < 3) {
+    roundingVal = 10
+  } else {
+    roundingVal = 100
+  }
+
   // take out rounding until display
-  const minPeak = Math.ceil(seriesPeakExtent[0] / 100) * 100;
-  const maxPeak = Math.ceil(seriesPeakExtent[1] / 100) * 100;
+  const minPeak = Math.ceil(seriesPeakExtent[0] / roundingVal) * roundingVal;
+  const maxPeak = Math.ceil(seriesPeakExtent[1] / roundingVal) * roundingVal;
 
   return [minPeak, maxPeak];
 };

@@ -6,7 +6,8 @@ import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least, max, maxIndex } from 'd3-array'
 import { select } from 'd3-selection'
 import { easeCubicOut } from 'd3-ease'
-import { margin, red, green, blue, gray, lightgray, graphBkgd } from '../../utils/constants'
+import { margin } from '../../utils/constants'
+import colors from '../../utils/colors';
 
 class Graph extends Component {
     constructor(props) {
@@ -120,7 +121,7 @@ class Graph extends Component {
                 simPathsNode.selectAll('.simPath')
                     .data(series)
                     .attr("d", d => lineGenerator(d.vals))
-                    .attr("stroke", (d,i) => series[i].over ? red : green )
+                    .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
                     .on("end", () => {
                         // set new vals to state
                         this.setState({ 
@@ -143,7 +144,7 @@ class Graph extends Component {
                     .duration(1000)
                     .ease(easeCubicOut)
                     .attr("d", d => lineGenerator(d.vals))
-                    .attr("stroke", (d,i) => series[i].over ? red : green )
+                    .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
                     .on("end", () => {
                         // set new vals to state
                         this.setState({ 
@@ -313,7 +314,6 @@ class Graph extends Component {
     }
 
     render() {
-        const roundedThreshold = Math.ceil(this.props.statThreshold / 100) * 100;
         return (
             // <div className="graph-area">
                 <g 
@@ -340,7 +340,7 @@ class Graph extends Component {
                             id={`graphArea_${this.props.keyVal}`}
                             width={this.props.width - margin.left - margin.right}
                             height={this.props.height - margin.bottom - margin.top}
-                            fill={graphBkgd}
+                            fill={colors.graphBkgd}
                             // onMouseEnter={() => console.log('entered')}
                             onMouseMove={(e) => this.handleBetterSimMouseHover(e)}
                             onMouseLeave={(e, i) => this.handleMouseLeave(e, i)}
@@ -356,7 +356,7 @@ class Graph extends Component {
                                     id={`simPath-${i}`}
                                     className={`simPath`}
                                     fill='none' 
-                                    stroke = { this.state.series[i].over ? red : green}
+                                    stroke = { this.state.series[i].over ? colors.red : colors.green}
                                     strokeWidth={'1'}
                                     strokeOpacity={ this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 0 : 0.6}
                                     onMouseMove={(e) => this.handleMouseMove(e, i)}
@@ -375,7 +375,7 @@ class Graph extends Component {
                                 id={`simPath-${i}-hover`}
                                 className={`simPath-hover`}
                                 fill='none' 
-                                stroke={simIsHovered ? blue : lightgray}
+                                stroke={simIsHovered ? colors.blue : colors.lightgray}
                                 strokeWidth={simIsHovered ? '2' : '1'}
                                 strokeOpacity={this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 1 : 0}
                                 onMouseMove={(e) => this.handleMouseMove(e, i)}
@@ -400,7 +400,7 @@ class Graph extends Component {
                                 cx={this.state.tooltipXPos}
                                 cy={this.state.tooltipYPos}
                                 r={2}
-                                fill={gray}
+                                fill={colors.gray}
                                 fillOpacity={0}
                                 className={'tooltipCircle'}
                             ></circle>
@@ -410,13 +410,13 @@ class Graph extends Component {
                             <path
                                 className={'confBoundsArea'}
                                 d={this.state.confBoundsAreaPath}
-                                fill={green}
+                                fill={colors.green}
                                 fillOpacity={0.3}
                             ></path>
                             <path
                                 className={'confBoundsMean'}
                                 d={this.state.confBoundsMeanLinePath}
-                                stroke={green}
+                                stroke={colors.green}
                                 strokeWidth={2}
                                 fillOpacity={0}
                             ></path>
@@ -425,10 +425,10 @@ class Graph extends Component {
                         <g ref={this.thresholdRef}>
                             <line
                                 x1={margin.left}
-                                y1={this.props.yScale(roundedThreshold) < margin.top ? margin.top : this.props.yScale(roundedThreshold)}
+                                y1={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
                                 x2={this.props.width - margin.right}
-                                y2={this.props.yScale(roundedThreshold) < margin.top ? margin.top : this.props.yScale(roundedThreshold)}
-                                stroke={gray}
+                                y2={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
+                                stroke={colors.gray}
                                 className={'statThreshold'}
                                 strokeDasharray="4 2"
                             ></line>
@@ -437,15 +437,15 @@ class Graph extends Component {
                                 y1={margin.top}
                                 x2={this.props.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.props.xScale(this.props.dateThreshold)}
                                 y2={this.props.height - margin.bottom}
-                                stroke={gray}
+                                stroke={colors.gray}
                                 className={'dateThreshold'}
                                 strokeDasharray="4 2"
                             ></line>
                             <circle
                                 cx={this.props.xScale(this.props.dateThreshold)}
-                                cy={this.props.yScale(roundedThreshold)}
+                                cy={this.props.yScale(this.props.statThreshold)}
                                 r={4}
-                                fill={gray}
+                                fill={colors.gray}
                                 className={'thresholdCircle'}
                             ></circle>
                         </g>

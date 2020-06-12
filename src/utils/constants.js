@@ -2,17 +2,9 @@
 // key: use this to key into dataset
 // name: display name for visualization
 
+// how many sim curves should be displayed in Graph
+export const numDisplaySims = 30;  
 export const margin = { yAxis: 80, top: 10, right: 10, bottom: 30, left: 10, chartTop: 15 };
-export const red = '#d31d30';
-export const green = '#4ddaba';
-export const blue = '#1f90db';
-export const gray = '#9b9b9b';
-export const lightgray = '#d0d0d0';
-export const graphBkgd = '#fcfcfc';
-export const chartBkgd = '#f0f2f5';
-export const scenarioColors = ['#4ddaba', '#b6f5e7','#19b18e', '#e0fdf7', '#008769', '#acdacf']
-export const mapLowColors = ['#deebf7', '#E0F5F0', '#FFEDE3', '#FFE6EA']
-export const mapHighColors = ['#3885fa', '#148C81', '#E6500D', '#DE264D']
 
 // ant design components are inline styled (and resist styling via css classes)
 export const styles = {
@@ -62,27 +54,12 @@ export const styles = {
     Switch: {
         paddingLeft: '12px'
     },
-    MarksR0: {
-        0: {
-            style: {
-                fontFamily: 'Cousine, monospace',
-                fontSize: '12px',
-                marginTop: '3px',
-                color: 'rgba(0, 0, 0, 0.65)'
-            },
-            label: 0,
-            }, 
-        4: {
-            style: {
-                fontFamily: 'Cousine, monospace',
-                fontSize: '12px',
-                marginTop: '3px',
-                color: 'rgba(0, 0, 0, 0.65)'
-            },
-            label: 4,
-            }
+    Marks: {
+        fontFamily: 'Cousine, monospace',
+        fontSize: '12px',
+        marginTop: '3px',
+        color: 'rgba(0, 0, 0, 0.65)'
     }
-    
 };
 
 export const STATS = [

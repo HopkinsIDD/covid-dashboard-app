@@ -9,19 +9,16 @@ import { brushX } from 'd3-brush'
 import { event } from 'd3-selection'
 import { max, extent } from 'd3-array'
 import { easeCubicOut } from 'd3-ease'
-import { margin, red, green } from '../../utils/constants'
+import { margin } from '../../utils/constants'
+import { green, red } from '../../utils/colors';
 
 class Brush extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      width: this.props.width,
-      height: this.props.height,
-      series: this.props.series,
-      dates: this.props.dates,
+      series: [],
+      dates: [],
       scales: {},
-      // xScale: scaleUtc().range([margin.left, this.props.width - margin.right]),
-      // yScale: scaleLinear().range([this.props.height - margin.bottom, margin.top]),
       lineGenerator: line().defined(d => !isNaN(d)),
       simPaths: [],
     }
@@ -32,7 +29,7 @@ class Brush extends Component {
     this.brush = brushX()
         .extent([
           [margin.left, margin.top],
-          [this.state.width - margin.right, this.state.height - margin.bottom]
+          [this.props.width - margin.right, this.props.height - margin.bottom]
         ])
         .on('start', this.props.onBrushStart())
         .on('end', this.brushEnded)
@@ -40,8 +37,8 @@ class Brush extends Component {
   }
 
   componentDidMount() {
-    // console.log('componentDidMount')
-    this.setupBrush(this.state.lineGenerator, this.state.series, this.state.dates, this.state.width, this.state.height);
+    console.log('componentDidMount')
+    this.setupBrush(this.props.series, this.props.dates, this.props.width, this.props.height);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -58,15 +55,6 @@ class Brush extends Component {
       this.updateSimPaths(lineGenerator, series, dates, width, height, false);
       return
     }
-
-    // if (this.props.r0 !== prevProps.r0) {
-    //   console.log('different r0 is ', this.props.r0 !== prevProps.r0)
-    //   console.log('different series is ', this.props.series !== prevProps.series)
-    //   const { series, dates, width, height } = this.props;
-    //   const { lineGenerator } = prevState;
-    //   this.updateSimPaths(lineGenerator, series, dates, width, height, true);
-    //   return
-    // }
 
     if (this.props.series !== prevProps.series) {
       // console.log('different series is ', this.props.series !== prevProps.series)
@@ -150,12 +138,11 @@ class Brush extends Component {
     }
   }
 
-  setupBrush = (lineGenerator, series, dates, width, height) => {
+  setupBrush = (series, dates, width, height) => {
+    const { lineGenerator } =  this.state
     const updatedScales = this.getScales(series, dates, width, height);
     lineGenerator.x((d,i) => updatedScales.xScale(dates[i]))
     lineGenerator.y(d => {
-        // console.log(d)
-        // console.log(yScale(d))
         return updatedScales.yScale(d)
     })
     // generate simPaths from lineGenerator
@@ -166,22 +153,22 @@ class Brush extends Component {
 
     this.xAxis = axisBottom().scale(updatedScales.xScale)
       .tickFormat((date,i) => {
-        // console.log(timeYear(date))
-        // console.log(i, date)
-        // console.log(timeDay.offset(date, -31))
-        // console.log(" ")
-        if (timeYear(date) < timeDay.offset(date, -31)) {
-          return timeFormat('%b')(date);
-        } else {
-          return timeFormat('%Y')(date);
-        }
+        // if (timeYear(date) < timeDay.offset(date, -1)) {
+          return timeFormat('%b-%d')(date);
+        // } else {
+        //   return timeFormat('%Y')(date);
+        // }
       })
-      .ticks(this.state.width / 80).tickSizeOuter(0);
+      .ticks(this.props.width / 80).tickSizeOuter(0);
     if (this.xAxisRef.current) {
       select(this.xAxisRef.current).call(this.xAxis)
     }
 
     if (this.brushRef.current) {
+      // console.log(this.props.dateRange)
+      // console.log( updatedScales.xScale.range())
+      // console.log(updatedScales.xScale(this.props.dateRange[0]), updatedScales.xScale(this.props.dateRange[1]))
+      
       const brushRefNode = select(this.brushRef.current)
       brushRefNode.call(this.brush)
         .call(this.brush.move, [ updatedScales.xScale(this.props.dateRange[0]), updatedScales.xScale(this.props.dateRange[1]) ])
@@ -220,8 +207,9 @@ class Brush extends Component {
 
   brushEnded = () => {
     // console.log(event)
+    // console.log('defaultRange', this.state.defaultRange)
     if (!event.selection && this.brushRef.current) {
-      select(this.brushRef.current).call(this.brush.move, this.state.defaultRange)
+      select(this.brushRef.current).call(this.brush.move)
     }
     this.props.onBrushEnd();
   }
@@ -234,34 +222,32 @@ class Brush extends Component {
           height={this.props.height} 
           transform={`translate(${this.props.x},${this.props.y})`}
         >
-          <g>
-            <g ref={this.xAxisRef}  transform={`translate(0, ${this.props.height - margin.bottom})`} />
-            {/* <g ref={this.xAxisYearRef}  transform={`translate(0, ${this.props.height - margin.bottom})`} /> */}
-            <g ref={this.simPathsRef}>
-            <rect 
-                x={margin.left}
-                y={margin.top}
-                width={this.props.width - margin.left - margin.right}
-                height={this.props.height - margin.bottom - margin.top}
-                fill={'#fbfbfb'}
-            />
-            {
-              // visible simPaths
-              this.state.simPaths.map( (simPath, i) => {
-                  return <path
-                      d={simPath}
-                      key={`simPath-${i}`}
-                      id={`simPath-${i}`}
-                      className={`simPath`}
-                      fill='none' 
-                      stroke = { this.state.series[i].over ? red : green }
-                      strokeWidth={'1'}
-                      strokeOpacity={ 0.4 }
-                  />
-              })}
-            </g>
-            <g ref={this.brushRef} />
+          <g ref={this.xAxisRef}  transform={`translate(0, ${this.props.height - margin.bottom})`} />
+          {/* <g ref={this.xAxisYearRef}  transform={`translate(0, ${this.props.height - margin.bottom})`} /> */}
+          <g ref={this.simPathsRef}>
+          <rect 
+              x={margin.left}
+              y={margin.top}
+              width={this.props.width - margin.left - margin.right}
+              height={this.props.height - margin.bottom - margin.top}
+              fill={'#fbfbfb'}
+          />
+          {
+            // visible simPaths
+            this.state.simPaths.map( (simPath, i) => {
+                return <path
+                    d={simPath}
+                    key={`simPath-${i}`}
+                    id={`simPath-${i}`}
+                    className={`simPath`}
+                    fill='none' 
+                    stroke = { this.state.series[i].over ? red : green }
+                    strokeWidth={'1'}
+                    strokeOpacity={ 0.4 }
+                />
+            })}
           </g>
+          <g ref={this.brushRef} />
         </svg>
       </div>
     )

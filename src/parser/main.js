@@ -39,7 +39,7 @@ function buildDataset(dir, geoids) {
 
     // add state-level sims, init obj that just contains states to pass in
     const states = [...new Set(geoids.map(geoid => geoid.slice(0, 2)))];
-    const finalObj = module.exports.initObj(states, scenarios, dates);
+    const finalObj = utils.initObj(states, scenarios, severities, parameters, dates);
     utils.aggregateByState(
         parsedObj, 
         finalObj,
@@ -53,6 +53,7 @@ function buildDataset(dir, geoids) {
 
     // transform each simObj to D3-friendly format
     transform.toD3format(
+        dir,
         parsedObj,
         scenarios,
         severities,
@@ -68,7 +69,7 @@ function buildDataset(dir, geoids) {
         dates);
 
     // reduce number of sims to ~20 
-    utils.reduceSims(dir, parsedObj);
+    // utils.reduceSims(dir, parsedObj);
 
     // build stats for GeoMap Boundaries before quantiles are transformed
     geostat.buildGeoMapData(parsedObj);
@@ -84,7 +85,7 @@ function buildDataset(dir, geoids) {
     utils.writeToFile(parsedObj, geoidsToSave);
 
     // add a county to 06085 to simulate 6 scenarios
-    utils.combineCaliCounties();
+    // utils.combineCaliCounties();
     
     console.log('end:', new Date());
     console.log('data processing complete!'); 

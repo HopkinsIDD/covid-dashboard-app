@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { getDateIdx, getReadableDate } from '../../utils/utils';
-import { mapLowColors, mapHighColors, COUNTYNAMES } from '../../utils/constants';
+import { COUNTYNAMES } from '../../utils/constants';
+import { mapHighColorPalette, mapLowColorPalette } from '../../utils/colors';
 
 // const lowColors = ['#deebf7', '#e5f5e0', '#fee6ce'] 
 // const highColors = ['#3885fa', '#008769', '#e6550d']
@@ -38,8 +39,8 @@ class MapContainer extends Component {
                     statsForCounty={this.props.statsForCounty}
                     width={this.props.width / 2}
                     height={this.props.height}
-                    lowColor={mapLowColors[index]}
-                    highColor={mapHighColors[index]}
+                    lowColor={mapLowColorPalette[index]}
+                    highColor={mapHighColorPalette[index]}
                 />
             ) 
             children.push(child);
@@ -78,8 +79,8 @@ class MapContainer extends Component {
                         statsForCounty={this.props.statsForCounty}
                         width={this.props.width / 2}
                         height={this.props.height}
-                        lowColor={mapLowColors[index]}
-                        highColor={mapHighColors[index]}
+                        lowColor={mapLowColorPalette[index]}
+                        highColor={mapHighColorPalette[index]}
                     />
                 ) 
                 children.push(child);

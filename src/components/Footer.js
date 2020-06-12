@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
-import { styles } from '../utils/constants';
+import { ReactComponent as Logo } from '../assets/logo-john-hopkins.svg';
 
 class Footer extends Component {
   
     render() {
         return (
           <div id="footer" className="App-header">
-          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={{ padding: '10px'}}>
+          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
             <Col className="gutter-row" span={6}>
-              <div className="footer">Copyright © 2020 IDD Group</div>
+              <Logo height="60"/>
             </Col>
-            <Col className="gutter-row" offset={7} span={10}>
+            <Col className="gutter-row" offset={14} span={4}>
+              <div className="footer">© 2020 IDD Group</div>
             </Col>
           </Row>
         </div>

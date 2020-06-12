@@ -1,13 +1,13 @@
 import React, { Component, Fragment } from 'react';
 import { geoConicEqualArea, geoPath } from 'd3-geo';
 import { scaleLinear } from 'd3-scale';
-import { max, thresholdFreedmanDiaconis } from 'd3-array';
+import { max } from 'd3-array';
 import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
 
-import { gray, lightgray } from '../../utils/constants';
 import { addCommas } from '../../utils/utils';
+import colors, { gray } from '../../utils/colors';
 
 const legendW = 60;
 const gradientMargin = 20;
@@ -43,7 +43,7 @@ class Map extends Component {
         }
     }
 
-    componentDidUnmount() {
+    componentWillUnmount() {
         window.removeEventListener('scroll')
     }
 
@@ -123,7 +123,7 @@ class Map extends Component {
                         style={{
                             stroke: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? this.props.highColor : gray,
                             strokeWidth: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? 2 : 1,
-                            fill: d.properties[`${this.props.stat}Norm`].length > 0 ? ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]) : lightgray,
+                            fill: d.properties[`${this.props.stat}Norm`].length > 0 ? ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]) : colors.lightgray,
                             fillOpacity: 1,
                             cursor: 'pointer'
                         }}
