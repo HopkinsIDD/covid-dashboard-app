@@ -10,7 +10,7 @@ import R0 from '../Filters/R0';
 import SeverityContainer from '../Filters/SeverityContainer'
 import Sliders from '../Filters/Sliders';
 
-import { styles, margin, STATS, LEVELS } from '../../utils/constants';
+import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
 import { buildScenarios, returnSimsOverThreshold, getRange } from '../../utils/utils';
 import { utcParse, } from 'd3-time-format';
 import { timeDay } from 'd3-time';
@@ -40,8 +40,9 @@ class MainGraph extends Component {
             seriesMax: Number.NEGATIVE_INFINITY,
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: new Date(),
-            dateRange: [parseDate('2020-03-01'), parseDate('2020-09-01')],
-            r0: [0, 4],
+            dateRange: [parseDate('2020-03-01'), parseDate('2020-07-27')],
+            r0full: [0, 4],
+            r0selected: [0, 4],
             simNum: '150',
             percExceedenceList: [],
             showConfBounds: false,
@@ -69,7 +70,7 @@ class MainGraph extends Component {
             this.state.scenarioList !== prevState.scenarioList ||
             this.state.severityList !== prevState.severityList ||
             this.state.dateRange !== prevState.dateRange ||
-            this.state.r0 !== prevState.r0) {
+            this.state.r0selected !== prevState.r0selected) {
 
             const filteredSeriesList = []
             const percExceedenceList = []
@@ -77,7 +78,7 @@ class MainGraph extends Component {
             let brushSeries
             
             const { dataset } = this.props;
-            const { stat, severityList, scenarioList, r0 } = this.state;
+            const { stat, severityList, scenarioList, r0selected } = this.state;
             // filter series and dates by dateRange
             const idxMin = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[0]);
             const idxMax = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[1]);
@@ -89,37 +90,50 @@ class MainGraph extends Component {
             let sliderMax = 0
 
             for (let i = 0; i < scenarioList.length; i++) {
+                // filter down to the current r0selected range and THEN filter to numDisplaySims
                 const copy = Array.from(
                     dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
 
-                // filter down sims on reproductive number
-                const newSeries = copy.filter(s => { return (s.r0 > r0[0] && s.r0 < r0[1]) });
-                    
-                const filteredSeriesForStatThreshold = newSeries.map( s => {
+                // filter down sims on r0
+                const r0min = r0selected[0], r0max = r0selected[1];
+                const series = copy.filter(s => { 
+                    return (s.r0 > r0min && s.r0 < r0max)})
+                    .slice(0, numDisplaySims);
+             
+                // setting default smart threshold based on seriesMin 
+                const filteredSeriesForStatThreshold = series.map( s => {
                     const newS = {...s}
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 });
+                // array of all peaks in series
                 const seriesPeaks = filteredSeriesForStatThreshold.map(sim => max(sim.vals));
                 const [seriesMin, seriesMax] = getRange(seriesPeaks);
+                // ensures side by side y-scale reflect both series
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
                 // default smart value for statThreshold calculation
                 if (i === 0 && seriesMin < seriesMax/2) statThreshold = seriesMin;
                 if (i === 0 && seriesMin >= seriesMax/2) statThreshold = seriesMax/2;
                 const simsOver = returnSimsOverThreshold(
-                    newSeries, statThreshold, this.state.allTimeDates, dateThreshold);
-                if (i === 0) brushSeries = newSeries
+                    series, statThreshold, this.state.allTimeDates, dateThreshold);
+                // brush visual only based on first scenario, for simplicity
+                if (i === 0) brushSeries = series
 
-                const percExceedence = simsOver / newSeries.length;
-                percExceedenceList.push(percExceedence)
-
-                const filteredSeries = newSeries.map( s => { const newS = {...s}
+                // filtering based on date
+                // only dateRange change needs this ---> 
+                const filteredSeries = series.map( s => { const newS = {...s}
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 })
-                filteredSeriesList.push(filteredSeries)
                 
+                filteredSeriesList.push(filteredSeries)
+                // console.log('on brush change', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
+
+                // TODO: may be problematic
+                const percExceedence = simsOver / filteredSeries.length;
+                percExceedenceList.push(percExceedence)
+
                 const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
                 // ensure stat has confidence bounds array
                 if (confBounds && confBounds.length > 0) {
@@ -146,7 +160,8 @@ class MainGraph extends Component {
         // instantiate scenarios, dates, series, severities
         const SCENARIOS = buildScenarios(dataset);  
         const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
-        const series = dataset[SCENARIOS[0].key][severity.key][stat.key].sims;
+        const series = dataset[SCENARIOS[0].key][severity.key][stat.key]
+            .sims.slice(0, numDisplaySims);
         const seriesPeaks = series.map(sim => sim.max);
         const [seriesMin, seriesMax] = getRange(seriesPeaks);
         const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
@@ -169,9 +184,15 @@ class MainGraph extends Component {
             newS.vals = s.vals.slice(idxMin, idxMax)
             return newS
         })
+        // console.log('initialize series', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
         // instantiate confidence bounds
         const confBounds = dataset[SCENARIOS[0].key][severity.key][stat.key].conf;
         const filteredConfBounds = confBounds.slice(idxMin, idxMax)
+
+        // instantiate min and max of r0 based on dataset
+        const r0array = dataset[SCENARIOS[0].key][severity.key][stat.key]
+            .sims.map(sim => sim.r0);
+        const r0full = [Math.min.apply(null, r0array), Math.max.apply(null, r0array)];
 
         this.setState({
             SCENARIOS,
@@ -187,7 +208,8 @@ class MainGraph extends Component {
             percExceedenceList: [percExceedence],
             confBoundsList: [filteredConfBounds],
             showConfBounds: false,
-            r0: [0, 4]
+            r0full,
+            r0selected: r0full // alternative r0 streategy: [2.2, 2.4]
         }, () => {
             this.setState({dataLoaded: true});
         })
@@ -198,7 +220,6 @@ class MainGraph extends Component {
         this.setState({
             stat: i, 
             yAxisLabel,
-            r0: [0, 4]
         })
     };
 
@@ -221,7 +242,6 @@ class MainGraph extends Component {
             scenarioList: newScenarios,
             scenarioClickCounter: scenarioClkCntr,
             severityList: newSevs, 
-            r0: [0, 4]
         })        
     };
 
@@ -234,7 +254,6 @@ class MainGraph extends Component {
         })
         this.setState({
             severityList: newSevList, 
-            r0: [0, 4],
             animateTransition: true
         });
     };
@@ -244,7 +263,7 @@ class MainGraph extends Component {
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleR0Change = (e) => {
-        this.setState({ r0: e, animateTransition: false })
+        this.setState({ r0selected: e, animateTransition: true })
     };
 
     handleStatSliderChange = (thresh) => {
@@ -363,7 +382,8 @@ class MainGraph extends Component {
                             seriesList={this.state.seriesList}
                             stat={this.state.stat}
                             severity={this.state.severity}
-                            r0={this.state.r0}
+                            r0full={this.state.r0full}
+                            r0selected={this.state.r0selected}
                             animateTransition={this.state.animateTransition}
                             toggleAnimateTransition={this.toggleAnimateTransition}
                             simNum={this.state.simNum}
@@ -414,7 +434,8 @@ class MainGraph extends Component {
                             onSeveritiesHover={this.handleSeveritiesHover}
                             onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave} />
                         <R0
-                            r0={this.state.r0}
+                            r0full={this.state.r0full}
+                            r0selected={this.state.r0selected}
                             onR0Change={this.handleR0Change} />
                         <Switch
                             showConfBounds={this.state.showConfBounds}

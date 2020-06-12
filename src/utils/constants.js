@@ -2,6 +2,8 @@
 // key: use this to key into dataset
 // name: display name for visualization
 
+// how many sim curves should be displayed in Graph
+export const numDisplaySims = 30;  
 export const margin = { yAxis: 80, top: 10, right: 10, bottom: 30, left: 10, chartTop: 15 };
 
 // ant design components are inline styled (and resist styling via css classes)
@@ -52,27 +54,12 @@ export const styles = {
     UploadSwitch: {
         paddingLeft: '12px'
     },
-    MarksR0: {
-        0: {
-            style: {
-                fontFamily: 'Cousine, monospace',
-                fontSize: '12px',
-                marginTop: '3px',
-                color: 'rgba(0, 0, 0, 0.65)'
-            },
-            label: 0,
-            }, 
-        4: {
-            style: {
-                fontFamily: 'Cousine, monospace',
-                fontSize: '12px',
-                marginTop: '3px',
-                color: 'rgba(0, 0, 0, 0.65)'
-            },
-            label: 4,
-            }
+    Marks: {
+        fontFamily: 'Cousine, monospace',
+        fontSize: '12px',
+        marginTop: '3px',
+        color: 'rgba(0, 0, 0, 0.65)'
     }
-    
 };
 
 export const STATS = [

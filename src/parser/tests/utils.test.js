@@ -65,3 +65,14 @@ test('return expected aggregation by state', () => {
 
     expect(parsedObj).toStrictEqual(expected);
 });
+
+test('return expected r0', () => {
+    const dir = '../resources';
+    const scenario = 'Inference';
+    const severity = 'high';
+    const sim = 1;
+
+    const R0 = utils.returnR0(dir, scenario, severity, sim);
+    
+    expect(R0).toStrictEqual(2.24);
+});

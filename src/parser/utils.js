@@ -1,6 +1,6 @@
 const fs = require('fs');
 const _ = require('lodash');
-const constants = require('./constants');
+// const constants = require('./constants');
 
 function initObj(geoids, scenarios, severities, parameters, dates) {
     // build structure of final Object
@@ -154,49 +154,72 @@ function aggregateByState(parsedObj, finalObj, states, geoids, scenarios, severi
     }
 }
 
-function calcReduceInt(fileLength) {
-    // returns int a sim number must be divisible by
-    // in order to be included in final dataset
-    // fileLength is length of files in scenario directory
-    // includes all severities
+function returnR0(dir, scenario, severity, sim) {
+    // TODO: filename and structure will probably need to be changed
 
-    if (fileLength < 60) {
-        return 1;
-    } else if (fileLength <= 120) {
-        return 2;
-    } else if (fileLength <= 200) {
-        return 3;
-    } else if (fileLength <= 300) {
-        return 4;
-    } else {
-        return 5;
-    }
-}
+    const zeros = '0'.repeat(9 - sim.toString().length);
+    const path = `src/store/model_parameters/`
+    const fileName = `${scenario}_${severity}-${zeros}${sim}.spar.csv`;
 
-function reduceSims(dir, parsedObj) {
-    // reduce number of sims based on sim files per scenario
+    // return value of R0
+    try {
+        const data = fs.readFileSync(`${path}${fileName}`, 'UTF-8');
+        const lines = data.split(/\r?\n/);
     
-    const geoids = Object.keys(parsedObj);
-    for (let geoid of geoids) {
-
-        const scenarios = Object.keys(parsedObj[geoid]);
-        for (let scenario of scenarios) {
-
-            const files = fs.readdirSync(`${dir}${scenario}/`)
-                .filter(file => file !== '.DS_Store');
-            const reduceInt = module.exports.calcReduceInt(files.length);
-            for (let sev of constants.severities) {
-
-                for (let param of constants.parameters) {
-
-                    const newSims = parsedObj[geoid][scenario][sev][param].sims
-                        .filter(sim => sim.name % reduceInt === 0);
-                    parsedObj[geoid][scenario][sev][param].sims = newSims;
-                }
+        for (let line of lines) {
+            const lineArray = line.split(',');
+            if (lineArray[1] === 'R0') {
+                return parseFloat(parseFloat(lineArray[0]).toFixed(2));
             }
         }
-    }
+    } catch (err) {
+        console.error(err);
+    };
 }
+
+// function calcReduceInt(fileLength) {
+//     // returns int a sim number must be divisible by
+//     // in order to be included in final dataset
+//     // fileLength is length of files in scenario directory
+//     // includes all severities
+
+//     if (fileLength < 60) {
+//         return 1;
+//     } else if (fileLength <= 120) {
+//         return 2;
+//     } else if (fileLength <= 200) {
+//         return 3;
+//     } else if (fileLength <= 300) {
+//         return 4;
+//     } else {
+//         return 5;
+//     }
+// }
+
+// function reduceSims(dir, parsedObj) {
+//     // reduce number of sims based on sim files per scenario
+    
+//     const geoids = Object.keys(parsedObj);
+//     for (let geoid of geoids) {
+
+//         const scenarios = Object.keys(parsedObj[geoid]);
+//         for (let scenario of scenarios) {
+
+//             const files = fs.readdirSync(`${dir}${scenario}/`)
+//                 .filter(file => file !== '.DS_Store');
+//             const reduceInt = module.exports.calcReduceInt(files.length);
+//             for (let sev of constants.severities) {
+
+//                 for (let param of constants.parameters) {
+
+//                     const newSims = parsedObj[geoid][scenario][sev][param].sims
+//                         .filter(sim => sim.name % reduceInt === 0);
+//                     parsedObj[geoid][scenario][sev][param].sims = newSims;
+//                 }
+//             }
+//         }
+//     }
+// }
 
 function writeToFile(parsedObj, geoids) {
     // each geoid will write to separate JSON file
@@ -249,8 +272,9 @@ module.exports = {
     notHeaderOrEmpty,
     returnFilesBySev,
     aggregateByState,
-    calcReduceInt,
-    reduceSims,
+    returnR0,
+    // calcReduceInt,
+    // reduceSims,
     writeToFile,
     combineCaliCounties
 }
