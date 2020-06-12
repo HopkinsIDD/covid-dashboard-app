@@ -52,11 +52,21 @@ class Sliders extends Component {
         this.props.onSliderMouseEvent(e.type, 'date', 'graph')
     }
 
+    getStepValue = (seriesMax) => {
+        if (seriesMax <= 50) {
+            return 1
+        } else if (seriesMax <= 1000) {
+            return 10
+        } else {
+            return 100
+        }
+    }
+
     render() {
         const { stat, statThreshold, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
-        const roundedStat = Math.ceil(statThreshold / 100) * 100;
+        const stepVal = this.getStepValue(seriesMax)
+        const roundedStat = Math.ceil(statThreshold / stepVal) * stepVal;
         const isDisabled = this.props.showConfBounds ? "disabled" : "";
-        
         return (
             <div className={`slider-menu ${isDisabled}`}>
                 {/* Stat Threshold */}
@@ -72,7 +82,7 @@ class Sliders extends Component {
                     min="0"
                     max={seriesMax.toString()}
                     value={statThreshold.toString()}
-                    step={100}
+                    step={stepVal}
                     style={styles.Selector}
                     ref={ref => this.statInput = ref}
                     disabled={isDisabled}

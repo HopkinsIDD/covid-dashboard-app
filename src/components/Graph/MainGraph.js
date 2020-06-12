@@ -11,9 +11,10 @@ import SeverityContainer from '../Filters/SeverityContainer'
 import Sliders from '../Filters/Sliders';
 
 import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
-import { buildScenarios, filterR0, returnSimsOverThreshold, getRange } from '../../utils/utils';
+import { buildScenarios, returnSimsOverThreshold, getRange } from '../../utils/utils';
 import { utcParse, } from 'd3-time-format';
 import { timeDay } from 'd3-time';
+import { max } from 'd3-array';
 
 const parseDate = utcParse('%Y-%m-%d');
 // const formatDate = timeFormat('%Y-%m-%d');
@@ -106,14 +107,14 @@ class MainGraph extends Component {
                     return newS
                 });
                 // array of all peaks in series
-                const seriesPeaks = filteredSeriesForStatThreshold.map(sim => sim.max);
+                const seriesPeaks = filteredSeriesForStatThreshold.map(sim => max(sim.vals));
                 const [seriesMin, seriesMax] = getRange(seriesPeaks);
                 // ensures side by side y-scale reflect both series
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
                 // default smart value for statThreshold calculation
-                if (i === 0) statThreshold = seriesMin;
-
+                if (i === 0 && seriesMin < seriesMax/2) statThreshold = seriesMin;
+                if (i === 0 && seriesMin >= seriesMax/2) statThreshold = seriesMax/2;
                 const simsOver = returnSimsOverThreshold(
                     series, statThreshold, this.state.allTimeDates, dateThreshold);
                 // brush visual only based on first scenario, for simplicity

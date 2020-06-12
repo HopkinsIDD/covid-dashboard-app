@@ -1,5 +1,5 @@
 import React from 'react';
-import { green, red, blue, gray, graphBkgd } from '../../utils/constants';
+import colors from '../../utils/colors';
 
 function Legend(props) {
     if (!props.showConfBounds && !props.showHoveredSim) {
@@ -11,7 +11,7 @@ function Legend(props) {
                         y={props.y}
                         width={160}
                         height={50}
-                        fill={graphBkgd}
+                        fill={colors.graphBkgd}
                         fillOpacity={0.5}
                     />
                     <g className="legend-above" >
@@ -20,7 +20,7 @@ function Legend(props) {
                             y1={props.y}
                             x2={props.x + 20}
                             y2={props.y}
-                            stroke={red}
+                            stroke={colors.red}
                             strokeWidth="1"
                         />
                         <text
@@ -40,7 +40,7 @@ function Legend(props) {
                             y1={props.y + 20}
                             x2={props.x + 20}
                             y2={props.y + 20}
-                            stroke={green}
+                            stroke={colors.green}
                             strokeWidth="1"
                         />
                         <text
@@ -64,7 +64,7 @@ function Legend(props) {
                         y={props.y}
                         width={160}
                         height={50}
-                        fill={graphBkgd}
+                        fill={colors.graphBkgd}
                         fillOpacity={0.5}
                     />
                     <g className="legend-mean">
@@ -73,7 +73,7 @@ function Legend(props) {
                             y1={props.y}
                             x2={props.x + 20}
                             y2={props.y}
-                            stroke="#4ddaba"
+                            stroke={colors.green}
                             strokeWidth="2"
                         />
                         <text
@@ -82,7 +82,7 @@ function Legend(props) {
                             opacity={0.65}
                             className="titleNarrow"
                         >
-                            mean
+                            median
                         </text>
                     </g>
                 </g>
@@ -93,7 +93,7 @@ function Legend(props) {
                             y={props.y + 15}
                             width={20} 
                             height={12}
-                            fill="#4ddaba"
+                            fill={colors.green}
                             fillOpacity={0.3}
                         />
                         <text
@@ -114,7 +114,7 @@ function Legend(props) {
                             y1={props.y + 40}
                             x2={props.x + 20}
                             y2={props.y + 40}
-                            stroke="#d0d0d0"
+                            stroke={colors.lightGray}
                             strokeWidth="1"
                         />
                         <text 
@@ -138,7 +138,7 @@ function Legend(props) {
                         y={props.y}
                         width={165}
                         height={50}
-                        fill={graphBkgd}
+                        fill={colors.graphBkgd}
                         fillOpacity={0.5}
                     />
                     <g className="legend-above" >
@@ -147,7 +147,7 @@ function Legend(props) {
                             y1={props.y}
                             x2={props.x + 20}
                             y2={props.y}
-                            stroke={blue}
+                            stroke={colors.blue}
                             strokeWidth="1"
                         />
                         <text
@@ -167,7 +167,7 @@ function Legend(props) {
                             y1={props.y + 20}
                             x2={props.x + 20}
                             y2={props.y + 20}
-                            stroke={gray}
+                            stroke={colors.gray}
                             strokeWidth="1"
                         />
                         <text

@@ -9,7 +9,7 @@ class NavBar extends Component {
     super(props);
     this.state = {
       active: null,
-      links: ['#interactive-graph', '#exploration', '#geographic-map', '#methods']
+      links: ['#interactive-graph', '#exploration', '#geographic-map', '#methods', '#about']
     }
   }
 
@@ -33,8 +33,8 @@ class NavBar extends Component {
                       <MenuItem  
                         height={index === 2 ? "36" : "40"}
                         active={this.state.active === index ? true : false}
-                        activeClass={index === 3 ? "nav-active-methods" : "nav-active"}
-                        hoverClass={index === 3 ? "nav-hover-methods" : "nav-hover"}
+                        activeClass={index === 3 || index === 4 ? "nav-active-methods" : "nav-active"}
+                        hoverClass={index === 3 || index === 4 ? "nav-hover-methods" : "nav-hover"}
                         handleMouseClick={this.handleMouseClick}
                         menuItem={index}
                       />

@@ -41,7 +41,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4 {
+h1, h2 {
   color: white;
   margin: 0;
 }
@@ -149,6 +149,7 @@ li a {
 
 .tick {
   font-family: 'PT Sans', sans-serif;
+  font-size: 12px;
 }
 
 .nav-subtitle {
@@ -254,15 +255,6 @@ li {
   font-size: 1.4rem;
 }
 
-.scenario-header {
-  margin-bottom: -0.5rem;
-}
-
-.switch {
-  margin-top: 16px;
-  padding-left: 12px;
-}
-
 .upload-toggle {
   padding-left: 0.4rem;
   font-size: 14px;
@@ -270,7 +262,7 @@ li {
 }
 
 .filter-label {
-  font-size: 12px;
+  font-size: 13px;
   margin-bottom: 0px;
 }
 
@@ -354,6 +346,7 @@ li {
 
 .map-title {
   /* width: 80px; */
+  font-size: 1rem;
   padding: 0 0 15px 5px;
   text-align: left;
 }
@@ -671,6 +664,11 @@ input[type=range]:disabled::-moz-range-thumb {
   margin-bottom: 10vh;
 }
 
+.footer {
+  color: #dddddd;
+  margin: 1.4rem 0;
+}
+
 /* CSS overides from libraries */
 .selection {
   stroke-opacity: 0;
@@ -703,10 +701,6 @@ input[type=range]:disabled::-moz-range-thumb {
   top: 0px;
 }
 
-.ant-slider-dot-active {
-
-}
-
 .ant-slider-handle {
   width: 18px;
   height: 18px;
@@ -726,4 +720,9 @@ input[type=range]:disabled::-moz-range-thumb {
 
 .antd-slider:hover {
   background-color: #3885fa;
+}
+
+.methods-header {
+  margin: 2.4rem 0 0.4rem;
+  font-size: 1.4rem;
 }

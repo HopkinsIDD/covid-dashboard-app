@@ -7,6 +7,7 @@ import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
 import MainMap from './Map/MainMap';
 import Methodology from './Methodology';
+import About from './About';
 
 const dataset = require('../store/geo06085.json');
 
@@ -100,7 +101,7 @@ class MainContainer extends Component {
                 />}
                 
                 <Methodology />
-
+                <About />
             </Layout>
         )
     }

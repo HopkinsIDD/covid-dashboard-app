@@ -7,7 +7,8 @@ import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
 import { getDateIdx, addCommas, capitalize } from '../../utils/utils';
-import { margin, chartBkgd, gray, blue, scenarioColors } from '../../utils/constants'
+import { margin } from '../../utils/constants'
+import colors, { gray, scenarioColorPalette } from '../../utils/colors';
 
 class Chart extends Component {
     constructor(props) {
@@ -189,7 +190,7 @@ class Chart extends Component {
                 height={this.props.height - margin.chartTop - margin.bottom + 2}
                 x={margin.left}
                 y={margin.chartTop}
-                fill={chartBkgd}
+                fill={colors.chartBkgd}
             >
             </rect>
             {this.state.severities.map( (severity, i) => {
@@ -209,9 +210,9 @@ class Chart extends Component {
                                         height={this.state.yScale(0) - this.state.yScale(value.median)}
                                         x={(margin.left * 2) + (i * (barWidth + barMargin)) + this.state.xScale(key)}
                                         y={this.state.yScale(value.median)}
-                                        fill={scenarioColors[j]}
+                                        fill={scenarioColorPalette[j]}
                                         stroke={this.state.hoveredRect.severity === severity &&
-                                            this.state.hoveredRect.scenario === key ? blue: scenarioColors[j]}
+                                            this.state.hoveredRect.scenario === key ? colors.blue: scenarioColorPalette[j]}
                                         strokeWidth={4}
                                         style={{ pointerEvents: 'none' }}
                                     >
