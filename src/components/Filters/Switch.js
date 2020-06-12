@@ -25,7 +25,7 @@ class Switch extends Component {
                         onClick={this.handleTooltipClick}
                         >
                         <div className="tooltip">&nbsp;&#9432;
-                            {this.state.showTooltip ?
+                            {this.state.showTooltip &&
                             <span className="tooltip-text">
                                 The Threshold Exceedence mode allows you to interact
                                 with the model simulation curves by sliding the 
@@ -37,8 +37,7 @@ class Switch extends Component {
                                 The Confidence Bounds mode displays the 10%, 50%, 
                                 and 90% confidence intervals based on all 
                                 model simulations.
-                            </span> 
-                            : null}
+                            </span> }
                         </div>
                     </TooltipHandler>
                 </div>

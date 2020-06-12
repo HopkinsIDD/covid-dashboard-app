@@ -10,61 +10,51 @@ class SeverityContainer extends Component {
     }
 
     componentDidMount() {
-        const { scenarioList, severityList } = this.props;
-        const keyVal = `${severityList[0].key}_${scenarioList[0].key}`;
+        const child = this.buildSeverity(0);
+        this.setState({ children: [child] })
+    }
+
+    componentDidUpdate(prevProp) {
+        const { scenarioList, severityList, stat } = this.props;
+        const newChildren = [];
+
+        if (prevProp.scenarioList !== scenarioList ||
+            prevProp.severityList !== severityList ||
+            prevProp.stat !== stat ) {
+
+            for (let i = 0; i < scenarioList.length; i++) {
+                const child = this.buildSeverity(i);
+                newChildren.push(child);
+            }
+            this.setState({ children: newChildren })    
+        }
+    }
+
+    buildSeverity(i) {
+        const { scenarioList, severityList, stat } = this.props;
+        const keyVal = `${severityList[i].key}_${scenarioList[i].key}`;
+
+        // Infection values are the same across all severity
+        const isDisabled = stat.name === 'Infections' ? true : false;
+
         const child = {
             'key': keyVal,
-            'scenario': scenarioList[0],
-            'severity': [],
-            'sevCount': 1,
+            'scenario': scenarioList[i],
+            'severity': []
         }
         child.severity.push(
             <Severity 
                 key={keyVal}
-                severity={severityList[0]}
-                scenario={scenarioList[0]}
+                severity={severityList[i]}
+                scenario={scenarioList[i]}
+                isDisabled={isDisabled}
                 sevCount={severityList.length}
                 onSeverityClick={this.handleSeverityClick}
                 onSeverityHover={this.handleSeverityHover}
                 onSeverityHoverLeave={this.handleSeverityHoverLeave}
             />        
         )
-        this.setState({
-            children: [child],
-        })
-    }
-
-    componentDidUpdate(prevProp, prevState) {
-        const { scenarioList, severityList } = this.props;
-        const newChildren = [];
-
-        if (prevProp.scenarioList !== scenarioList ||
-            prevProp.severityList !== severityList ) {
-
-            for (let i = 0; i < scenarioList.length; i++) {
-                const keyVal = `${severityList[i].key}_${scenarioList[i].key}`;
-                const child = {
-                    'key': keyVal,
-                    'scenario': scenarioList[i],
-                    'severity': [],
-                }
-                child.severity.push(
-                    <Severity 
-                        key={keyVal}
-                        severity={severityList[i]}
-                        scenario={scenarioList[i]}
-                        sevCount={severityList.length}
-                        onSeverityClick={this.handleSeverityClick}
-                        onSeverityHover={this.handleSeverityHover}
-                        onSeverityHoverLeave={this.handleSeverityHoverLeave}
-                    />
-                )
-                newChildren.push(child);
-            }
-            this.setState({
-                children: newChildren,
-            })    
-        }
+        return child;
     }
 
     handleSeverityClick = (i) => {
@@ -81,22 +71,17 @@ class SeverityContainer extends Component {
 
     render() {
         const { children } = this.state;
-        // infection numbers are the same for all severity
-        if (this.props.stat.key !== 'incidI') {
-            return (
-                <div>
-                    {children.map(child => {
-                        return (
-                            <div key={child.key}>
-                                {child.severity}
-                            </div>
-                        )
-                    })}
-                </div>
-            )
-        } else {
-            return null;
-        }
+        return (
+            <div>
+                {children.map(child => {
+                    return (
+                        <div key={child.key}>
+                            {child.severity}
+                        </div>
+                    )
+                })}
+            </div>
+        )
     }
 }
 

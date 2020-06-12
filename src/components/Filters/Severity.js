@@ -55,7 +55,7 @@ class Severity extends Component {
     }
 
     render() {
-        const { severity, scenario, sevCount } = this.props; 
+        const { severity, scenario, sevCount, isDisabled } = this.props; 
         const title = sevCount === 1 ?
             'SEVERITY' : ('Severity for ' + scenario.name.replace('USA_','')) ;
         return ( 
@@ -68,19 +68,22 @@ class Severity extends Component {
                         onClick={this.handleTooltipClick}
                         >
                         <div className="tooltip">&nbsp;&#9432;
-                            {this.state.showTooltip ?
+                            {this.state.showTooltip &&
                             <span className="tooltip-text">
                                 High, medium, and low severity correspond
                                 to 1%, 0.5%, and 0.25% infection fatality rate (IFR), 
-                                and 10%, 5% and 2.5% hospitalization rate, respectively.                    
-                            </span> 
-                            : null}
+                                and 10%, 5% and 2.5% hospitalization rate, respectively.      
+                                <br /><br />
+                                <i>Infections</i> values are the same across
+                                all severity levels.               
+                            </span> }
                         </div>
                     </TooltipHandler>
                 </div>
                 <Radio.Group
                     value={severity.key} 
                     style={styles.Selector}
+                    disabled={isDisabled}
                     onChange={this.handleChange}>
                     {this.state.children.map(child => child.button)}
                 </Radio.Group>

@@ -104,9 +104,8 @@ class Search extends Component {
                         <div className="upload-toggle">{uploadMessage}</div>
                     </Row>   
                     <br />
-                    {showFileUpload ? 
-                        <FileUploader onUpload={this.handleUpload}/> 
-                        : null}
+                    {showFileUpload &&
+                    <FileUploader onUpload={this.handleUpload}/> }
                     </div>
                 </Col>
             </Content>
