@@ -208,7 +208,7 @@ class MainGraph extends Component {
             confBoundsList: [filteredConfBounds],
             showConfBounds: false,
             r0full,
-            r0selected: r0full
+            r0selected: r0full // alternative r0 streategy: [2.2, 2.4]
         }, () => {
             this.setState({dataLoaded: true});
         })

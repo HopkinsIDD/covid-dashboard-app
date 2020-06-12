@@ -9,7 +9,7 @@ class R0 extends Component {
         super(props);
         this.state = {
             showTooltip: false,
-            step: 0.1
+            step: 0.1 // alternative r0 strategy: step is 0.2
         }
     }
     
@@ -17,6 +17,27 @@ class R0 extends Component {
         // prevent user from selecting no range
         if (e[1] - e[0] < this.state.step) return
         this.props.onR0Change(e);
+
+        // alternate r0 strategy
+
+        // const { r0selected } = this.props;
+        // let min, max;
+        // // TODO: CLEAN THIS UP --> 
+        // // if r0 range is increased
+        // if (e[1] > r0selected[1]) {
+        //     min = Math.round((e[1] - 0.2) * 10) / 10;
+        //     max = Math.round(e[1] * 10) / 10;
+        // // if r0 range is decreased
+        // } else if (e[0] < r0selected[0]) {
+        //     min = Math.round(e[0] * 10) / 10;
+        //     max = Math.round((e[0] + 0.2) * 10) / 10;
+        // // prevent user from selecting beyond range
+        // } else {
+        //     min = r0selected[0];
+        //     max = r0selected[1];
+        // }
+
+        // this.props.onR0Change([min, max])
     }
 
     handleTooltipClick = () => {
@@ -42,7 +63,7 @@ class R0 extends Component {
                         onClick={this.handleTooltipClick}
                         >
                         <div className="tooltip">&nbsp;&#9432;
-                            {this.state.showTooltip ?
+                            {this.state.showTooltip &&
                             <span className="tooltip-text">
                                 The reproduction number, or R<sub>0</sub>, indicates
                                 the intensity of an infection and describes the
@@ -50,8 +71,7 @@ class R0 extends Component {
                                 one person. For example, a person with an infection
                                 having an R<sub>0</sub> of 4 will transmit it to an
                                 average of 4 other people.              
-                            </span> 
-                            : null}
+                            </span> }
                         </div>
                     </TooltipHandler>
                 </div>
@@ -69,7 +89,7 @@ class R0 extends Component {
                     step={this.state.step}
                     included={true}
                     tooltipVisible={false}
-                    defaultValue={r0full}
+                    defaultValue={r0selected}
                     value={r0selected}
                     onChange={this.handleChange}
                 />
