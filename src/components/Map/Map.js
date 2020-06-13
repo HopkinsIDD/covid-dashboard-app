@@ -217,10 +217,32 @@ class Map extends Component {
         }
     }
 
+    handleZoomIn = () => {
+        console.log('zoom in')
+        if (this.mapRef.current) {
+            // scale zoom on button press
+            const mapNode = select(this.mapRef.current)
+            this.zoom.scaleBy(mapNode.transition().duration(750), 1.2);
+        }
+    }
+
+    handleZoomOut = () => {
+        console.log('zoom out')
+        if (this.mapRef.current) {
+            // scale zoom on button press
+            const mapNode = select(this.mapRef.current)
+            this.zoom.scaleBy(mapNode.transition().duration(750), 0.8);
+        }
+    }
+
     render() {
         return (
-            <Fragment>
+            <div className="map-parent">
                 <div className='titleNarrow map-title'>{`${this.props.statLabel} per 10K people`}</div>
+                <div className="map-parent">
+                    <div><button className="zoom" id="zoom_in" onClick={this.handleZoomIn}>+</button></div>
+                    <div><button className="zoom" id="zoom_out" onClick={this.handleZoomOut}>-</button></div>
+                </div>
                 <svg width={legendW} height={this.props.height}>
                      {/* debug green svg */}
                      {/* <rect
@@ -281,6 +303,7 @@ class Map extends Component {
                             stroke={'#00ff00'}
                             strokeWidth='1'
                             strokeOpacity={0}
+                            style={{ 'cursor': 'grab' }}
                             onMouseMove={this.handleMouseMove}
                             // onMouseEnter={() => console.log('mouseenter')}
                             onMouseLeave={this.handleMouseMove}
@@ -288,7 +311,7 @@ class Map extends Component {
                         {this.state.countyBoundaries.features && this.drawCounties()}
                     </g>
                 </svg>
-            </Fragment>
+            </div>
             
         )
     }
