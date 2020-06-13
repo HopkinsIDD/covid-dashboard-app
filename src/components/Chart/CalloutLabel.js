@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react';
 import { addCommas } from '../../utils/utils.js';
 
-function SummaryLabel(props) {
+function CalloutLabel(props) {
     return (
         <Fragment>
           <div className={props.classProps}>
@@ -24,4 +24,4 @@ function SummaryLabel(props) {
         )
 }
 
-export default SummaryLabel
+export default CalloutLabel

@@ -5,9 +5,10 @@ import GraphContainer from './GraphContainer';
 import Brush from '../Filters/Brush';
 import Scenarios from '../Filters/Scenarios';
 import Indicators from '../Filters/Indicators';
-import Switch from '../Filters/Switch';
-import R0 from '../Filters/R0';
 import SeverityContainer from '../Filters/SeverityContainer'
+import ActualSwitch from '../Filters/ActualSwitch';
+import R0 from '../Filters/R0';
+import ModeToggle from '../Filters/ModeToggle';
 import Sliders from '../Filters/Sliders';
 
 import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
@@ -41,12 +42,15 @@ class MainGraph extends Component {
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: new Date(),
             dateRange: [parseDate('2020-03-01'), parseDate('2020-07-27')],
+            showActual: false,
+            actualList: [[]],
+            r0: [0, 4],
             r0full: [0, 4],
             r0selected: [0, 4],
             simNum: '150',
             percExceedenceList: [],
-            showConfBounds: false,
             confBounds: {},
+            showConfBounds: false,
             confBoundsList: [{}],
             brushActive: false,
             animateTransition: true,
@@ -75,6 +79,7 @@ class MainGraph extends Component {
             const filteredSeriesList = []
             const percExceedenceList = []
             const confBoundsList = [];
+            const actualList = [];
             let brushSeries
             
             const { dataset } = this.props;
@@ -141,6 +146,16 @@ class MainGraph extends Component {
                     const filteredConfBounds = confBounds.slice(idxMin, idxMax)
                     confBoundsList.push(filteredConfBounds);
                 }
+                // instantiate actuals data if data for specific indicator exists
+                let actual = [];
+                const indicator = stat.name.toLowerCase();
+                const actualJSON = require('../../store/actuals.json');
+                if (Object.keys(actualJSON).includes(indicator)) {
+                    actual = actualJSON[indicator][this.props.geoid].map( d => {
+                        return { date: parseDate(d.date), val: d.val}
+                    });
+                }
+                actualList.push(actual);
             }
             this.setState({
                 seriesList: filteredSeriesList,
@@ -151,7 +166,9 @@ class MainGraph extends Component {
                 seriesMin: sliderMin,
                 seriesMax: sliderMax,
                 percExceedenceList,
-                confBoundsList
+                confBoundsList,
+                actualList,
+                // showActual: false
             })
         }
     };
@@ -189,6 +206,14 @@ class MainGraph extends Component {
         const confBounds = dataset[SCENARIOS[0].key][severity.key][stat.key].conf;
         const filteredConfBounds = confBounds.slice(idxMin, idxMax)
 
+        // instantiate actuals data if data for specific indicator exists
+        let actual = [];
+        const indicator = stat.name.toLowerCase();
+        const actualJSON = require('../../store/actuals.json');
+        if (Object.keys(actualJSON).includes(indicator)) {
+            actual = actualJSON[indicator][this.props.geoid];
+        }
+
         // instantiate min and max of r0 based on dataset
         const r0array = dataset[SCENARIOS[0].key][severity.key][stat.key]
             .sims.map(sim => sim.r0);
@@ -208,6 +233,8 @@ class MainGraph extends Component {
             percExceedenceList: [percExceedence],
             confBoundsList: [filteredConfBounds],
             showConfBounds: false,
+            actualList: [actual],
+            r0: [0, 4],
             r0full,
             r0selected: r0full // alternative r0 streategy: [2.2, 2.4]
         }, () => {
@@ -215,7 +242,7 @@ class MainGraph extends Component {
         })
     }
 
-    handleButtonClick = (i) => {
+    handleIndicatorClick = (i) => {
         const yAxisLabel = `Daily ${i.name}`;
         this.setState({
             stat: i, 
@@ -264,6 +291,11 @@ class MainGraph extends Component {
 
     handleR0Change = (e) => {
         this.setState({ r0selected: e, animateTransition: true })
+    };
+
+    handleActualChange = () => {
+        this.setState({showActual: !this.state.showActual}); 
+        console.log(!this.state.showActual, this.state.actualList)
     };
 
     handleStatSliderChange = (thresh) => {
@@ -389,6 +421,8 @@ class MainGraph extends Component {
                             simNum={this.state.simNum}
                             showConfBounds={this.state.showConfBounds}
                             confBoundsList={this.state.confBoundsList}
+                            actualList={this.state.actualList}
+                            showActual={this.state.showActual}
                             statThreshold={this.state.statThreshold}
                             dateThreshold={this.state.dateThreshold}
                             percExceedenceList={this.state.percExceedenceList}
@@ -425,7 +459,7 @@ class MainGraph extends Component {
                             onScenarioClick={this.handleScenarioClickGraph} />
                         <Indicators
                             stat={this.state.stat}
-                            onButtonClick={this.handleButtonClick} />        
+                            onIndicatorClick={this.handleIndicatorClick} />        
                         <SeverityContainer
                             stat={this.state.stat}
                             severityList={this.state.severityList}
@@ -437,7 +471,10 @@ class MainGraph extends Component {
                             r0full={this.state.r0full}
                             r0selected={this.state.r0selected}
                             onR0Change={this.handleR0Change} />
-                        <Switch
+                        <ActualSwitch
+                            onChange={this.handleActualChange}
+                            actualList={this.state.actualList} />
+                        <ModeToggle
                             showConfBounds={this.state.showConfBounds}
                             onConfClick={this.handleConfClick} /> 
                         <Sliders 
