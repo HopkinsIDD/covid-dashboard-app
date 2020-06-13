@@ -204,7 +204,7 @@ class Map extends Component {
     }
 
     zoomed = () => {
-        console.log(event);
+        // console.log(event);
         if (this.mapRef.current) {
             // update paths on zoom event
             const mapNode = select(this.mapRef.current)
@@ -212,13 +212,13 @@ class Map extends Component {
                 .attr('transform', event.transform)
             const strokeWidth = this.strokeWidthScale(event.transform.k)
             const strokeHoverWidth = this.strokeHoverWidthScale(event.transform.k)
-            console.log(event.transform.k, strokeWidth, strokeHoverWidth)
+            // console.log(event.transform.k, strokeWidth, strokeHoverWidth)
             this.setState({ strokeWidth, strokeHoverWidth })
         }
     }
 
     handleZoomIn = () => {
-        console.log('zoom in')
+        // console.log('zoom in')
         if (this.mapRef.current) {
             // scale zoom on button press
             const mapNode = select(this.mapRef.current)
@@ -227,7 +227,7 @@ class Map extends Component {
     }
 
     handleZoomOut = () => {
-        console.log('zoom out')
+        // console.log('zoom out')
         if (this.mapRef.current) {
             // scale zoom on button press
             const mapNode = select(this.mapRef.current)
