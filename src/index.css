@@ -364,6 +364,11 @@ li {
   position: absolute;
   right: 2px;
   cursor: pointer;
+  border: 1px solid #afafaf;
+}
+
+.zoom:hover {
+  background-color: #dcdcdc;
 }
 
 #zoom_in {
@@ -371,7 +376,7 @@ li {
 }
 
 #zoom_out {
-  top: 29px;
+  top: 27px;
 }
 
 .slider-menu {
