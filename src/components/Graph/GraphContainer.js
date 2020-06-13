@@ -47,6 +47,8 @@ class GraphContainer extends Component {
                 simNum={this.props.simNum}
                 showConfBounds={this.props.showConfBounds}
                 confBounds={this.props.confBoundsList[0]}
+                showActual={this.props.showactual}
+                actual={this.props.actualList[0]}
                 statThreshold={this.props.statThreshold}
                 dateThreshold={this.props.dateThreshold}
                 dateRange={this.props.dateRange}
@@ -93,7 +95,10 @@ class GraphContainer extends Component {
       // if the seriesList has changed, we want to remove existing graphs before drawing / updating
       // the way to solve this is by keeping track of scenarioChange click events and putting those in the graph keys
       // so that when the click events increment the keys change and the graph component remounts
-      if (prevProp.seriesList !== this.props.seriesList || prevProp.showConfBounds !== this.props.showConfBounds) {
+      if (prevProp.seriesList !== this.props.seriesList || 
+        prevProp.showConfBounds !== this.props.showConfBounds ||
+        prevProp.showActual !== this.props.showActual) {
+            // console.log('showActual Change', prevProp.showActual, this.props.showActual)
         // console.log('seriesList change, seriesList is', seriesList.length)
         const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
         const graphHeight = height;
@@ -128,6 +133,7 @@ class GraphContainer extends Component {
                     showConfBounds={this.props.showConfBounds}
                     confBounds={this.props.confBoundsList[i]}
                     showActual={this.props.showActual}
+                    actual={this.props.actualList[i]}
                     series={this.props.seriesList[i]}
                     dates={this.props.dates}
                     statThreshold={this.props.statThreshold}

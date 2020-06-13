@@ -53,6 +53,27 @@ function Legend(props) {
                         </text>
                     </g>
                 </g>
+                {
+                props.showActual &&
+                    <g className="legend">
+                        <g className="legend-actual">
+                            <circle
+                                cx={props.x + 18}
+                                cy={props.y + 40}
+                                fill={colors.orange}
+                                r={2}
+                            />
+                            <text
+                                x={props.x + 25}
+                                y={props.y + 40 + 4}
+                                opacity={0.65}
+                                className="titleNarrow"
+                            >
+                                actual data points
+                            </text>
+                        </g>
+                    </g>
+                }
             </g>
         )     
     } else if (props.showConfBounds && !props.showHoveredSim) {
@@ -127,9 +148,31 @@ function Legend(props) {
                         </text>
                     </g>
                 </g>
+                {
+                props.showActual &&
+                    <g className="legend">
+                        <g className="legend-actual">
+                            <circle
+                                cx={props.x + 18}
+                                cy={props.y + 60}
+                                fill={colors.orange}
+                                r={2}
+                            />
+                            <text
+                                x={props.x + 25}
+                                y={props.y + 60 + 4}
+                                opacity={0.65}
+                                className="titleNarrow"
+                            >
+                                actual data points
+                            </text>
+                        </g>
+                    </g>
+                }
             </g>
         )
     } else {
+        console.log('here', props.showActual)
         return (
             <g className="legend-container">
                 <g className="legend">
@@ -180,9 +223,53 @@ function Legend(props) {
                         </text>
                     </g>
                 </g>
+                {
+                props.showActual &&
+                    <g className="legend">
+                        <g className="legend-actual">
+                            <circle
+                                cx={props.x + 18}
+                                cy={props.y + 40}
+                                fill={colors.orange}
+                                r={2}
+                            />
+                            <text
+                                x={props.x + 25}
+                                y={props.y + 40 + 4}
+                                opacity={0.65}
+                                className="titleNarrow"
+                            >
+                                actual data points
+                            </text>
+                        </g>
+                    </g>
+                }
             </g>
         )     
     }
 }
 
 export default Legend
+
+function ActualLegend(props) {
+    return (
+        <g className="legend">
+            <g className="legend-actual">
+                <circle
+                    cx={props.x}
+                    cy={props.y + 40}
+                    fill={colors.orange}
+                    r={3.5}
+                />
+                <text
+                    x={props.x + 45}
+                    y={props.y + 40 + 4}
+                    opacity={0.65}
+                    className="titleNarrow"
+                >
+                    actual data
+                </text>
+            </g>
+        </g>
+    )
+}

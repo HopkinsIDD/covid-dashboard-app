@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { Radio } from 'antd';
-import TooltipHandler from '../Filters/TooltipHandler';
+import TooltipHandler from './TooltipHandler';
 import { styles } from '../../utils/constants';
 
-class Switch extends Component {
+class ModeToggle extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -48,13 +48,13 @@ class Switch extends Component {
                     onChange={this.props.onConfClick}>
                     <Radio.Button
                         key="exceedence" 
-                        style={styles.Switch}
+                        style={styles.Radio}
                         value="exceedence">
                         Threshold Exceedence
                     </Radio.Button>
                     <Radio.Button
                         key="confidence"
-                        style={styles.Switch}
+                        style={styles.Radio}
                         value="confidence">
                         Confidence Bounds
                     </Radio.Button>
@@ -64,4 +64,4 @@ class Switch extends Component {
     }
 }
 
-export default Switch
+export default ModeToggle
