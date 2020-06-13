@@ -446,7 +446,7 @@ class Graph extends Component {
                                     cx={this.props.xScale(d.date)}
                                     cy={this.props.yScale(d.val)}
                                     r={1.5}
-                                    fill={colors.orange}
+                                    fill={colors.actual}
                                     clipPath={'url(#actualClip)'}
                                     className={'actualDataCircle'}
                                 >

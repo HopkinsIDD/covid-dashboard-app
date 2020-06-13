@@ -60,7 +60,7 @@ function Legend(props) {
                             <circle
                                 cx={props.x + 18}
                                 cy={props.y + 40}
-                                fill={colors.orange}
+                                fill={colors.actual}
                                 r={2}
                             />
                             <text
@@ -155,7 +155,7 @@ function Legend(props) {
                             <circle
                                 cx={props.x + 18}
                                 cy={props.y + 60}
-                                fill={colors.orange}
+                                fill={colors.actual}
                                 r={2}
                             />
                             <text
@@ -230,7 +230,7 @@ function Legend(props) {
                             <circle
                                 cx={props.x + 18}
                                 cy={props.y + 40}
-                                fill={colors.orange}
+                                fill={colors.actual}
                                 r={2}
                             />
                             <text
