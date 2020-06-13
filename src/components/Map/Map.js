@@ -1,13 +1,15 @@
 import React, { Component, Fragment } from 'react';
 import { geoConicEqualArea, geoPath } from 'd3-geo';
-import { scaleLinear } from 'd3-scale';
+import { scaleLinear, scalePow } from 'd3-scale';
 import { max } from 'd3-array';
+import { zoom, zoomIdentity } from 'd3-zoom';
+import { select, event } from 'd3-selection';
 import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
 
 import { addCommas } from '../../utils/utils';
-import colors, { gray } from '../../utils/colors';
+import colors from '../../utils/colors';
 
 const legendW = 60;
 const gradientMargin = 20;
@@ -23,13 +25,26 @@ class Map extends Component {
             yScale: scaleLinear(),
             countyIsHovered: false,
             hoveredCounty: null,
-            tooltipText: ''
+            tooltipText: '',
+            strokeWidth: 0.8,
+            strokeHoverWidth: 1.8
         }
         this.tooltipRef = React.createRef();
+        this.mapRef = React.createRef();
+        this.zoom = zoom()
+            .scaleExtent([1,9])
+            .on('zoom', this.zoomed);
+        
+        this.strokeWidthScale = scalePow().exponent(0.25).range([0.1, 0.8]).domain([9, 1])
+        this.strokeHoverWidthScale = scalePow().exponent(0.25).range([0.25, 1.8]).domain([9, 1])
     }
     componentDidMount() {
         const gradientH = (this.props.width - gradientMargin) / 2;
         this.setState({ gradientH }, () => this.calculateScales());
+        if (this.mapRef.current) {
+            const mapNode = select(this.mapRef.current)
+            mapNode.call(this.zoom)
+        }
         window.addEventListener('scroll', this.handleWindowScrollTooltip)
     }
 
@@ -39,7 +54,10 @@ class Map extends Component {
             prevProps.scenario !== this.props.scenario) {
                 const gradientH = (this.props.width - gradientMargin) / 2;
                 this.setState({ gradientH }, () => this.calculateScales());
-                
+            if (this.mapRef.current) {
+                const mapNode = select(this.mapRef.current)
+                mapNode.call(this.zoom.transform, zoomIdentity)
+            }    
         }
     }
 
@@ -104,7 +122,7 @@ class Map extends Component {
             .fitSize([this.props.width - legendW, this.props.height], this.state.countyBoundaries)
 
         const pathGenerator = geoPath().projection(projection)
-	    const ramp = scaleLinear().domain([ 0, this.state.maxValNorm ]).range([this.props.lowColor, this.props.highColor])
+        const ramp = scaleLinear().domain([ 0, this.state.maxValNorm ]).range([this.props.lowColor, this.props.highColor])
 
         const counties = this.state.countyBoundaries.features.map((d,i) => {
             // console.log(this.props.stat, d.properties[this.props.stat][this.props.dateIdx])
@@ -121,9 +139,9 @@ class Map extends Component {
                         key={`county-boundary-${i}`}
                         d={pathGenerator(d)}
                         style={{
-                            stroke: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? this.props.highColor : gray,
-                            strokeWidth: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? 2 : 1,
-                            fill: d.properties[`${this.props.stat}Norm`].length > 0 ? ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]) : colors.lightgray,
+                            stroke: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? this.props.highColor : colors.gray,
+                            strokeWidth: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? this.state.strokeHoverWidth : this.state.strokeWidth,
+                            fill: d.properties[`${this.props.stat}Norm`].length > 0 ? ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]) : colors.lightGray,
                             fillOpacity: 1,
                             cursor: 'pointer'
                         }}
@@ -185,10 +203,18 @@ class Map extends Component {
         this.setState({ hoveredCounty: null, countyIsHovered: false })
     }
 
-    drawLegend = () => {
-        // const legendW = 100;
-        // const legendH = this.props.height/2;
-        
+    zoomed = () => {
+        console.log(event);
+        if (this.mapRef.current) {
+            // update paths on zoom event
+            const mapNode = select(this.mapRef.current)
+            mapNode.selectAll('path')
+                .attr('transform', event.transform)
+            const strokeWidth = this.strokeWidthScale(event.transform.k)
+            const strokeHoverWidth = this.strokeHoverWidthScale(event.transform.k)
+            console.log(event.transform.k, strokeWidth, strokeHoverWidth)
+            this.setState({ strokeWidth, strokeHoverWidth })
+        }
     }
 
     render() {
@@ -241,15 +267,17 @@ class Map extends Component {
                     width={this.props.width - legendW}
                     height={this.props.height}
                     className={`mapSVG-${this.props.stat}`}
+                    ref={this.mapRef}
                 >
-                    <g style={{ stroke: '#00ff00'}}>
+                    <g>
                         {/* debug green svg */}
                         <rect
                             x={0}
                             y={0}
                             width={this.props.width - legendW}
                             height={this.props.height}
-                            fillOpacity={0}
+                            fill={colors.graphBkgd}
+                            fillOpacity={0.8}
                             stroke={'#00ff00'}
                             strokeWidth='1'
                             strokeOpacity={0}
