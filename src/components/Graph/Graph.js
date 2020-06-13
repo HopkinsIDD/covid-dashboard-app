@@ -375,7 +375,7 @@ class Graph extends Component {
                                 id={`simPath-${i}-hover`}
                                 className={`simPath-hover`}
                                 fill='none' 
-                                stroke={simIsHovered ? colors.blue : colors.lightgray}
+                                stroke={simIsHovered ? colors.blue : colors.lightGray}
                                 strokeWidth={simIsHovered ? '2' : '1'}
                                 strokeOpacity={this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 1 : 0}
                                 onMouseMove={(e) => this.handleMouseMove(e, i)}

@@ -38,16 +38,16 @@ class Axis extends Component {
       if (this.props.view === 'graph') {
         this.axis = axisBottom().scale(this.props.scale)
           .tickFormat(timeFormat('%b-%d'))
-          .ticks(this.props.width / 60)
+          .ticks(this.props.width / 80)
           .tickSizeOuter(0);
       } else if (this.props.view === 'chart') {
         this.axis = axisBottom().scale(this.props.scale)
           .tickFormat(d => d.replace('_', ' '))
-          .ticks(this.props.width / 60)
+          .ticks(this.props.width / 80)
           .tickSizeOuter(0);
       } else {
         this.axis = axisBottom().scale(this.props.scale)
-          .ticks(this.props.width / 60)
+          .ticks(this.props.width / 80)
           .tickSizeOuter(0);
       }
       
