@@ -151,7 +151,9 @@ class MainGraph extends Component {
                 const indicator = stat.name.toLowerCase();
                 const actualJSON = require('../../store/actuals.json');
                 if (Object.keys(actualJSON).includes(indicator)) {
-                    actual = actualJSON[indicator][this.props.geoid];
+                    actual = actualJSON[indicator][this.props.geoid].map( d => {
+                        return { date: parseDate(d.date), val: d.val}
+                    });
                 }
                 actualList.push(actual);
             }
@@ -166,7 +168,7 @@ class MainGraph extends Component {
                 percExceedenceList,
                 confBoundsList,
                 actualList,
-                showActual: false
+                // showActual: false
             })
         }
     };
