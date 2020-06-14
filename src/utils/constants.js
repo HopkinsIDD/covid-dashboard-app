@@ -20,12 +20,8 @@ export const styles = {
     },
     SearchBar: {
         width: '100%',
-        maxWidth: '50rem'
-    },
-    Menu: { 
-        display: 'inline', 
-        lineHeight: '2.8rem', 
-        paddingRight: '10px'
+        maxWidth: '50rem',
+        padding: '0.8rem 0'
     },
     iconGraph: { 
         paddingRight: '5px', 
@@ -43,6 +39,13 @@ export const styles = {
     },
     Selector: {
         width: '80%'
+    },
+    Menu: {
+        paddingTop: '10px'
+    },
+    MenuMap: {
+        paddingTop: '10px',
+        paddingRight: '5px'
     },
     Switch: {
         paddingLeft: '8px', 

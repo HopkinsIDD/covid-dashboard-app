@@ -4,6 +4,7 @@ import { ReactComponent as ChartLogo } from '../assets/chart.svg';
 import { ReactComponent as MapLogo } from '../assets/globe.svg';
 import { ReactComponent as MethodsLogo } from '../assets/book.svg';
 import { ReactComponent as AboutLogo } from '../assets/info.svg';
+import { styles } from '../utils/constants';
 
 class MenuItem extends Component {
 
@@ -11,50 +12,52 @@ class MenuItem extends Component {
     this.props.handleMouseClick(menuItem)
   }
 
+
   render() {
+      const { menuItem, height, active, activeClass, hoverClass } = this.props;
     
-      if (this.props.menuItem === 0) {
+      if (menuItem === 0) {
         return( <GraphLogo 
-          height={this.props.height}
-          style={{ paddingTop: '10px'}}
-          className={this.props.active ? this.props.activeClass : this.props.hoverClass}
-          onClick={() => this.handleClickEvent(this.props.menuItem)}
+          height={height}
+          style={styles.Menu}
+          className={active ? activeClass : hoverClass}
+          onClick={() => this.handleClickEvent(menuItem)}
         />
         )
       }
-      if (this.props.menuItem === 1) {
+      if (menuItem === 1) {
         return( <ChartLogo 
-          height={this.props.height}
-          style={{ paddingTop: '10px'}}
-          className={this.props.active ? this.props.activeClass : this.props.hoverClass}
-          onClick={() => this.handleClickEvent(this.props.menuItem)}
+          height={height}
+          style={styles.Menu}
+          className={active ? activeClass : hoverClass}
+          onClick={() => this.handleClickEvent(menuItem)}
         />
         )
       }
-      if (this.props.menuItem === 2) {
+      if (menuItem === 2) {
         return( <MapLogo 
-          height={this.props.height}
-          style={{ paddingTop: '10px', paddingRight: '5px'}}
-          className={this.props.active ? this.props.activeClass : this.props.hoverClass}
-          onClick={() => this.handleClickEvent(this.props.menuItem)}
+          height={height}
+          style={styles.MenuMap}
+          className={active ? activeClass : hoverClass}
+          onClick={() => this.handleClickEvent(menuItem)}
         />
         )
       }
-      if (this.props.menuItem === 3) {
+      if (menuItem === 3) {
         return( <MethodsLogo 
-          height={this.props.height}
-          style={{ paddingTop: '10px'}}
-          className={this.props.active ? this.props.activeClass : this.props.hoverClass}
-          onClick={() => this.handleClickEvent(this.props.menuItem)}
+          height={height}
+          style={styles.Menu}
+          className={active ? activeClass : hoverClass}
+          onClick={() => this.handleClickEvent(menuItem)}
         />
         )
       }
-      if (this.props.menuItem === 4) {
+      if (menuItem === 4) {
         return( <AboutLogo 
-          height={this.props.height}
-          style={{ paddingTop: '10px'}}
-          className={this.props.active ? this.props.activeClass : this.props.hoverClass}
-          onClick={() => this.handleClickEvent(this.props.menuItem)}
+          height={height}
+          style={styles.Menu}
+          className={active ? activeClass : hoverClass}
+          onClick={() => this.handleClickEvent(menuItem)}
         />
         )
       }
