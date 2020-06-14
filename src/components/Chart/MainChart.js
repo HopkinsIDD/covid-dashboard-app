@@ -98,11 +98,11 @@ class MainChart extends Component {
         const { Content } = Layout;
         return (
             <Content id="exploration" style={styles.ContainerWhite}>
-                <Col className="gutter-row container" span={16}>
+                <Col className="gutter-row container">
                     <div className="content-section">
-                        <div className="vis-content" style={{ borderColor: '#f0f2f5' }}>
-                            <div className="titleNarrow description-header">A time-based summary you can customize</div>
-                            Use this tool to plan for expected infections, hospitalizations,
+                        <div className="card-content card-content-white">
+                            <div className="titleNarrow description-header">A time-based tool you can customize</div>
+                            Use this tool to explore expected infections, hospitalizations,
                             ICU cases, ventilators needed, and deaths in your municipality.
                             For example, if you would like to know how many people will 
                             be hospitalized in 6 weeks, select hospitalizations  
@@ -110,11 +110,15 @@ class MainChart extends Component {
                             as the end date. Then, compare expected hospitalization 
                             numbers across all 
                             intervention scenarios at varying degrees of severity.
+                            <div className="mobile-alert">
+                                &#9888; Please use a desktop to access the full feature set, 
+                                including selecting indicators and date range.
+                            </div>
                         </div>
                     </div>
                 </Col>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    <Col className="gutter-row container" span={16}>
+                    <Col className="gutter-row container">
                         <div className="map-container">
                             {this.state.dataLoaded &&
                             <ChartContainer
@@ -134,7 +138,13 @@ class MainChart extends Component {
                         </div>
                     </Col>
 
-                    <Col className="gutter-row filters" span={6}>
+                    <Col className="gutter-row container">
+                        <div className="mobile-alert">
+                            &#9888; The filters below are disabled on mobile devices.
+                        </div>
+                    </Col>
+
+                    <Col className="gutter-row filters mobile">
                         <Fragment>
                             <Fragment>
                                 <Scenarios 
