@@ -96,10 +96,9 @@ class Sliders extends Component {
                         {addCommas(seriesMax)}
                     </p>
                 </div>
-                <p></p>
 
                 {/* Date Threshold */}
-                <div className="param-header">DATE THRESHOLD</div>
+                <div className="param-header" style={{ marginTop: '0.5rem'}}>DATE THRESHOLD</div>
                 <div className="filter-label">
                     <span className='callout'>{getDate(dateThreshold)}</span>
                 </div>

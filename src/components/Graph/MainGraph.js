@@ -450,7 +450,7 @@ class MainGraph extends Component {
                             onBrushEnd={this.handleBrushEnd}
                         />
                     </Col>
-                    <Col className="gutter-row filters" span={6}>
+                    <Col className="gutter-row filters-graph" span={6}>
                         <Scenarios
                             view="graph"
                             SCENARIOS={this.state.SCENARIOS}

@@ -48,8 +48,8 @@ export const styles = {
         paddingLeft: '8px', 
         paddingRight: '8px', 
         paddingTop: '5px', 
-        lineHeight: '1.2rem', 
-        height: '50px'
+        lineHeight: '1rem', 
+        height: '45px'
     },
     Switch: {
         paddingLeft: '12px'
