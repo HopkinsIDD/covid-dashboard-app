@@ -166,45 +166,6 @@ class Graph extends Component {
         }
     }
 
-    updateThresholdIndicators = (statThreshold, dateThreshold, xScale, yScale) => {
-        // this.updateStatThresholdLine(statThreshold, yScale);
-        // this.updateDateThresholdLine(dateThreshold, xScale);
-        // this.updateThresholdCircle(statThreshold, dateThreshold, xScale, yScale);
-        if (this.thresholdRef.current) {
-            const thresholdNode = select(this.thresholdRef.current)
-            thresholdNode.selectAll('.thresholdCircle')
-                .transition()
-                .duration(500)
-                .attr("cx", xScale(dateThreshold))
-                .attr("cy", yScale(statThreshold))
-                .ease(easeCubicOut)
-                .on("end", () => {
-                    console.log('circleThreshold transition ended')
-                    // this.setState({ dateThreshold })
-                })
-            thresholdNode.selectAll('.statThreshold')
-                .transition()
-                .duration(500)
-                .attr("y1", yScale(statThreshold))
-                .attr("y2", yScale(statThreshold))
-                .ease(easeCubicOut)
-                .on("end", () => {
-                    console.log('statThreshold transition ended')
-                    this.setState({ statThreshold })
-                })
-            thresholdNode.selectAll('.dateThreshold')
-                .transition()
-                .duration(500)
-                .attr("x1", xScale(dateThreshold))
-                .attr("x2", xScale(dateThreshold))
-                .ease(easeCubicOut)
-                .on("end", () => {
-                    console.log('dateThreshold transition ended')
-                    this.setState({ dateThreshold })
-                })
-        }
-    }
-
     drawConfBounds = (confBounds, areaGenerator, dates) => {
         // update areaGenerator from scale and data
         areaGenerator
