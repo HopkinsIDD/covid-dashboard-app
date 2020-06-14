@@ -8,7 +8,7 @@ class About extends Component {
         const { Content } = Layout;
         return (
             <Content id="about" style={styles.ContainerGray}>
-                <Col className="gutter-row container" span={16}>
+                <Col className="gutter-row container">
                     <div className="content-section">
                         <div className="content-header">About</div>
                         <br />
@@ -92,7 +92,7 @@ class About extends Component {
                     </Row>
                 </Col>
 
-                <Col className="gutter-row container" span={16}>
+                <Col className="gutter-row container">
                     <div className="content-section">
                         <div className="methods-header">Contact</div> 
                         <div>

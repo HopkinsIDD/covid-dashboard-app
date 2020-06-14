@@ -19,7 +19,7 @@ class ChartContainer extends Component {
     }
 
     componentDidMount() {
-        this.drawSummaryStatCharts();
+        this.drawCharts();
     }
 
     componentDidUpdate(prevProps) {
@@ -32,12 +32,11 @@ class ChartContainer extends Component {
             || prevProps.width !== this.props.width 
             || prevProps.height !== this.props.height) {
             // console.log('ComponentDidUpdate Summary Start or End or Dataset')
-            this.drawSummaryStatCharts();
+            this.drawCharts();
         }
     }
 
-    // TODO: REname this function
-    drawSummaryStatCharts = () => {
+    drawCharts = () => {
         const { children } = this.state;
         const parameters = this.props.stats.map( stat => stat.key )
         const parameterLabels = this.props.stats.map( stat => stat.name )
