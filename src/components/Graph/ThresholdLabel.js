@@ -27,7 +27,7 @@ class ThresholdLabel extends Component {
             'underline-active' : 'bold underline';
 
         return (
-            <p className={this.props.classProps}>
+            <div className={this.props.classProps}>
                 <span className={activeClass}>{chance}%</span>
                 &nbsp;{`of simulations shown predict daily ${this.props.label} to exceed`}&nbsp;
                 <span className={statClass}>{val}</span>
@@ -40,14 +40,14 @@ class ThresholdLabel extends Component {
                     <div className="tooltip">&nbsp;&#9432;
                         {this.state.showTooltip &&
                         <span className="tooltip-text">
-                            This probability is calculated using the remaining 
+                            This percentage is calculated using the remaining 
                             simulation curves after filtering on all parameters 
                             from the side menu, not on all possible simulation 
                             curves available for this scenario.
                         </span> }
                     </div>
                 </TooltipHandler>
-            </p>
+            </div>
         )
     }
 }
