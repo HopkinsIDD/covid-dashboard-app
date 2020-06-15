@@ -40,6 +40,9 @@ export const styles = {
     Selector: {
         width: '80%'
     },
+    Severity: {
+        minWidth: '90%'
+    },
     Menu: {
         paddingTop: '10px'
     },

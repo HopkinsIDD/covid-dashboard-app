@@ -49,6 +49,10 @@ h1, h2 {
   padding: 16px 0 0;
 }
 
+.mobile-only {
+  display: none;
+}
+
 .mobile-alert {
   display: none;
 }
@@ -616,7 +620,9 @@ input[type=range]:disabled::-moz-range-thumb {
   margin-left: -7.4rem;
   margin-bottom: 0.5rem;
   z-index: 1;
-  /* border: 1px solid rgba(0, 0, 0, 0.65); */
+  text-align: left;
+  font-family: 'PT Sans', sans-serif;
+  line-height: 1.5715;
 }
 
 .tooltip-text::before {
