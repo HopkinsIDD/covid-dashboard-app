@@ -7,7 +7,7 @@ import { timeFormat } from 'd3-time-format'
 import { brushX } from 'd3-brush'
 import { max, extent } from 'd3-array'
 import { easeCubicOut } from 'd3-ease'
-import { margin } from '../../utils/constants'
+import { margin, monthDateFormat } from '../../utils/constants'
 import { green, red } from '../../utils/colors';
 
 class Brush extends Component {
@@ -152,7 +152,7 @@ class Brush extends Component {
     this.xAxis = axisBottom().scale(updatedScales.xScale)
       .tickFormat((date,i) => {
         // if (timeYear(date) < timeDay.offset(date, -1)) {
-          return timeFormat('%b-%d')(date);
+          return timeFormat(monthDateFormat)(date);
         // } else {
         //   return timeFormat('%Y')(date);
         // }
