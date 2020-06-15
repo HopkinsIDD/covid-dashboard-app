@@ -84,19 +84,23 @@ class MainMap extends Component {
         const { dates, currentDateIndex, SCENARIOS } = this.state;
         return (
             <Content id="geographic-map" style={styles.ContainerGray}>
-                <Col className="gutter-row container" span={16}>
+                <Col className="gutter-row container">
                 <div className="content-section">
-                        <div className="vis-content">
-                            <div className="titleNarrow description-header">A daily look at regional context</div>
+                        <div className="card-content">
+                            <div className="titleNarrow description-header">
+                            A daily look at regional context</div>
                             Hover over individual counties for more information
                             for each indicator. Slide over the date selector to 
                             view specific dates on the map. Use the right and
                             left arrow keys to increase or decrease by day.
+                            <div className="mobile-alert">
+                                &#9888; Please use a desktop to access the full feature set.
+                            </div>
                         </div>
                     </div>
                 </Col>
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    <Col className="gutter-row container" span={16} style={styles.MapContainer}>
+                    <Col className="gutter-row container" style={styles.MapContainer}>
                         <div className="map-container">
                             <MapContainer
                                 geoid={this.props.geoid}
@@ -113,7 +117,13 @@ class MainMap extends Component {
                         </div>
                     </Col>
 
-                    <Col className="gutter-row filters" span={6}>
+                    <Col className="gutter-row container mobile-only">
+                        <div className="mobile-alert">
+                            &#9888; The filters below are disabled on mobile devices.
+                        </div>
+                    </Col>
+
+                    <Col className="gutter-row filters mobile">
                         {this.state.dataLoaded &&
                         <Fragment>
                             <Scenarios

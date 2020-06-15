@@ -1,24 +1,54 @@
-import React from 'react';
+import React, { Component } from 'react';
+import TooltipHandler from '../Filters/TooltipHandler';
 import { addCommas, getReadableDate } from '../../utils/utils.js';
 
-function ThresholdLabel(props) {
-    const { r0full, r0selected } = props;
-    const chance = Math.round(100 * props.percExceedence);
-    const val = addCommas(Math.ceil(props.statThreshold / 100) * 100);
-    const date = getReadableDate(props.dateThreshold);
+class ThresholdLabel extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showTooltip: false
+        }
+    }
 
-    if (r0selected[0] === r0full[0] && r0selected[1] === r0full[1] ) {
+    handleTooltipClick = () => {
+        this.setState({showTooltip: !this.state.showTooltip})
+    }
+
+    render() {
+        const chance = Math.round(100 * this.props.percExceedence);
+        const val = addCommas(Math.ceil(this.props.statThreshold / 100) * 100);
+        const date = getReadableDate(this.props.dateThreshold);
+    
+        const activeClass = this.props.statSliderActive || this.props.dateSliderActive ? 
+            'underline-active' : 'bold underline';
+        const statClass = this.props.statSliderActive ? 
+            'underline-active' : 'bold underline';
+        const dateClass = this.props.dateSliderActive ? 
+            'underline-active' : 'bold underline';
+
         return (
-            <p className={props.classProps}>
-                <span className={props.statSliderActive || props.dateSliderActive ? 'underline-active' : 'bold underline'}>{chance}%</span>
-                &nbsp;{`chance daily ${props.label} exceed`}&nbsp;
-                <span className={props.statSliderActive ? 'underline-active' : 'bold underline'}>{val}</span>
+            <p className={this.props.classProps}>
+                <span className={activeClass}>{chance}%</span>
+                &nbsp;{`of simulations shown predict daily ${this.props.label} to exceed`}&nbsp;
+                <span className={statClass}>{val}</span>
                 &nbsp;by&nbsp;
-                <span className={props.dateSliderActive ? 'underline-active' : 'bold underline'}>{date}</span>
+                <span className={dateClass}>{date}</span>
+                <TooltipHandler
+                    showTooltip={this.state.showTooltip}
+                    onClick={this.handleTooltipClick}
+                    >
+                    <div className="tooltip">&nbsp;&#9432;
+                        {this.state.showTooltip &&
+                        <span className="tooltip-text">
+                            This probability is calculated using the remaining 
+                            simulation curves after filtering on all parameters 
+                            from the side menu, not on all possible simulation 
+                            curves available for this scenario.
+                        </span> }
+                    </div>
+                </TooltipHandler>
             </p>
         )
-    } else {
-        return null;
     }
 }
 

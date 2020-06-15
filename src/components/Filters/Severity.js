@@ -82,7 +82,7 @@ class Severity extends Component {
                 </div>
                 <Radio.Group
                     value={severity.key} 
-                    style={styles.Selector}
+                    style={styles.Severity}
                     disabled={isDisabled}
                     onChange={this.handleChange}>
                     {this.state.children.map(child => child.button)}

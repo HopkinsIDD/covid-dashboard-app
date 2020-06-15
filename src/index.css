@@ -1,26 +1,3 @@
-/* @media (min-width: 576px) { 
-  .container, .container-sm {
-    max-width: 676px;
-  }
-}
-
-@media (min-width: 768px) {  
-  .container, .container-md {
-    max-width: 880px;
-  } 
-}
-
-@media (min-width: 992px) { 
-  .container, .container-lg {
-    max-width: 1090px;
-  } 
-}
-
-@media (min-width: 1200px) { 
-  .container, .container-xl {
-    max-width: 1300px;
-  } 
-} */
 html,body
 {
   width: 100%;
@@ -32,10 +9,6 @@ html,body
 
 body {
   margin: 0;
-  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif; */
-  /* font-family: 'Roboto Mono', monospace; */
   font-family: 'PT Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -44,16 +17,6 @@ body {
 h1, h2 {
   color: white;
   margin: 0;
-}
-
-.logo {
-  max-width: 2rem;
-  padding-top: 0.6rem;
-}
-
-.brand {
-  max-width: 14rem;
-  padding-top: 0.2rem;
 }
 
 .App-header {
@@ -65,8 +28,84 @@ h1, h2 {
   height: 4.2rem;
 }
 
+.logo {
+  width: 50%;
+}
+
+.nav-menu {
+  width: 50%;
+  text-align: right;
+  padding-right: 3%;
+}
+
+.menu-items {
+  display: inline;
+  line-height: 2.8rem;
+  padding: 0 10px 0 0;
+}
+
+#hamburger {
+  display: none;
+  padding: 16px 0 0;
+}
+
+.mobile-only {
+  display: none;
+}
+
+.mobile-alert {
+  display: none;
+}
+
+@media screen and (max-width: 800px) {
+  .desktop-only {
+    display: none;
+  }
+  .mobile-only {
+    display: block;
+  }
+  .mobile-alert {
+    display: block;
+    background-color: #fcc;
+    color: #800000;
+    font-size: 14px;
+    padding: 2px 0 2px 10px;
+    border-radius: 4px;
+    border: 1px solid #800000;
+  }
+  .menu-items a {
+    display: none;
+  }
+  #hamburger {
+    display: block;
+  }
+  .logo {
+    width: 80%;
+  }
+  /* .responsive added on mobile menu click */
+  .nav-menu.responsive {
+    width: 100%;
+    text-align: left;
+    background-color: #607aa2;
+  }
+  .menu-items.responsive {
+    display: block;
+    line-height: 0;
+    padding: 0;
+  }
+  .menu-items.responsive a {
+    display: block;
+    line-height: 0;
+    padding: 0;
+  }
+}
+
+.hamburger {
+  fill: #fcfcfc;
+}
+
 .container {
-  /* max-width: 2000px;  */
+  width: 70%;
   margin-left: 5%;
 }
 
@@ -76,12 +115,32 @@ h1, h2 {
   padding: 0 0 1rem;
 }
 
-.vis-content {
+.card-content {
   background-color: #fcfcfc;
-  width: 75%;
+  width: 90%;
   border: 5px solid white;
   padding: 1rem;
-  margin: 0 auto 3rem auto;
+  margin: 0 auto 3rem 3rem;
+}
+.card-content-white {
+  border: 5px solid #f0f2f5;
+}
+
+@media screen and (max-width: 800px) {
+  .container {
+    width: 90%;
+  }
+  .content-section {
+    font-size: 18px;
+    padding: 0;
+  }
+  .card-content {
+    background-color: transparent;
+    width: 100%;
+    border: transparent;
+    padding: 0;
+    margin: 0 0 2rem;
+  }
 }
 
 .title-header {
@@ -156,12 +215,6 @@ li a {
   padding-left: 0px;
 }
 
-.nav-menu {
-  text-align: right;
-  padding-right: 3%;
-  
-}
-
 .titleNarrow {
   font-family: 'PT Sans Narrow', sans-serif;
 }
@@ -190,15 +243,6 @@ ul {
 
 li {
   margin-bottom: 10px;
-}
-
-.filters {
-  padding-top: 4rem;
-  margin-left: 1.4rem;
-}
-
-.filters-graph {
-  margin-left: 1.4rem;
 }
 
 .dropdown {
@@ -263,6 +307,23 @@ li {
   padding-left: 0.4rem;
   font-size: 14px;
   color: gray;
+}
+
+.filters {
+  padding: 4rem 0;
+  width: 25%;
+}
+
+@media screen and (max-width: 800px) {
+  .filters {
+    padding: 0;
+    width: 100%;
+    margin: 0 2rem 0 3rem;
+  }
+  .mobile {
+    pointer-events: none;
+    opacity: 0.6;
+  }
 }
 
 .filter-label {
@@ -579,11 +640,6 @@ input[type=range]:disabled::-moz-range-thumb {
   cursor: not-allowed;
 }
 
-.disabled {
-  color: #9b9b9b;
-  cursor: not-allowed;
-}
-
 .tooltip {
   position: relative;
   display: inline-block;
@@ -603,7 +659,9 @@ input[type=range]:disabled::-moz-range-thumb {
   margin-left: -7.4rem;
   margin-bottom: 0.5rem;
   z-index: 1;
-  /* border: 1px solid rgba(0, 0, 0, 0.65); */
+  text-align: left;
+  font-family: 'PT Sans', sans-serif;
+  line-height: 1.5715;
 }
 
 .tooltip-text::before {

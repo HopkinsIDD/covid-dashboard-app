@@ -8,7 +8,7 @@ class Methodology extends Component {
         const { Content } = Layout;
         return (
             <Content id="methods" style={styles.ContainerWhite}>
-                <Col className="gutter-row container" span={16}>
+                <Col className="gutter-row container">
                     <div className="content-section">
                         <div className="content-header">Methodology</div>
                         <br />

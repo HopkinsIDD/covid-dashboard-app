@@ -41,7 +41,7 @@ class Search extends Component {
                     <div className="title-header">COVID-19 Intervention Scenario Modeling</div>
                 </Col>
 
-                <Col className="gutter-row container" span={16}>
+                <Col className="gutter-row container">
                     <div className="content-section">
                         <div>The&nbsp;
                             <a className="customLink" href="http://www.iddynamics.jhsph.edu/">
@@ -88,26 +88,23 @@ class Search extends Component {
                             Find your state or county in our registry 
                             to start comparing scenarios now.
                         </div>
-                    <div className="dropdown">
-                        <SearchBar
-                            geoid={this.props.geoid}
-                            onCountySelect={this.handleCountySelect}
-                            style={styles.SearchBar}
-                            size="large"
-                        />
-                    </div>
-                    <Row
-                        gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} 
-                        style={styles.Switch}>
-                        <Switch
-                            style={{ 'marginTop': '0.1rem' }}
-                            onChange={this.handleUploadToggle}
-                            size="small"/>
-                        <div className="upload-toggle">{uploadMessage}</div>
-                    </Row>   
-                    <br />
-                    {showFileUpload &&
-                    <FileUploader onUpload={this.handleUpload}/> }
+                    <SearchBar
+                        geoid={this.props.geoid}
+                        onCountySelect={this.handleCountySelect}
+                        style={styles.SearchBar}
+                        size="large" />
+                    <div className="desktop-only">
+                        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={styles.Switch}>
+                            <Switch
+                                style={{ 'marginTop': '0.1rem' }}
+                                onChange={this.handleUploadToggle}
+                                size="small"/>
+                            <div className="upload-toggle">{uploadMessage}</div>
+                        </Row>   
+                        <br />
+                        {showFileUpload &&
+                        <FileUploader onUpload={this.handleUpload}/> }
+                        </div>
                     </div>
                 </Col>
             </Content>

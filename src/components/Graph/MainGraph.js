@@ -377,9 +377,9 @@ class MainGraph extends Component {
         return (
             <Content id="interactive-graph" style={styles.ContainerGray}>
                 {/* text span is 1 grid value higher than Graph to allow text-wrapping */}
-                <Col className="gutter-row container" span={18}>
+                <Col className="gutter-row container">
                     <div className="content-section">
-                        <div className="vis-content">
+                        <div className="card-content">
                             <div className="titleNarrow description-header">
                                 What can scenario modeling tell us?
                             </div>
@@ -387,24 +387,30 @@ class MainGraph extends Component {
                             Each intervention scenario is represented by multiple 
                             simulation curves - each of these curves represent one 
                             possible outcome based on a given set of parameters. Each simulation 
-                            curve is just as likely to occur as another. 
-                            <br /><br />
-                            Select two intervention scenarios from the menu on
-                            the right to compare side by side. Toggle between 
-                            different indicators such as hospitalizations and deaths,
-                            as well as the scenario's potential severity level. Filter 
-                            simulations down to curves within a specific range of R<sub>0</sub>. 
-                            You can also choose between exploring exceedence thresholds
-                            and displaying confidence bounds. To explore exceedence, 
-                            use the threshold sliders to change values and dates to determine
-                            how likely a given indicator, such as hospitalizations, 
-                            will exceed a certain number by a given date.
+                            curve is just as likely to occur as another. <br /><br />
+                            <div className="desktop-only">
+                                Select two intervention scenarios from the menu on
+                                the right to compare side by side. Toggle between 
+                                different indicators such as hospitalizations and deaths,
+                                as well as the scenario's potential severity level. Filter 
+                                simulations down to curves within a specific range of R<sub>0</sub>. 
+                                You can also choose between exploring exceedence thresholds
+                                and displaying confidence bounds. To explore exceedence, 
+                                use the threshold sliders to change values and dates to determine
+                                how likely a given indicator, such as hospitalizations, 
+                                will exceed a certain number by a given date.
+                            </div>
+                            <div className="mobile-alert">
+                                &#9888; Please use a desktop to access the full feature set, 
+                                including scenario comparisons and filtering on R<sub>0</sub>.
+                            </div>
                         </div>
                     </div>
                 </Col>
+
                 {this.state.dataLoaded &&
                 <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
-                    <Col className="gutter-row container" span={16}>
+                    <Col className="gutter-row container">
                         <GraphContainer 
                             geoid={this.props.geoid}
                             width={this.props.width}
@@ -450,7 +456,14 @@ class MainGraph extends Component {
                             onBrushEnd={this.handleBrushEnd}
                         />
                     </Col>
-                    <Col className="gutter-row filters-graph" span={6}>
+
+                    <Col className="gutter-row container mobile-only">
+                        <div className="mobile-alert">
+                            &#9888; The filters below are disabled on mobile devices.
+                        </div>
+                    </Col>
+
+                    <Col className="gutter-row filters mobile">
                         <Scenarios
                             view="graph"
                             SCENARIOS={this.state.SCENARIOS}
