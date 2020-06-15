@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Row, Col } from 'antd';
 import Chart from '../Chart/Chart';
-import SummaryLabel from '../Chart/SummaryLabel';
+import CalloutLabel from '../Chart/CalloutLabel';
 import ChartLegend from '../Chart/ChartLegend';
 import { COUNTYNAMES } from '../../utils/constants'
 import { getReadableDate } from '../../utils/utils'
@@ -114,7 +114,7 @@ class ChartContainer extends Component {
                 <Row justify="end">
                     <div className="chart-callout" style={{ display: 'block !important'}}>
                         {this.state.hoveredScenarioIdx !== null &&
-                            <SummaryLabel 
+                            <CalloutLabel 
                                 classProps={'filter-label callout'}
                                 start={this.props.start}
                                 end={this.props.end}

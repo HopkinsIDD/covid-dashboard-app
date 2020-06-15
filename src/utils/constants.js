@@ -50,14 +50,14 @@ export const styles = {
         paddingTop: '10px',
         paddingRight: '5px'
     },
-    Switch: {
+    Radio: {
         paddingLeft: '8px', 
         paddingRight: '8px', 
         paddingTop: '5px', 
-        lineHeight: '1.2rem', 
-        height: '50px'
+        lineHeight: '1rem', 
+        height: '45px'
     },
-    UploadSwitch: {
+    Switch: {
         paddingLeft: '12px'
     },
     Marks: {

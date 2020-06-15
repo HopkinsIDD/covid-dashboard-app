@@ -94,7 +94,7 @@ class Search extends Component {
                         style={styles.SearchBar}
                         size="large" />
                     <div className="desktop-only">
-                        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={styles.UploadSwitch}>
+                        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={styles.Switch}>
                             <Switch
                                 style={{ 'marginTop': '0.1rem' }}
                                 onChange={this.handleUploadToggle}

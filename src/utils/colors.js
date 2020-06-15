@@ -15,6 +15,8 @@ export const colors = {
     red: '#d31d30',
     green: '#4ddaba',
     blue: '#1f90db',
+    orange: '#ffac62',
+    actual: '#4d4d4d',
     gray: '#9b9b9b',
     lightGray: '#d0d0d0',
     graphBkgd: '#fcfcfc',

@@ -245,6 +245,18 @@ li {
   margin-bottom: 10px;
 }
 
+.dropdown {
+  padding: 0.8rem 0;
+}
+
+.dropdown-menu {
+  width: 60%;
+  margin: 0px;
+}
+
+.dropdown-toggle::after {
+  content: none;
+}
 .search-bar {
   font-size: 1.2rem;
   color: gray;
@@ -298,7 +310,7 @@ li {
 }
 
 .filters {
-  padding: 4rem 0 0;
+  padding: 4rem 0;
   width: 25%;
 }
 
@@ -406,6 +418,30 @@ li {
 
 .map-summary-title {
   font-size: 1.2rem;
+}
+
+.map-parent {
+  position: relative;
+}
+
+.zoom {
+  width: 25px;
+  position: absolute;
+  right: 2px;
+  cursor: pointer;
+  border: 1px solid #afafaf;
+}
+
+.zoom:hover {
+  background-color: #dcdcdc;
+}
+
+#zoom_in {
+  top: 2px;
+}
+
+#zoom_out {
+  top: 27px;
 }
 
 .slider-menu {

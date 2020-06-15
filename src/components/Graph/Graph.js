@@ -36,12 +36,14 @@ class Graph extends Component {
         this.simPathsRef = React.createRef();
         this.thresholdRef = React.createRef();
         this.confBoundsRef = React.createRef();
+        this.actualRef = React.createRef();
     }
     
     componentDidMount() {
         // console.log('ComponentDidMount', this.props.keyVal)
         this.drawSimPaths(this.state.series, this.state.dates);
         if (this.state.confBounds && this.state.confBounds.length > 0) this.drawConfBounds(this.state.confBounds, this.state.areaGenerator, this.state.dates);
+        // if (this.props.showActual && this.props.actual) this.drawActualData(actual)
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -161,45 +163,6 @@ class Graph extends Component {
                         .data(series)
                         .attr("d", d => lineGenerator(d.vals))
             } 
-        }
-    }
-
-    updateThresholdIndicators = (statThreshold, dateThreshold, xScale, yScale) => {
-        // this.updateStatThresholdLine(statThreshold, yScale);
-        // this.updateDateThresholdLine(dateThreshold, xScale);
-        // this.updateThresholdCircle(statThreshold, dateThreshold, xScale, yScale);
-        if (this.thresholdRef.current) {
-            const thresholdNode = select(this.thresholdRef.current)
-            thresholdNode.selectAll('.thresholdCircle')
-                .transition()
-                .duration(500)
-                .attr("cx", xScale(dateThreshold))
-                .attr("cy", yScale(statThreshold))
-                .ease(easeCubicOut)
-                .on("end", () => {
-                    console.log('circleThreshold transition ended')
-                    // this.setState({ dateThreshold })
-                })
-            thresholdNode.selectAll('.statThreshold')
-                .transition()
-                .duration(500)
-                .attr("y1", yScale(statThreshold))
-                .attr("y2", yScale(statThreshold))
-                .ease(easeCubicOut)
-                .on("end", () => {
-                    console.log('statThreshold transition ended')
-                    this.setState({ statThreshold })
-                })
-            thresholdNode.selectAll('.dateThreshold')
-                .transition()
-                .duration(500)
-                .attr("x1", xScale(dateThreshold))
-                .attr("x2", xScale(dateThreshold))
-                .ease(easeCubicOut)
-                .on("end", () => {
-                    console.log('dateThreshold transition ended')
-                    this.setState({ dateThreshold })
-                })
         }
     }
 
@@ -375,7 +338,7 @@ class Graph extends Component {
                                 id={`simPath-${i}-hover`}
                                 className={`simPath-hover`}
                                 fill='none' 
-                                stroke={simIsHovered ? colors.blue : colors.lightgray}
+                                stroke={simIsHovered ? colors.blue : colors.lightGray}
                                 strokeWidth={simIsHovered ? '2' : '1'}
                                 strokeOpacity={this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 1 : 0}
                                 onMouseMove={(e) => this.handleMouseMove(e, i)}
@@ -405,56 +368,87 @@ class Graph extends Component {
                                 className={'tooltipCircle'}
                             ></circle>
                         </Tooltip>
-                        {(this.props.showConfBounds && this.props.confBounds) &&
-                        <g ref={this.confBoundsRef}>
-                            <path
-                                className={'confBoundsArea'}
-                                d={this.state.confBoundsAreaPath}
-                                fill={colors.green}
-                                fillOpacity={0.3}
-                            ></path>
-                            <path
-                                className={'confBoundsMean'}
-                                d={this.state.confBoundsMeanLinePath}
-                                stroke={colors.green}
-                                strokeWidth={2}
-                                fillOpacity={0}
-                            ></path>
-                        </g>
-                         }
-                        <g ref={this.thresholdRef}>
-                            <line
-                                x1={margin.left}
-                                y1={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
-                                x2={this.props.width - margin.right}
-                                y2={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
-                                stroke={colors.gray}
-                                className={'statThreshold'}
-                                strokeDasharray="4 2"
-                            ></line>
-                            <line
-                                x1={this.props.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.props.xScale(this.props.dateThreshold)}
-                                y1={margin.top}
-                                x2={this.props.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.props.xScale(this.props.dateThreshold)}
-                                y2={this.props.height - margin.bottom}
-                                stroke={colors.gray}
-                                className={'dateThreshold'}
-                                strokeDasharray="4 2"
-                            ></line>
-                            <circle
-                                cx={this.props.xScale(this.props.dateThreshold)}
-                                cy={this.props.yScale(this.props.statThreshold)}
-                                r={4}
-                                fill={colors.gray}
-                                className={'thresholdCircle'}
-                            ></circle>
-                        </g>
+                    </g>
+                    {(this.props.showConfBounds && this.props.confBounds) &&
+                    <g ref={this.confBoundsRef}>
+                        <path
+                            className={'confBoundsArea'}
+                            d={this.state.confBoundsAreaPath}
+                            fill={colors.green}
+                            fillOpacity={0.3}
+                        ></path>
+                        <path
+                            className={'confBoundsMean'}
+                            d={this.state.confBoundsMeanLinePath}
+                            stroke={colors.green}
+                            strokeWidth={2}
+                            fillOpacity={0}
+                        ></path>
+                    </g>
+                        }
+                        {(this.props.showActual && this.props.actual) &&
+                    <g ref={this.actualRef}>
+                        <clipPath 
+                            id={'actualClip'}
+                        >
+                            <rect 
+                                x={margin.left}
+                                y={margin.top}
+                                width={this.props.width - margin.left - margin.right}
+                                height={this.props.height - margin.bottom - margin.top}
+                                fill={'pink'}
+                                fillOpacity={0.5}
+                            ></rect>
+                        </clipPath>
+                        {this.props.actual.map( (d, i) => {
+                            return ( 
+                                <circle
+                                    key={`actual-data-${i}`}
+                                    cx={this.props.xScale(d.date)}
+                                    cy={this.props.yScale(d.val)}
+                                    r={1.5}
+                                    fill={colors.actual}
+                                    clipPath={'url(#actualClip)'}
+                                    className={'actualDataCircle'}
+                                >
+                                </circle>
+                            )
+                        })}
+                    </g>
+                    }
+                    <g ref={this.thresholdRef}>
+                        <line
+                            x1={margin.left}
+                            y1={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
+                            x2={this.props.width - margin.right}
+                            y2={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
+                            stroke={colors.gray}
+                            className={'statThreshold'}
+                            strokeDasharray="4 2"
+                        ></line>
+                        <line
+                            x1={this.props.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.props.xScale(this.props.dateThreshold)}
+                            y1={margin.top}
+                            x2={this.props.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.props.xScale(this.props.dateThreshold)}
+                            y2={this.props.height - margin.bottom}
+                            stroke={colors.gray}
+                            className={'dateThreshold'}
+                            strokeDasharray="4 2"
+                        ></line>
+                        <circle
+                            cx={this.props.xScale(this.props.dateThreshold)}
+                            cy={this.props.yScale(this.props.statThreshold)}
+                            r={4}
+                            fill={colors.gray}
+                            className={'thresholdCircle'}
+                        ></circle>
                     </g>
                     {
                         this.props.showLegend &&
                         <Legend 
                             showConfBounds={this.props.showConfBounds}
                             showHoveredSim={this.state.hoveredSimPathId}
+                            showActual={this.props.showActual}
                             x={this.props.width - margin.right - 160}
                             y={margin.top * 2.3}
                         />

@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import { axisBottom } from 'd3-axis'
 import { scaleLinear, scaleUtc } from 'd3-scale'
-import { select } from 'd3-selection'
+import { select, mouse, event } from 'd3-selection'
 import { line } from 'd3-shape'
 import { timeFormat } from 'd3-time-format'
-import { timeDay, timeYear } from 'd3-time'
 import { brushX } from 'd3-brush'
-import { event } from 'd3-selection'
 import { max, extent } from 'd3-array'
 import { easeCubicOut } from 'd3-ease'
 import { margin } from '../../utils/constants'
@@ -198,6 +196,12 @@ class Brush extends Component {
 
   brushed = () => {
     // console.log(event)
+    const selection = event.selection;
+    if (selection === null) {
+      const [mx] = mouse(this);
+      select(this).call(this.brush.move, [mx, mx]);
+      return;
+    }
     if (event.selection && event.sourceEvent !== null) {
       const [x1, x2] = event.selection;
       const range = [this.state.scales.xScale.invert(x1), this.state.scales.xScale.invert(x2)];
