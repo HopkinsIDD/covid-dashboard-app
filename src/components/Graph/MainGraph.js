@@ -135,8 +135,9 @@ class MainGraph extends Component {
                 filteredSeriesList.push(filteredSeries)
                 // console.log('on brush change', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
 
-                // TODO: may be problematic
-                const percExceedence = simsOver / filteredSeries.length;
+                // calculate percExceedence based on series after filtering down
+                const percExceedence = filteredSeries.length > 0 ?
+                    simsOver / filteredSeries.length : 0;
                 percExceedenceList.push(percExceedence)
 
                 const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
