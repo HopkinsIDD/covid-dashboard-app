@@ -111,20 +111,23 @@ class ChartContainer extends Component {
                         </div>
                     </Col>
                 </Row>
+
                 <Row justify="end">
-                    <div className="chart-callout" style={{ display: 'block !important'}}>
-                        {this.state.hoveredScenarioIdx !== null &&
-                            <CalloutLabel 
-                                classProps={'filter-label callout'}
-                                start={this.props.start}
-                                end={this.props.end}
-                                scenario={this.props.scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
-                                label={this.state.statLabel.toLowerCase()}
-                                median={this.state.median}
-                                tenth={this.state.tenth}
-                                ninetyith={this.state.ninetyith}
-                            />
-                        }
+                    <div className="widescreen-only">
+                        <div className="chart-callout" style={{ display: 'block !important'}}>
+                            {this.state.hoveredScenarioIdx !== null &&
+                                <CalloutLabel 
+                                    classProps={'filter-label callout'}
+                                    start={this.props.start}
+                                    end={this.props.end}
+                                    scenario={this.props.scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
+                                    label={this.state.statLabel.toLowerCase()}
+                                    median={this.state.median}
+                                    tenth={this.state.tenth}
+                                    ninetyith={this.state.ninetyith}
+                                />
+                            }
+                        </div>
                     </div>
 
                     <div className="chart-legend-container">

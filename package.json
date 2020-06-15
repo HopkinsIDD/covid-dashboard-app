@@ -55,6 +55,6 @@
   },
   "main": "index.js",
   "repository": "git@github.com:HopkinsIDD/covid-dashboard-app.git",
-  "author": "Genevieve Hoffman <genny.hoffman@gmail.com>",
+  "author": "Genevieve Hoffman <genny.hoffman@gmail.com>, Lily Xu <lilyxu@alum.mit.edu>",
   "license": "MIT"
 }

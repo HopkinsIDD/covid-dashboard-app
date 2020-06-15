@@ -1,11 +1,15 @@
-// id: explicit key to list items in onChange()
-// key: use this to key into dataset
-// name: display name for visualization
 
-// how many sim curves should be displayed in Graph
+// number of sim curves to be displayed in Graph
 export const numDisplaySims = 30;  
-export const margin = { yAxis: 80, top: 10, right: 10, bottom: 30, left: 10, chartTop: 15 };
 export const monthDateFormat = '%b-%d';
+export const margin = {
+    yAxis: 80, 
+    top: 10, 
+    right: 10, 
+    bottom: 30, 
+    left: 10, 
+    chartTop: 15 
+};
 
 // ant design components are inline styled (and resist styling via css classes)
 export const styles = {
@@ -69,6 +73,9 @@ export const styles = {
     }
 };
 
+// id: explicit key to list items in onChange()
+// key: use this to key into dataset
+// name: display name for visualization
 export const STATS = [
     {'id': 1, 'key': 'incidH', 'name': 'Hospitalizations'},
     {'id': 2, 'key': 'incidD', 'name': 'Deaths'},

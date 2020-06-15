@@ -314,6 +314,12 @@ li {
   width: 25%;
 }
 
+@media screen and (max-width: 1000px) {
+  .widescreen-only {
+    display: none
+  }
+}
+
 @media screen and (max-width: 800px) {
   .filters {
     padding: 0;
@@ -323,6 +329,9 @@ li {
   .mobile {
     pointer-events: none;
     opacity: 0.6;
+  }
+  .scenario-title {
+    margin-left: -25%;
   }
 }
 
@@ -401,6 +410,12 @@ li {
 .map-wrapper {
   display: flex;
   flex-flow: wrap;
+}
+
+@media screen and (max-width: 800px) {
+  .map-wrapper {
+    margin-left: -20%;
+  }
 }
 
 .map {

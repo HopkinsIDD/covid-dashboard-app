@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { geoConicEqualArea, geoPath } from 'd3-geo';
 import { scaleLinear, scalePow } from 'd3-scale';
 import { max } from 'd3-array';

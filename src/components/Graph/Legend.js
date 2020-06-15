@@ -250,26 +250,3 @@ function Legend(props) {
 }
 
 export default Legend
-
-function ActualLegend(props) {
-    return (
-        <g className="legend">
-            <g className="legend-actual">
-                <circle
-                    cx={props.x}
-                    cy={props.y + 40}
-                    fill={colors.orange}
-                    r={3.5}
-                />
-                <text
-                    x={props.x + 45}
-                    y={props.y + 40 + 4}
-                    opacity={0.65}
-                    className="titleNarrow"
-                >
-                    actual data
-                </text>
-            </g>
-        </g>
-    )
-}
