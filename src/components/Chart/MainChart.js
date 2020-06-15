@@ -138,7 +138,7 @@ class MainChart extends Component {
                         </div>
                     </Col>
 
-                    <Col className="gutter-row container">
+                    <Col className="gutter-row container mobile-only">
                         <div className="mobile-alert">
                             &#9888; The filters below are disabled on mobile devices.
                         </div>
