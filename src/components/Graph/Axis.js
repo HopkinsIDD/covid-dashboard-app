@@ -3,6 +3,8 @@ import { axisLeft, axisBottom, axisRight } from 'd3-axis'
 import { timeFormat } from 'd3-time-format'
 import { select } from 'd3-selection'
 import { addCommas } from '../../utils/utils.js'
+import { monthDateFormat } from '../../utils/constants'
+
 
 class Axis extends Component {
   constructor(props) {
@@ -37,7 +39,7 @@ class Axis extends Component {
     } else {
       if (this.props.view === 'graph') {
         this.axis = axisBottom().scale(this.props.scale)
-          .tickFormat(timeFormat('%b-%d'))
+          .tickFormat(timeFormat(monthDateFormat))
           .ticks(this.props.width / 80)
           .tickSizeOuter(0);
       } else if (this.props.view === 'chart') {
