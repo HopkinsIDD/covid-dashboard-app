@@ -61,6 +61,9 @@ h1, h2 {
   .desktop-only {
     display: none;
   }
+  .mobile-only {
+    display: block;
+  }
   .mobile-alert {
     display: block;
     background-color: #fcc;
