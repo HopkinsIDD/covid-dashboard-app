@@ -27,7 +27,7 @@ class ThresholdLabel extends Component {
             'underline-active' : 'bold underline';
 
         return (
-            <div className={this.props.classProps}>
+            <div className={`${this.props.classProps} desktop-only`}>
                 <span className={activeClass}>{chance}%</span>
                 &nbsp;{`of simulations shown predict daily ${this.props.label} to exceed`}&nbsp;
                 <span className={statClass}>{val}</span>
