@@ -314,6 +314,12 @@ li {
   width: 25%;
 }
 
+@media screen and (max-width: 1000px) {
+  .widescreen-only {
+    display: none
+  }
+}
+
 @media screen and (max-width: 800px) {
   .filters {
     padding: 0;
