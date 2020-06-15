@@ -117,13 +117,13 @@ class MainMap extends Component {
                         </div>
                     </Col>
 
-                    <Col className="gutter-row container mobile-only">
+                    {/* <Col className="gutter-row container mobile-only">
                         <div className="mobile-alert">
                             &#9888; The filters below are disabled on mobile devices.
                         </div>
-                    </Col>
+                    </Col> */}
 
-                    <Col className="gutter-row filters mobile">
+                    <Col className="gutter-row filters"> 
                         {this.state.dataLoaded &&
                         <Fragment>
                             <Scenarios

@@ -330,6 +330,9 @@ li {
     pointer-events: none;
     opacity: 0.6;
   }
+  .scenario-title {
+    margin-left: -25%;
+  }
 }
 
 .filter-label {
@@ -407,6 +410,12 @@ li {
 .map-wrapper {
   display: flex;
   flex-flow: wrap;
+}
+
+@media screen and (max-width: 800px) {
+  .map-wrapper {
+    margin-left: -20%;
+  }
 }
 
 .map {

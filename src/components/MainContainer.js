@@ -46,14 +46,22 @@ class MainContainer extends Component {
     }
 
     updateGraphDimensions = () => {
-        const graphW = (window.innerWidth * 0.6585) - margin.yAxis; // this.graphEl.clientWidth - margin.yAxis;
-        const graphH = window.innerHeight * 0.53;
+        const ratioH = 0.53;
+        const ratioW = window.innerWidth > 800 ? 0.6585 : 0.9; // account for mobile
+
+        const graphH = window.innerHeight * ratioH;
+        const graphW = (window.innerWidth * ratioW) - margin.yAxis; 
+
         this.setState({ graphW, graphH, animateTransition: false });
       }
 
     updateMapContainerDimensions = () => {
-        const mapContainerW = ((window.innerWidth * 0.6585) - margin.yAxis) - ( 3 * (margin.left)) - (3 * (margin.right));
-        const mapContainerH = window.innerHeight * 0.35;
+        const ratioH = 0.35;
+        const ratioW = window.innerWidth > 800 ? 0.6585 : 1.8; // account for mobile 
+
+        const mapContainerH = window.innerHeight * ratioH;
+        const mapContainerW = ((window.innerWidth * ratioW) - margin.yAxis) - (6 * (margin.left))
+        
         this.setState({ mapContainerW, mapContainerH });
     }
 
