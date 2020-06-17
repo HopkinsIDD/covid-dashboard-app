@@ -14,21 +14,27 @@ class NavBar extends Component {
   }
 
   handleMouseClick = (index) => {
+    // close nav bar on mobile
+    const items = document.getElementsByClassName("menu-items");
+    const nav = document.getElementById("nav-menu");
+    nav.className = nav.className.replace(' responsive', '')
+    for (let item of items) {
+      item.className = item.className.replace(' responsive', '')
+    }
+
     this.setState({ active: index })
   }
 
   handleMenuClick = () => {
-    console.log('open menu')
     const items = document.getElementsByClassName("menu-items");
     const nav = document.getElementById("nav-menu");
     const logo = document.getElementById("logo");
     
+    // menu item click on mobile
     if (!nav.className.includes('responsive')) {
-      console.log('adding responsive tag to nav element')
       nav.className += " responsive";
       logo.className += " responsive";
     } else {
-      console.log('removing responsive tag to nav element')
       nav.className = nav.className.replace(' responsive', '')
       logo.className = logo.className.replace(' responsive', '')
     }

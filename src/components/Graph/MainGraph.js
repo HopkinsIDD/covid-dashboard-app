@@ -18,7 +18,6 @@ import { timeDay } from 'd3-time';
 import { max } from 'd3-array';
 
 const parseDate = utcParse('%Y-%m-%d');
-// const formatDate = timeFormat('%Y-%m-%d');
 
 class MainGraph extends Component {
     constructor(props) {
@@ -70,6 +69,8 @@ class MainGraph extends Component {
             this.initializeGraph(dataset, this.state.stat, this.state.severity)
         }
 
+        // changes for the props below are all interdependent and require 
+        // r0 filtering and returnSimsOverThreshold to update color on sims
         if (this.state.stat !== prevState.stat ||
             this.state.scenarioList !== prevState.scenarioList ||
             this.state.severityList !== prevState.severityList ||
@@ -95,11 +96,10 @@ class MainGraph extends Component {
             let sliderMax = 0
 
             for (let i = 0; i < scenarioList.length; i++) {
-                // filter down to the current r0selected range and THEN filter to numDisplaySims
                 const copy = Array.from(
                     dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
 
-                // filter down sims on r0
+                // filter on current r0selected range and THEN filter to numDisplaySims
                 const r0min = r0selected[0], r0max = r0selected[1];
                 const series = copy.filter(s => { 
                     return (s.r0 > r0min && s.r0 < r0max)})
@@ -111,29 +111,29 @@ class MainGraph extends Component {
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 });
-                // array of all peaks in series
+                // array of all peaks in filtered series
                 const seriesPeaks = filteredSeriesForStatThreshold.map(sim => max(sim.vals));
                 const [seriesMin, seriesMax] = getRange(seriesPeaks);
+
                 // ensures side by side y-scale reflect both series
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax
-                // default smart value for statThreshold calculation
+
+                // sets default smart value for statThreshold calculation
                 if (i === 0 && seriesMin < seriesMax/2) statThreshold = seriesMin;
                 if (i === 0 && seriesMin >= seriesMax/2) statThreshold = seriesMax/2;
                 const simsOver = returnSimsOverThreshold(
                     series, statThreshold, this.state.allTimeDates, dateThreshold);
+
                 // brush visual only based on first scenario, for simplicity
                 if (i === 0) brushSeries = series
 
-                // filtering based on date
-                // only dateRange change needs this ---> 
+                // filtering based on date, only dateRange change needs this 
                 const filteredSeries = series.map( s => { const newS = {...s}
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 })
-                
                 filteredSeriesList.push(filteredSeries)
-                // console.log('on brush change', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
 
                 // calculate percExceedence based on series after filtering down
                 const percExceedence = filteredSeries.length > 0 ?
@@ -202,7 +202,6 @@ class MainGraph extends Component {
             newS.vals = s.vals.slice(idxMin, idxMax)
             return newS
         })
-        // console.log('initialize series', filteredSeries.map(sim => {return `${sim.name}: ${sim.r0}`}))
         // instantiate confidence bounds
         const confBounds = dataset[SCENARIOS[0].key][severity.key][stat.key].conf;
         const filteredConfBounds = confBounds.slice(idxMin, idxMax)

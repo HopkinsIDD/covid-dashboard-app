@@ -188,6 +188,8 @@ class GraphContainer extends Component {
       const { children } = this.state;
       const { scenarioList, scenarioHovered } = this.props;
       const countyName = `${COUNTYNAMES[this.props.geoid]}`;
+      const dimensions = { width: margin.yAxis + margin.left, height: 40};
+
       return (
           <div className="graph-wrapper">
               <div className="y-axis-label titleNarrow graph-yLabel">
@@ -195,7 +197,7 @@ class GraphContainer extends Component {
               </div>
               <div className="graph-title-row">
               
-              <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
+              <div style={dimensions}></div>
                 {scenarioList.map((scenario, i) => {
                     const scenarioTitle = scenario.name.replace('_', ' ');
                     const isActive = scenario.name === scenarioHovered ? ' title-active' : '';
@@ -212,37 +214,22 @@ class GraphContainer extends Component {
                 } )}
             </div>
               <div className="graph-title-row callout-row">
-                <div style={{ width: margin.yAxis + margin.left, height: 40}}></div>
+                <div style={dimensions}></div>
                     {children.map( (child, i) => {
                         return (
-                            (this.props.scenarioList && this.props.scenarioList.length === 2) ?
-                                <ThresholdLabel
-                                    key={`${child.key}-label`}
-                                    classProps={'filter-label threshold-label callout'}
-                                    statThreshold={this.props.statThreshold}
-                                    dateThreshold={this.props.dateThreshold}
-                                    percExceedence={this.props.percExceedenceList[i]}
-                                    label={this.props.stat.name.toLowerCase()}
-                                    r0full={this.props.r0full}
-                                    r0selected={this.props.r0selected}
-                                    statSliderActive={this.props.statSliderActive}
-                                    dateSliderActive={this.props.dateSliderActive}
-                                />
-                            :
-
-                                <ThresholdLabel
-                                    key={`${child.key}-label`}
-                                    classProps={'filter-label threshold-label callout'}
-                                    statThreshold={this.props.statThreshold}
-                                    dateThreshold={this.props.dateThreshold}
-                                    percExceedence={this.props.percExceedenceList[i]}
-                                    label={this.props.stat.name.toLowerCase()}
-                                    r0full={this.props.r0full}
-                                    r0selected={this.props.r0selected}
-                                    statSliderActive={this.props.statSliderActive}
-                                    dateSliderActive={this.props.dateSliderActive}
-                                />
-                        )
+                            this.props.scenarioList && 
+                            <ThresholdLabel
+                                key={`${child.key}-label`}
+                                classProps={'filter-label threshold-label callout'}
+                                statThreshold={this.props.statThreshold}
+                                dateThreshold={this.props.dateThreshold}
+                                percExceedence={this.props.percExceedenceList[i]}
+                                label={this.props.stat.name.toLowerCase()}
+                                r0full={this.props.r0full}
+                                r0selected={this.props.r0selected}
+                                statSliderActive={this.props.statSliderActive}
+                                dateSliderActive={this.props.dateSliderActive} />
+                        )   
                     })}
                 </div>
                 <div className="graph-container">
