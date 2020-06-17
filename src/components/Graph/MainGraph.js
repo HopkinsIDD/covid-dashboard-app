@@ -291,7 +291,7 @@ class MainGraph extends Component {
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleR0Change = (e) => {
-        this.setState({ r0selected: e, animateTransition: true })
+        this.setState({ r0selected: e, animateTransition: false })
     };
 
     handleActualChange = () => {
