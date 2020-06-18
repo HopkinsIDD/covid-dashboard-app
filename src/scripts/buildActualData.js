@@ -2,6 +2,7 @@ const fs = require('fs');
 const constants = require('./constants');
 const _ = require('lodash');
 
+// This script builds the actuals.json with actual data
 // TODO: add Actual file validation - expected columns, file type is .csv
 
 function initActualObj(geoids, params) {
