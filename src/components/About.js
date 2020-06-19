@@ -10,18 +10,39 @@ class About extends Component {
             <Content id="about" style={styles.ContainerGray}>
                 <Col className="gutter-row container">
                     <div className="content-section">
-                        <div className="content-header">About</div>
-                        <br />
+                        <div className="methods-header">About</div> 
+                        <div>     
+                            COVID-19 has caused worldwide strain on health systems 
+                            due to its high mortality rate and the large portion of 
+                            cases requiring critical care and mechanical ventilation. 
+                            During these uncertain times, public health decision makers, 
+                            from city health departments to federal agencies, sought 
+                            the use of epidemiological models for decision support in 
+                            allocating resources, developing non-pharmaceutical 
+                            interventions, and characterizing the dynamics of COVID-19 
+                            in their jurisdictions. In response, the COVID-19 Scenario 
+                            Modeling Pipeline Working Group developed a flexible 
+                            scenario modeling pipeline that could quickly tailor 
+                            models for decision makers seeking to compare projections 
+                            of epidemic trajectories and healthcare impacts from 
+                            multiple intervention scenarios in different locations. 
+                            <br /><br />
+                            The original research on the scenario modeling pipeline
+                            for COVID-19 emergency planning can be found&nbsp;
+                            <a className="customLink"
+                            href="https://www.medrxiv.org/content/10.1101/2020.06.11.20127894v1.full.pdf">
+                            here</a>.
+                        </div>
+                            
                         <div className="methods-header">The Model</div> 
                         <div>     
-                            The source code for both the model and this website is open source 
-                            and available on Github. Core pipeline source code can be found&nbsp;
-                            <a className="customLink"
+                            The scenario modeling pipeline is open-source under the
+                            GNU General Public License v3 and <a className="customLink"
                             href="https://github.com/HopkinsIDD/COVIDScenarioPipeline/">
-                            here</a>. Source code for this website can be found&nbsp;
-                            <a className="customLink"
+                            available on Github</a>. The source code for this visualization 
+                            tool is also open source and <a className="customLink"
                             href="https://github.com/HopkinsIDD/covid-dashboard-app">
-                            here</a>. Please file any feature requests or issues&nbsp;
+                            available on Github</a>. Please file any feature requests or issues&nbsp;
                             <a className="customLink"
                             href="https://github.com/HopkinsIDD/covid-dashboard-app/issues">
                             here</a>. 
