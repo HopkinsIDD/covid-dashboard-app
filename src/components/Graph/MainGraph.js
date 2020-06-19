@@ -12,7 +12,7 @@ import ModeToggle from '../Filters/ModeToggle';
 import Sliders from '../Filters/Sliders';
 
 import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
-import { buildScenarios, returnSimsOverThreshold, getRange } from '../../utils/utils';
+import { buildScenarios, returnSimsOverThreshold, filterR0, getRange } from '../../utils/utils';
 import { utcParse, } from 'd3-time-format';
 import { timeDay } from 'd3-time';
 import { max } from 'd3-array';
@@ -25,7 +25,7 @@ class MainGraph extends Component {
         this.state = {
             dataLoaded: false,
             series: {},
-            seriesList: [{}],
+            seriesList: [],
             allTimeSeries: {},
             dates: [],
             allTimeDates: [],
@@ -42,15 +42,16 @@ class MainGraph extends Component {
             dateThreshold: new Date(),
             dateRange: [parseDate('2020-03-01'), parseDate('2020-07-27')],
             showActual: false,
-            actualList: [[]],
+            actualList: [],
             r0: [0, 4],
             r0full: [0, 4],
             r0selected: [0, 4],
+            r0resample: 0,   // counter for triggering componentDidUpdate
             simNum: '150',
             percExceedenceList: [],
             confBounds: {},
             showConfBounds: false,
-            confBoundsList: [{}],
+            confBoundsList: [],
             brushActive: false,
             animateTransition: true,
             scenarioClickCounter: 0,
@@ -69,42 +70,39 @@ class MainGraph extends Component {
             this.initializeGraph(dataset, this.state.stat, this.state.severity)
         }
 
-        // changes for the props below are all interdependent and require 
-        // r0 filtering and returnSimsOverThreshold to update color on sims
+        // changes for the props below are all interdependent and require both 
+        // r0 filtering and returnSimsOverThreshold for which sims are above/below threshold
         if (this.state.stat !== prevState.stat ||
             this.state.scenarioList !== prevState.scenarioList ||
             this.state.severityList !== prevState.severityList ||
             this.state.dateRange !== prevState.dateRange ||
-            this.state.r0selected !== prevState.r0selected) {
+            this.state.r0selected !== prevState.r0selected ||
+            this.state.r0resample !== prevState.r0resample) {
 
             const filteredSeriesList = []
             const percExceedenceList = []
             const confBoundsList = [];
             const actualList = [];
-            let brushSeries
+            let brushSeries;
             
             const { dataset } = this.props;
-            const { stat, severityList, scenarioList, r0selected } = this.state;
+            const { stat, severityList, scenarioList, r0selected, allTimeDates, dateRange } = this.state;
+
             // filter series and dates by dateRange
-            const idxMin = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[0]);
-            const idxMax = timeDay.count(this.state.allTimeDates[0], this.state.dateRange[1]);
-            const filteredDates = Array.from(this.state.allTimeDates.slice(idxMin, idxMax));
+            const idxMin = timeDay.count(allTimeDates[0], dateRange[0]);
+            const idxMax = timeDay.count(allTimeDates[0], dateRange[1]);
+            const filteredDates = Array.from(allTimeDates.slice(idxMin, idxMax));
             const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
             const dateThreshold = filteredDates[dateThresholdIdx];
             let statThreshold = 0
-            let sliderMin = 100000000000
+            let sliderMin = Number.POSITIVE_INFINITY
             let sliderMax = 0
 
             for (let i = 0; i < scenarioList.length; i++) {
                 const copy = Array.from(
                     dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
+                const series = filterR0(copy, r0selected, numDisplaySims);
 
-                // filter on current r0selected range and THEN filter to numDisplaySims
-                const r0min = r0selected[0], r0max = r0selected[1];
-                const series = copy.filter(s => { 
-                    return (s.r0 > r0min && s.r0 < r0max)})
-                    .slice(0, numDisplaySims);
-             
                 // setting default smart threshold based on seriesMin 
                 const filteredSeriesForStatThreshold = series.map( s => {
                     const newS = {...s}
@@ -123,7 +121,7 @@ class MainGraph extends Component {
                 if (i === 0 && seriesMin < seriesMax/2) statThreshold = seriesMin;
                 if (i === 0 && seriesMin >= seriesMax/2) statThreshold = seriesMax/2;
                 const simsOver = returnSimsOverThreshold(
-                    series, statThreshold, this.state.allTimeDates, dateThreshold);
+                    series, statThreshold, allTimeDates, dateThreshold);
 
                 // brush visual only based on first scenario, for simplicity
                 if (i === 0) brushSeries = series
@@ -290,12 +288,17 @@ class MainGraph extends Component {
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleR0Change = (e) => {
-        this.setState({ r0selected: e, animateTransition: true })
+        this.setState({ r0selected: e, animateTransition: false })
+    };
+
+    handleR0Resample = () => {
+        this.setState(prevState => {
+            return {r0resample: prevState.r0resample + 1 }
+        })
     };
 
     handleActualChange = () => {
         this.setState({showActual: !this.state.showActual}); 
-        console.log(!this.state.showActual, this.state.actualList)
     };
 
     handleStatSliderChange = (thresh) => {
@@ -409,7 +412,7 @@ class MainGraph extends Component {
                 </Col>
 
                 {this.state.dataLoaded &&
-                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                <Row gutter={styles.gutter}>
                     <Col className="gutter-row container">
                         <GraphContainer 
                             geoid={this.props.geoid}
@@ -483,7 +486,8 @@ class MainGraph extends Component {
                         <R0
                             r0full={this.state.r0full}
                             r0selected={this.state.r0selected}
-                            onR0Change={this.handleR0Change} />
+                            onR0Change={this.handleR0Change}
+                            onR0Resample={this.handleR0Resample} />
                         <ActualSwitch
                             onChange={this.handleActualChange}
                             actualList={this.state.actualList} />

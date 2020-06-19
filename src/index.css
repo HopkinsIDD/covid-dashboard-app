@@ -168,6 +168,24 @@ h1, h2 {
   padding-top: 2%;
 }
 
+.r0-slider {
+  width: 60%;
+}
+
+.resample {
+  padding: 4px 10px;
+}
+
+@media screen and (max-width: 1600px) {
+  .r0-slider { width: 50%; }
+}
+@media screen and (max-width: 1200px) {
+  .r0-slider { width: 45%; }
+}
+@media screen and (max-width: 1024px) {
+  .r0-slider { width: 40%; }
+}
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
