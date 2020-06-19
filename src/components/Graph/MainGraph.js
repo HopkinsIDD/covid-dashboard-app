@@ -350,7 +350,7 @@ class MainGraph extends Component {
     handleBrushEnd = () => {this.setState({brushActive: false, animateTransition: true})}
 
     handleConfClick = () => {
-        this.setState(prevState => ({showConfBounds: !prevState.showConfBounds}));
+        this.setState(prevState => ({showConfBounds: !prevState.showConfBounds, animateTransition: false}));
     };
 
     handleSliderMouseEvent = (type, slider, view) => {
