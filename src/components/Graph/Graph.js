@@ -115,6 +115,16 @@ class Graph extends Component {
                 // console.log(i, typeof(d.vals))
                 return lineGenerator(d.vals)
             })
+
+            // this.setState({ 
+            //     series: series,
+            //     dates: dates,
+            //     // xScale: this.props.xScale,
+            //     // yScale: this.props.yScale,
+            //     lineGenerator: lineGenerator,
+            //     simPaths: simPaths,
+            //     width
+            // })
           
             // get svg node
             const simPathsNode = select(this.simPathsRef.current)
@@ -143,10 +153,17 @@ class Graph extends Component {
                 simPathsNode.selectAll('.simPath')
                     .data(series)
                     .transition()
-                    .duration(1000)
+                    .duration(100)
                     .ease(easeCubicOut)
-                    .attr("d", d => lineGenerator(d.vals))
-                    .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
+                        .attr('stroke-opacity', 0)
+                    .transition()
+                    .duration(10)
+                        .attr("d", d => lineGenerator(d.vals))
+                    .transition()
+                    .duration(700)
+                    .ease(easeCubicOut)
+                        .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
+                        .attr("stroke-opacity", 0.6)
                     .on("end", () => {
                         // set new vals to state
                         this.setState({ 
