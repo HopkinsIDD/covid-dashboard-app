@@ -1,7 +1,6 @@
 const fs = require('fs');
 
-// Builds json of county boundaries using geoJSON FeatureCollections format
-// Run separately from main.js!
+// This script creates json of county boundaries using geoJSON FeatureCollections format
 
 function buildFIPSmap() {
     // writes json Object of format {state_fip: {state_name, state_usps}} from csv
