@@ -172,7 +172,6 @@ function Legend(props) {
             </g>
         )
     } else {
-        console.log('here', props.showActual)
         return (
             <g className="legend-container">
                 <g className="legend">

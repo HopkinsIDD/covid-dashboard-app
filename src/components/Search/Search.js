@@ -93,7 +93,7 @@ class Search extends Component {
                         onCountySelect={this.handleCountySelect}
                         style={styles.SearchBar}
                         size="large" />
-                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }} style={styles.Switch}>
+                    <Row gutter={styles.gutter} style={styles.Switch}>
                         <Switch
                             style={{ 'marginTop': '0.1rem' }}
                             onChange={this.handleUploadToggle}

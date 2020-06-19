@@ -117,7 +117,7 @@ class MainChart extends Component {
                         </div>
                     </div>
                 </Col>
-                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                <Row gutter={styles.gutter}>
                     <Col className="gutter-row container">
                         <div className="map-container">
                             {this.state.dataLoaded &&
