@@ -71,6 +71,13 @@ class MainGraph extends Component {
             this.initializeGraph(dataset, this.state.stat, this.state.severity)
         }
 
+        // if (this.state.stat !== prevState.stat ||
+        //     this.state.scenarioList !== prevState.scenarioList ||
+        //     this.state.severityList !== prevState.severityList) {
+        //         // In these update loops we want to reset the R0 to the full range
+        //         // and randomly resample??
+        //     }
+
         // changes for the props below are all interdependent and require both 
         // r0 filtering and returnSimsOverThreshold for which sims are above/below threshold
         if (this.state.stat !== prevState.stat) console.log('stat diff', prevState.stat, this.state.stat)
@@ -97,7 +104,7 @@ class MainGraph extends Component {
             let brushSeries;
             
             const { dataset } = this.props;
-            const { stat, severityList, scenarioList, seriesList, allTimeDates, dateRange } = this.state;
+            const { stat, severityList, scenarioList, r0FilteredSeriesList, allTimeDates, dateRange, r0selected } = this.state;
 
             // filter series and dates by dateRange
             const idxMin = timeDay.count(allTimeDates[0], dateRange[0]);
@@ -110,11 +117,20 @@ class MainGraph extends Component {
             let sliderMax = 0
 
             for (let i = 0; i < scenarioList.length; i++) {
-                // const copy = Array.from(
-                //     dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
-                // const series = filterR0(copy, r0selected, numDisplaySims);
-                const series = seriesList[i]
-                console.log('series', series)
+                let series
+                if (this.state.stat !== prevState.stat ||
+                    this.state.scenarioList !== prevState.scenarioList ||
+                    this.state.severityList !== prevState.severityList) {
+                        
+                        const copy = Array.from(
+                            dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
+                        series = filterR0(copy, r0selected, numDisplaySims);
+                    } else {
+                        // deal with daterange and r0 slider / sample
+                        series = r0FilteredSeriesList[i]
+                        console.log('r0FilteredSeries', series)
+                    }
+                
                 // setting default smart threshold based on seriesMin 
                 const filteredSeriesForStatThreshold = series.map( s => {
                     const newS = {...s}
@@ -306,31 +322,31 @@ class MainGraph extends Component {
         const r0selected = e
         const { dataset } = this.props;
         const { scenarioList, severityList, stat } = this.state;
-        const filteredSeriesList = []
+        const r0FilteredSeriesList = []
         for (let i = 0; i < scenarioList.length; i++) {
             const copy = Array.from(
                 dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
             const r0FilteredSeries = filterR0(copy, r0selected, numDisplaySims);
-            filteredSeriesList.push(r0FilteredSeries)
+            r0FilteredSeriesList.push(r0FilteredSeries)
         }
 
-        this.setState({ r0selected, animateTransition: true, seriesList: filteredSeriesList })
+        this.setState({ r0selected, animateTransition: true, r0FilteredSeriesList })
     };
 
     handleR0Resample = () => {
         console.log('handleR0Resample')
         const { dataset } = this.props;
         const { scenarioList, severityList, stat, r0selected } = this.state;
-        const filteredSeriesList = []
+        const r0FilteredSeriesList = []
         for (let i = 0; i < scenarioList.length; i++) {
             const copy = Array.from(
                 dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
             const r0FilteredSeries = filterR0(copy, r0selected, numDisplaySims);
-            filteredSeriesList.push(r0FilteredSeries)
+            r0FilteredSeriesList.push(r0FilteredSeries)
         }
 
         this.setState(prevState => {
-            return { r0resample: prevState.r0resample + 1, seriesList: filteredSeriesList }
+            return { r0resample: prevState.r0resample + 1, r0FilteredSeriesList }
         })
     };
 
