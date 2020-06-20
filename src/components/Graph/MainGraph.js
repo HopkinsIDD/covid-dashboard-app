@@ -72,13 +72,13 @@ class MainGraph extends Component {
 
         // changes for the props below are all interdependent and require both 
         // r0 filtering and returnSimsOverThreshold for which sims are above/below threshold
-        if (this.state.stat !== prevState.stat) console.log('stat diff', prevState.stat, this.state.stat)
-        if (this.state.scenarioList !== prevState.scenarioList) console.log('scenarioList diff', prevState.scenarioList, this.state.scenarioList)
-        if (this.state.severityList !== prevState.severityList) console.log('severityList diff', prevState.severityList, this.state.severityList)
-        if (this.state.dateRange !== prevState.dateRange) console.log('dateRange diff', prevState.dateRange, this.state.dateRange)
-        // if (this.state.seriesList !== prevState.seriesList) console.log('seriesList diff', prevState.seriesList, this.state.seriesList)
-        if (this.state.r0selected !== prevState.r0selected) console.log('r0selected diff', prevState.r0selected, this.state.r0selected)
-        if (this.state.r0resample !== prevState.r0resample) console.log('r0resample diff', prevState.r0resample, this.state.r0resample)
+        // if (this.state.stat !== prevState.stat) console.log('stat diff', prevState.stat, this.state.stat)
+        // if (this.state.scenarioList !== prevState.scenarioList) console.log('scenarioList diff', prevState.scenarioList, this.state.scenarioList)
+        // if (this.state.severityList !== prevState.severityList) console.log('severityList diff', prevState.severityList, this.state.severityList)
+        // if (this.state.dateRange !== prevState.dateRange) console.log('dateRange diff', prevState.dateRange, this.state.dateRange)
+        // // if (this.state.seriesList !== prevState.seriesList) console.log('seriesList diff', prevState.seriesList, this.state.seriesList)
+        // if (this.state.r0selected !== prevState.r0selected) console.log('r0selected diff', prevState.r0selected, this.state.r0selected)
+        // if (this.state.r0resample !== prevState.r0resample) console.log('r0resample diff', prevState.r0resample, this.state.r0resample)
 
         if (
             this.state.stat !== prevState.stat ||
@@ -87,7 +87,7 @@ class MainGraph extends Component {
             this.state.dateRange !== prevState.dateRange ||
             this.state.r0selected !== prevState.r0selected ||
             this.state.r0resample !== prevState.r0resample) {
-                console.log('IN MAIN UPDATE LOOP')
+                // console.log('IN MAIN UPDATE LOOP')
 
             const filteredSeriesList = []
             const percExceedenceList = []
@@ -510,7 +510,7 @@ class MainGraph extends Component {
                         </div>
                     </Col>
 
-                    <Col className="gutter-row filters mobile">
+                    <Col className="gutter-row graph-filters mobile">
                         <Scenarios
                             view="graph"
                             SCENARIOS={this.state.SCENARIOS}

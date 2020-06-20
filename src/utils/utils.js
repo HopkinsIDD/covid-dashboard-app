@@ -98,7 +98,7 @@ export function addCommas(x) {
 export function getRange(seriesPeaks) {
   // return range [min, max] of all peaks of sims given a series
   const seriesPeakExtent = extent(seriesPeaks)
-  console.log(seriesPeakExtent)
+  // console.log(seriesPeakExtent)
   let roundingVal;
   if (seriesPeakExtent[1].toString().length < 2) {
     roundingVal = 1

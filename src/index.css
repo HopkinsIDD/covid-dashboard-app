@@ -338,6 +338,10 @@ li {
   width: 25%;
 }
 
+.graph-filters {
+  width: 25%;
+}
+
 @media screen and (max-width: 1000px) {
   .widescreen-only {
     display: none
