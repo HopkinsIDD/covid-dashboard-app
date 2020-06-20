@@ -172,6 +172,12 @@ h1, h2 {
   width: 65%;
 }
 
+.r0-range {
+  margin-top: 5px;
+  padding-left: 10px !important;
+  padding-bottom: 5px;
+}
+
 .resample {
   padding: 4px 10px;
 }

@@ -13,25 +13,12 @@ class Histogram extends Component {
 
   componentDidMount() {
     const width = document.querySelector('.r0-slider').clientWidth
-    console.log(width, this.props.height)
     this.setState({ width }, () => this.makeBins())
-
-    // svg.selectAll('rect')
-    // .data(bins)
-    // .enter()
-    // .append('rect')
-    // .attr('x', 1)
-    // .attr('transform', d => "translate(" + xScale(d.x0) + "," + yScale(d.length) + ")")
-    // .attr('width', d => xScale(d.x1) - xScale(d.x0) - 1)
-    // .attr('height', d => height - yScale(d.length))
-    // .attr('fill', '#69b3a2')
   }
 
   makeBins = () => {
     const sorted_sims = this.props.allSims.slice().sort((a,b) => a.r0 - b.r0)
-    console.log(sorted_sims)
     const sorted_selected_sims = this.props.selectedSims.slice().sort((a,b) => a.r0 - b.r0)
-    console.log(sorted_selected_sims)
    
     const xScale = scaleLinear().domain([2, 3]).range([0, this.state.width])
     const yScale = scaleLinear().range([this.props.height, 0])
@@ -42,10 +29,10 @@ class Histogram extends Component {
         .thresholds(10)
 
     const bins = binGenerator(sorted_sims)
-    console.log(bins)
+    // console.log(bins)
 
     const selectedBins = binGenerator(sorted_selected_sims)
-    console.log(selectedBins)
+    // console.log(selectedBins)
 
     yScale.domain([0, max(bins, d => d.length)])
 

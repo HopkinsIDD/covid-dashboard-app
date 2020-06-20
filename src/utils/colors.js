@@ -21,7 +21,7 @@ export const colors = {
     lightGray: '#d0d0d0',
     graphBkgd: '#fcfcfc',
     chartBkgd: '#f0f2f5',
-    sliderBlue: '#3885fa',
+    sliderBlue: '#1890ff', //'#3885fa',
 
     // Names below are pulled from https://www.colorhexa.com. Duplicates are incremented
     verySoftCyan: '#b6f5e7',

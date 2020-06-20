@@ -59,12 +59,8 @@ class R0 extends Component {
                         </div>
                     </TooltipHandler>
                 </div>
-                <div className="filter-label">
-                    <span className='callout'>
-                            R<sub>0</sub> between {activeMin} - {activeMax}
-                    </span>
-                </div>
-                <div className="r0-histogram">
+                <div className="map-wrapper">
+                    <div className="r0-histogram">
                         <Histogram
                             allSims={allSims}
                             selectedSims={selectedSims}
@@ -72,6 +68,12 @@ class R0 extends Component {
                             height={25}
                         />
                     </div>
+                    <div className="filter-label">
+                        <span className='callout r0-range'>
+                            [{activeMin}-{activeMax}]
+                        </span>
+                    </div>
+                </div>
                 <div className="map-wrapper">
                     <div className="r0-slider" id="r0Slider">
                         <Slider
