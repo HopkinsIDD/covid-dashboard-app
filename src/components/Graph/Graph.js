@@ -63,7 +63,6 @@ class Graph extends Component {
             const { series, dates, animateTransition, width } = this.props;
             const { lineGenerator, areaGenerator } = prevState;
             // console.log('animateTransition', animateTransition)
-            console.log(this.props.series)
             this.updateSimPaths(series, dates, lineGenerator, animateTransition, width);
             if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
         }

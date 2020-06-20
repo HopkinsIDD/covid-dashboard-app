@@ -32,7 +32,7 @@ class R0 extends Component {
     }
  
     render() {
-        const { r0full, r0selected } = this.props;
+        const { r0full, r0selected, allSims, selectedSims } = this.props;
         const min = r0full[0], max = r0full[1];
         const activeMin = r0selected[0], activeMax = r0selected[1];
         return (
@@ -66,8 +66,8 @@ class R0 extends Component {
                 </div>
                 <div className="r0-histogram">
                         <Histogram
-                            allSims={this.props.allSims}
-                            selectedSims={this.props.selectedSims}
+                            allSims={allSims}
+                            selectedSims={selectedSims}
                             selected={r0selected}
                             height={30}
                         />
