@@ -5,7 +5,7 @@ import Legend from './Legend'
 import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least, max, maxIndex } from 'd3-array'
 import { select } from 'd3-selection'
-import { easeCubicOut } from 'd3-ease'
+import { easeCubicOut, easeCubicIn, easeCubicInOut } from 'd3-ease'
 import { margin } from '../../utils/constants'
 import colors from '../../utils/colors';
 
@@ -153,14 +153,14 @@ class Graph extends Component {
                 simPathsNode.selectAll('.simPath')
                     .data(series)
                     .transition()
-                    .duration(100)
-                    .ease(easeCubicOut)
+                    .duration(300)
+                    .ease(easeCubicIn)
                         .attr('stroke-opacity', 0)
                     .transition()
                     .duration(10)
                         .attr("d", d => lineGenerator(d.vals))
                     .transition()
-                    .duration(700)
+                    .duration(400)
                     .ease(easeCubicOut)
                         .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
                         .attr("stroke-opacity", 0.6)

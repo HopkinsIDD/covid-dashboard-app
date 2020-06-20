@@ -78,6 +78,17 @@ export function filterR0(series, r0selected, numDisplaySims) {
   return final;
 }
 
+export function createFilteredR0SeriesList(r0selected, scenarioList, severityList, stat, dataset, numDisplaySims) {
+  const r0FilteredSeriesList = []
+  for (let i = 0; i < scenarioList.length; i++) {
+      const copy = Array.from(
+          dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
+      const r0FilteredSeries = filterR0(copy, r0selected, numDisplaySims);
+      r0FilteredSeriesList.push(r0FilteredSeries)
+  }
+  return r0FilteredSeriesList
+}
+
 export function addCommas(x) {
   var parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
