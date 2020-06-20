@@ -6,7 +6,7 @@ import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least, max, maxIndex } from 'd3-array'
 import { select } from 'd3-selection'
 import { easeCubicOut, easeCubicIn, easeCubicInOut } from 'd3-ease'
-import { margin } from '../../utils/constants'
+import { margin, numDisplaySims } from '../../utils/constants'
 import colors from '../../utils/colors';
 
 class Graph extends Component {
@@ -59,9 +59,10 @@ class Graph extends Component {
         }
 
         if (this.props.series !== prevProps.series) {
-            // console.log('componentDidUpdate SERIES change');
+            console.log('componentDidUpdate SERIES change', this.props.series);
             const { series, dates, animateTransition, width } = this.props;
             const { lineGenerator, areaGenerator } = prevState;
+            if (series.length < numDisplaySims) console.log('only', series.length, 'sims in series')
             // console.log('animateTransition', animateTransition)
             this.updateSimPaths(series, dates, lineGenerator, animateTransition, width);
             if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
