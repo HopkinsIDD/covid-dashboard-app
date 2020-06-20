@@ -319,7 +319,7 @@ class MainGraph extends Component {
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleR0Change = (e) => {
-        console.log('handleR0Change')
+        // console.log('handleR0Change')
         const r0selected = e
         const { dataset } = this.props;
         const { scenarioList, severityList, stat } = this.state;
@@ -328,7 +328,7 @@ class MainGraph extends Component {
     };
 
     handleR0Resample = () => {
-        console.log('handleR0Resample')
+        // console.log('handleR0Resample')
         const { dataset } = this.props;
         const { scenarioList, severityList, stat, r0selected } = this.state;
         const filteredR0SeriesList = createFilteredR0SeriesList(r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
