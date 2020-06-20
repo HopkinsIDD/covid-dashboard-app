@@ -108,6 +108,7 @@ class MainGraph extends Component {
             let statThreshold = 0
             let sliderMin = Number.POSITIVE_INFINITY
             let sliderMax = 0
+            let allSims = []
 
             for (let i = 0; i < scenarioList.length; i++) {
                 let series
@@ -117,6 +118,7 @@ class MainGraph extends Component {
                         
                         const copy = Array.from(
                             dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
+                        allSims = copy;
                         series = filterR0(copy, r0selected, numDisplaySims);
                     } else {
                         // deal with daterange and r0 slider / sample
@@ -182,6 +184,7 @@ class MainGraph extends Component {
             this.setState({
                 seriesList: filteredSeriesList,
                 allTimeSeries: brushSeries,
+                allSimsSeries: allSims,
                 dates: filteredDates,
                 statThreshold,
                 dateThreshold,
@@ -199,6 +202,7 @@ class MainGraph extends Component {
         // instantiate scenarios, dates, series, severities
         const SCENARIOS = buildScenarios(dataset);  
         const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
+        const allSims = dataset[SCENARIOS[0].key][severity.key][stat.key].sims;
         const series = dataset[SCENARIOS[0].key][severity.key][stat.key]
             .sims.slice(0, numDisplaySims);
         const seriesPeaks = series.map(sim => sim.max);
@@ -248,6 +252,7 @@ class MainGraph extends Component {
             scenarioList: [SCENARIOS[0]],
             dates: newDates,
             allTimeDates,
+            allSims,
             seriesList: [filteredSeries],
             severityList: sevList,
             allTimeSeries,
@@ -527,7 +532,9 @@ class MainGraph extends Component {
                             r0full={this.state.r0full}
                             r0selected={this.state.r0selected}
                             onR0Change={this.handleR0Change}
-                            onR0Resample={this.handleR0Resample} />
+                            onR0Resample={this.handleR0Resample}
+                            allSims={this.state.allSims} 
+                            selectedSims={this.state.seriesList[0]} />
                         <ActualSwitch
                             onChange={this.handleActualChange}
                             actualList={this.state.actualList} />

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import TooltipHandler from '../Filters/TooltipHandler';
+import Histogram from '../Filters/Histogram';
 import { Button, Slider } from 'antd';
 import { styles } from '../../utils/constants';
 
@@ -64,6 +65,15 @@ class R0 extends Component {
                     </span>
                 </div>
                 <div className="map-wrapper">
+                    <div className="r0-histogram">
+                        <Histogram
+                            allSims={this.props.allSims}
+                            selectedSims={this.props.selectedSims}
+                            selected={r0selected}
+                            width={200}
+                            height={50}
+                        />
+                    </div>
                     <div className="r0-slider">
                         <Slider
                             range
