@@ -14,6 +14,12 @@ class Histogram extends Component {
   componentDidMount() {
     const width = document.querySelector('.r0-slider').clientWidth
     this.setState({ width }, () => this.makeBins())
+    window.addEventListener('resize', this.updateHistogramWidth);
+  }
+
+  updateHistogramWidth = () => {
+    const width = document.querySelector('.r0-slider').clientWidth
+    this.setState({ width })
   }
 
   makeBins = () => {
@@ -39,7 +45,10 @@ class Histogram extends Component {
     this.setState({ xScale, yScale, binGenerator, bins, selectedBins })
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.width !== prevState.width) {
+      this.makeBins()
+    }
     // if (this.props.selectedSims !== prevProps.selectedSims) console.log(prevProps.selectedSims, this.props.selectedSims)
     if (this.props.selectedSims !== prevProps.selectedSims) {
       const sorted_selected_sims = this.props.selectedSims.slice().sort((a,b) => a.r0 - b.r0)
