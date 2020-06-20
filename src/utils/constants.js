@@ -66,7 +66,8 @@ export const styles = {
         height: '45px'
     },
     Switch: {
-        paddingLeft: '12px'
+        paddingLeft: '12px',
+        marginTop: '10px'
     },
     Marks: {
         fontFamily: 'Cousine, monospace',

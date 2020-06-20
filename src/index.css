@@ -169,7 +169,7 @@ h1, h2 {
 }
 
 .r0-slider {
-  width: 60%;
+  width: 65%;
 }
 
 .resample {
@@ -791,6 +791,10 @@ input[type=range]:disabled::-moz-range-thumb {
 /* CSS overides from libraries */
 .selection {
   stroke-opacity: 0;
+}
+
+.ant-slider {
+  margin: 2px 6px 12px;
 }
 
 .ant-select-selector {

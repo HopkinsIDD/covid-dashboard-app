@@ -64,17 +64,16 @@ class R0 extends Component {
                             R<sub>0</sub> between {activeMin} - {activeMax}
                     </span>
                 </div>
-                <div className="map-wrapper">
-                    <div className="r0-histogram">
+                <div className="r0-histogram">
                         <Histogram
                             allSims={this.props.allSims}
                             selectedSims={this.props.selectedSims}
                             selected={r0selected}
-                            width={200}
-                            height={50}
+                            height={30}
                         />
                     </div>
-                    <div className="r0-slider">
+                <div className="map-wrapper">
+                    <div className="r0-slider" id="r0Slider">
                         <Slider
                             range
                             marks={this.showMarks(min, max)}
