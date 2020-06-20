@@ -69,7 +69,7 @@ class R0 extends Component {
                             allSims={allSims}
                             selectedSims={selectedSims}
                             selected={r0selected}
-                            height={30}
+                            height={25}
                         />
                     </div>
                 <div className="map-wrapper">

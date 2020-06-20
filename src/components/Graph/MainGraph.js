@@ -65,7 +65,6 @@ class MainGraph extends Component {
     };
 
     componentDidUpdate(prevProp, prevState) {
-        console.log('componentDidUpdate')
         const { dataset } = this.props;
         if (dataset !== prevProp.dataset) {
             this.initializeGraph(dataset, this.state.stat, this.state.severity)
@@ -123,7 +122,7 @@ class MainGraph extends Component {
                     } else {
                         // deal with daterange and r0 slider / sample
                         series = filteredR0SeriesList[i]
-                        console.log('r0FilteredSeries', series)
+                        // console.log('r0FilteredSeries', series)
                     }
                 
                 // setting default smart threshold based on seriesMin 
@@ -132,12 +131,12 @@ class MainGraph extends Component {
                     newS.vals = s.vals.slice(idxMin, idxMax)
                     return newS
                 });
-                console.log(filteredSeriesForStatThreshold)
+                // console.log(filteredSeriesForStatThreshold)
                 // array of all peaks in filtered series
                 const seriesPeaks = filteredSeriesForStatThreshold.map(sim => max(sim.vals));
-                console.log('seriesPeaks', seriesPeaks)
+                // console.log('seriesPeaks', seriesPeaks)
                 const [seriesMin, seriesMax] = getRange(seriesPeaks);
-                console.log('seriesMin', seriesMin, 'seriesMax', seriesMax)
+                // console.log('seriesMin', seriesMin, 'seriesMax', seriesMax)
                 // ensures side by side y-scale reflect both series
                 if (seriesMin < sliderMin) sliderMin = seriesMin
                 if (seriesMax > sliderMax) sliderMax = seriesMax

@@ -53,12 +53,12 @@ class Histogram extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.selectedSims !== prevProps.selectedSims) console.log(prevProps.selectedSims, this.props.selectedSims)
+    // if (this.props.selectedSims !== prevProps.selectedSims) console.log(prevProps.selectedSims, this.props.selectedSims)
     if (this.props.selectedSims !== prevProps.selectedSims) {
       const sorted_selected_sims = this.props.selectedSims.slice().sort((a,b) => a.r0 - b.r0)
-      console.log(sorted_selected_sims)
+      // console.log(sorted_selected_sims)
       const selectedBins = this.state.binGenerator(sorted_selected_sims)
-      console.log(selectedBins)
+      // console.log(selectedBins)
       this.setState({ selectedBins })
     }
   }
@@ -71,9 +71,6 @@ class Histogram extends Component {
           <svg width={this.state.width} height={this.props.height}>
             <g>
               {bins.map( (bin,i) => {
-                // console.log(bin.x0, bin.x1)
-                // console.log(xScale(bin.x0), xScale(bin.x1))
-                // console.log(xScale(2.5))
               return (
                 <rect 
                   key={`hist-${i}`}
