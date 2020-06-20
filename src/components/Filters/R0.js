@@ -15,9 +15,11 @@ class R0 extends Component {
     }
     
     handleChange = (e) => {
+        const { r0selected } = this.props;
+
         // prevent user from selecting no range
-        if (e[1] - e[0] < this.state.step) return
-        this.props.onR0Change(e);
+        const range = e[1] - e[0] < this.state.step ? r0selected : e;
+        this.props.onR0Change(range);
     }
 
     handleTooltipClick = () => {
