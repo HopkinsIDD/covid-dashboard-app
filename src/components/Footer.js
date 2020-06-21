@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { Row, Col } from 'antd';
 import { ReactComponent as Logo } from '../assets/logo-john-hopkins.svg';
+import { styles } from '../utils/constants';
 
 class Footer extends Component {
   
     render() {
         return (
           <div id="footer" className="App-header">
-          <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+          <Row gutter={styles.gutter}>
             <Col className="gutter-row" span={6}>
               <Logo height="60"/>
             </Col>

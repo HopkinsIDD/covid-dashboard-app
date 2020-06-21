@@ -57,7 +57,7 @@ class About extends Component {
                 </Col>
 
                 <Col className="gutter-row container" span={24}>
-                    <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                    <Row gutter={styles.gutter}>
                         <Col className="gutter-row" span={10} offset={2}>
                             <div className="content-section">
                                 <div><b>EPFL</b></div>

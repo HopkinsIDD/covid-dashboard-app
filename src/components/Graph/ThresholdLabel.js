@@ -6,8 +6,36 @@ class ThresholdLabel extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            showTooltip: false
+            showTooltip: false,
+            chance: Math.round(100 * props.percExceedence),
+            val: addCommas(Math.ceil(props.statThreshold / 100) * 100),
+            date: getReadableDate(props.dateThreshold),
+            activeClass: 'bold underline',
+            statClass: 'bold underline',
+            dateClass: 'bold underline'
         }
+    }
+
+    componentDidUpdate(prevProp) {
+        const { percExceedence, statThreshold, dateThreshold, statSliderActive, dateSliderActive } = this.props;
+
+        if (percExceedence !== prevProp.percExceedence) {
+            this.setState({ chance: Math.round(100 * percExceedence) }
+        )}
+        if (statThreshold !== prevProp.statThreshold) {
+            this.setState({ val: addCommas(Math.ceil(statThreshold / 100) * 100) }
+        )}
+        if (dateThreshold !== prevProp.dateThreshold) {
+            this.setState({ date: getReadableDate(dateThreshold) }
+        )}
+        if (statSliderActive !== prevProp.statSliderActive ||
+            dateSliderActive !== prevProp.dateSliderActive) {
+            this.setState({ 
+                activeClass: statSliderActive || dateSliderActive ? 'underline-active' : 'bold underline',
+                statClass: statSliderActive ? 'underline-active' : 'bold underline',
+                dateClass: dateSliderActive ? 'underline-active' : 'bold underline',
+            }
+        )}    
     }
 
     handleTooltipClick = () => {
@@ -15,16 +43,7 @@ class ThresholdLabel extends Component {
     }
 
     render() {
-        const chance = Math.round(100 * this.props.percExceedence);
-        const val = addCommas(Math.ceil(this.props.statThreshold / 100) * 100);
-        const date = getReadableDate(this.props.dateThreshold);
-    
-        const activeClass = this.props.statSliderActive || this.props.dateSliderActive ? 
-            'underline-active' : 'bold underline';
-        const statClass = this.props.statSliderActive ? 
-            'underline-active' : 'bold underline';
-        const dateClass = this.props.dateSliderActive ? 
-            'underline-active' : 'bold underline';
+        const { chance, val, date, activeClass, statClass, dateClass } = this.state;
 
         return (
             <div className={`${this.props.classProps} desktop-only`}>

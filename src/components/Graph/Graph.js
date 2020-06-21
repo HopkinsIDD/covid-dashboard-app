@@ -5,8 +5,8 @@ import Legend from './Legend'
 import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least, max, maxIndex } from 'd3-array'
 import { select } from 'd3-selection'
-import { easeCubicOut } from 'd3-ease'
-import { margin } from '../../utils/constants'
+import { easeCubicOut, easeCubicIn, easeCubicInOut } from 'd3-ease'
+import { margin, numDisplaySims } from '../../utils/constants'
 import colors from '../../utils/colors';
 
 class Graph extends Component {
@@ -59,11 +59,12 @@ class Graph extends Component {
         }
 
         if (this.props.series !== prevProps.series) {
-            // console.log('componentDidUpdate SERIES change');
+            console.log('componentDidUpdate SERIES change', this.props.series);
             const { series, dates, animateTransition, width } = this.props;
             const { lineGenerator, areaGenerator } = prevState;
+            if (series.length < numDisplaySims) console.log('only', series.length, 'sims in series')
+            // if (series.length < numDisplaySims) this.removeSimPaths(series, dates);
             // console.log('animateTransition', animateTransition)
-
             this.updateSimPaths(series, dates, lineGenerator, animateTransition, width);
             if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
         }
@@ -102,6 +103,13 @@ class Graph extends Component {
         })
     }
 
+    removeSimPaths = (series, dates) => {
+        const simPathsNode = select(this.simPathsRef.current)
+        simPathsNode.selectAll('.simPath').remove()
+        simPathsNode.selectAll('.simPath-hover').remove()
+        this.drawSimPaths(series, dates)
+    }
+
     updateSimPaths = (series, dates, lineGenerator, animateTransition, width) => {
         //Animate simPath color but don't change data
         if (this.simPathsRef.current) {
@@ -115,54 +123,74 @@ class Graph extends Component {
                 // console.log(i, typeof(d.vals))
                 return lineGenerator(d.vals)
             })
-          
-            // get svg node
-            const simPathsNode = select(this.simPathsRef.current)
 
-            if (!animateTransition) {
-                simPathsNode.selectAll('.simPath')
-                    .data(series)
-                    .attr("d", d => lineGenerator(d.vals))
-                    .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
-                    .on("end", () => {
-                        // set new vals to state
-                        this.setState({ 
-                            series: series,
-                            dates: dates,
-                            xScale: this.props.xScale,
-                            yScale: this.props.yScale,
-                            lineGenerator: lineGenerator,
-                            simPaths: simPaths,
-                            width: width
-                        })
-                    })
-                    simPathsNode.selectAll('.simPath-hover')
-                        .data(series)
-                        .attr("d", d => lineGenerator(d.vals))
+            if (simPaths.length !== this.state.simPaths.length) {
+                // re-draw simPaths in render
+                this.drawSimPaths(series, dates);
             } else {
-                simPathsNode.selectAll('.simPath')
-                    .data(series)
-                    .transition()
-                    .duration(1000)
-                    .ease(easeCubicOut)
-                    .attr("d", d => lineGenerator(d.vals))
-                    .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
-                    .on("end", () => {
-                        // set new vals to state
-                        this.setState({ 
-                            series: series,
-                            dates: dates,
-                            xScale: this.props.xScale,
-                            yScale: this.props.yScale,
-                            lineGenerator: lineGenerator,
-                            simPaths: simPaths,
-                            width
-                        })
-                    })
-                    simPathsNode.selectAll('.simPath-hover')
+                // update simPaths since same number
+                // get svg node
+                const simPathsNode = select(this.simPathsRef.current)
+
+                if (!animateTransition) {
+                    const paths = simPathsNode.selectAll('.simPath')
                         .data(series)
+
+                    // paths.exit().remove()
+                    // paths.enter().append('path')
                         .attr("d", d => lineGenerator(d.vals))
-            } 
+                        .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
+                        .on("end", () => {
+                            // set new vals to state
+                            this.setState({ 
+                                series: series,
+                                dates: dates,
+                                xScale: this.props.xScale,
+                                yScale: this.props.yScale,
+                                lineGenerator: lineGenerator,
+                                simPaths: simPaths,
+                                width: width
+                            })
+                        })
+                        const hoverPaths = simPathsNode.selectAll('.simPath-hover')
+                                .data(series)
+                        // hoverPaths.exit().remove()
+                        // hoverPaths.enter().append('path')
+                            .attr("d", d => lineGenerator(d.vals))
+                } else {
+                    const paths = simPathsNode.selectAll('.simPath')
+                        .data(series)
+                    // paths.exit().remove()
+                    // paths.enter().append('path')
+                        .transition()
+                        .duration(300)
+                        .ease(easeCubicIn)
+                            .attr('stroke-opacity', 0)
+                        .transition()
+                        .duration(10)
+                            .attr("d", d => lineGenerator(d.vals))
+                        .transition()
+                        .duration(400)
+                        .ease(easeCubicOut)
+                            .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
+                            .attr("stroke-opacity", 0.6)
+                        .on("end", () => {
+                            // set new vals to state
+                            this.setState({ 
+                                series: series,
+                                dates: dates,
+                                xScale: this.props.xScale,
+                                yScale: this.props.yScale,
+                                lineGenerator: lineGenerator,
+                                simPaths: simPaths,
+                                width
+                            })
+                        })
+                        simPathsNode.selectAll('.simPath-hover')
+                            .data(series)
+                            .attr("d", d => lineGenerator(d.vals))
+                } 
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TooltipHandler from '../Filters/TooltipHandler';
-import { Slider } from 'antd';
+import Histogram from '../Filters/Histogram';
+import { Button, Slider } from 'antd';
 import { styles } from '../../utils/constants';
 
 
@@ -9,35 +10,16 @@ class R0 extends Component {
         super(props);
         this.state = {
             showTooltip: false,
-            step: 0.1 // alternative r0 strategy: step is 0.2
+            step: 0.1 
         }
     }
     
     handleChange = (e) => {
+        const { r0selected } = this.props;
+
         // prevent user from selecting no range
-        if (e[1] - e[0] < this.state.step) return
-        this.props.onR0Change(e);
-
-        // alternate r0 strategy
-
-        // const { r0selected } = this.props;
-        // let min, max;
-        // // TODO: CLEAN THIS UP --> 
-        // // if r0 range is increased
-        // if (e[1] > r0selected[1]) {
-        //     min = Math.round((e[1] - 0.2) * 10) / 10;
-        //     max = Math.round(e[1] * 10) / 10;
-        // // if r0 range is decreased
-        // } else if (e[0] < r0selected[0]) {
-        //     min = Math.round(e[0] * 10) / 10;
-        //     max = Math.round((e[0] + 0.2) * 10) / 10;
-        // // prevent user from selecting beyond range
-        // } else {
-        //     min = r0selected[0];
-        //     max = r0selected[1];
-        // }
-
-        // this.props.onR0Change([min, max])
+        const range = e[1] - e[0] < this.state.step ? r0selected : e;
+        this.props.onR0Change(range);
     }
 
     handleTooltipClick = () => {
@@ -52,7 +34,7 @@ class R0 extends Component {
     }
  
     render() {
-        const { r0full, r0selected } = this.props;
+        const { r0full, r0selected, allSims, selectedSims } = this.props;
         const min = r0full[0], max = r0full[1];
         const activeMin = r0selected[0], activeMax = r0selected[1];
         return (
@@ -70,29 +52,52 @@ class R0 extends Component {
                                 expected number of people directly infected by
                                 one person. For example, a person with an infection
                                 having an R<sub>0</sub> of 4 will transmit it to an
-                                average of 4 other people.              
+                                average of 4 other people. <br /><br />
+                                The displayed simulation curves are only a sample of the
+                                total simulation curves within the selected R<sub>0</sub>&nbsp;
+                                range. Click the <b>resample</b> button to display 
+                                a different sample set of simulation curves.         
                             </span> }
                         </div>
                     </TooltipHandler>
                 </div>
-                <div className="filter-label">
-                    <span className='callout'>
-                        R<sub>0</sub> between {activeMin} - {activeMax}
-                    </span>
+                <div className="map-wrapper">
+                    <div className="r0-histogram">
+                        <Histogram
+                            allSims={allSims}
+                            selectedSims={selectedSims}
+                            selected={r0selected}
+                            height={25}
+                        />
+                    </div>
+                    <div className="filter-label">
+                        <span className='callout r0-range'>
+                            [{activeMin}-{activeMax}]
+                        </span>
+                    </div>
                 </div>
-                <Slider
-                    style={styles.Selector}
-                    range
-                    marks={this.showMarks(min, max)}
-                    min={min}
-                    max={max} 
-                    step={this.state.step}
-                    included={true}
-                    tooltipVisible={false}
-                    defaultValue={r0selected}
-                    value={r0selected}
-                    onChange={this.handleChange}
-                />
+                <div className="map-wrapper">
+                    <div className="r0-slider" id="r0Slider">
+                        <Slider
+                            range
+                            marks={this.showMarks(min, max)}
+                            min={min}
+                            max={max} 
+                            step={this.state.step}
+                            included={true}
+                            tooltipVisible={false}
+                            defaultValue={r0selected}
+                            value={r0selected}
+                            onChange={this.handleChange} />
+                    </div>
+                    <div className="resample">
+                        <Button 
+                            type="dashed" 
+                            size="small"
+                            onClick={this.props.onR0Resample}>resample
+                        </Button>
+                    </div>
+                </div>
             </div>
         )
     }

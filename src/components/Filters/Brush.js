@@ -8,7 +8,7 @@ import { brushX } from 'd3-brush'
 import { max, extent } from 'd3-array'
 import { easeCubicOut } from 'd3-ease'
 import { margin, monthDateFormat } from '../../utils/constants'
-import { green, red } from '../../utils/colors';
+import { colors } from '../../utils/colors';
 
 class Brush extends Component {
   constructor(props) {
@@ -83,6 +83,15 @@ class Brush extends Component {
           // console.log(i, typeof(d.vals))
           return lineGenerator(d.vals)
       })
+
+      this.setState({ 
+          series: series,
+          dates: dates,
+          // xScale: this.props.xScale,
+          // yScale: this.props.yScale,
+          lineGenerator: lineGenerator,
+          simPaths: simPaths,
+      })
     
       // get svg node
       const simPathsNode = select(this.simPathsRef.current)
@@ -92,19 +101,25 @@ class Brush extends Component {
         simPathsNode.selectAll('.simPath')
             .data(series)
             .transition()
-            .duration(1000)
+            .duration(100)
+            .ease(easeCubicOut)
+                .attr('stroke-opacity', 0)
+            
+            .transition()
+            .duration(700)
             .ease(easeCubicOut)
             .attr("d", d => lineGenerator(d.vals))
-            .attr("stroke", (d,i) => series[i].over ? red : green )
+            .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
+            .attr("stroke-opacity", 0.6)
             .on("end", () => {
                 // set new vals to state
                 // console.log('finished animateTransition update')
                 this.setState({ 
-                    series: series,
-                    dates: dates,
+                    // series: series,
+                    // dates: dates,
                     scales: updatedScales,
-                    lineGenerator: lineGenerator,
-                    simPaths: simPaths,
+                    // lineGenerator: lineGenerator,
+                    // simPaths: simPaths,
                 })
             })
       } else {
@@ -112,16 +127,16 @@ class Brush extends Component {
         simPathsNode.selectAll('.simPath')
             .data(series)
             .attr("d", d => lineGenerator(d.vals))
-            .attr("stroke", (d,i) => series[i].over ? red : green )
+            .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
             .on("end", () => {
                 // set new vals to state
                 // console.log('finished no animateTransition update')
                 this.setState({ 
-                    series: series,
-                    dates: dates,
+                    // series: series,
+                    // dates: dates,
                     scales: updatedScales,
-                    lineGenerator: lineGenerator,
-                    simPaths: simPaths,
+                    // lineGenerator: lineGenerator,
+                    // simPaths: simPaths,
                 })
             })
             this.props.toggleAnimateTransition()
@@ -245,7 +260,7 @@ class Brush extends Component {
                     id={`simPath-${i}`}
                     className={`simPath`}
                     fill='none' 
-                    stroke = { this.state.series[i].over ? red : green }
+                    stroke = { this.state.series[i].over ? colors.red : colors.green }
                     strokeWidth={'1'}
                     strokeOpacity={ 0.4 }
                 />
