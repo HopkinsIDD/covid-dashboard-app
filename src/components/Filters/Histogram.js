@@ -69,7 +69,7 @@ class Histogram extends Component {
           <svg width={this.state.width} height={this.props.height}>
             <g>
               {bins.map( (bin,i) => {
-                console.log('white', 'x0:', bin.x0,'length', bin.length, 'value', this.props.height - yScale(bin.length))
+                // console.log('white', 'x0:', bin.x0,'length', bin.length, 'value', this.props.height - yScale(bin.length))
               return (
                 <rect 
                   key={`hist-${i}`}
@@ -86,7 +86,7 @@ class Histogram extends Component {
             </g>
             <g>
             {selectedBins.map( (bin,i) => {
-              console.log('blue', 'x0:', bin.x0, 'length', bin.length, 'value', this.props.height - yScale(bin.length))
+              // console.log('blue', 'x0:', bin.x0, 'length', bin.length, 'value', this.props.height - yScale(bin.length))
               return (
                 <rect 
                   key={`hist-${i}`}
