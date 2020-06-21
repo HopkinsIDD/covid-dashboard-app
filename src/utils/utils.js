@@ -48,10 +48,11 @@ export function shuffle(array, numDisplaySims) {
   let currIdx = array.length;
   let tempVal = array.length;
   let randomIdx = array.length;
-  const stopIndex = (array.length - numDisplaySims)
+  // if array is less than desired num of sims to display, shuffle whole array
+  const stopIdx = numDisplaySims > array.length ? 0 : (array.length - numDisplaySims);
 
   // shuffle only indices required by numDisplaySims
-  while (stopIndex !== currIdx) {
+  while (stopIdx !== currIdx) {
     // randomly select another element to swap with current element
     randomIdx = Math.floor(Math.random() * currIdx); 
     currIdx -= 1; 
@@ -61,7 +62,7 @@ export function shuffle(array, numDisplaySims) {
     array[randomIdx] = tempVal; 
   }
 
-  return array.slice(stopIndex, array.length);
+  return array.slice(stopIdx, array.length);
 }
 
 export function filterR0(series, r0selected, numDisplaySims) {
@@ -78,7 +79,8 @@ export function filterR0(series, r0selected, numDisplaySims) {
   return final;
 }
 
-export function createFilteredR0SeriesList(r0selected, scenarioList, severityList, stat, dataset, numDisplaySims) {
+export function createFilteredR0SeriesList(
+  r0selected, scenarioList, severityList, stat, dataset, numDisplaySims) {
   const r0FilteredSeriesList = []
   for (let i = 0; i < scenarioList.length; i++) {
       const copy = Array.from(
