@@ -23,66 +23,81 @@ export function buildScenarios(dataset) {
   return scenarioArray;
 }
 
-export function configureThresholds(scenarioList, seriesList, allTimeDates, dateRange) {
-  // calculate smart default statThreshold, dateThreshold
-  // and return series with sims above thresholds and perc exceedences
-
-  const filteredSeriesList = []
-  const percExceedenceList = []
-
-  const idxMin = timeDay.count(allTimeDates[0], dateRange[0]);
-  const idxMax = timeDay.count(allTimeDates[0], dateRange[1]);
-
+export function getDateThreshold(allTimeDates, idxMin, idxMax) {
   const filteredDates = Array.from(allTimeDates.slice(idxMin, idxMax));
   const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
   const dateThreshold = filteredDates[dateThresholdIdx];
-  let statThreshold = 0;
-  let smartStatThresh = 0;
-  let sMin = Number.POSITIVE_INFINITY;
-  let sMax = 0;
-  let sliderMin = Number.POSITIVE_INFINITY;
-  let sliderMax = 0;
+  
+  return dateThreshold
+}
+
+export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
+  // calculate smart default statThreshold and return slider range as well
+  const statThresholds = [];
+  let rangeDict = {'min': [], 'max': []};
 
   for (let i = 0; i < scenarioList.length; i++) {
 
-      [smartStatThresh, sliderMin, sliderMax] = calcSmartThresholds(
-          seriesList[i], i, statThreshold, idxMin, idxMax, sMin, sMax)
+    const filteredSeries = filterByDate(seriesList[i], idxMin, idxMax)
 
-      const simsOver = returnSimsOverThreshold(
-          seriesList[i], smartStatThresh, allTimeDates, dateThreshold);
+    // returns the minimum and maximum series peak
+    const seriesPeaks = filteredSeries.map(sim => max(sim.vals));
+    const [seriesMin, seriesMax] = getRange(seriesPeaks);
 
-      // series has been mutated with above/below threshold are now added
-      const filteredSeries = filterByDate(seriesList[i], idxMin, idxMax)
-      filteredSeriesList.push(filteredSeries)
-
-      // calculate percExceedence based on series after filtering down
-      const percExceedence = filteredSeries.length > 0 ?
-          simsOver / filteredSeries.length : 0;
-      percExceedenceList.push(percExceedence)
+    // adds some granularity to make statThreshold selection "smarter"
+    const statThreshold = seriesMin < seriesMax / 2 ? seriesMin : seriesMax / 2; 
+    
+    statThresholds.push(statThreshold);
+    rangeDict['min'].push(seriesMin); 
+    rangeDict['max'].push(seriesMax)
   }
-  return [filteredSeriesList, percExceedenceList, smartStatThresh, 
-          dateThreshold, sliderMin, sliderMax]
+  // select smallest min and largest max amongst all scenarios
+  const sliderMin = Math.min(...rangeDict['min'])
+  const sliderMax = Math.max(...rangeDict['max'])
+
+  // statThreshold defaults to the statThreshold of the first scenario
+  return [statThresholds[0], sliderMin, sliderMax]; 
 }
 
-export function calcSmartThresholds(series, i, statThreshold, idxMin, idxMax, sliderMin, sliderMax) {
-  // calculates and returns default smart stat threshold
-  const filteredSeriesStat = filterByDate(series, idxMin, idxMax)
+export function flagSimsOverThreshold(scenarioList, seriesList, allTimeDates, 
+  idxMin, idxMax, statThreshold, dateThreshold) {
+  // return series with sims flagged above or below thresholds
 
-  // array of all peaks in filtered series
-  const seriesPeaks = filteredSeriesStat.map(sim => max(sim.vals));
-  const [seriesMin, seriesMax] = getRange(seriesPeaks);
+  const filteredSeriesList = [];
+  const simsOverList = [];
 
-  // ensures side by side y-scale reflect both series
-  if (seriesMin < sliderMin) sliderMin = seriesMin
-  if (seriesMax > sliderMax) sliderMax = seriesMax
+  for (let i = 0; i < scenarioList.length; i++) {
+    // mutate seriesList to flag which sims are above/below thresholds
+    const simsOver = flagSims(seriesList[i], statThreshold, allTimeDates, dateThreshold);
+    // filter mutated seriesList by dates
+    const filteredSeries = filterByDate(seriesList[i], idxMin, idxMax)
 
-  // adds a range of "smart" value for statThreshold 
-  if (i === 0 && seriesMin < seriesMax / 2) statThreshold = seriesMin; 
-  if (i === 0 && seriesMin >= seriesMax / 2) statThreshold = seriesMax / 2; 
-
-  return [statThreshold, sliderMin, sliderMax];
+    filteredSeriesList.push(filteredSeries)
+    simsOverList.push(simsOver)
+  }
+  return [filteredSeriesList, simsOverList]
 }
 
+export function flagSims(series, statThreshold, dates, dateThreshold) {
+  // MUTATION: flags which simulations in a series are above threshold given stat and date
+  const dateIndex = dates.findIndex(
+    date => formatDate(date) === formatDate(dateThreshold));
+
+  let simsOver = 0;
+  Object.values(series).forEach((sim) => {
+    let simOver = false;
+    for (let i = 0; i < dateIndex; i++) {
+      if (sim.vals[i] > statThreshold){
+        simsOver = simsOver + 1;
+        simOver = true;
+        break;
+      }
+    }
+    simOver ? sim.over = true : sim.over = false
+  })
+  return simsOver;
+}
+// TODO: DELETE THIS FUNCTION!! 
 export function returnSimsOverThreshold(series, statThreshold, dates, dateThreshold) {
   // Marks which simulations in a series are above threshold given stat and date
 
@@ -102,6 +117,20 @@ export function returnSimsOverThreshold(series, statThreshold, dates, dateThresh
       simOver ? sim.over = true : sim.over = false
   })
   return simsOver;
+}
+
+export function getExceedences(scenarioList, seriesList, simsOverList) {
+  const percExceedenceList = []
+
+  for (let i = 0; i < scenarioList.length; i++) {
+    
+    // calculate percExceedence based on series after filtering down
+    const percExceedence = seriesList[i].length > 0 ?
+    simsOverList[i] / seriesList[i].length : 0;
+    percExceedenceList.push(percExceedence)
+
+  }
+  return percExceedenceList
 }
 
 export function filterByDate(series, idxMin, idxMax) {
