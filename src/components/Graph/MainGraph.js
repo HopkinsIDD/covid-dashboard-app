@@ -12,8 +12,9 @@ import ModeToggle from '../Filters/ModeToggle';
 import Sliders from '../Filters/Sliders';
 
 import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
-import { buildScenarios, returnSimsOverThreshold, filterR0, getRange, createFilteredR0SeriesList } from '../../utils/utils';
-import { utcParse, } from 'd3-time-format';
+import { buildScenarios, configureThresholds, returnSimsOverThreshold, 
+    getConfBounds, getActuals, filterR0, getRange, filterR0seriesList } from '../../utils/utils';
+import { utcParse } from 'd3-time-format';
 import { timeDay } from 'd3-time';
 import { max } from 'd3-array';
 
@@ -71,7 +72,6 @@ class MainGraph extends Component {
         }
 
         // changes for the props below are all interdependent and require both 
-
         if (
             // this.state.stat !== prevState.stat ||
             this.state.scenarioList !== prevState.scenarioList ||
@@ -196,6 +196,7 @@ class MainGraph extends Component {
         const SCENARIOS = buildScenarios(dataset);  
         const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
         const allSims = dataset[SCENARIOS[0].key][severity.key][stat.key].sims;
+        // TODO: might send [series] to initialize function
         const series = dataset[SCENARIOS[0].key][severity.key][stat.key]
             .sims.slice(0, numDisplaySims);
         const seriesPeaks = series.map(sim => sim.max);
@@ -237,7 +238,7 @@ class MainGraph extends Component {
             .sims.map(sim => sim.r0);
         const r0full = [Math.min.apply(null, r0array), Math.max.apply(null, r0array)];
 
-        const filteredR0SeriesList = createFilteredR0SeriesList(r0full, [SCENARIOS[0]], sevList, stat, dataset, numDisplaySims);
+        const filteredR0SeriesList = filterR0seriesList(r0full, [SCENARIOS[0]], sevList, stat, dataset, numDisplaySims);
 
         this.setState({
             SCENARIOS,
@@ -264,120 +265,44 @@ class MainGraph extends Component {
         })
     }
 
-    // TODO: MOVE TO UTILS
-    calcStatThresholdDefault = (series, i, statThreshold, idxMin, idxMax, sliderMin, sliderMax) => {
-        // calculates and returns default smart stat threshold
+    initialize = (scenarioList, stat, severityList, r0selected) => {
 
-        const filteredSeriesStat = this.filterByDate(series, idxMin, idxMax)
-
-        // array of all peaks in filtered series
-        const seriesPeaks = filteredSeriesStat.map(sim => max(sim.vals));
-        const [seriesMin, seriesMax] = getRange(seriesPeaks);
-
-        // ensures side by side y-scale reflect both series
-        if (seriesMin < sliderMin) sliderMin = seriesMin
-        if (seriesMax > sliderMax) sliderMax = seriesMax
-
-        // TODO: don't pass in i like this, sets default "smart" value for statThreshold calculation
-        if (i === 0 && seriesMin < seriesMax / 2) statThreshold = seriesMin; 
-        if (i === 0 && seriesMin >= seriesMax / 2) statThreshold = seriesMax / 2; 
-
-        return [statThreshold, sliderMin, sliderMax];
-    }
-
-    filterByDate = (series, idxMin, idxMax) => {
-        const filteredSeries = series.map( s => {
-            const newS = {...s}
-            newS.vals = s.vals.slice(idxMin, idxMax)
-            return newS
-        });
-
-        return filteredSeries
-    }
-
-    handleIndicatorClick = (i) => {
-        console.log('handleIndicatorClick', i)
-
-        const { dataset } = this.props;
-        const { scenarioList, severityList, stat, r0selected, allTimeDates, dateRange } = this.state;
-        const filteredR0SeriesList = createFilteredR0SeriesList(
+        const { dataset, geoid } = this.props;
+        const { allTimeDates, dateRange } = this.state;
+        
+        const filteredR0SeriesList = filterR0seriesList(
             r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
 
-        const filteredSeriesList = []
-        const percExceedenceList = []
-        const confBoundsList = [];
-        const actualList = [];
-        let brushSeries;
-
-        // SMART DEFAULT PREP ---> select idxMin and idxMax from dateRange
+        const [filteredSeriesList, percExceedenceList, smartStatThresh, 
+               dateThreshold, sliderMin, sliderMax] = 
+               configureThresholds(scenarioList, filteredR0SeriesList, allTimeDates, dateRange)
+       
         const idxMin = timeDay.count(allTimeDates[0], dateRange[0]);
         const idxMax = timeDay.count(allTimeDates[0], dateRange[1]);
-        const filteredDates = Array.from(allTimeDates.slice(idxMin, idxMax));
+        const confBoundsList = getConfBounds(
+            dataset, scenarioList, severityList, stat, idxMin, idxMax)
 
-        const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
-        const dateThreshold = filteredDates[dateThresholdIdx];
-        let statThreshold = 0;
-        let smartStatThresh = 0;
-        let sMin = Number.POSITIVE_INFINITY;
-        let sMax = 0;
-        let sliderMin = Number.POSITIVE_INFINITY;
-        let sliderMax = 0;
+        const actualList = getActuals(geoid, stat, scenarioList);
 
-        for (let i = 0; i < scenarioList.length; i++) {
-
-            [smartStatThresh, sliderMin, sliderMax] = this.calcStatThresholdDefault(
-                filteredR0SeriesList[i], i, statThreshold, idxMin, idxMax, sMin, sMax)
-
-            const simsOver = returnSimsOverThreshold(
-                filteredR0SeriesList[i], smartStatThresh, allTimeDates, dateThreshold);
-
-            // brush visual only based on first scenario, for simplicity
-            brushSeries = i === 0 ? filteredR0SeriesList[i] : brushSeries;
-
-            // series has been mutated with above/below threshold are now added
-            const filteredSeries = this.filterByDate(filteredR0SeriesList[i], idxMin, idxMax)
-            filteredSeriesList.push(filteredSeries)
-
-            // calculate percExceedence based on series after filtering down
-            const percExceedence = filteredSeries.length > 0 ?
-                simsOver / filteredSeries.length : 0;
-            percExceedenceList.push(percExceedence)
-
-            // TODO: create getConf and getActuals functions
-            // confidence and actual bounds need to live here
-            const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
-            // ensure stat has confidence bounds array
-            if (confBounds && confBounds.length > 0) {
-                // filter by date range selected
-                const filteredConfBounds = confBounds.slice(idxMin, idxMax)
-                confBoundsList.push(filteredConfBounds);
-            }
-            // instantiate actuals data if data for specific indicator exists
-            let actual = [];
-            const indicator = stat.name.toLowerCase();
-            const actualJSON = require('../../store/actuals.json');
-            if (Object.keys(actualJSON).includes(indicator)) {
-                actual = actualJSON[indicator][this.props.geoid].map( d => {
-                    return { date: parseDate(d.date), val: d.val}
-                });
-            }
-            actualList.push(actual);
-        }
-        
         this.setState({
-                stat: i,
-                seriesList: filteredSeriesList,
-                allTimeSeries: brushSeries,
-                animateTransition: true, 
-                statThreshold: smartStatThresh,
-                dateThreshold,
-                seriesMin: sliderMin,
-                seriesMax: sliderMax,
-                percExceedenceList,
-                confBoundsList,
-                actualList,
-            }
-        )
+            seriesList: filteredSeriesList,
+            allTimeSeries: filteredR0SeriesList[0],  // for simplicity, use first
+            animateTransition: true, 
+            statThreshold: smartStatThresh,
+            dateThreshold,
+            seriesMin: sliderMin,
+            seriesMax: sliderMax,
+            percExceedenceList,
+            confBoundsList,
+            actualList
+        })
+    }
+
+    handleIndicatorClick = (stat) => {
+        const { scenarioList, severityList, r0selected } = this.state;
+
+        this.setState({stat})
+        this.initialize(scenarioList, stat, severityList, r0selected);
     };
 
     handleScenarioClickGraph = (items) => {
@@ -420,209 +345,17 @@ class MainGraph extends Component {
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleR0Change = (r0selected) => {
-        console.log('handleR0Change')
-        const { dataset } = this.props;
         const { scenarioList, severityList, stat } = this.state;
-        const filteredR0SeriesList = createFilteredR0SeriesList(
-            r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
 
-        // bring in stuff from compDidUPdate
-        const filteredSeriesList = []
-        const percExceedenceList = []
-        const confBoundsList = [];
-        const actualList = [];
-        let brushSeries;
-
-        const { allTimeDates, dateRange } = this.state;
-        // filter series and dates by dateRange
-        const idxMin = timeDay.count(allTimeDates[0], dateRange[0]);
-        const idxMax = timeDay.count(allTimeDates[0], dateRange[1]);
-        const filteredDates = Array.from(allTimeDates.slice(idxMin, idxMax));
-        const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
-        const dateThreshold = filteredDates[dateThresholdIdx];
-        let statThreshold = 0
-        let sliderMin = Number.POSITIVE_INFINITY
-        let sliderMax = 0
-
-        for (let i = 0; i < scenarioList.length; i++) {
-            // setting default smart threshold based on seriesMin 
-            const filteredSeriesForStatThreshold = filteredR0SeriesList[i].map( s => {
-                const newS = {...s}
-                newS.vals = s.vals.slice(idxMin, idxMax)
-                return newS
-            });
-            // console.log(filteredSeriesForStatThreshold)
-            // array of all peaks in filtered series
-            const seriesPeaks = filteredSeriesForStatThreshold.map(sim => max(sim.vals));
-            // console.log('seriesPeaks', seriesPeaks)
-            const [seriesMin, seriesMax] = getRange(seriesPeaks);
-            // console.log('seriesMin', seriesMin, 'seriesMax', seriesMax)
-            // ensures side by side y-scale reflect both series
-            if (seriesMin < sliderMin) sliderMin = seriesMin
-            if (seriesMax > sliderMax) sliderMax = seriesMax
-
-            // sets default smart value for statThreshold calculation
-            if (i === 0 && seriesMin < seriesMax/2) statThreshold = seriesMin;
-            if (i === 0 && seriesMin >= seriesMax/2) statThreshold = seriesMax/2;
-            const simsOver = returnSimsOverThreshold(
-                filteredR0SeriesList[i], statThreshold, allTimeDates, dateThreshold);
-
-            // brush visual only based on first scenario, for simplicity
-            brushSeries = i === 0 ? filteredR0SeriesList[i] : brushSeries;
-
-            // filtering based on date, only dateRange change needs this 
-            const filteredSeries = filteredR0SeriesList[i].map( s => { const newS = {...s}
-                newS.vals = s.vals.slice(idxMin, idxMax)
-                return newS
-            })
-            filteredSeriesList.push(filteredSeries)
-
-            // calculate percExceedence based on series after filtering down
-            const percExceedence = filteredSeries.length > 0 ?
-                simsOver / filteredSeries.length : 0;
-            percExceedenceList.push(percExceedence)
-
-            const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
-            // ensure stat has confidence bounds array
-            if (confBounds && confBounds.length > 0) {
-                // filter by date range selected
-                const filteredConfBounds = confBounds.slice(idxMin, idxMax)
-                confBoundsList.push(filteredConfBounds);
-            }
-            // instantiate actuals data if data for specific indicator exists
-            let actual = [];
-            const indicator = stat.name.toLowerCase();
-            const actualJSON = require('../../store/actuals.json');
-            if (Object.keys(actualJSON).includes(indicator)) {
-                actual = actualJSON[indicator][this.props.geoid].map( d => {
-                    return { date: parseDate(d.date), val: d.val}
-                });
-            }
-            actualList.push(actual);
-        }
-        // prob change this
-        this.setState(prevState => {
-            return { 
-                seriesList: filteredSeriesList,
-                allTimeSeries: brushSeries,
-                dates: filteredDates, // TODO: once this is working, try removing some of these to see if they are extra/unnecessary
-                r0selected, //TODO: might not need this anymore!
-                animateTransition: false, 
-                statThreshold,
-                dateThreshold,
-                seriesMin: sliderMin,
-                seriesMax: sliderMax,
-                percExceedenceList,
-                confBoundsList,
-                actualList,
-            }
-        })
-        // this.setState({ 
-        //     r0selected, 
-        //     animateTransition: false, 
-        //     filteredR0SeriesList 
-        // })
+        this.setState({r0selected})
+        this.initialize(scenarioList, stat, severityList, r0selected);
     };
 
     handleR0Resample = () => {
-        // console.log('handleR0Resample')
-        const { dataset } = this.props;
         const { scenarioList, severityList, stat, r0selected } = this.state;
-        const filteredR0SeriesList = createFilteredR0SeriesList(
-            r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
 
-        // bring in stuff from compDidUPdate
-        const filteredSeriesList = []
-        const percExceedenceList = []
-        const confBoundsList = [];
-        const actualList = [];
-        let brushSeries;
-
-        const { allTimeDates, dateRange } = this.state;
-        // filter series and dates by dateRange
-        const idxMin = timeDay.count(allTimeDates[0], dateRange[0]);
-        const idxMax = timeDay.count(allTimeDates[0], dateRange[1]);
-        const filteredDates = Array.from(allTimeDates.slice(idxMin, idxMax));
-        const dateThresholdIdx = Math.ceil(filteredDates.length / 2)
-        const dateThreshold = filteredDates[dateThresholdIdx];
-        let statThreshold = 0
-        let sliderMin = Number.POSITIVE_INFINITY
-        let sliderMax = 0
-
-        for (let i = 0; i < scenarioList.length; i++) {
-            // setting default smart threshold based on seriesMin 
-            const filteredSeriesForStatThreshold = filteredR0SeriesList[i].map( s => {
-                const newS = {...s}
-                newS.vals = s.vals.slice(idxMin, idxMax)
-                return newS
-            });
-            console.log(filteredSeriesForStatThreshold)
-            // array of all peaks in filtered series
-            const seriesPeaks = filteredSeriesForStatThreshold.map(sim => max(sim.vals));
-            console.log('seriesPeaks', seriesPeaks)
-            const [seriesMin, seriesMax] = getRange(seriesPeaks);
-            console.log('seriesMin', seriesMin, 'seriesMax', seriesMax)
-            // ensures side by side y-scale reflect both series
-            if (seriesMin < sliderMin) sliderMin = seriesMin
-            if (seriesMax > sliderMax) sliderMax = seriesMax
-
-            // sets default smart value for statThreshold calculation
-            if (i === 0 && seriesMin < seriesMax/2) statThreshold = seriesMin;
-            if (i === 0 && seriesMin >= seriesMax/2) statThreshold = seriesMax/2;
-            const simsOver = returnSimsOverThreshold(
-                filteredR0SeriesList[i], statThreshold, allTimeDates, dateThreshold);
-
-            // brush visual only based on first scenario, for simplicity
-            brushSeries = i === 0 ? filteredR0SeriesList[i] : brushSeries;
-
-            // filtering based on date, only dateRange change needs this 
-            const filteredSeries = filteredR0SeriesList[i].map( s => { const newS = {...s}
-                newS.vals = s.vals.slice(idxMin, idxMax)
-                return newS
-            })
-            filteredSeriesList.push(filteredSeries)
-
-            // calculate percExceedence based on series after filtering down
-            const percExceedence = filteredSeries.length > 0 ?
-                simsOver / filteredSeries.length : 0;
-            percExceedenceList.push(percExceedence)
-
-            const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
-            // ensure stat has confidence bounds array
-            if (confBounds && confBounds.length > 0) {
-                // filter by date range selected
-                const filteredConfBounds = confBounds.slice(idxMin, idxMax)
-                confBoundsList.push(filteredConfBounds);
-            }
-            // instantiate actuals data if data for specific indicator exists
-            let actual = [];
-            const indicator = stat.name.toLowerCase();
-            const actualJSON = require('../../store/actuals.json');
-            if (Object.keys(actualJSON).includes(indicator)) {
-                actual = actualJSON[indicator][this.props.geoid].map( d => {
-                    return { date: parseDate(d.date), val: d.val}
-                });
-            }
-            actualList.push(actual);
-        }
-        // prob change this
-        this.setState(prevState => {
-            return { 
-                seriesList: filteredSeriesList,
-                allTimeSeries: brushSeries,
-                dates: filteredDates, // TODO: once this is working, try removing some of these to see if they are extra/unnecessary
-                r0resample: prevState.r0resample + 1, //TODO: might not need this anymore!
-                animateTransition: true, 
-                statThreshold,
-                dateThreshold,
-                seriesMin: sliderMin,
-                seriesMax: sliderMax,
-                percExceedenceList,
-                confBoundsList,
-                actualList,
-                // filteredR0SeriesList 
-            }
-        })
+        this.setState({r0selected})
+        this.initialize(scenarioList, stat, severityList, r0selected);
     };
 
     handleActualChange = () => {
