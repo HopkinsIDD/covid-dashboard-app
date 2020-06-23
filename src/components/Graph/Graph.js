@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React, { Component } from 'react'
 import { Tooltip } from 'antd'
 import Axis from './Axis'
@@ -5,9 +6,10 @@ import Legend from './Legend'
 import { line, area, curveLinear } from 'd3-shape'
 import { bisectLeft, least, max, maxIndex } from 'd3-array'
 import { select } from 'd3-selection'
-import { easeCubicOut, easeCubicIn, easeCubicInOut } from 'd3-ease'
-import { margin, numDisplaySims } from '../../utils/constants'
+import { easeCubicOut, easeCubicIn } from 'd3-ease'
+import { margin } from '../../utils/constants'
 import colors from '../../utils/colors';
+// eslint-disable no-unused-vars
 
 class Graph extends Component {
     constructor(props) {
@@ -59,10 +61,10 @@ class Graph extends Component {
         }
 
         if (this.props.series !== prevProps.series) {
-            console.log('componentDidUpdate SERIES change', this.props.series);
+            // console.log('componentDidUpdate SERIES change', this.props.series);
             const { series, dates, animateTransition, width } = this.props;
             const { lineGenerator, areaGenerator } = prevState;
-            if (series.length < numDisplaySims) console.log('only', series.length, 'sims in series')
+            // if (series.length < numDisplaySims) console.log('only', series.length, 'sims in series')
             // if (series.length < numDisplaySims) this.removeSimPaths(series, dates);
             // console.log('animateTransition', animateTransition)
             this.updateSimPaths(series, dates, lineGenerator, animateTransition, width);

@@ -38,7 +38,7 @@ class Histogram extends Component {
     // console.log(bins)
 
     const selectedBins = binGenerator(sorted_selected_sims)
-    console.log(selectedBins)
+    // console.log(selectedBins)
 
     yScale.domain([0, max(bins, d => d.length)])
 
@@ -49,13 +49,13 @@ class Histogram extends Component {
     if (this.state.width !== prevState.width) {
       this.makeBins()
     }
-    if (this.props.selectedSims !== prevProps.selectedSims) console.log(prevProps.selectedSims, this.props.selectedSims)
-    if (this.props.selected !== prevProps.selected) console.log(prevProps.selected, this.props.selected)
+    // if (this.props.selectedSims !== prevProps.selectedSims) console.log(prevProps.selectedSims, this.props.selectedSims)
+    // if (this.props.selected !== prevProps.selected) console.log(prevProps.selected, this.props.selected)
     if (this.props.selectedSims !== prevProps.selectedSims || this.props.selected !== prevProps.selected) {
       const sorted_selected_sims = this.props.selectedSims.slice().sort((a,b) => a.r0 - b.r0)
       // console.log(sorted_selected_sims)
       const selectedBins = this.state.binGenerator(sorted_selected_sims)
-      console.log(selectedBins)
+      // console.log(selectedBins)
       this.setState({ selectedBins })
       this.makeBins()
     }
