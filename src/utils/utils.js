@@ -1,4 +1,4 @@
-import { max, extent } from 'd3-array';
+import { extent } from 'd3-array';
 import { timeDay } from 'd3-time';
 import { timeFormat, utcParse } from 'd3-time-format';
 
@@ -41,11 +41,13 @@ export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
     const filteredSeries = filterByDate(seriesList[i], idxMin, idxMax)
 
     // returns the minimum and maximum series peak
-    const seriesPeaks = filteredSeries.map(sim => max(sim.vals));
+    const seriesPeaks = filteredSeries.map(sim => sim.max);
     const [seriesMin, seriesMax] = getRange(seriesPeaks);
 
     // adds some granularity to make statThreshold selection "smarter"
     const statThreshold = seriesMin < seriesMax / 2 ? seriesMin : seriesMax / 2; 
+    // TODO: i had this in initializeGraph... which is better?
+    // const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
     
     statThresholds.push(statThreshold);
     rangeDict['min'].push(seriesMin); 
@@ -97,27 +99,6 @@ export function flagSims(series, statThreshold, dates, dateThreshold) {
   })
   return simsOver;
 }
-// TODO: DELETE THIS FUNCTION!! 
-export function returnSimsOverThreshold(series, statThreshold, dates, dateThreshold) {
-  // Marks which simulations in a series are above threshold given stat and date
-
-  const dateIndex = dates.findIndex(
-      date => formatDate(date) === formatDate(dateThreshold)
-      );
-  let simsOver = 0;
-  Object.values(series).forEach((sim) => {
-      let simOver = false;
-      for (let i = 0; i < dateIndex; i++) {
-          if (sim.vals[i] > statThreshold){
-              simsOver = simsOver + 1;
-              simOver = true;
-              break;
-          }
-      }
-      simOver ? sim.over = true : sim.over = false
-  })
-  return simsOver;
-}
 
 export function getExceedences(scenarioList, seriesList, simsOverList) {
   const percExceedenceList = []
@@ -128,7 +109,6 @@ export function getExceedences(scenarioList, seriesList, simsOverList) {
     const percExceedence = seriesList[i].length > 0 ?
     simsOverList[i] / seriesList[i].length : 0;
     percExceedenceList.push(percExceedence)
-
   }
   return percExceedenceList
 }
@@ -191,28 +171,23 @@ export function shuffle(array, numDisplaySims) {
   return array.slice(stopIdx, array.length);
 }
 
-export function filterR0(series, r0selected, numDisplaySims) {
-  // return filtered series 
-  
-  // filter on current r0selected range 
-  const r0min = r0selected[0], r0max = r0selected[1];
-  const filtered = series.filter(s => s.r0 > r0min && s.r0 < r0max);
-
-  // filter on numDisplaySims
-  const displaySims = shuffle(filtered.map(s => s.name), numDisplaySims); 
-  const final = filtered.filter(s => displaySims.includes(s.name));
-
-  return final;
-}
-
-export function filterR0seriesList(
+export function filterR0(
   r0selected, scenarioList, severityList, stat, dataset, numDisplaySims) {
+  // return series filtered on R0 range and numDisplaySims
   const r0FilteredSeriesList = []
+
   for (let i = 0; i < scenarioList.length; i++) {
-      const copy = Array.from(
-          dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
-      const r0FilteredSeries = filterR0(copy, r0selected, numDisplaySims);
-      r0FilteredSeriesList.push(r0FilteredSeries)
+    const series = Array.from(
+        dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
+
+    const r0min = r0selected[0], r0max = r0selected[1];
+    const filtered = series.filter(s => s.r0 > r0min && s.r0 < r0max);
+
+    // filter on numDisplaySims
+    const displaySims = shuffle(filtered.map(s => s.name), numDisplaySims); 
+    const r0FilteredSeries = filtered.filter(s => displaySims.includes(s.name));
+
+    r0FilteredSeriesList.push(r0FilteredSeries)
   }
   return r0FilteredSeriesList
 }
