@@ -14,11 +14,12 @@ class R0 extends Component {
         }
     }
     
-    handleChange = (e) => {
+    handleChange = (r0new) => {
+        const { step } = this.state;
         const { r0selected } = this.props;
 
         // prevent user from selecting no range
-        const range = e[1] - e[0] < this.state.step ? r0selected : e;
+        const range = r0new[1] - r0new[0] < step ? r0selected : r0new;
         this.props.onR0Change(range);
     }
 

@@ -37,7 +37,6 @@ export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
   let rangeDict = {'min': [], 'max': []};
 
   for (let i = 0; i < scenarioList.length; i++) {
-
     const filteredSeries = filterByDate(seriesList[i], idxMin, idxMax)
 
     // returns the minimum and maximum series peak
@@ -45,9 +44,7 @@ export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
     const [seriesMin, seriesMax] = getRange(seriesPeaks);
 
     // adds some granularity to make statThreshold selection "smarter"
-    const statThreshold = seriesMin < seriesMax / 2 ? seriesMin : seriesMax / 2; 
-    // TODO: i had this in initializeGraph... which is better?
-    // const statThreshold = Math.ceil((seriesMax / 1.4) / 100) * 100;
+    const statThreshold = seriesMin < seriesMax / 2 ? seriesMin : seriesMax / 2;
     
     statThresholds.push(statThreshold);
     rangeDict['min'].push(seriesMin); 
@@ -64,7 +61,6 @@ export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
 export function flagSimsOverThreshold(scenarioList, seriesList, allTimeDates, 
   idxMin, idxMax, statThreshold, dateThreshold) {
   // return series with sims flagged above or below thresholds
-
   const filteredSeriesList = [];
   const simsOverList = [];
 
@@ -81,7 +77,7 @@ export function flagSimsOverThreshold(scenarioList, seriesList, allTimeDates,
 }
 
 export function flagSims(series, statThreshold, dates, dateThreshold) {
-  // MUTATION: flags which simulations in a series are above threshold given stat and date
+  // MUTATION: flags which sims in a series are above stat and date threshold 
   const dateIndex = dates.findIndex(
     date => formatDate(date) === formatDate(dateThreshold));
 
@@ -104,10 +100,8 @@ export function getExceedences(scenarioList, seriesList, simsOverList) {
   const percExceedenceList = []
 
   for (let i = 0; i < scenarioList.length; i++) {
-    
-    // calculate percExceedence based on series after filtering down
     const percExceedence = seriesList[i].length > 0 ?
-    simsOverList[i] / seriesList[i].length : 0;
+      simsOverList[i] / seriesList[i].length : 0;
     percExceedenceList.push(percExceedence)
   }
   return percExceedenceList
@@ -149,9 +143,15 @@ export function getActuals(geoid, stat, scenarioList) {
   return actualList
 }
 
+export function getR0range(dataset, scenario, severity, stat) {
+  const r0array = dataset[scenario.key][severity.key][stat.key]
+    .sims.map(sim => sim.r0);
+  const r0full = [Math.min(...r0array), Math.max(...r0array)];
+  return r0full
+}
+
 export function shuffle(array, numDisplaySims) {
   // returns randomly shuffled array of elements based on numDisplaySims
-
   let currIdx = array.length;
   let tempVal = array.length;
   let randomIdx = array.length;
@@ -201,7 +201,6 @@ export function addCommas(x) {
 export function getRange(seriesPeaks) {
   // return range [min, max] of all peaks of sims given a series
   const seriesPeakExtent = extent(seriesPeaks)
-  // console.log(seriesPeakExtent)
   let roundingVal;
   if (seriesPeakExtent[1].toString().length < 2) {
     roundingVal = 1
@@ -210,7 +209,6 @@ export function getRange(seriesPeaks) {
   } else {
     roundingVal = 100
   }
-
   // take out rounding until display
   const minPeak = Math.ceil(seriesPeakExtent[0] / roundingVal) * roundingVal;
   const maxPeak = Math.ceil(seriesPeakExtent[1] / roundingVal) * roundingVal;
