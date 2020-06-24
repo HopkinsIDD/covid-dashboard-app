@@ -99,7 +99,7 @@ class MainMap extends Component {
                         </div>
                     </div>
                 </Col>
-                <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+                <Row gutter={styles.gutter}>
                     <Col className="gutter-row container" style={styles.MapContainer}>
                         <div className="map-container">
                             <MapContainer

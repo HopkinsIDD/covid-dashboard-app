@@ -3,6 +3,7 @@ import { Row, Col } from 'antd';
 import { ReactComponent as AltLogo } from '../assets/logo-idd-jhsph.svg';
 import MenuItem from './MenuItem';
 import { ReactComponent as Hamburger } from '../assets/hamburger.svg';
+import { styles } from '../utils/constants';
 
 class NavBar extends Component {
   constructor(props) {
@@ -51,7 +52,7 @@ class NavBar extends Component {
   render() {
     return (
       <div id="navbar" className="App-header">
-        <Row gutter={{ xs: 8, sm: 16, md: 24, lg: 32 }}>
+        <Row gutter={styles.gutter}>
           <Col id="logo" className="gutter-row logo">
             <AltLogo height="60" throwifnamespace="false" style={{paddingTop: '8px'}} />
           </Col>

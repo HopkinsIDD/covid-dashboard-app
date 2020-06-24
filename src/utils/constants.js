@@ -23,6 +23,9 @@ export const styles = {
     MapContainer: {
         paddingLeft: margin.yAxis + (2 * margin.left) + margin.right
     },
+    gutter: {
+        xs: 8, sm: 16, md: 24, lg: 32
+    },
     SearchBar: {
         width: '100%',
         maxWidth: '50rem',
@@ -63,7 +66,8 @@ export const styles = {
         height: '45px'
     },
     Switch: {
-        paddingLeft: '12px'
+        paddingLeft: '12px',
+        marginTop: '10px'
     },
     Marks: {
         fontFamily: 'Cousine, monospace',
