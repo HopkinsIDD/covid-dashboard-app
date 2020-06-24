@@ -46,7 +46,7 @@ class MainGraph extends Component {
             actualList: [],
             r0full: [0, 4],                 // full range of r0
             r0selected: [0, 4],             // used selected range of r0
-            r0filteredSeriesList: [],       // used by Brush in handler
+            seriesListForBrush: [],       // used by Brush in handler
             percExceedenceList: [],
             confBounds: {},
             showConfBounds: false,
@@ -101,7 +101,7 @@ class MainGraph extends Component {
         const r0full = getR0range(dataset, SCENARIOS[0], severity, stat);
         // r0filteredSeries used by handleBrush to initialize instead of R0 filtering 
         // series is updated and set to state in scenario, sev, stat, r0 change handlers
-        const r0filteredSeriesList = filterR0(
+        const seriesListForBrush = filterR0(
             r0full, [SCENARIOS[0]], sevList, stat, dataset, numDisplaySims);
 
         this.setState({
@@ -122,7 +122,7 @@ class MainGraph extends Component {
             actualList,
             r0full,
             r0selected: r0full, 
-            r0filteredSeriesList 
+            seriesListForBrush 
         }, () => {
             this.setState({dataLoaded: true});
         })
@@ -172,7 +172,7 @@ class MainGraph extends Component {
         const seriesList = filterR0(
             r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
 
-        this.setState({stat, r0filteredSeriesList: seriesList})
+        this.setState({stat, seriesListForBrush: seriesList})
         this.update(seriesList, scenarioList, stat, severityList, dateRange);
     };
 
@@ -202,7 +202,7 @@ class MainGraph extends Component {
             scenarioList,
             scenarioClickCounter: scenarioClkCntr,
             severityList,
-            r0filteredSeriesList: seriesList
+            seriesListForBrush: seriesList
         })      
         this.update(seriesList, scenarioList, stat, severityList, dateRange); 
     };
@@ -222,7 +222,7 @@ class MainGraph extends Component {
         
         this.setState({
             severityList, 
-            r0filteredSeriesList: seriesList,
+            seriesListForBrush: seriesList,
             animateTransition: true
         });
         this.update(seriesList, scenarioList, stat, severityList, dateRange); 
@@ -241,7 +241,7 @@ class MainGraph extends Component {
         
         this.setState({
             r0selected,
-            r0filteredSeriesList: seriesList
+            seriesListForBrush: seriesList
         })
         this.update(seriesList, scenarioList, stat, severityList, dateRange);     
     };
@@ -255,7 +255,7 @@ class MainGraph extends Component {
         
         this.setState({
             r0selected,
-            r0filteredSeriesList: seriesList
+            seriesListForBrush: seriesList
         })
         this.update(seriesList, scenarioList, stat, severityList, dateRange);     
     };
@@ -309,13 +309,13 @@ class MainGraph extends Component {
     }
 
     handleBrushRange = (dateRange) => {
-        const { r0filteredSeriesList, scenarioList, stat, severityList } = this.state;
+        const { seriesListForBrush, scenarioList, stat, severityList } = this.state;
 
         this.setState({
             dateRange, 
             animateTransition: false
         });
-        this.update(r0filteredSeriesList, scenarioList, stat, severityList, dateRange);
+        this.update(seriesListForBrush, scenarioList, stat, severityList, dateRange);
     };
 
     handleBrushStart = () => {this.setState({brushActive: true, animateTransition: false})}

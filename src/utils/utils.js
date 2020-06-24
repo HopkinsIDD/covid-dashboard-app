@@ -174,7 +174,7 @@ function shuffle(array, numDisplaySims) {
 export function filterR0(
   r0selected, scenarioList, severityList, stat, dataset, numDisplaySims) {
   // return series filtered on R0 range and numDisplaySims
-  const r0FilteredSeriesList = []
+  const seriesListForBrush = []
 
   for (let i = 0; i < scenarioList.length; i++) {
     const series = Array.from(
@@ -185,11 +185,11 @@ export function filterR0(
 
     // filter on numDisplaySims
     const displaySims = shuffle(filtered.map(s => s.name), numDisplaySims); 
-    const r0FilteredSeries = filtered.filter(s => displaySims.includes(s.name));
+    const seriesForBrush = filtered.filter(s => displaySims.includes(s.name));
 
-    r0FilteredSeriesList.push(r0FilteredSeries)
+    seriesListForBrush.push(seriesForBrush)
   }
-  return r0FilteredSeriesList
+  return seriesListForBrush
 }
 
 export function addCommas(x) {
