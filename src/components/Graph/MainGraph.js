@@ -319,9 +319,6 @@ class MainGraph extends Component {
     handleSeveritiesHoverLeave = () => {this.setState({scenarioHovered: ''});}
 
     handleR0Change = (e) => {
-<<<<<<< HEAD
-        this.setState({ r0selected: e, animateTransition: false })
-=======
         // console.log('handleR0Change')
         const r0selected = e
         const { dataset } = this.props;
@@ -338,7 +335,6 @@ class MainGraph extends Component {
         this.setState(prevState => {
             return { r0resample: prevState.r0resample + 1, animateTransition: true, filteredR0SeriesList }
         })
->>>>>>> e27725762b1eafc54b057b597b9a63a6257dc7ca
     };
 
     handleActualChange = () => {
