@@ -150,7 +150,7 @@ export function getR0range(dataset, scenario, severity, stat) {
   return r0full
 }
 
-export function shuffle(array, numDisplaySims) {
+function shuffle(array, numDisplaySims) {
   // returns randomly shuffled array of elements based on numDisplaySims
   let currIdx = array.length;
   let tempVal = array.length;
