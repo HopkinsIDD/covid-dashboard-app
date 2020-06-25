@@ -1,7 +1,7 @@
 import { extent } from 'd3-array';
 import { timeDay } from 'd3-time';
 import { timeFormat, utcParse } from 'd3-time-format';
-
+import { addQuantiles } from '../utils/quantiles';
 const formatDate = timeFormat('%Y-%m-%d');
 const parseDate = utcParse('%Y-%m-%d');
 
@@ -116,12 +116,19 @@ export function filterByDate(series, idxMin, idxMax) {
   return filteredSeries
 }
 
-export function getConfBounds(dataset, scenarioList, severityList, stat, idxMin, idxMax) {
+export function getConfBounds(dataset, scenarioList, severityList, stat, dates, idxMin, idxMax) {
+  // TODO: do we need both dates and idx Min/Max?
+  // TODO: once this is working, can we filter first to reduce quantile calcs required?
   const confBoundsList = [];
   for (let i = 0; i < scenarioList.length; i++) {
-      const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
-      const filteredConfBounds = confBounds.slice(idxMin, idxMax)
-      confBoundsList.push(filteredConfBounds);
+    // TODO: why is this line working
+    // const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf; //.slice(idxMin, idxMax);
+    // TODO: and this line not, even though confBounds appear to be the same
+    const confBounds = addQuantiles(
+      dataset, scenarioList[i].key, severityList[i].key, stat.key, dates)
+    const filteredConfBounds = confBounds.slice(idxMin, idxMax);
+
+    confBoundsList.push(filteredConfBounds);
   }
   return confBoundsList
 }

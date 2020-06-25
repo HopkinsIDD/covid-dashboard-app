@@ -28,7 +28,7 @@ class MainGraph extends Component {
             series: {},
             seriesList: [],
             allTimeSeries: {},              // used by Brush
-            dates: [],  
+            dates: [],                      // TODO: dates, allTimeDates... super confusing
             allTimeDates: [],               // used by Brush
             stat: STATS[0],
             SCENARIOS: [],
@@ -71,7 +71,7 @@ class MainGraph extends Component {
 
     initialize = (dataset, stat, severity) => {
         // initialize() trigged on mount and Dataset change
-        const { dateRange, severityList } = this.state
+        const { allTimeDates, dateRange, severityList } = this.state
 
         // SCENARIOS: constant scenarios used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
@@ -95,7 +95,7 @@ class MainGraph extends Component {
         const filteredSeries = filterByDate(series, idxMin, idxMax)
 
         const confBoundsList = getConfBounds(
-            dataset, [SCENARIOS[0]], severityList, stat, idxMin, idxMax)
+            dataset, [SCENARIOS[0]], severityList, stat, allTimeDates, idxMin, idxMax)
         const actualList = getActuals(this.props.geoid, stat, [SCENARIOS[0]]);
 
         const r0full = getR0range(dataset, SCENARIOS[0], severity, stat);
@@ -148,7 +148,7 @@ class MainGraph extends Component {
             scenarioList, seriesList, simsOverList);
 
         const confBoundsList = getConfBounds(
-            dataset, scenarioList, severityList, stat, idxMin, idxMax)
+            dataset, scenarioList, severityList, stat, allTimeDates, idxMin, idxMax)
         const actualList = getActuals(geoid, stat, scenarioList);
 
         this.setState({
@@ -322,9 +322,33 @@ class MainGraph extends Component {
 
     handleBrushEnd = () => {this.setState({brushActive: false, animateTransition: true})}
 
+    showConfBounds(confBoundsList) {
+        // confBoundsList declared simply to control flow of state
+        console.log(confBoundsList[0][140])
+        this.setState(prevState => ({
+            showConfBounds: !prevState.showConfBounds, 
+            animateTransition: false
+        }));
+    }
+
     handleConfClick = () => {
         console.log('handleConfBoundClick')
-        this.setState(prevState => ({showConfBounds: !prevState.showConfBounds, animateTransition: false}));
+        const { dataset } = this.props;
+        const { scenarioList, severityList, stat, allTimeDates, dateRange, dates } = this.state;
+        // console.log('allTimeDates', allTimeDates)
+        // console.log('dates', dates)
+        // console.log('dateRange', dateRange)
+        const idxMin = timeDay.count(allTimeDates[0], dateRange[0]);
+        const idxMax = timeDay.count(allTimeDates[0], dateRange[1]);
+
+        // TOOD: once you get this working, make sure fix it in initialize() and update()
+        const confBoundsList = getConfBounds(
+            dataset, scenarioList, severityList, stat, allTimeDates, idxMin, idxMax);
+        // debugger;
+        console.log(confBoundsList[0].length)
+        this.setState(confBoundsList);
+        // show confidence bounds only after bounds have finished calculating
+        this.showConfBounds(confBoundsList);
     };
 
     handleSliderMouseEvent = (type, slider, view) => {
