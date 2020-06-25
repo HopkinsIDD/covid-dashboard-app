@@ -4,7 +4,8 @@ import Axis from './Axis';
 import ThresholdLabel from '../Graph/ThresholdLabel';
 import { scaleLinear, scaleUtc } from 'd3-scale';
 import { max, extent } from 'd3-array';
-import { margin, COUNTYNAMES } from '../../utils/constants';
+import { margin } from '../../utils/constants';
+import { COUNTYNAMES } from '../../utils/geoids';
 
 
 class GraphContainer extends Component {

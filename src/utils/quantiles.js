@@ -1,24 +1,24 @@
+import { CONFINTERVALS } from '../utils/constants';
 
-function calcQuantile(sortedArray, percentile) {
+function calcQuantile(sortedArr, percentile) {
     let result;
-    const index = percentile/100. * (sortedArray.length - 1);
+    const index = percentile / 100. * (sortedArr.length - 1);
 
     if (Math.floor(index) === index) {
-        result = sortedArray[index];
+        result = sortedArr[index];
     } else {
         const i = Math.floor(index);
         const fraction = index - i;
-        result = sortedArray[i] + (sortedArray[i+1] - sortedArray[i]) * fraction;
+        result = sortedArr[i] + (sortedArr[i + 1] - sortedArr[i]) * fraction;
     }
     return result;
 };
 
 function transformQuantiles(confObj, dates) {
-    // TODO: move to constants the intervals
     const confArray = [];
     for (let d = 0; d < dates.length; d ++) {
         const obj = {};
-        for (let interval of ['p10', 'p50', 'p90']) {
+        for (let interval of CONFINTERVALS) {
             obj[interval] = confObj[interval][d];
         }
         confArray.push(obj);
@@ -27,8 +27,10 @@ function transformQuantiles(confObj, dates) {
 }
 
 export function addQuantiles(dataset, scenario, severity, stat, dates) {
-    const confObj = {'p10': [], 'p50': [], 'p90': []};
-    // TODO: dates should be brought in differently vs idxMin, idxMax
+    let confObj = {}
+    for (let interval of CONFINTERVALS) {
+        confObj[interval] = [];
+    }
     for (let d = 0; d < dates.length; d ++) {
         const simObj = dataset[scenario][severity][stat].sims;
 

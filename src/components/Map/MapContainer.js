@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { getDateIdx, getReadableDate } from '../../utils/utils';
-import { COUNTYNAMES } from '../../utils/constants';
+import { COUNTYNAMES } from '../../utils/geoids';
 import { mapHighColorPalette, mapLowColorPalette } from '../../utils/colors';
 
 // const lowColors = ['#deebf7', '#e5f5e0', '#fee6ce'] 

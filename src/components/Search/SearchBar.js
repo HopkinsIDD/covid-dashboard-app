@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
-import { COUNTIES } from '../../utils/constants.js';
+import { COUNTIES } from '../../utils/geoids.js';
 
 
 class SearchBar extends Component {
@@ -46,21 +46,6 @@ class SearchBar extends Component {
         this.setState({
             countyName: `${item.name}, ${item.usps}`
         })
-
-        // use for when files are on public internet
-        // axios.get(event.path)
-        //     .catch(error => {
-        //         console.log('error', error);
-        //     })
-        //     .then(response => {
-        //         // console.log('event', event)
-        //         // console.log('response', response)
-        //         const json = response.data;
-        //         this.props.onCountySelect(json);
-        //         this.setState({
-        //             'countyName': event.name + ', ' + event.usps
-        //         })
-        //     });
     }
 
     render() {

@@ -117,8 +117,6 @@ export function filterByDate(series, idxMin, idxMax) {
 }
 
 export function getConfBounds(dataset, scenarioList, severityList, stat, dates, idxMin, idxMax) {
-  // TODO: do we need both dates and idx Min/Max?
-  // TODO: once this is working, can we filter first to reduce quantile calcs required?
   const confBoundsList = [];
   for (let i = 0; i < scenarioList.length; i++) {
     const confBounds = addQuantiles(

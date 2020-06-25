@@ -3,8 +3,8 @@ import { Row, Col } from 'antd';
 import Chart from '../Chart/Chart';
 import CalloutLabel from '../Chart/CalloutLabel';
 import ChartLegend from '../Chart/ChartLegend';
-import { COUNTYNAMES } from '../../utils/constants'
-import { getReadableDate } from '../../utils/utils'
+import { COUNTYNAMES } from '../../utils/geoids';
+import { getReadableDate } from '../../utils/utils';
 
 class ChartContainer extends Component {
     constructor(props) {
