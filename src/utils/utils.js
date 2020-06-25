@@ -121,9 +121,6 @@ export function getConfBounds(dataset, scenarioList, severityList, stat, dates, 
   // TODO: once this is working, can we filter first to reduce quantile calcs required?
   const confBoundsList = [];
   for (let i = 0; i < scenarioList.length; i++) {
-    // TODO: why is this line working
-    // const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf; //.slice(idxMin, idxMax);
-    // TODO: and this line not, even though confBounds appear to be the same
     const confBounds = addQuantiles(
       dataset, scenarioList[i].key, severityList[i].key, stat.key, dates)
     const filteredConfBounds = confBounds.slice(idxMin, idxMax);
