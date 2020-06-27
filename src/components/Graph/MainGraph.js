@@ -28,7 +28,7 @@ class MainGraph extends Component {
             series: {},
             seriesList: [],
             allTimeSeries: {},              // used by Brush
-            dates: [],  
+            selectedDates: [],  
             allTimeDates: [],               // used by Brush
             stat: STATS[0],
             SCENARIOS: [],
@@ -91,7 +91,7 @@ class MainGraph extends Component {
             [SCENARIOS[0]], [series], idxMin, idxMax);
         const simsOver = flagSims(
             series, statThreshold, dates, this.state.dateThreshold)        
-        const newDates = Array.from(dates).slice(idxMin, idxMax);
+        const newSelectedDates = Array.from(dates).slice(idxMin, idxMax);
         const filteredSeries = filterByDate(series, idxMin, idxMax)
 
         const confBoundsList = getConfBounds(
@@ -107,7 +107,7 @@ class MainGraph extends Component {
         this.setState({
             SCENARIOS,
             scenarioList: [SCENARIOS[0]],
-            dates: newDates,
+            selectedDates: newSelectedDates,
             allTimeDates: Array.from(dates),        // dates for brush
             allTimeSeries: Array.from(series),      // series for brush
             allSims,
@@ -136,7 +136,7 @@ class MainGraph extends Component {
         const idxMin = timeDay.count(allTimeDates[0], dateRange[0]);
         const idxMax = timeDay.count(allTimeDates[0], dateRange[1]);
 
-        const newDates = Array.from(allTimeDates).slice(idxMin, idxMax);
+        const newSelectedDates = Array.from(allTimeDates).slice(idxMin, idxMax);
 
         const dateThreshold = getDateThreshold(allTimeDates, idxMin, idxMax);
         const [statThreshold, seriesMin, seriesMax] = getStatThreshold(
@@ -156,7 +156,7 @@ class MainGraph extends Component {
         this.setState({
             seriesList: flaggedSeriesList,
             allTimeSeries: seriesList[0],  // brush uses first series
-            dates: newDates,
+            selectedDates: newSelectedDates,
             statThreshold,
             dateThreshold,
             seriesMin,
@@ -268,7 +268,7 @@ class MainGraph extends Component {
     };
 
     handleStatSliderChange = (thresh) => {
-        const { dates, dateThreshold, allTimeDates } = this.state;
+        const { selectedDates, dateThreshold, allTimeDates } = this.state;
         const seriesList = Array.from(this.state.seriesList);
         const allTimeSeries = Array.from(this.state.allTimeSeries);
         // flag Sims for Brush
@@ -276,7 +276,7 @@ class MainGraph extends Component {
         const percExceedenceList = [];
         // flag Sims for seriesList
         for (let i = 0; i < seriesList.length; i++) {
-            const simsOver = flagSims(seriesList[i], thresh, dates, dateThreshold);
+            const simsOver = flagSims(seriesList[i], thresh, selectedDates, dateThreshold);
             const percExceedence = simsOver / seriesList[i].length;
             percExceedenceList.push(percExceedence);
         }
@@ -290,7 +290,7 @@ class MainGraph extends Component {
     };
 
     handleDateSliderChange = (thresh) => {
-        const { statThreshold, dates, allTimeDates } = this.state;
+        const { statThreshold, selectedDates, allTimeDates } = this.state;
         const seriesList = Array.from(this.state.seriesList);
         const allTimeSeries = Array.from(this.state.allTimeSeries);
         // flag Sims for Brush
@@ -298,7 +298,7 @@ class MainGraph extends Component {
         const percExceedenceList = [];
         // flag Sims for seriesList
         for (let i = 0; i < seriesList.length; i++) {
-            const simsOver = flagSims(seriesList[i], statThreshold, dates, thresh);
+            const simsOver = flagSims(seriesList[i], statThreshold, selectedDates, thresh);
             const percExceedence = simsOver / seriesList[i].length;
             percExceedenceList.push(percExceedence);
         }
@@ -389,7 +389,7 @@ class MainGraph extends Component {
                             geoid={this.props.geoid}
                             width={this.props.width}
                             height={this.props.height}
-                            dates={this.state.dates}
+                            selectedDates={this.state.selectedDates}
                             scenarioList={this.state.scenarioList}
                             seriesList={this.state.seriesList}
                             stat={this.state.stat}
@@ -467,7 +467,7 @@ class MainGraph extends Component {
                             onConfClick={this.handleConfClick} /> 
                         <Sliders 
                             stat={this.state.stat}
-                            dates={this.state.dates}
+                            selectedDates={this.state.selectedDates}
                             seriesMax={this.state.seriesMax}
                             showConfBounds={this.state.showConfBounds}
                             statThreshold={this.state.statThreshold}
