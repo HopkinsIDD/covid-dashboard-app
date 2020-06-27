@@ -136,6 +136,8 @@ class MainGraph extends Component {
         const idxMin = timeDay.count(allTimeDates[0], dateRange[0]);
         const idxMax = timeDay.count(allTimeDates[0], dateRange[1]);
 
+        const newDates = Array.from(allTimeDates).slice(idxMin, idxMax);
+
         const dateThreshold = getDateThreshold(allTimeDates, idxMin, idxMax);
         const [statThreshold, seriesMin, seriesMax] = getStatThreshold(
             scenarioList, seriesList, idxMin, idxMax);
@@ -154,6 +156,7 @@ class MainGraph extends Component {
         this.setState({
             seriesList: flaggedSeriesList,
             allTimeSeries: seriesList[0],  // brush uses first series
+            dates: newDates,
             statThreshold,
             dateThreshold,
             seriesMin,
@@ -161,7 +164,7 @@ class MainGraph extends Component {
             percExceedenceList,
             confBoundsList,
             actualList,
-            animateTransition: true
+            // animateTransition: true
         })
     }
 
@@ -309,6 +312,7 @@ class MainGraph extends Component {
     }
 
     handleBrushRange = (dateRange) => {
+        // console.log('handleBrushRange')
         const { seriesListForBrush, scenarioList, stat, severityList } = this.state;
 
         this.setState({
@@ -318,14 +322,11 @@ class MainGraph extends Component {
         this.update(seriesListForBrush, scenarioList, stat, severityList, dateRange);
     };
 
-    handleBrushStart = () => {this.setState({brushActive: true, animateTransition: false})}
+    handleBrushStart = () => { this.setState({brushActive: true, animateTransition: false} )}
 
-    handleBrushEnd = () => {this.setState({brushActive: false, animateTransition: true})}
+    handleBrushEnd = () => { this.setState({brushActive: false, animateTransition: false} )}
 
-    handleConfClick = () => {
-        console.log('handleConfBoundClick')
-        this.setState(prevState => ({showConfBounds: !prevState.showConfBounds, animateTransition: false}));
-    };
+    handleConfClick = () => { this.setState(prevState => ({showConfBounds: !prevState.showConfBounds, animateTransition: false} )); };
 
     handleSliderMouseEvent = (type, slider, view) => {
         if (view === 'graph') {
@@ -343,10 +344,6 @@ class MainGraph extends Component {
                 }
             }
         } 
-    }
-
-    toggleAnimateTransition = () => {
-        this.setState({ animateTransition: !this.state.animateTransition })
     }
 
     render() {
@@ -400,7 +397,6 @@ class MainGraph extends Component {
                             r0full={this.state.r0full}
                             r0selected={this.state.r0selected}
                             animateTransition={this.state.animateTransition}
-                            toggleAnimateTransition={this.toggleAnimateTransition}
                             showConfBounds={this.state.showConfBounds}
                             confBoundsList={this.state.confBoundsList}
                             actualList={this.state.actualList}
