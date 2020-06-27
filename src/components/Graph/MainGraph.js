@@ -163,8 +163,7 @@ class MainGraph extends Component {
             seriesMax,
             percExceedenceList,
             confBoundsList,
-            actualList,
-            // animateTransition: true
+            actualList
         })
     }
 
@@ -175,7 +174,7 @@ class MainGraph extends Component {
         const seriesList = filterR0(
             r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
 
-        this.setState({stat, seriesListForBrush: seriesList})
+        this.setState({stat, seriesListForBrush: seriesList, animateTransition: true})
         this.update(seriesList, scenarioList, stat, severityList, dateRange);
     };
 
@@ -205,7 +204,8 @@ class MainGraph extends Component {
             scenarioList,
             scenarioClickCounter: scenarioClkCntr,
             severityList,
-            seriesListForBrush: seriesList
+            seriesListForBrush: seriesList,
+            animateTransition: true
         })      
         this.update(seriesList, scenarioList, stat, severityList, dateRange); 
     };
@@ -244,7 +244,8 @@ class MainGraph extends Component {
         
         this.setState({
             r0selected,
-            seriesListForBrush: seriesList
+            seriesListForBrush: seriesList,
+            animateTransition: true
         })
         this.update(seriesList, scenarioList, stat, severityList, dateRange);     
     };
@@ -258,7 +259,8 @@ class MainGraph extends Component {
         
         this.setState({
             r0selected,
-            seriesListForBrush: seriesList
+            seriesListForBrush: seriesList,
+            animateTransition: true
         })
         this.update(seriesList, scenarioList, stat, severityList, dateRange);     
     };
