@@ -21,11 +21,11 @@ class GraphContainer extends Component {
 
   componentDidMount() {
     //   console.log('ComponentDidMount')
-      const { width, height, seriesList, confBoundsList, dates, scenarioList } = this.props;
+      const { width, height, seriesList, confBoundsList, selectedDates, scenarioList } = this.props;
       if (seriesList.length > 0) {
         const graphWidth = scenarioList.length === 2 ? width / 2 : width;
         const graphHeight = height;
-        const scales = this.getScales(seriesList, confBoundsList, dates, graphWidth, height);
+        const scales = this.getScales(seriesList, confBoundsList, selectedDates, graphWidth, height);
         const child = {
             key: `${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`,
             graph: [],
@@ -37,21 +37,18 @@ class GraphContainer extends Component {
                 keyVal={`${scenarioList[0].key}_Graph_${this.props.scenarioClickCounter}`}
                 geoid={this.props.geoid}
                 series={this.props.seriesList[0]}
-                dates={this.props.dates}
+                selectedDates={this.props.selectedDates}
                 scenario={this.props.scenario}
                 severity={this.props.severity}
                 stat={this.props.stat}
                 r0={this.props.r0}
                 animateTransition={this.props.animateTransition}
-                toggleAnimateTransition={this.props.toggleAnimateTransition}
-                simNum={this.props.simNum}
                 showConfBounds={this.props.showConfBounds}
                 confBounds={this.props.confBoundsList[0]}
                 showActual={this.props.showactual}
                 actual={this.props.actualList[0]}
                 statThreshold={this.props.statThreshold}
                 dateThreshold={this.props.dateThreshold}
-                dateRange={this.props.dateRange}
                 width={graphWidth}
                 height={graphHeight}
                 showLegend={true}
@@ -74,7 +71,7 @@ class GraphContainer extends Component {
 
   componentDidUpdate(prevProp, prevState) {
 
-      const { scenarioList, seriesList, confBoundsList, dates, height } = this.props;
+      const { scenarioList, seriesList, confBoundsList, selectedDates, height } = this.props;
       const newChildren = [];
 
       // this deals with re-scaling and re-drawing graphs on window resize
@@ -85,7 +82,7 @@ class GraphContainer extends Component {
         // console.log('graphWidth is', graphWidth)
         // need to adjust scale by length of scenario list
         // break these out into X and Y (X out of the loop, Y in?)
-        const scales = this.getScales(seriesList, confBoundsList, dates, graphWidth, graphHeight);
+        const scales = this.getScales(seriesList, confBoundsList, selectedDates, graphWidth, graphHeight);
         this.updateGraphChildren(newChildren, scenarioList, graphWidth, graphHeight, scales);
       }
 
@@ -105,7 +102,7 @@ class GraphContainer extends Component {
         // console.log('graphWidth is', graphWidth)
         // need to adjust scale by length of scenario list
         // break these out into X and Y (X out of the loop, Y in?)
-        const scales = this.getScales(seriesList, confBoundsList, dates, graphWidth, graphHeight);
+        const scales = this.getScales(seriesList, confBoundsList, selectedDates, graphWidth, graphHeight);
         this.updateGraphChildren(newChildren, scenarioList, graphWidth, graphHeight, scales);
     }
 }
@@ -128,17 +125,14 @@ class GraphContainer extends Component {
                     severity={this.props.severity}
                     r0={this.props.r0}
                     animateTransition={this.props.animateTransition}
-                    toggleAnimateTransition={this.props.toggleAnimateTransition}
-                    simNum={this.props.simNum}
                     showConfBounds={this.props.showConfBounds}
                     confBounds={this.props.confBoundsList[i]}
                     showActual={this.props.showActual}
                     actual={this.props.actualList[i]}
                     series={this.props.seriesList[i]}
-                    dates={this.props.dates}
+                    selectedDates={this.props.selectedDates}
                     statThreshold={this.props.statThreshold}
                     dateThreshold={this.props.dateThreshold}
-                    dateRange={this.props.dateRange}
                     brushActive={this.props.brushActive}
                     width={graphWidth}
                     height={graphHeight}
@@ -161,9 +155,9 @@ class GraphContainer extends Component {
     }
 
 
-  getScales = (seriesList, confBoundsList, dates, width, height) => {
+  getScales = (seriesList, confBoundsList, selectedDates, width, height) => {
       // calculate scale domains
-      const timeDomain = extent(dates);
+      const timeDomain = extent(selectedDates);
       let scaleMaxVal = 0
       for (let i = 0; i < seriesList.length; i++) {
           const seriesMaxVal = max(seriesList[i], sims => max(sims.vals));

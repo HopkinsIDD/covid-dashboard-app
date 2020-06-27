@@ -17,7 +17,7 @@ class Sliders extends Component {
 
     componentDidMount() {
 
-        const dateIdx = this.props.dates.indexOf(this.props.dateThreshold).toString();
+        const dateIdx = this.props.selectedDates.indexOf(this.props.dateThreshold).toString();
         this.setState({
             dateIdx,
         })
@@ -27,7 +27,7 @@ class Sliders extends Component {
 
         if (prevProps.dateThreshold !== this.props.dateThreshold ||
             prevProps.dateRange !== this.props.dateRange) {
-            const dateIdx = this.props.dates.indexOf(this.props.dateThreshold).toString();
+            const dateIdx = this.props.selectedDates.indexOf(this.props.dateThreshold).toString();
             this.setState({
                 dateIdx,
             })
@@ -40,7 +40,7 @@ class Sliders extends Component {
     }
 
     handleDateChange = (e) => {
-        const selectedDate = this.props.dates[e];
+        const selectedDate = this.props.selectedDates[e];
         this.props.onDateSliderChange(selectedDate);
     }
 
@@ -63,7 +63,7 @@ class Sliders extends Component {
     }
 
     render() {
-        const { stat, statThreshold, seriesMax, dates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
+        const { stat, statThreshold, seriesMax, selectedDates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
         const stepVal = this.getStepValue(seriesMax)
         const roundedStat = Math.ceil(statThreshold / stepVal) * stepVal;
         const isDisabled = this.props.showConfBounds ? "disabled" : "";
@@ -107,7 +107,7 @@ class Sliders extends Component {
                     className="slider"
                     type="range"
                     min="0"
-                    max={dates.length.toString()-1}
+                    max={selectedDates.length.toString()-1}
                     value={dateThresholdIdx}
                     style={styles.Selector}
                     ref={ref => this.dateInput = ref}
