@@ -222,7 +222,7 @@ class Chart extends Component {
                                         opacity={0.65}
                                         textAnchor='middle'
                                         x={(margin.left * 2) + (i * ((barWidth) + barMargin)) + this.state.xScale(key) - 7 + (i*3.5) + (barWidth * 0.5) }
-                                        y={this.props.height - 8}
+                                        y={this.props.height - 22}
                                     >{severity}</text>
                                     <line
                                         key={`vertline-${severity}-${key}`}
