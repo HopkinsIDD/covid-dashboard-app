@@ -196,7 +196,6 @@ class Graph extends Component {
     }
 
     drawConfBounds = (confBounds, areaGenerator, selectedDates) => {
-        console.log(selectedDates)
         // update areaGenerator from scale and data
         if (selectedDates) {
             areaGenerator
