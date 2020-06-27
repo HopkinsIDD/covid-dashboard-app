@@ -21,7 +21,6 @@ class Graph extends Component {
             dates: this.props.dates,
             statThreshold: this.props.statThreshold,
             dateThreshold: this.props.dateThreshold,
-            dateRange: this.props.dateRange,
             xScale: this.props.xScale,
             yScale: this.props.yScale,
             lineGenerator: line().defined(d => !isNaN(d)),

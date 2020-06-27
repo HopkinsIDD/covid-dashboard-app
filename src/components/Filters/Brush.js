@@ -35,7 +35,7 @@ class Brush extends Component {
   }
 
   componentDidMount() {
-    console.log('componentDidMount')
+    // console.log('componentDidMount')
     this.setupBrush(this.props.series, this.props.dates, this.props.width, this.props.height);
   }
 

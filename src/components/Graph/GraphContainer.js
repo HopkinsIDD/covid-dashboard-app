@@ -43,14 +43,12 @@ class GraphContainer extends Component {
                 stat={this.props.stat}
                 r0={this.props.r0}
                 animateTransition={this.props.animateTransition}
-                toggleAnimateTransition={this.props.toggleAnimateTransition}
                 showConfBounds={this.props.showConfBounds}
                 confBounds={this.props.confBoundsList[0]}
                 showActual={this.props.showactual}
                 actual={this.props.actualList[0]}
                 statThreshold={this.props.statThreshold}
                 dateThreshold={this.props.dateThreshold}
-                dateRange={this.props.dateRange}
                 width={graphWidth}
                 height={graphHeight}
                 showLegend={true}
@@ -127,7 +125,6 @@ class GraphContainer extends Component {
                     severity={this.props.severity}
                     r0={this.props.r0}
                     animateTransition={this.props.animateTransition}
-                    toggleAnimateTransition={this.props.toggleAnimateTransition}
                     showConfBounds={this.props.showConfBounds}
                     confBounds={this.props.confBoundsList[i]}
                     showActual={this.props.showActual}
@@ -136,7 +133,6 @@ class GraphContainer extends Component {
                     dates={this.props.dates}
                     statThreshold={this.props.statThreshold}
                     dateThreshold={this.props.dateThreshold}
-                    dateRange={this.props.dateRange}
                     brushActive={this.props.brushActive}
                     width={graphWidth}
                     height={graphHeight}

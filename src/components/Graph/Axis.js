@@ -61,7 +61,7 @@ class Axis extends Component {
   }
 
   updateAxis = () => {
-    // console.log('componentDidUpdate', this.props.width, this.props.height)
+    // console.log('componentDidUpdate', this.props.width, this.props.height, this.props.orientation, this.props.view, this.props.scale.domain())
     if (this.axisRef.current) {
       // console.log(this.props.scale.domain())
       const axisNode = select(this.axisRef.current)
