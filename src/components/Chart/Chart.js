@@ -217,6 +217,13 @@ class Chart extends Component {
                                         style={{ pointerEvents: 'none' }}
                                     >
                                     </rect>
+                                    <text 
+                                        className='tick'
+                                        opacity={0.65}
+                                        textAnchor='center'
+                                        x={(margin.left * 2) + (i * ((barWidth) + barMargin)) + this.state.xScale(key) - 7 + (i*3.5) + (barWidth * 0.5) }
+                                        y={this.props.height - 8}
+                                    >{severity}</text>
                                     <line
                                         key={`vertline-${severity}-${key}`}
                                         className={`vertline-${severity}-${key}`}
