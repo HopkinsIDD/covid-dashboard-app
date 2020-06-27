@@ -6,7 +6,7 @@ export const margin = {
     yAxis: 80, 
     top: 10, 
     right: 10, 
-    bottom: 30, 
+    bottom: 40, 
     left: 10, 
     chartTop: 15 
 };
