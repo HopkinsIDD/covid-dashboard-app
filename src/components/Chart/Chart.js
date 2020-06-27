@@ -220,7 +220,7 @@ class Chart extends Component {
                                     <text 
                                         className='tick'
                                         opacity={0.65}
-                                        textAnchor='center'
+                                        textAnchor='middle'
                                         x={(margin.left * 2) + (i * ((barWidth) + barMargin)) + this.state.xScale(key) - 7 + (i*3.5) + (barWidth * 0.5) }
                                         y={this.props.height - 8}
                                     >{severity}</text>
