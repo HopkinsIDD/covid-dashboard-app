@@ -209,7 +209,6 @@ export function getRange(seriesPeaks) {
   } else {
     roundingVal = 100
   }
-  // take out rounding until display
   const minPeak = Math.ceil(seriesPeakExtent[0] / roundingVal) * roundingVal;
   const maxPeak = Math.ceil(seriesPeakExtent[1] / roundingVal) * roundingVal;
 
