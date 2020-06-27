@@ -27,7 +27,7 @@ class MainGraph extends Component {
             dataLoaded: false,
             series: {},
             seriesList: [],
-            allTimeSeries: {},              // used by Brush
+            allDatesSeries: {},       // used by Brush
             selectedDates: [],  
             dates: [],               // used by Brush
             stat: STATS[0],
@@ -109,7 +109,7 @@ class MainGraph extends Component {
             scenarioList: [SCENARIOS[0]],
             selectedDates: newSelectedDates,
             dates: Array.from(dates),        // dates for brush
-            allTimeSeries: Array.from(series),      // series for brush
+            allDatesSeries: Array.from(series),      // series for brush
             allSims,
             seriesList: [filteredSeries],
             severityList: sevList,
@@ -155,7 +155,7 @@ class MainGraph extends Component {
 
         this.setState({
             seriesList: flaggedSeriesList,
-            allTimeSeries: seriesList[0],  // brush uses first series
+            allDatesSeries: seriesList[0],  // brush uses first series
             selectedDates: newSelectedDates,
             statThreshold,
             dateThreshold,
@@ -270,9 +270,9 @@ class MainGraph extends Component {
     handleStatSliderChange = (thresh) => {
         const { selectedDates, dateThreshold, dates } = this.state;
         const seriesList = Array.from(this.state.seriesList);
-        const allTimeSeries = Array.from(this.state.allTimeSeries);
+        const allDatesSeries = Array.from(this.state.allDatesSeries);
         // flag Sims for Brush
-        flagSims(allTimeSeries, thresh, dates, dateThreshold);
+        flagSims(allDatesSeries, thresh, dates, dateThreshold);
         const percExceedenceList = [];
         // flag Sims for seriesList
         for (let i = 0; i < seriesList.length; i++) {
@@ -282,7 +282,7 @@ class MainGraph extends Component {
         }
         this.setState({
             seriesList,
-            allTimeSeries,
+            allDatesSeries,
             statThreshold: +thresh,
             percExceedenceList,
             animateTransition: false
@@ -292,9 +292,9 @@ class MainGraph extends Component {
     handleDateSliderChange = (thresh) => {
         const { statThreshold, selectedDates, dates } = this.state;
         const seriesList = Array.from(this.state.seriesList);
-        const allTimeSeries = Array.from(this.state.allTimeSeries);
+        const allDatesSeries = Array.from(this.state.allDatesSeries);
         // flag Sims for Brush
-        flagSims(allTimeSeries, statThreshold, dates, thresh);
+        flagSims(allDatesSeries, statThreshold, dates, thresh);
         const percExceedenceList = [];
         // flag Sims for seriesList
         for (let i = 0; i < seriesList.length; i++) {
@@ -304,7 +304,7 @@ class MainGraph extends Component {
         }
         this.setState({
             seriesList,
-            allTimeSeries,
+            allDatesSeries,
             dateThreshold: thresh,
             percExceedenceList,
             animateTransition: false
@@ -414,7 +414,7 @@ class MainGraph extends Component {
                         <Brush
                             width={this.props.width}
                             height={80}
-                            series={this.state.allTimeSeries}
+                            series={this.state.allDatesSeries}
                             dates={this.state.dates}
                             x={margin.yAxis}
                             y={0}
