@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { axisBottom } from 'd3-axis'
 import { scaleLinear, scaleUtc } from 'd3-scale'
-import { select, mouse, event } from 'd3-selection'
+import { select, event } from 'd3-selection'
 import { line } from 'd3-shape'
 import { timeFormat } from 'd3-time-format'
-import { brushX } from 'd3-brush'
+import { brushX, brushSelection } from 'd3-brush'
 import { max, extent } from 'd3-array'
 import { easeCubicOut } from 'd3-ease'
 import { margin, monthDateFormat } from '../../utils/constants'
@@ -139,7 +139,6 @@ class Brush extends Component {
                     // simPaths: simPaths,
                 })
             })
-            this.props.toggleAnimateTransition()
         }
 
     }
@@ -210,11 +209,8 @@ class Brush extends Component {
 }
 
   brushed = () => {
-    // console.log(event)
     const selection = event.selection;
     if (selection === null) {
-      const [mx] = mouse(this);
-      select(this).call(this.brush.move, [mx, mx]);
       return;
     }
     if (event.selection && event.sourceEvent !== null) {
@@ -225,10 +221,10 @@ class Brush extends Component {
   }
 
   brushEnded = () => {
-    // console.log(event)
     // console.log('defaultRange', this.state.defaultRange)
     if (!event.selection && this.brushRef.current) {
-      select(this.brushRef.current).call(this.brush.move)
+      const selection = brushSelection(this.brushRef.current) ? null : this.state.scales.xScale.range();
+      select(this.brushRef.current).call(this.brush.move, selection)
     }
     this.props.onBrushEnd();
   }
