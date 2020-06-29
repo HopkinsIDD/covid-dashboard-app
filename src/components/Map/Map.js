@@ -39,8 +39,11 @@ class Map extends Component {
         this.strokeHoverWidthScale = scalePow().exponent(0.25).range([0.25, 1.8]).domain([9, 1])
     }
     componentDidMount() {
+        console.log('componentDidMount')
         const gradientH = (this.props.width - gradientMargin) / 2;
-        this.setState({ gradientH }, () => this.calculateScales());
+        this.setState({ gradientH }, () => {
+            this.calculateScales();
+        });
         if (this.mapRef.current) {
             const mapNode = select(this.mapRef.current)
             mapNode.call(this.zoom)
@@ -48,12 +51,22 @@ class Map extends Component {
         window.addEventListener('scroll', this.handleWindowScrollTooltip)
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (prevProps.countyBoundaries !== this.props.countyBoundaries ||
-            prevProps.statsForCounty !== this.props.statsForCounty ||
-            prevProps.scenario !== this.props.scenario) {
-                const gradientH = (this.props.width - gradientMargin) / 2;
-                this.setState({ gradientH }, () => this.calculateScales());
+    // TODO: this.calculateScales() is getting called TWICE
+    // if componentDidMount code is removed, it gets called FOUR times
+    componentDidUpdate(prevProps) {
+        console.log('Map componentDidUpdate', this.props.stat)
+
+        if (prevProps.scenario !== this.props.scenario) 
+        console.log('scenario update',this.props.stat, prevProps.scenario, this.props.scenario)
+        if (prevProps.countyBoundaries !== this.props.countyBoundaries) 
+        console.log('countyBounds update', prevProps.countyBoundaries, this.props.countyBoundaries)
+
+        if (prevProps.scenario !== this.props.scenario ||
+            prevProps.stat !== this.props.stat ||
+            prevProps.countyBoundaries !== this.props.countyBoundaries) {
+            const gradientH = (this.props.width - gradientMargin) / 2;
+            this.setState({ gradientH }, () => this.calculateScales());
+
             if (this.mapRef.current) {
                 const mapNode = select(this.mapRef.current)
                 mapNode.call(this.zoom.transform, zoomIdentity)
@@ -61,56 +74,74 @@ class Map extends Component {
         }
     }
 
-    componentWillUnmount() {
-        window.removeEventListener('scroll')
-    }
+    // componentWillUnmount() {
+    //     window.removeEventListener('scroll')
+    // }
 
+    getDailyMax(dataset, scenario, stat, lenDates) {
+        // returns array of daily max values across sample of sims
+
+        // possible optimization: create list of length lenDates and index in the val
+        let dailyMax = [];
+        // for (let d = 0; d < 10; d++) {
+        for (let d = 0; d < lenDates; d++) {
+            // dailyMax.push(420)
+            // continue
+            // TODO: sample data at a calculated interval
+            const max = Math.max(...dataset[scenario]['high'][stat].sims
+                .slice(0, 30)
+                .map(sim => sim.vals[d])); 
+            dailyMax.push(max);
+        }
+        return dailyMax; 
+    }
     calculateScales = () => {
-        const { stat, countyBoundaries, statsForCounty, scenario } = this.props;
+        console.log('calculating scales... ')
+        const { dataset, stat, countyBoundaries, scenario } = this.props;
         const normalizedStatsAll = []
+        const lenDates = dataset[scenario].dates.length;
         
-        // iterate over this.props.countyBoundaries to plot up boundaries
-        // join each geoid to statsForCounty[geoid][scenario][stat][dateIdx]
         for (let i = 0; i < countyBoundaries.features.length; i++) {
+        // for (let i = 0; i < 5; i++) {
             const geoid = countyBoundaries.features[i].properties.geoid;
             const population = countyBoundaries.features[i].properties.population;
-            // check to see if stats exist for this county
-            if (statsForCounty[geoid]) {
-                const statArray = statsForCounty[geoid][scenario][stat]
+            console.log('geoid', geoid)
+
+            try {
+                const geoidDataset = require(`../../store/geo${geoid}.json`);
+                // TODO: rename statArray to dailyMaxArray
+
+                const statArray = this.getDailyMax(geoidDataset, scenario, stat.key, lenDates)
                 const normalizedStatArray = statArray.map( value => {
                     return (value / population) * 10000
                 })
                 normalizedStatsAll.push(normalizedStatArray)
-                countyBoundaries.features[i].properties[stat] = statArray
-                countyBoundaries.features[i].properties[`${stat}Norm`] = normalizedStatArray
-            } else {
-                countyBoundaries.features[i].properties[stat] = []
-                countyBoundaries.features[i].properties[`${stat}Norm`] = []
+                countyBoundaries.features[i].properties[stat.key] = statArray
+                countyBoundaries.features[i].properties[`${stat.key}Norm`] = normalizedStatArray
+            } catch (error) {
+                console.log('caught')
+                countyBoundaries.features[i].properties[stat.key] = []
+                countyBoundaries.features[i].properties[`${stat.key}Norm`] = []
             }
         }
         // get max of all values in stat array for colorscale
-        const maxVal = max(Object.values(statsForCounty).map( county => {
-            // return max(county[stat])
-            return max(county[scenario][stat])
-        }))
+        // TODO: this may get reworked - possibly can track one max val above
+        const maxVal = 1000;
+        // const maxVal = max(Object.values(statsForCounty).map( county => {
+        //     return max(county[scenario][stat])
+        // }))
         const minVal = maxVal * 0.3333;
 
         const maxValNorm = max(normalizedStatsAll.map( val => {
             return max(val)
         }))
-        // console.log(maxValNorm)
         const minValNorm = maxValNorm * 0.3333;
-        // console.log(stat, maxVal)
-        // console.log(this.state.gradientH)
         const yScale = scaleLinear().range([this.state.gradientH, 0]).domain([0, maxValNorm])
-        // console.log(countyBoundaries)
         this.setState({ minVal, maxVal, countyBoundaries, yScale, minValNorm, maxValNorm })
-        // console.log(Object.values(this.props.statsForCounty)[stat])
+        console.log('... finished calculating scales ')
     }
 
     drawCounties = () => {
-        // console.log('drawing counties')
-        // console.log(this.state.countyBoundaries)
         // optimize projection for CA or NY
         // TODO add to constants file for other states
         const parallels = (this.props.geoid.slice(0,2) === '06') ? [34, 40.5] : [40.5, 41.5]
@@ -125,14 +156,12 @@ class Map extends Component {
         const ramp = scaleLinear().domain([ 0, this.state.maxValNorm ]).range([this.props.lowColor, this.props.highColor])
 
         const counties = this.state.countyBoundaries.features.map((d,i) => {
-            // console.log(this.props.stat, d.properties[this.props.stat][this.props.dateIdx])
             return (
                 <Tooltip
                     key={`tooltip-county-boundary-${i}`}
                     title={this.state.tooltipText}
                     visible={this.state.hoveredCounty === d.properties.geoid}
                     data-html="true"
-                    // onVisibleChange={(e) => console.log('visibility change', e)}
                     destroyTooltipOnHide={true}
                 >
                     <path
@@ -141,7 +170,7 @@ class Map extends Component {
                         style={{
                             stroke: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? this.props.highColor : colors.gray,
                             strokeWidth: (this.state.hoveredCounty === d.properties.geoid) || (this.props.geoid === d.properties.geoid) ? this.state.strokeHoverWidth : this.state.strokeWidth,
-                            fill: d.properties[`${this.props.stat}Norm`].length > 0 ? ramp(d.properties[`${this.props.stat}Norm`][this.props.dateIdx]) : colors.lightGray,
+                            fill: d.properties[`${this.props.stat.key}Norm`].length > 0 ? ramp(d.properties[`${this.props.stat.key}Norm`][this.props.dateIdx]) : colors.lightGray,
                             fillOpacity: 1,
                             cursor: 'pointer'
                         }}
@@ -157,21 +186,16 @@ class Map extends Component {
     handleCountyEnter = _.debounce((feature) => {
         const tooltips = document.querySelectorAll('.ant-tooltip')
         tooltips.forEach(tooltip => {
-            // console.log(tooltip)
             tooltip.style.visibility = "hidden"
         })
-        // console.log('ENTERED', feature.properties.name, feature.properties.geoid)
-        // console.log('countyIsHovered', this.state.countyIsHovered, 'hoveredCounty', this.state.hoveredCounty)
-        // event.preventDefault()
         if (this.state.hoveredCounty !== feature.properties.geoid) {
             this.setState({ hoveredCounty: null, countyIsHovered: false })
         }
         
-        // console.log(feature)
         if (!this.state.countyIsHovered) {
             let statInfo = ''
-            if (feature.properties[this.props.stat].length > 0) {
-                statInfo = `${this.props.statLabel}: ${addCommas(feature.properties[this.props.stat][this.props.dateIdx])}`
+            if (feature.properties[this.props.stat.key].length > 0) {
+                statInfo = `${this.props.statLabel}: ${addCommas(feature.properties[this.props.stat.key][this.props.dateIdx])}`
             } else {
                 statInfo = 'No Indicator Data'
             }
@@ -188,11 +212,8 @@ class Map extends Component {
     handleCountyLeave = _.debounce((feature) => {
         const tooltips = document.querySelectorAll('.ant-tooltip')
         tooltips.forEach(tooltip => {
-            // console.log(tooltip)
             tooltip.style.visibility = "hidden"
         })
-        // console.log('LEFT', feature.properties.name, feature.properties.geoid)
-        // console.log('countyIsHovered', this.state.countyIsHovered, 'hoveredCounty', this.state.hoveredCounty)
         if (this.state.hoveredCounty === feature.properties.geoid) {
             this.setState({ hoveredCounty: null, countyIsHovered: false })
         }
@@ -204,7 +225,6 @@ class Map extends Component {
     }
 
     zoomed = () => {
-        // console.log(event);
         if (this.mapRef.current) {
             // update paths on zoom event
             const mapNode = select(this.mapRef.current)
@@ -212,13 +232,11 @@ class Map extends Component {
                 .attr('transform', event.transform)
             const strokeWidth = this.strokeWidthScale(event.transform.k)
             const strokeHoverWidth = this.strokeHoverWidthScale(event.transform.k)
-            // console.log(event.transform.k, strokeWidth, strokeHoverWidth)
             this.setState({ strokeWidth, strokeHoverWidth })
         }
     }
 
     handleZoomIn = () => {
-        // console.log('zoom in')
         if (this.mapRef.current) {
             // scale zoom on button press
             const mapNode = select(this.mapRef.current)
@@ -227,7 +245,6 @@ class Map extends Component {
     }
 
     handleZoomOut = () => {
-        // console.log('zoom out')
         if (this.mapRef.current) {
             // scale zoom on button press
             const mapNode = select(this.mapRef.current)
@@ -236,44 +253,43 @@ class Map extends Component {
     }
 
     render() {
+        const { stat, highColor, lowColor, height, width } = this.props;
         return (
             <div className="map-parent">
-                <div className='titleNarrow map-title'>{`${this.props.statLabel} per 10K people`}</div>
+                <div className='titleNarrow map-title'>
+                    {`${stat.name} per 10K people`}
+                </div>
                 <div className="map-parent">
-                    <div><button className="zoom" id="zoom_in" onClick={this.handleZoomIn}>+</button></div>
-                    <div><button className="zoom" id="zoom_out" onClick={this.handleZoomOut}>-</button></div>
+                    <div>
+                        <button className="zoom" id="zoom_in" onClick={this.handleZoomIn}>
+                            +
+                        </button>
+                    </div>
+                    <div>
+                        <button className="zoom" id="zoom_out" onClick={this.handleZoomOut}>
+                            -
+                        </button>
+                    </div>
                 </div>
                 <svg width={legendW} height={this.props.height}>
-                     {/* debug green svg */}
-                     {/* <rect
-                        x={0}
-                        y={0}
-                        width={legendW}
-                        height={this.props.height/2}
-                        fillOpacity={0}
-                        stroke={'#00ff00'}
-                        strokeWidth='1'
-                    />  */}
                     <defs>
                         <linearGradient 
-                            id={`map-legend-gradient-${this.props.stat}`} 
+                            id={`map-legend-gradient-${stat.key}`} 
                             x1="100%"
                             y1="0%"
                             x2="100%"
                             y2="100%"
                             spreadMethod="pad"
                         >
-                            <stop offset="0%" stopColor={this.props.highColor} stopOpacity="1"></stop>
-                            {/* <stop offset="33%" stopColor="#bae4bc" stopOpacity="1"></stop>
-                            <stop offset="66%" stopColor="#7bccc4" stopOpacity="1"></stop> */}
-                            <stop offset="100%" stopColor={this.props.lowColor} stopOpacity="1"></stop>
+                            <stop offset="0%" stopColor={highColor} stopOpacity="1"></stop>
+                            <stop offset="100%" stopColor={lowColor} stopOpacity="1"></stop>
                         </linearGradient>
                     </defs>
                     <rect
                         width={gradientW}
                         height={this.state.gradientH}
                         transform={`translate(0, ${gradientMargin})`}
-                        style={{ fill: `url(#map-legend-gradient-${this.props.stat}` }}
+                        style={{ fill: `url(#map-legend-gradient-${stat.key}` }}
                     >
                     </rect>
                     <Axis 
@@ -286,9 +302,9 @@ class Map extends Component {
                     />
                 </svg>
                 <svg 
-                    width={this.props.width - legendW}
-                    height={this.props.height}
-                    className={`mapSVG-${this.props.stat}`}
+                    width={width - legendW}
+                    height={height}
+                    className={`mapSVG-${stat.key}`}
                     ref={this.mapRef}
                 >
                     <g>
@@ -296,8 +312,8 @@ class Map extends Component {
                         <rect
                             x={0}
                             y={0}
-                            width={this.props.width - legendW}
-                            height={this.props.height}
+                            width={width - legendW}
+                            height={height}
                             fill={colors.graphBkgd}
                             fillOpacity={0.8}
                             stroke={'#00ff00'}
@@ -305,7 +321,6 @@ class Map extends Component {
                             strokeOpacity={0}
                             style={{ 'cursor': 'grab' }}
                             onMouseMove={this.handleMouseMove}
-                            // onMouseEnter={() => console.log('mouseenter')}
                             onMouseLeave={this.handleMouseMove}
                         /> 
                         {this.state.countyBoundaries.features && this.drawCounties()}

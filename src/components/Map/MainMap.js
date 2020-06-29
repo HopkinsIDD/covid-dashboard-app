@@ -2,12 +2,12 @@ import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
 import MapContainer from './MapContainer';
 import Scenarios from '../Filters/Scenarios';
+import Indicators from '../Filters/Indicators';
 import DateSlider from './DateSlider';
-import { styles } from '../../utils/constants';
+import { styles, STATS } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
 import { utcParse, timeFormat } from 'd3-time-format'
 
-const geojsonStats = require('../../store/statsForMap.json')
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
 
@@ -18,10 +18,10 @@ class MainMap extends Component {
             datasetMap: {},
             dates: [],
             SCENARIOS: [],
-            scenario: '',         
+            scenario: '',   
+            stat: STATS[0],
             dateSliderActiveMap: false,
             countyBoundaries: { "type": "FeatureCollection", "features": []},
-            statsForCounty: {},
             currentDateIndex: 0,
             dataLoaded: false
         };
@@ -50,24 +50,26 @@ class MainMap extends Component {
         // instantiate stats and boundaries given geoid
         const state = geoid.slice(0, 2);
         const countyBoundaries = require('../../store/countyBoundaries.json')[state];
-        const statsForCounty = geojsonStats[state];
         const currentDateIndex = dates
             .findIndex(date => formatDate(date) === formatDate(new Date()));
 
+        // dataset needs to be set to state at the same time as other props
+        // otherwise, children updates will occur at different times
         this.setState({
             datasetMap: dataset, 
             dates,
             SCENARIOS,
             scenario,
             countyBoundaries,
-            statsForCounty,
             currentDateIndex,
         }, () => {
             this.setState({dataLoaded: true});
         })
     }
 
-    handleScenarioClick = (item) => {this.setState({scenario: item})};
+    handleScenarioClick = (scenario) => {this.setState({scenario})};
+
+    handleIndicatorClick = (stat) => {this.setState({stat})};
 
     handleMapSliderChange = (index) => {this.setState({currentDateIndex: +index})};
 
@@ -108,20 +110,14 @@ class MainMap extends Component {
                                 width={this.props.width}
                                 height={this.props.height}
                                 scenario={this.state.scenario}
+                                stat={this.state.stat}
                                 firstDate={dates[0]}
                                 selectedDate={dates[currentDateIndex]}
                                 countyBoundaries={this.state.countyBoundaries}
-                                statsForCounty={this.state.statsForCounty}
                                 dateSliderActive={this.state.dateSliderActive}
                             />
                         </div>
                     </Col>
-
-                    {/* <Col className="gutter-row container mobile-only">
-                        <div className="mobile-alert">
-                            &#9888; The filters below are disabled on mobile devices.
-                        </div>
-                    </Col> */}
 
                     <Col className="gutter-row filters"> 
                         {this.state.dataLoaded &&
@@ -133,6 +129,9 @@ class MainMap extends Component {
                                 scenario={this.state.scenario}
                                 onScenarioClickMap={this.handleScenarioClick}
                             />
+                            <Indicators
+                                stat={this.state.stat}
+                                onIndicatorClick={this.handleIndicatorClick} />     
                             <DateSlider
                                 dates={dates}
                                 currentDateIndex={this.state.currentDateIndex.toString()}

@@ -9,7 +9,7 @@ import MainMap from './Map/MainMap';
 import Methodology from './Methodology';
 import About from './About';
 
-const dataset = require('../store/geo06085.json');
+const dataset = require('../store/geo06063.json');
 
 
 class MainContainer extends Component {
@@ -18,7 +18,7 @@ class MainContainer extends Component {
         this.state = {
             dataset: {},
             dataLoaded: false, 
-            geoid: '06085', 
+            geoid: '06063', 
             graphW: 0,
             graphH: 0,
             mapContainerW: 0,
@@ -92,13 +92,13 @@ class MainContainer extends Component {
                     height={this.state.graphH}
                 />}
 
-                {this.state.dataLoaded &&
+                {/* {this.state.dataLoaded &&
                 <MainChart 
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
                     width={this.state.graphW - margin.left - margin.right}
                     height={this.state.graphH * 1.15} 
-                />}
+                />} */}
 
                 {this.state.dataLoaded &&
                 <MainMap
