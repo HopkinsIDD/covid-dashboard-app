@@ -55,7 +55,15 @@ class Axis extends Component {
       
 
       if (this.axisRef.current) {
-          select(this.axisRef.current).call(this.axis).call(g => g.select(".domain").remove());
+          
+          if (this.props.view === 'chart') {
+            select(this.axisRef.current).call(this.axis)
+            .call(g => g.select(".domain").remove())
+            .call(g => g.selectAll("text").attr("dy", "2em"));
+          } else {
+            select(this.axisRef.current).call(this.axis)
+            .call(g => g.select(".domain").remove());
+          }
       }
     }
   }
