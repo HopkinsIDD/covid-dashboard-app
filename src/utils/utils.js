@@ -152,7 +152,7 @@ export function getR0range(dataset, scenario, severity, stat) {
   return r0full
 }
 
-export function shuffle(array, numDisplaySims) {
+function shuffle(array, numDisplaySims) {
   // returns randomly shuffled array of elements based on numDisplaySims
   let currIdx = array.length;
   let tempVal = array.length;
@@ -176,7 +176,7 @@ export function shuffle(array, numDisplaySims) {
 export function filterR0(
   r0selected, scenarioList, severityList, stat, dataset, numDisplaySims) {
   // return series filtered on R0 range and numDisplaySims
-  const r0FilteredSeriesList = []
+  const seriesListForBrush = []
 
   for (let i = 0; i < scenarioList.length; i++) {
     const series = Array.from(
@@ -187,11 +187,11 @@ export function filterR0(
 
     // filter on numDisplaySims
     const displaySims = shuffle(filtered.map(s => s.name), numDisplaySims); 
-    const r0FilteredSeries = filtered.filter(s => displaySims.includes(s.name));
+    const seriesForBrush = filtered.filter(s => displaySims.includes(s.name));
 
-    r0FilteredSeriesList.push(r0FilteredSeries)
+    seriesListForBrush.push(seriesForBrush)
   }
-  return r0FilteredSeriesList
+  return seriesListForBrush
 }
 
 export function addCommas(x) {
@@ -211,7 +211,6 @@ export function getRange(seriesPeaks) {
   } else {
     roundingVal = 100
   }
-  // take out rounding until display
   const minPeak = Math.ceil(seriesPeakExtent[0] / roundingVal) * roundingVal;
   const maxPeak = Math.ceil(seriesPeakExtent[1] / roundingVal) * roundingVal;
 

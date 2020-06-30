@@ -55,13 +55,21 @@ class Axis extends Component {
       
 
       if (this.axisRef.current) {
-          select(this.axisRef.current).call(this.axis).call(g => g.select(".domain").remove());
+          
+          if (this.props.view === 'chart') {
+            select(this.axisRef.current).call(this.axis)
+            .call(g => g.select(".domain").remove())
+            .call(g => g.selectAll("text").attr("dy", "2em"));
+          } else {
+            select(this.axisRef.current).call(this.axis)
+            .call(g => g.select(".domain").remove());
+          }
       }
     }
   }
 
   updateAxis = () => {
-    // console.log('componentDidUpdate', this.props.width, this.props.height)
+    // console.log('componentDidUpdate', this.props.width, this.props.height, this.props.orientation, this.props.view, this.props.scale.domain())
     if (this.axisRef.current) {
       // console.log(this.props.scale.domain())
       const axisNode = select(this.axisRef.current)

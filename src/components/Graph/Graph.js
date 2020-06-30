@@ -9,7 +9,6 @@ import { select } from 'd3-selection'
 import { easeCubicOut, easeCubicIn } from 'd3-ease'
 import { margin } from '../../utils/constants'
 import colors from '../../utils/colors';
-// eslint-disable no-unused-vars
 
 class Graph extends Component {
     constructor(props) {
@@ -18,10 +17,9 @@ class Graph extends Component {
             width: this.props.width,
             height: this.props.height,
             series: this.props.series,
-            dates: this.props.dates,
+            selectedDates: this.props.selectedDates,
             statThreshold: this.props.statThreshold,
             dateThreshold: this.props.dateThreshold,
-            dateRange: this.props.dateRange,
             xScale: this.props.xScale,
             yScale: this.props.yScale,
             lineGenerator: line().defined(d => !isNaN(d)),
@@ -42,62 +40,56 @@ class Graph extends Component {
     }
     
     componentDidMount() {
-        // console.log('ComponentDidMount', this.props.keyVal)
-        this.drawSimPaths(this.state.series, this.state.dates);
-        if (this.state.confBounds && this.state.confBounds.length > 0) this.drawConfBounds(this.state.confBounds, this.state.areaGenerator, this.state.dates);
-        // if (this.props.showActual && this.props.actual) this.drawActualData(actual)
+        const { series, selectedDates, confBounds, areaGenerator, dates } = this.state;
+
+        this.drawSimPaths(series, selectedDates);
+        if (confBounds && confBounds.length > 0) {
+            this.drawConfBounds(confBounds, areaGenerator, dates)
+        };
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log('ComponentDidUpdate', this.props.keyVal)
+        const { confBounds, selectedDates, series, width, animateTransition } = this.props;
+
         // confidence bounds overlay
-        if (this.props.showConfBounds !== prevProps.showConfBounds && this.props.confBounds) {
-            // console.log('showConfBounds is', this.props.showConfBounds)
-            if (this.props.confBounds) {
-                const { confBounds, dates} = this.props;
+        if (this.props.showConfBounds !== prevProps.showConfBounds && confBounds) {
+            if (confBounds) {
                 const { areaGenerator } = prevState;
-                this.updateConfBounds(confBounds, areaGenerator, dates)
-            }
+                this.updateConfBounds(confBounds, areaGenerator, selectedDates)};
         }
 
-        if (this.props.series !== prevProps.series) {
-            // console.log('componentDidUpdate SERIES change', this.props.series);
-            const { series, dates, animateTransition, width } = this.props;
+        if (series !== prevProps.series) {
             const { lineGenerator, areaGenerator } = prevState;
-            // if (series.length < numDisplaySims) console.log('only', series.length, 'sims in series')
-            // if (series.length < numDisplaySims) this.removeSimPaths(series, dates);
-            // console.log('animateTransition', animateTransition)
-            this.updateSimPaths(series, dates, lineGenerator, animateTransition, width);
-            if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
+            this.updateSimPaths(series, selectedDates, lineGenerator, animateTransition, width);
+            if (confBounds && confBounds.length > 0) {
+                this.updateConfBounds(confBounds, areaGenerator, selectedDates)};
         }
 
-        if (this.props.xScale !== prevProps.xScale || this.props.yScale !== prevProps.yScale) {
-            // console.log('componentDidUpdate scale changed')
-            const { series, dates, animateTransition, width } = this.props;
+        const { xScale, yScale } = this.props;
+        if (xScale !== prevProps.xScale || yScale !== prevProps.yScale) {
             const { lineGenerator, areaGenerator } = prevState;
-
-            this.updateSimPaths(series, dates, lineGenerator, animateTransition, width);
-            if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, dates);
+            this.updateSimPaths(series, selectedDates, lineGenerator, animateTransition, width);
+            if (confBounds && confBounds.length > 0) {
+                this.updateConfBounds(confBounds, areaGenerator, selectedDates)};
         }
     }
 
-    drawSimPaths = (series, dates) => {
+    drawSimPaths = (series, selectedDates) => {
         const { lineGenerator } = this.state;
         const { xScale, yScale } = this.props;
         
         // move this lineGenerator update in from calculateSimPaths
         // and use scales passed in from GraphContainer
-        lineGenerator.x((d,i) => xScale(dates[i]))
+        lineGenerator.x((d,i) => xScale(selectedDates[i]))
         lineGenerator.y(d => yScale(d))
         // generate simPaths from lineGenerator
         const simPaths = series.map( (d) => {
-            // console.log(i, typeof(d.vals))
             return lineGenerator(d.vals)
         })
         // set new vals to state
         this.setState({ 
             series: series,
-            dates: dates,
+            selectedDates: selectedDates,
             xScale: xScale,
             yScale: yScale,
             lineGenerator: lineGenerator,
@@ -105,30 +97,28 @@ class Graph extends Component {
         })
     }
 
-    removeSimPaths = (series, dates) => {
+    removeSimPaths = (series, selectedDates) => {
         const simPathsNode = select(this.simPathsRef.current)
         simPathsNode.selectAll('.simPath').remove()
         simPathsNode.selectAll('.simPath-hover').remove()
-        this.drawSimPaths(series, dates)
+        this.drawSimPaths(series, selectedDates)
     }
 
-    updateSimPaths = (series, dates, lineGenerator, animateTransition, width) => {
-        //Animate simPath color but don't change data
+    updateSimPaths = (series, selectedDates, lineGenerator, animateTransition, width) => {
+        // Animate simPath color but don't change data
         if (this.simPathsRef.current) {
-                
             // update lineGenerator from new scale and data
-            lineGenerator.x((d,i) => this.props.xScale(dates[i]))
+            lineGenerator.x((d,i) => this.props.xScale(selectedDates[i]))
             lineGenerator.y(d => this.props.yScale(d))
           
             // generate simPaths from lineGenerator
             const simPaths = series.map( (d) => {
-                // console.log(i, typeof(d.vals))
                 return lineGenerator(d.vals)
             })
 
             if (simPaths.length !== this.state.simPaths.length) {
                 // re-draw simPaths in render
-                this.drawSimPaths(series, dates);
+                this.drawSimPaths(series, selectedDates);
             } else {
                 // update simPaths since same number
                 // get svg node
@@ -146,7 +136,7 @@ class Graph extends Component {
                             // set new vals to state
                             this.setState({ 
                                 series: series,
-                                dates: dates,
+                                selectedDates: selectedDates,
                                 xScale: this.props.xScale,
                                 yScale: this.props.yScale,
                                 lineGenerator: lineGenerator,
@@ -180,7 +170,7 @@ class Graph extends Component {
                             // set new vals to state
                             this.setState({ 
                                 series: series,
-                                dates: dates,
+                                selectedDates: selectedDates,
                                 xScale: this.props.xScale,
                                 yScale: this.props.yScale,
                                 lineGenerator: lineGenerator,
@@ -196,39 +186,41 @@ class Graph extends Component {
         }
     }
 
-    drawConfBounds = (confBounds, areaGenerator, dates) => {
+    drawConfBounds = (confBounds, areaGenerator, selectedDates) => {
         // update areaGenerator from scale and data
-        areaGenerator
-        .x((d,i) => this.props.xScale(dates[i]))
-        .y0(d => this.props.yScale(d.p10)) // this gets the p10 values
-        .y1(d => this.props.yScale(d.p90)) // this gets the p90 values
+        if (selectedDates) {
+            areaGenerator
+                .x((d,i) => this.props.xScale(selectedDates[i]))
+                .y0(d => this.props.yScale(d.p10)) // this gets the p10 values
+                .y1(d => this.props.yScale(d.p90)) // this gets the p90 values
 
-        // generate areaPath for confBounds from areaGenerator
-        const confBoundsAreaPath = areaGenerator(confBounds)
+            // generate areaPath for confBounds from areaGenerator
+            const confBoundsAreaPath = areaGenerator(confBounds)
 
-        // generate mean line path for confBounds from a confBoundsLineGenerator
-        const confBoundsLineGenerator = line()
-            .x((d,i) => this.props.xScale(dates[i]))
-            .y(d => this.props.yScale(d.p50))
-        const confBoundsMeanLinePath = confBoundsLineGenerator(confBounds)
+            // generate mean line path for confBounds from a confBoundsLineGenerator
+            const confBoundsLineGenerator = line()
+                .x((d,i) => this.props.xScale(selectedDates[i]))
+                .y(d => this.props.yScale(d.p50))
+            const confBoundsMeanLinePath = confBoundsLineGenerator(confBounds)
 
-        // save new values to state (possibly duplicate from simPaths update)
-        this.setState({
-            dates,
-            xScale: this.props.xScale,
-            yScale: this.props.yScale,
-            areaGenerator,
-            confBoundsAreaPath,
-            confBoundsMeanLinePath
-        })
+            // save new values to state (possibly duplicate from simPaths update)
+            this.setState({
+                selectedDates,
+                xScale: this.props.xScale,
+                yScale: this.props.yScale,
+                areaGenerator,
+                confBoundsAreaPath,
+                confBoundsMeanLinePath
+            })
+        } 
     }
 
-    updateConfBounds = (confBounds, areaGenerator, dates) => {  
+    updateConfBounds = (confBounds, areaGenerator, selectedDates) => {  
         
         if (this.confBoundsRef.current) {
             // update areaGenerator from scale and data
             areaGenerator
-            .x((d,i) => this.props.xScale(dates[i]))
+            .x((d,i) => this.props.xScale(selectedDates[i]))
             .y0(d => this.props.yScale(d.p10)) // this gets the p10 values
             .y1(d => this.props.yScale(d.p90)) // this gets the p90 values
 
@@ -237,7 +229,7 @@ class Graph extends Component {
 
             // generate mean line path for confBounds from a confBoundsLineGenerator
             const confBoundsLineGenerator = line()
-                .x((d,i) => this.props.xScale(dates[i]))
+                .x((d,i) => this.props.xScale(selectedDates[i]))
                 .y(d => this.props.yScale(d.p50))
             const confBoundsMeanLinePath = confBoundsLineGenerator(confBounds)
 
@@ -250,7 +242,7 @@ class Graph extends Component {
 
             // save new values to state (possibly duplicate from simPaths update)
             this.setState({
-                dates,
+                selectedDates,
                 xScale: this.props.xScale,
                 yScale: this.props.yScale,
                 areaGenerator,
@@ -288,9 +280,9 @@ class Graph extends Component {
         const xm = this.props.xScale.invert(point.x);
         const ym = this.props.yScale.invert(point.y);
         // console.log(xm, ym);
-        const i1 = bisectLeft(this.props.dates, xm, 1);
+        const i1 = bisectLeft(this.props.selectedDates, xm, 1);
         const i0 = i1 - 1;
-        const i = xm - this.props.dates[i0] > this.props.dates[i1] - xm ? i1 : i0;
+        const i = xm - this.props.selectedDates[i0] > this.props.selectedDates[i1] - xm ? i1 : i0;
         const s = least(this.props.series, d => Math.abs(d.vals[i] - ym));
         // console.log(s)
         if (s) {
@@ -299,7 +291,7 @@ class Graph extends Component {
             // we also want to find highest point of sim
             const peak = max(s.vals)
             const peakIndex = maxIndex(s.vals)
-            const tooltipXPos = this.props.xScale(this.props.dates[peakIndex])
+            const tooltipXPos = this.props.xScale(this.props.selectedDates[peakIndex])
             const tooltipYPos = this.props.yScale(peak)
             // console.log(peakIndex, peak, tooltipXPos, tooltipYPos)
             this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `R0: ${s.r0}`, tooltipXPos, tooltipYPos })
