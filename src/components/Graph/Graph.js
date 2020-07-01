@@ -9,7 +9,6 @@ import { select } from 'd3-selection'
 import { easeCubicOut, easeCubicIn } from 'd3-ease'
 import { margin } from '../../utils/constants'
 import colors from '../../utils/colors';
-// eslint-disable no-unused-vars
 
 class Graph extends Component {
     constructor(props) {
@@ -41,42 +40,37 @@ class Graph extends Component {
     }
     
     componentDidMount() {
-        // console.log('ComponentDidMount', this.props.keyVal)
-        this.drawSimPaths(this.state.series, this.state.selectedDates);
-        if (this.state.confBounds && this.state.confBounds.length > 0) this.drawConfBounds(this.state.confBounds, this.state.areaGenerator, this.state.dates);
-        // if (this.props.showActual && this.props.actual) this.drawActualData(actual)
+        const { series, selectedDates, confBounds, areaGenerator, dates } = this.state;
+
+        this.drawSimPaths(series, selectedDates);
+        if (confBounds && confBounds.length > 0) {
+            this.drawConfBounds(confBounds, areaGenerator, dates)
+        };
     }
 
     componentDidUpdate(prevProps, prevState) {
-        // console.log('ComponentDidUpdate', this.props.keyVal)
+        const { confBounds, selectedDates, series, width, animateTransition } = this.props;
+
         // confidence bounds overlay
-        if (this.props.showConfBounds !== prevProps.showConfBounds && this.props.confBounds) {
-            // console.log('showConfBounds is', this.props.showConfBounds)
-            if (this.props.confBounds) {
-                const { confBounds, selectedDates } = this.props;
+        if (this.props.showConfBounds !== prevProps.showConfBounds && confBounds) {
+            if (confBounds) {
                 const { areaGenerator } = prevState;
-                this.updateConfBounds(confBounds, areaGenerator, selectedDates)
-            }
+                this.updateConfBounds(confBounds, areaGenerator, selectedDates)};
         }
 
-        if (this.props.series !== prevProps.series) {
-            // console.log('componentDidUpdate SERIES change', this.props.series);
-            const { series, selectedDates, animateTransition, width } = this.props;
+        if (series !== prevProps.series) {
             const { lineGenerator, areaGenerator } = prevState;
-            // if (series.length < numDisplaySims) console.log('only', series.length, 'sims in series')
-            // if (series.length < numDisplaySims) this.removeSimPaths(series, selectedDates);
-            // console.log('animateTransition', animateTransition)
             this.updateSimPaths(series, selectedDates, lineGenerator, animateTransition, width);
-            if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, selectedDates);
+            if (confBounds && confBounds.length > 0) {
+                this.updateConfBounds(confBounds, areaGenerator, selectedDates)};
         }
 
-        if (this.props.xScale !== prevProps.xScale || this.props.yScale !== prevProps.yScale) {
-            // console.log('componentDidUpdate scale changed')
-            const { series, selectedDates, animateTransition, width } = this.props;
+        const { xScale, yScale } = this.props;
+        if (xScale !== prevProps.xScale || yScale !== prevProps.yScale) {
             const { lineGenerator, areaGenerator } = prevState;
-
             this.updateSimPaths(series, selectedDates, lineGenerator, animateTransition, width);
-            if (this.props.confBounds && this.props.confBounds.length > 0) this.updateConfBounds(this.props.confBounds, areaGenerator, selectedDates);
+            if (confBounds && confBounds.length > 0) {
+                this.updateConfBounds(confBounds, areaGenerator, selectedDates)};
         }
     }
 
@@ -90,7 +84,6 @@ class Graph extends Component {
         lineGenerator.y(d => yScale(d))
         // generate simPaths from lineGenerator
         const simPaths = series.map( (d) => {
-            // console.log(i, typeof(d.vals))
             return lineGenerator(d.vals)
         })
         // set new vals to state
@@ -112,16 +105,14 @@ class Graph extends Component {
     }
 
     updateSimPaths = (series, selectedDates, lineGenerator, animateTransition, width) => {
-        //Animate simPath color but don't change data
+        // Animate simPath color but don't change data
         if (this.simPathsRef.current) {
-                
             // update lineGenerator from new scale and data
             lineGenerator.x((d,i) => this.props.xScale(selectedDates[i]))
             lineGenerator.y(d => this.props.yScale(d))
           
             // generate simPaths from lineGenerator
             const simPaths = series.map( (d) => {
-                // console.log(i, typeof(d.vals))
                 return lineGenerator(d.vals)
             })
 

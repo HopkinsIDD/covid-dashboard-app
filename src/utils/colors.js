@@ -42,14 +42,19 @@ export const scenarioColorPalette = [
     colors.green, colors.verySoftCyan, colors.darkCyan,
     colors.lightGrayishCyan, colors.darkCyan, colors.verySoftCyan2
 ]
-export const mapLowColorPalette = [
-    colors.lightGrayishBlue, colors.lightGrayisLimeGreen,
-    colors.lightGrayishOrange, colors.lightGrayishOrange2,
 
-]
-export const mapHighColorPalette = [
-    colors.brightBlue, colors.darkCyan2,
-    colors.vividOrange, colors.brightRed,
-]
+export const mapLowColorPalette = {
+    1: colors.lightGrayishBlue,
+    2: colors.lightGrayisLimeGreen,
+    3: colors.lightGrayishOrange,
+    4: colors.lightGrayishOrange2
+}
+
+export const mapHighColorPalette = {
+    1: colors.brightBlue,
+    2: colors.darkCyan2,
+    3: colors.vividOrange,
+    4: colors.brightRed
+}
 
 export default colors;

@@ -1,7 +1,7 @@
 import { extent } from 'd3-array';
 import { timeDay } from 'd3-time';
 import { timeFormat, utcParse } from 'd3-time-format';
-
+import { addQuantiles } from '../utils/quantiles';
 const formatDate = timeFormat('%Y-%m-%d');
 const parseDate = utcParse('%Y-%m-%d');
 
@@ -116,12 +116,14 @@ export function filterByDate(series, idxMin, idxMax) {
   return filteredSeries
 }
 
-export function getConfBounds(dataset, scenarioList, severityList, stat, idxMin, idxMax) {
+export function getConfBounds(dataset, scenarioList, severityList, stat, dates, idxMin, idxMax) {
   const confBoundsList = [];
   for (let i = 0; i < scenarioList.length; i++) {
-      const confBounds = dataset[scenarioList[i].key][severityList[i].key][stat.key].conf;
-      const filteredConfBounds = confBounds.slice(idxMin, idxMax)
-      confBoundsList.push(filteredConfBounds);
+    const confBounds = addQuantiles(
+      dataset, scenarioList[i].key, severityList[i].key, stat.key, dates)
+    const filteredConfBounds = confBounds.slice(idxMin, idxMax);
+
+    confBoundsList.push(filteredConfBounds);
   }
   return confBoundsList
 }
