@@ -36,7 +36,7 @@ class Brush extends Component {
 
   componentDidMount() {
     // console.log('componentDidMount')
-    this.updateBrush(this.props.series, this.props.dates, this.props.width, this.props.height);
+    this.setupBrush(this.props.series, this.props.dates, this.props.width, this.props.height);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -50,7 +50,6 @@ class Brush extends Component {
       // console.log('different dimensions is', this.props.width !== prevProps.width )
       const { series, dates, width, height } = this.props;
       const { lineGenerator } = prevState;
-      // this.updateBrush(this.props.series, this.props.dates, this.props.width, this.props.height)
       this.updateSimPaths(lineGenerator, series, dates, width, height, false);
       return
     }
@@ -140,7 +139,6 @@ class Brush extends Component {
                 })
             })
         }
-
     }
   
     // this.xAxis.scale(this.state.xScale);
@@ -163,7 +161,7 @@ class Brush extends Component {
     }
   }
 
-  updateBrush = (series, dates, width, height) => {
+  setupBrush = (series, dates, width, height) => {
     const { lineGenerator } =  this.state
     const updatedScales = this.getScales(series, dates, width, height);
     lineGenerator.x((d,i) => updatedScales.xScale(dates[i]))
