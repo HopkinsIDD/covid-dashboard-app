@@ -375,6 +375,7 @@ class MainGraph extends Component {
 
     render() {
         const { Content } = Layout;
+        console.log(this.props.width)
         return (
             <Content id="interactive-graph" style={styles.ContainerGray}>
                 {/* text span is 1 grid value higher than Graph to allow text-wrapping */}
@@ -443,7 +444,7 @@ class MainGraph extends Component {
                             height={80}
                             series={this.state.allDatesSeries}
                             dates={this.state.dates}
-                            x={margin.yAxis + margin.left}
+                            x={margin.yAxis + (this.props.width * 0.03)}
                             y={0}
                             animateTransition={this.state.animateTransition}
                             toggleAnimateTransition={this.toggleAnimateTransition}

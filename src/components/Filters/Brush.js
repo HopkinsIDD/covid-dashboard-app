@@ -143,6 +143,7 @@ class Brush extends Component {
   
     // this.xAxis.scale(this.state.xScale);
     if (this.xAxisRef.current) {
+      console.log('updating brush xaxis')
       this.xAxis.scale(updatedScales.xScale)
       const xAxisNode = select(this.xAxisRef.current)
       xAxisNode.call(this.xAxis);
@@ -157,7 +158,7 @@ class Brush extends Component {
       ])
       const brushRefNode = select(this.brushRef.current)
       brushRefNode.call(this.brush)
-        .call(this.brush.move)
+        .call(this.brush.move, [ updatedScales.xScale(this.props.dateRange[0]), updatedScales.xScale(this.props.dateRange[1]) ])
     }
   }
 
