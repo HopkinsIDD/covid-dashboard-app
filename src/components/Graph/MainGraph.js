@@ -443,7 +443,7 @@ class MainGraph extends Component {
                             height={80}
                             series={this.state.allDatesSeries}
                             dates={this.state.dates}
-                            x={margin.yAxis + margin.left + margin.left}
+                            x={margin.yAxis + margin.left}
                             y={0}
                             animateTransition={this.state.animateTransition}
                             toggleAnimateTransition={this.toggleAnimateTransition}

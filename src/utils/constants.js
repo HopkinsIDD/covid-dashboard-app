@@ -27,7 +27,7 @@ export const margin = {
     top: 10, 
     right: 10, 
     bottom: 40, 
-    left: 10, 
+    left: 20, 
     chartTop: 15 
 };
 
