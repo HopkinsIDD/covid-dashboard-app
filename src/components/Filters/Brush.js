@@ -36,7 +36,7 @@ class Brush extends Component {
 
   componentDidMount() {
     // console.log('componentDidMount')
-    this.setupBrush(this.props.series, this.props.dates, this.props.width, this.props.height);
+    this.updateBrush(this.props.series, this.props.dates, this.props.width, this.props.height);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -46,10 +46,11 @@ class Brush extends Component {
     // console.log('different dateThreshold is', this.props.dateThreshold !== prevProps.dateThreshold)
     // console.log('different statThreshold is', this.props.statThreshold !== prevProps.statThreshold)
     if (this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
-      // console.log('componentDidUpdate width height change');
+      console.log('componentDidUpdate width height change');
       // console.log('different dimensions is', this.props.width !== prevProps.width )
       const { series, dates, width, height } = this.props;
       const { lineGenerator } = prevState;
+      // this.updateBrush(this.props.series, this.props.dates, this.props.width, this.props.height)
       this.updateSimPaths(lineGenerator, series, dates, width, height, false);
       return
     }
@@ -67,9 +68,10 @@ class Brush extends Component {
   updateSimPaths = (lineGenerator, series, dates, width, height, animateTransition) => {
     // console.log('updateSimPaths animateTransition is', animateTransition)
     // const { lineGenerator } = this.state;
+    const updatedScales = this.getScales(series, dates, width, height)
+
     if (this.simPathsRef.current) {
       // update scale and data
-      const updatedScales = this.getScales(series, dates, width, height)
 
       lineGenerator.x((d,i) => updatedScales.xScale(dates[i]))
       lineGenerator.y(d => {
@@ -87,8 +89,6 @@ class Brush extends Component {
       this.setState({ 
           series: series,
           dates: dates,
-          // xScale: this.props.xScale,
-          // yScale: this.props.yScale,
           lineGenerator: lineGenerator,
           simPaths: simPaths,
       })
@@ -145,12 +145,25 @@ class Brush extends Component {
   
     // this.xAxis.scale(this.state.xScale);
     if (this.xAxisRef.current) {
+      this.xAxis.scale(updatedScales.xScale)
       const xAxisNode = select(this.xAxisRef.current)
       xAxisNode.call(this.xAxis);
     }
+    if (this.brushRef.current) {
+      // console.log(this.props.dateRange)
+      // console.log( updatedScales.xScale.range())
+      // console.log(updatedScales.xScale(this.props.dateRange[0]), updatedScales.xScale(this.props.dateRange[1]))
+      this.brush.extent([
+            [margin.left, margin.top],
+            [this.props.width - margin.right, this.props.height - margin.bottom]
+      ])
+      const brushRefNode = select(this.brushRef.current)
+      brushRefNode.call(this.brush)
+        .call(this.brush.move)
+    }
   }
 
-  setupBrush = (series, dates, width, height) => {
+  updateBrush = (series, dates, width, height) => {
     const { lineGenerator } =  this.state
     const updatedScales = this.getScales(series, dates, width, height);
     lineGenerator.x((d,i) => updatedScales.xScale(dates[i]))
