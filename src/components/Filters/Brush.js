@@ -201,7 +201,7 @@ class Brush extends Component {
     const timeDomain = extent(dates);
     const maxVal = max(series, sims => max(sims.vals))
     // set scale ranges to width and height of container
-    const xScale = scaleUtc().range([margin.left, width - margin.right])
+    const xScale = scaleUtc().range([margin.left, width - margin.right - margin.left])
                              .domain(timeDomain);
     const yScale = scaleLinear().range([height - margin.bottom, margin.top])
                                 .domain([0, maxVal]).nice();
@@ -237,7 +237,7 @@ class Brush extends Component {
           height={this.props.height} 
           transform={`translate(${this.props.x},${this.props.y})`}
         >
-          <g ref={this.xAxisRef}  transform={`translate(0, ${this.props.height - margin.bottom})`} />
+          <g ref={this.xAxisRef}  transform={`translate(${margin.left}, ${this.props.height - margin.bottom})`} />
           {/* <g ref={this.xAxisYearRef}  transform={`translate(0, ${this.props.height - margin.bottom})`} /> */}
           <g ref={this.simPathsRef}>
           <rect 
