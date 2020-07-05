@@ -27,9 +27,19 @@ export const margin = {
     top: 10, 
     right: 10, 
     bottom: 40, 
-    left: 10, 
+    left: 20, 
     chartTop: 15 
 };
+
+export const dimMultipliers = {
+    graphDesktopW: 0.6585, // multiplier for window.innerWidth to get graphW
+    graphDesktopH: 0.53, // multiplier for window.innerHeight to get graphH
+    graphMobileW: 0.9, // mobile view ratio multiplier for window.innerWidth to get graphW
+    chartDesktopH: 1.15, // multiplies graphH to give chart a bit more height
+    mapDesktopH: 0.35, // mobile view ratio multiplier for window.innerHeight to give each map quadrant less height than the full graph
+    mapMobileW: 1.8, // mobile view ratio multiplier for window.innerWidth to get graphW for map
+    brushOffset: 0.03, // multiplier of graphW so Brush is aligned with graph (accounts for width of y-axis label in flex container)
+}
 
 // ant design components are inline styled (and resist styling via css classes)
 export const styles = {

@@ -11,7 +11,7 @@ import R0 from '../Filters/R0';
 import ModeToggle from '../Filters/ModeToggle';
 import Sliders from '../Filters/Sliders';
 
-import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
+import { styles, margin, dimMultipliers, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
 import { buildScenarios, getStatThreshold, getDateThreshold, flagSimsOverThreshold, 
     getExceedences, flagSims, getR0range, getConfBounds, getActuals, 
     filterByDate, filterR0 } from '../../utils/utils';
@@ -314,7 +314,7 @@ class MainGraph extends Component {
     }
 
     handleBrushRange = (dateRange) => {
-        // console.log('handleBrushRange')
+        console.log('handleBrushRange', dateRange)
         const { seriesListForBrush, scenarioList, stat, severityList } = this.state;
 
         this.setState({
@@ -443,7 +443,7 @@ class MainGraph extends Component {
                             height={80}
                             series={this.state.allDatesSeries}
                             dates={this.state.dates}
-                            x={margin.yAxis}
+                            x={margin.yAxis + (this.props.width * dimMultipliers.brushOffset)}
                             y={0}
                             animateTransition={this.state.animateTransition}
                             toggleAnimateTransition={this.toggleAnimateTransition}
