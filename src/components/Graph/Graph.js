@@ -59,6 +59,7 @@ class Graph extends Component {
         }
 
         if (series !== prevProps.series) {
+            console.log('componentDidUpdate series change')
             const { lineGenerator, areaGenerator } = prevState;
             this.updateSimPaths(series, selectedDates, lineGenerator, animateTransition, width);
             if (confBounds && confBounds.length > 0) {
@@ -67,6 +68,7 @@ class Graph extends Component {
 
         const { xScale, yScale } = this.props;
         if (xScale !== prevProps.xScale || yScale !== prevProps.yScale) {
+            console.log('componentDidUpdate scale change')
             const { lineGenerator, areaGenerator } = prevState;
             this.updateSimPaths(series, selectedDates, lineGenerator, animateTransition, width);
             if (confBounds && confBounds.length > 0) {
