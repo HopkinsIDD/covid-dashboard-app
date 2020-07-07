@@ -11,9 +11,8 @@ class ChartContainer extends Component {
         super(props);
         this.state = {
             dataLoaded: false,
-            parameters: [],
-            parameterLabels: [],
             children: {},
+            selectedStats: {},
             hoveredScenarioIdx: null
         }
     }
@@ -31,48 +30,42 @@ class ChartContainer extends Component {
             || prevProps.scale !== this.props.scale
             || prevProps.width !== this.props.width 
             || prevProps.height !== this.props.height) {
-            // console.log('ComponentDidUpdate Summary Start or End or Dataset')
+
             this.drawCharts();
         }
     }
 
     drawCharts = () => {
         const { children } = this.state;
-        const parameters = this.props.stats.map( stat => stat.key )
-        const parameterLabels = this.props.stats.map( stat => stat.name )
-        // console.log('ChartContainer scenarios', this.props.scenarios)
+        const { stats, dataset, scenarios, width, height, scale } = this.props;
 
-        for (let [index, param] of parameters.entries()) {
+        for (let stat of stats) {
             const child = {
-                key: `${param}-chart`,
+                key: `${stat.key}-chart`,
                 chart: {},
             }
-
             child.chart = 
                 <Chart
-                    key={`${param}-chart`}
-                    dataset={this.props.dataset}
-                    scenarios={this.props.scenarios}
+                    key={`${stat.key}-chart`}
+                    dataset={dataset}
+                    scenarios={scenarios}
+                    scenarioMap={this.props.scenarioMap}
                     firstDate={this.props.firstDate}
                     start={this.props.start}
                     end={this.props.end}
-                    stat={param}
-                    statLabel={parameterLabels[index]}
-                    stats={this.props.stats}
-                    width={this.props.width}
-                    height={this.props.height / parameters.length}
+                    stat={stat.key}
+                    statLabel={stat.name}
+                    stats={stats}
+                    width={width}
+                    height={height / Object.keys(stats).length}
                     handleCalloutInfo={this.handleCalloutInfo}
                     handleCalloutLeave={this.handleCalloutLeave}
                     handleScenarioHover={this.handleScenarioHighlight}
-                    scale={this.props.scale}
+                    scale={scale}
                 />
-            children[param] = child;
+            children[stat.key] = child;
         } 
-        this.setState({
-            children,
-            parameters,
-            parameterLabels
-        }, () => {
+        this.setState({children, selectedStats: stats}, () => {
             this.setState({
                 dataLoaded: true
             });
@@ -96,6 +89,7 @@ class ChartContainer extends Component {
     }
 
     render() {
+        // TODO: replace('_') should be formatTitle()
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <Fragment>
@@ -135,11 +129,11 @@ class ChartContainer extends Component {
                     </div>
                 </Row>
                 <Row>
-                {this.state.dataLoaded && this.state.parameters.map( (param, i) => {
+                {this.state.dataLoaded && this.state.selectedStats.map(stat => {
                     return (
-                        <div className="row" key={`chart-row-${param}`}>
-                            <div className="chart" key={`chart-${param}`}>
-                                {this.state.children[param].chart}
+                        <div className="row" key={`chart-row-${stat.key}`}>
+                            <div className="chart" key={`chart-${stat.key}`}>
+                                {this.state.children[stat.key].chart}
                             </div>
                         </div>
                     )
