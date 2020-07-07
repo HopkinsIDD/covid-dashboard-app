@@ -7,7 +7,7 @@ import { styles } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
 import { utcParse, timeFormat } from 'd3-time-format'
 
-const geojsonStats = require('../../store/statsForMap.json')
+const statsForMap = require('../../store/statsForMap.json')
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
 
@@ -50,7 +50,7 @@ class MainMap extends Component {
         // instantiate stats and boundaries given geoid
         const state = geoid.slice(0, 2);
         const countyBoundaries = require('../../store/countyBoundaries.json')[state];
-        const statsForCounty = geojsonStats[state];
+        const statsForCounty = statsForMap[state];
         const currentDateIndex = dates
             .findIndex(date => formatDate(date) === formatDate(new Date()));
 

@@ -12,9 +12,10 @@ import ModeToggle from '../Filters/ModeToggle';
 import Sliders from '../Filters/Sliders';
 
 import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
-import { buildScenarios, getStatThreshold, getDateThreshold, flagSimsOverThreshold, 
-    getExceedences, flagSims, getR0range, getConfBounds, getActuals, 
-    filterByDate, filterR0 } from '../../utils/utils';
+import { buildScenarios, getR0range, getConfBounds, getActuals, filterR0 } 
+    from '../../utils/utils';
+import { getStatThreshold, getDateThreshold, flagSimsOverThreshold, 
+    getExceedences, flagSims, filterByDate } from '../../utils/threshold';
 import { utcParse } from 'd3-time-format';
 import { timeDay } from 'd3-time';
 
