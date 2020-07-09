@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {Select} from 'antd';
-import {STATS, styles} from '../../utils/constants';
-import {SelectValue} from "antd/lib/select";
-import {Stat} from "../../utils/constantsTypes";
+import React, { Component } from 'react';
+import { Select } from 'antd';
+import { STATS, styles } from '../../utils/constants';
+import { SelectValue } from "antd/lib/select";
+import { Stat } from "../../utils/constantsTypes";
 
 
 interface Child {
