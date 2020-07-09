@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Severity from '../Filters/Severity.tsx';
-import {Scenario, ScenarioList, SeverityLevelList, Stat} from "../../utils/constantsTypes";
+import Severity from '../Filters/Severity';
+import { Scenario, ScenarioList, SeverityLevelList, Stat } from "../../utils/constantsTypes";
 
 interface Child {
     key: string,
