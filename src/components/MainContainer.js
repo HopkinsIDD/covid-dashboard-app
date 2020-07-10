@@ -35,6 +35,7 @@ class MainContainer extends Component {
         this.updateMapContainerDimensions();
         
         console.log('dataset', dataset)
+        delete dataset['Scenario_A']['med'];
         this.setState({dataset}, () => {
             this.setState({dataLoaded: true});
         })
@@ -67,6 +68,7 @@ class MainContainer extends Component {
 
     handleCountySelect = (i) => {
         const dataset = require(`../store/geo${i.geoid}.json`);
+        // delete dataset['Scenario_A']['med'];
         this.setState({dataset, geoid: i.geoid})
     };
     

@@ -48,6 +48,7 @@ class MainChart extends Component {
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioList = SCENARIOS.map(s => s.name);
         const scenarioMap = buildScenarioMap(dataset);
+        console.log('scenarioMap', scenarioMap)
         const statList = STATS.slice(0,2)
 
         // instantiate start and end date (past 2 weeks) for summary stats
