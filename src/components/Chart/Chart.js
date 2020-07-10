@@ -113,16 +113,16 @@ class Chart extends Component {
         if (this.chartRef.current) {
             const { scenarios, width, stat, scenarioMap } = this.props;
             // always calculate barWidth for three severities even if there are fewer
-            // const barWidth = ((width / 3) / scenarios.length) - margin.left - margin.right;
+            const barWidth = ((width / 3) / scenarios.length) - margin.left - margin.right;
             const barMargin = 10;
-            // const whiskerMargin = barWidth * 0.2;
+            const whiskerMargin = barWidth * 0.2;
             // update paths with new data
             const barNodes = select(this.chartRef.current)
 
             scenarios.map( (scenario, i) => {
-                const severities = scenarioMap[scenario]
-                const barWidth = ((width / severities.length) / scenarios.length) - margin.left - margin.right;
-                const whiskerMargin = barWidth * 0.2;
+                // const severities = scenarioMap[scenario]
+                // const barWidth = ((width / severities.length) / scenarios.length) - margin.left - margin.right;
+                // const whiskerMargin = barWidth * 0.2;
                 Object.entries(quantileObj[stat][scenario]).forEach( ([severity, value]) => {
                     // severity (key) is the severity, value is the object of quantiles calculated
                     barNodes.selectAll(`.bar-${scenario}-${severity}`)
@@ -172,9 +172,9 @@ class Chart extends Component {
         const { width, height, scenarios, stat, scenarioMap } = this.props;
         const { quantileObj, yScale, xScale, hoveredRect, tooltipText } = this.state;
         // always calculate barWidth for three severities even if there are fewer
-        // const barWidth = ((width / 3) / scenarios.length) - margin.left - margin.right;
+        const barWidth = ((width / 3) / scenarios.length) - margin.left - margin.right;
         const barMargin = 10;
-        // const whiskerMargin = barWidth * 0.2;
+        const whiskerMargin = barWidth * 0.2;
         const rectWidth = width - margin.left
         return (
             <Fragment key={`chart-fragment`}>
@@ -188,9 +188,9 @@ class Chart extends Component {
             >
             </rect>
             {scenarios.map( (scenario, i) => {
-                const severities = scenarioMap[scenario]
-                const barWidth = ((width / severities.length) / scenarios.length) - margin.left - margin.right;
-                const whiskerMargin = barWidth * 0.2;
+                // const severities = scenarioMap[scenario]
+                // const barWidth = ((width / severities.length) / scenarios.length) - margin.left - margin.right;
+                // const whiskerMargin = barWidth * 0.2;
             return (
                 <g key={`chart-group-${scenario}`}>
                     { Object.entries(quantileObj[stat][scenario]).map( ([severity, value], j) => {
