@@ -14,9 +14,6 @@ class Chart extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            // TODO: this should be designated in MainChart and sent as a prop
-            // if removed, Chart thinks severities is undefined on render()
-            // severities: ["high", "med", "low"],
             scaleDomains: false,
             hoveredRect: {
                 'severity': '',
@@ -34,13 +31,7 @@ class Chart extends Component {
         const { dataset } = this.props;
         const calc = this.calculateQuantiles();
 
-        // TODO: assumes all scenarios in "run" has same list of severities
-        // const firstScenario = Object.keys(dataset)[0];
-        // const severities = Object.keys(dataset[firstScenario])
-        //     .filter(sev => sev !== 'dates');
-
         this.setState({ 
-            // severities,
             quantileObj: calc.quantileObj, 
             xScale: calc.xScale, 
             yScale: calc.yScale, 
@@ -82,19 +73,8 @@ class Chart extends Component {
         const endIdx = getDateIdx(firstDate, end);
         let globalMaxVal = 0;
 
-        // for (let scenario of scenarios) {
-        //     const severities = scenarioMap[scenario];
-        //     for (let severity of severities) {
-        //         quantileObj[stat][severity] = {};
-
-        // TODO: using severities based on first scenario, but what if scenarios
-        // have different severity lists? this needs to be refactored to take that 
-        // into account.
-        // const severities = scenarioMap[scenarios[0]];
-
         for (let scenario of scenarios) {
             const severities = scenarioMap[scenario]
-            console.log('severities', severities)
             quantileObj[stat][scenario] = {};
             for (let severity of severities) {
                 const sumArray = dataset[scenario][severity][stat].sims.map(sim => {
@@ -116,7 +96,6 @@ class Chart extends Component {
                 }
             }
         }
-        console.log(quantileObj)
         
         let yScale;
         if (this.props.scale === 'linear') {
@@ -124,7 +103,7 @@ class Chart extends Component {
         } else {
            yScale = scalePow().exponent(0.25).range([height - margin.bottom, margin.chartTop]).domain([0, globalMaxVal])
         }
-        // const yScale = scaleLog().range([height - margin.bottom, margin.top]).domain([1, globalMaxVal]) //
+        
         const xScale = scaleBand().range([margin.left, width]).domain(scenarios)//.paddingInner(1).paddingOuter(.5);
         const scaleDomains = true
         return { quantileObj, xScale, yScale, scaleDomains}
@@ -132,17 +111,18 @@ class Chart extends Component {
 
     updateSummaryStats = (quantileObj, xScale, yScale, scaleDomains) => {
         if (this.chartRef.current) {
-            const { scenarios, width, stat } = this.props;
+            const { scenarios, width, stat, scenarioMap } = this.props;
             // always calculate barWidth for three severities even if there are fewer
-            const barWidth = ((width / 3) / scenarios.length) - margin.left - margin.right;
+            // const barWidth = ((width / 3) / scenarios.length) - margin.left - margin.right;
             const barMargin = 10;
-            const whiskerMargin = barWidth * 0.2;
+            // const whiskerMargin = barWidth * 0.2;
             // update paths with new data
             const barNodes = select(this.chartRef.current)
-            // this.chartYAxisRef.props.scale = yScale
-            // this.chartYAxisRef.updateAxis()
 
             scenarios.map( (scenario, i) => {
+                const severities = scenarioMap[scenario]
+                const barWidth = ((width / severities.length) / scenarios.length) - margin.left - margin.right;
+                const whiskerMargin = barWidth * 0.2;
                 Object.entries(quantileObj[stat][scenario]).forEach( ([severity, value]) => {
                     // severity (key) is the severity, value is the object of quantiles calculated
                     barNodes.selectAll(`.bar-${scenario}-${severity}`)

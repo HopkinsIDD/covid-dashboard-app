@@ -35,6 +35,7 @@ class MainContainer extends Component {
         this.updateMapContainerDimensions();
         
         console.log('dataset', dataset)
+        // need to delete severity on mount in order to change Chart rendering
         delete dataset['Scenario_A']['med'];
         this.setState({dataset}, () => {
             this.setState({dataLoaded: true});
