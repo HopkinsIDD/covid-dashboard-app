@@ -92,6 +92,10 @@ class Axis extends Component {
 
        
         if (this.props.view !== 'graph') select(this.axisRef.current).call(this.axis).call(g => g.select(".domain").remove());
+        if (this.props.view === 'chart') {
+          select(this.axisRef.current).call(this.axis)
+          .call(g => g.selectAll("text").attr("dy", "2em"));
+        }
       
       }
     }

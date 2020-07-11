@@ -120,15 +120,21 @@ class Chart extends Component {
             const barNodes = select(this.chartRef.current)
 
             scenarios.map( (scenario, i) => {
-                // const severities = scenarioMap[scenario]
-                // const barWidth = ((width / severities.length) / scenarios.length) - margin.left - margin.right;
-                // const whiskerMargin = barWidth * 0.2;
-                Object.entries(quantileObj[stat][scenario]).forEach( ([severity, value]) => {
+                const severities = scenarioMap[scenario]
+                Object.entries(quantileObj[stat][scenario]).forEach( ([severity, value], j) => {
+                    // place scenarios with fewer severities around the center tick mark
+                    if (severities.length === 1) {
+                        j = 1
+                    } else if (severities.length === 2) {
+                        j +=  ((j + 1) * 0.3333)
+                    } else {
+                        // just use j
+                    }
                     // severity (key) is the severity, value is the object of quantiles calculated
                     barNodes.selectAll(`.bar-${scenario}-${severity}`)
                         .transition()
                         .duration(500)
-                        .attr("x", (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(scenario))
+                        .attr("x", (margin.left * 2) + (j * (barWidth + barMargin)) + xScale(scenario))
                         .attr("y", yScale(value.median))
                         .attr("width", barWidth)
                         .attr("height", yScale(0) - yScale(value.median))
@@ -137,27 +143,27 @@ class Chart extends Component {
                     barNodes.selectAll(`.vertline-${scenario}-${severity}`)
                         .transition()
                         .duration(500)
-                        .attr("x1", (barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(scenario)))
+                        .attr("x1", (barWidth/2 + (margin.left * 2) + (j * (barWidth + barMargin)) + xScale(scenario)))
                         .attr("y1", yScale(value.ninetyith))
-                        .attr("x2", (barWidth/2 + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(scenario)))
+                        .attr("x2", (barWidth/2 + (margin.left * 2) + (j * (barWidth + barMargin)) + xScale(scenario)))
                         .attr("y2", yScale(value.tenth))
                         .ease(easeCubicOut)
              
                     barNodes.selectAll(`.topline-${scenario}-${severity}`)
                         .transition()
                         .duration(500)
-                        .attr("x1", (whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(scenario)))
+                        .attr("x1", (whiskerMargin + (margin.left * 2) + (j * (barWidth + barMargin)) + xScale(scenario)))
                         .attr("y1", yScale(value.ninetyith))
-                        .attr("x2", (barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(scenario)))
+                        .attr("x2", (barWidth - whiskerMargin + (margin.left * 2) + (j * (barWidth + barMargin)) + xScale(scenario)))
                         .attr("y2", yScale(value.ninetyith))
                         .ease(easeCubicOut)
                     
                     barNodes.selectAll(`.bottomline-${scenario}-${severity}`)
                         .transition()
                         .duration(500)
-                        .attr("x1", (whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(scenario)))
+                        .attr("x1", (whiskerMargin + (margin.left * 2) + (j * (barWidth + barMargin)) + xScale(scenario)))
                         .attr("y1", yScale(value.tenth))
-                        .attr("x2", (barWidth - whiskerMargin + (margin.left * 2) + (i * (barWidth + barMargin)) + xScale(scenario)))
+                        .attr("x2", (barWidth - whiskerMargin + (margin.left * 2) + (j * (barWidth + barMargin)) + xScale(scenario)))
                         .attr("y2", yScale(value.tenth))
                         .ease(easeCubicOut)
                     .on("end", () => {
@@ -189,11 +195,9 @@ class Chart extends Component {
             </rect>
             {scenarios.map( (scenario, i) => {
                 const severities = scenarioMap[scenario]
-                let offset;
-                // const barWidth = ((width / severities.length) / scenarios.length) - margin.left - margin.right;
-                // const whiskerMargin = barWidth * 0.2;
-            return (
-                <g key={`chart-group-${scenario}`}>
+                return (
+                    quantileObj[stat][scenario] && 
+                    <g key={`chart-group-${scenario}`}>
                     { Object.entries(quantileObj[stat][scenario]).map( ([severity, value], j) => {
                         // place scenarios with fewer severities around the center tick mark
                         if (severities.length === 1) {
@@ -301,8 +305,8 @@ class Chart extends Component {
                     })
                 }
                 </g>
-                )
-            })}
+                )}
+            )}
             </Fragment>
         )
     }
