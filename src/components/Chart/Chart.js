@@ -188,12 +188,21 @@ class Chart extends Component {
             >
             </rect>
             {scenarios.map( (scenario, i) => {
-                // const severities = scenarioMap[scenario]
+                const severities = scenarioMap[scenario]
+                let offset;
                 // const barWidth = ((width / severities.length) / scenarios.length) - margin.left - margin.right;
                 // const whiskerMargin = barWidth * 0.2;
             return (
                 <g key={`chart-group-${scenario}`}>
                     { Object.entries(quantileObj[stat][scenario]).map( ([severity, value], j) => {
+                        // place scenarios with fewer severities around the center tick mark
+                        if (severities.length === 1) {
+                            j = 1
+                        } else if (severities.length === 2) {
+                            j +=  ((j + 1) * 0.3333)
+                        } else {
+                            // just use j
+                        }
                         // case for Infections (incidI) having the same results for low, med and high severities
                         // solution: only display med severity
                         // severity (key) is the severity, value is the object of quantiles calculated
