@@ -1,8 +1,25 @@
+// @flow
+
 import React, { Component } from 'react';
 import { Select } from 'antd';
-import { STATS, styles } from '../../utils/constants.js';
+import { type Stat, STATS, styles } from '../../utils/constants.js';
 
-class Indicators extends Component {
+type Child = {
+    key: string,
+    button: Array<any>
+}
+
+type Props = {|
+    onIndicatorClick: (stat: Stat) => void,
+    stat: Stat,
+|}
+
+type State = {|
+    children: Array<Child>;
+
+|}
+
+class Indicators extends Component<Props, State> {
     constructor(props) {
         super(props);
         this.state = {
@@ -15,10 +32,10 @@ class Indicators extends Component {
         const { Option } = Select;
 
         for (let stat of STATS) {
-            const child = {
+            const child: Child = {
                 key: `${stat.key}-stat`,
                 button: []
-            } 
+            }
             child.button.push(
                 <Option
                     key={`${stat.key}-stat`}

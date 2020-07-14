@@ -1,11 +1,19 @@
+//@flow
 
 // number of sim curves to be displayed in Graph
-export const numDisplaySims = 30;  
+export const numDisplaySims = 30;
 
 // id: explicit key to list items in onChange()
 // key: use this to key into dataset
 // name: display name for visualization
-export const STATS = [
+
+export type Stat = {
+    id: number,
+    key: string,
+    name: string,
+}
+
+export const STATS: Array<Stat> = [
     {'id': 1, 'key': 'incidH', 'name': 'Hospitalizations'},
     {'id': 2, 'key': 'incidD', 'name': 'Deaths'},
     {'id': 3, 'key': 'incidI', 'name': 'Infections'},
@@ -14,7 +22,7 @@ export const STATS = [
 ];
 
 export const LEVELS = [
-    {'id': 1, 'key': 'high', 'name': '1% IFR'}, 
+    {'id': 1, 'key': 'high', 'name': '1% IFR'},
     {'id': 2, 'key': 'med', 'name': '0.5% IFR'},
     {'id': 3, 'key': 'low', 'name': '0.25% IFR'},
 ];
@@ -23,12 +31,12 @@ export const CONFINTERVALS = ['p10', 'p50', 'p90'];
 
 export const monthDateFormat = '%b-%d';
 export const margin = {
-    yAxis: 80, 
-    top: 10, 
-    right: 10, 
-    bottom: 40, 
-    left: 20, 
-    chartTop: 15 
+    yAxis: 80,
+    top: 10,
+    right: 10,
+    bottom: 40,
+    left: 20,
+    chartTop: 15
 };
 
 export const dimMultipliers = {
@@ -61,19 +69,19 @@ export const styles = {
         maxWidth: '50rem',
         padding: '0.8rem 0'
     },
-    iconGraph: { 
-        paddingRight: '5px', 
-        paddingTop: '5px' 
+    iconGraph: {
+        paddingRight: '5px',
+        paddingTop: '5px'
     },
-    iconChart: { 
-        paddingRight: '5px', 
-        paddingTop: '5px', 
-        marginRight: '8px' 
+    iconChart: {
+        paddingRight: '5px',
+        paddingTop: '5px',
+        marginRight: '8px'
     },
-    iconMap: { 
-        paddingRight: '5px', 
-        paddingTop: '5px', 
-        marginRight: '3px' 
+    iconMap: {
+        paddingRight: '5px',
+        paddingTop: '5px',
+        marginRight: '3px'
     },
     Selector: {
         width: '80%'
@@ -89,10 +97,10 @@ export const styles = {
         paddingRight: '5px'
     },
     Radio: {
-        paddingLeft: '8px', 
-        paddingRight: '8px', 
-        paddingTop: '5px', 
-        lineHeight: '1rem', 
+        paddingLeft: '8px',
+        paddingRight: '8px',
+        paddingTop: '5px',
+        lineHeight: '1rem',
         height: '45px'
     },
     Switch: {
