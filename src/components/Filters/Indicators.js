@@ -48,7 +48,7 @@ class Indicators extends Component<Props, State> {
         this.setState({children})
     }
 
-    handleChange = (e) => {
+    handleChange = (e: any) => {
         const item = STATS.filter(stat => stat.key === e)[0];
         this.props.onIndicatorClick(item);
     }
