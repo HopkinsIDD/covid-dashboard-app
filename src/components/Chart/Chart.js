@@ -266,6 +266,7 @@ class Chart extends Component {
                                         visible={this.state.hoveredRect.severity === severity &&
                                                 this.state.hoveredRect.scenario === key ? true : false}
                                         data-html="true"
+                                        destroyTooltipOnHide={true}
                                     >
                                         {/* debug red rect highlight */}
                                         <rect
