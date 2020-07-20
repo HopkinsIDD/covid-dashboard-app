@@ -16,6 +16,8 @@ class Severity extends Component {
 
     componentDidMount() {
         const children = [];
+        const { existingSevs } = this.props;
+
         for (let level of LEVELS) {
             const child = {
                 key: `${level.key}-severity`,
@@ -24,6 +26,8 @@ class Severity extends Component {
             child.button.push(
                 <Radio.Button
                     key={`${level.key}-severity`}
+                    // disable radio button if severity level does not exist
+                    disabled={!existingSevs.includes(level.key)}
                     value={level.key}>{capitalize(level.key)}
                 </Radio.Button>
             )
@@ -32,6 +36,8 @@ class Severity extends Component {
 
         this.setState({children})
     }
+
+    // TODO: add componentDidUpdate
 
     handleChange = (e) => {
         // add scenario to obj so MainContainer knows which scenario is active
@@ -81,7 +87,7 @@ class Severity extends Component {
                     </TooltipHandler>
                 </div>
                 <Radio.Group
-                    value={severity.key} 
+                    value={severity.key}  // TODO: do I need this?
                     style={styles.Severity}
                     disabled={isDisabled}
                     onChange={this.handleChange}>

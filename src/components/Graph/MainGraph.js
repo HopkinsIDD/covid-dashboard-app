@@ -12,7 +12,7 @@ import ModeToggle from '../Filters/ModeToggle';
 import Sliders from '../Filters/Sliders';
 
 import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
-import { buildScenarios, getR0range, getConfBounds, getActuals, filterR0 } 
+import { buildScenarios, buildScenarioMap, getR0range, getConfBounds, getActuals, filterR0 } 
     from '../../utils/utils';
 import { getStatThreshold, getDateThreshold, flagSimsOverThreshold, 
     getExceedences, flagSims, filterByDate } from '../../utils/threshold';
@@ -33,7 +33,8 @@ class MainGraph extends Component {
             dates: [],                // used by Brush, entire date selection
             stat: STATS[0],
             SCENARIOS: [],
-            scenarioList: [],           
+            scenarioList: [],         // TODO: can scenarioList be removed now that scenarioMap exists?
+            scenarioMap: {},          // map of scenario to list of severities   
             severity: _.cloneDeep(LEVELS[0]), 
             severityList: [_.cloneDeep(LEVELS[0])],
             scenarioHovered: '',
@@ -45,8 +46,8 @@ class MainGraph extends Component {
             dateRange: [parseDate('2020-03-01'), parseDate('2020-07-27')],
             showActual: false,
             actualList: [],
-            r0full: [0, 4],                 // full range of r0
-            r0selected: [0, 4],             // used selected range of r0
+            r0full: [0, 4],               // full range of r0
+            r0selected: [0, 4],           // used selected range of r0
             seriesListForBrush: [],       // used by Brush in handler
             percExceedenceList: [],
             confBounds: {},
@@ -76,6 +77,7 @@ class MainGraph extends Component {
 
         // SCENARIOS: constant scenarios used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
+        const scenarioMap = buildScenarioMap(dataset);
         const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
         const series = dataset[SCENARIOS[0].key][severity.key][stat.key]
             .sims.slice(0, numDisplaySims);
@@ -108,6 +110,7 @@ class MainGraph extends Component {
         this.setState({
             SCENARIOS,
             scenarioList: [SCENARIOS[0]],
+            scenarioMap,
             selectedDates: newSelectedDates,
             dates: Array.from(dates),                  // dates for brush
             allDatesSeries: Array.from(series),        // series for brush
@@ -476,7 +479,8 @@ class MainGraph extends Component {
                         <SeverityContainer
                             stat={this.state.stat}
                             severityList={this.state.severityList}
-                            scenarioList={this.state.scenarioList}
+                            scenarioList={this.state.scenarioList} // TODO: can this be removed?
+                            scenarioMap={this.state.scenarioMap}
                             onSeveritiesClick={this.handleSeveritiesClick}
                             onSeveritiesHover={this.handleSeveritiesHover}
                             onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave} />

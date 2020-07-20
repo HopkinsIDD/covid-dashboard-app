@@ -28,7 +28,6 @@ class Chart extends Component {
     }
 
     componentDidMount() {
-        const { dataset } = this.props;
         const calc = this.calculateQuantiles();
 
         this.setState({ 

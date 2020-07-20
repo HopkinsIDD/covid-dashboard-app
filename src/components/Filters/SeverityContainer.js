@@ -31,7 +31,7 @@ class SeverityContainer extends Component {
     }
 
     buildSeverity(i) {
-        const { scenarioList, severityList, stat } = this.props;
+        const { scenarioList, scenarioMap, severityList, stat } = this.props;
         const keyVal = `${severityList[i].key}_${scenarioList[i].key}`;
 
         // Infection values are the same across all severity
@@ -45,8 +45,9 @@ class SeverityContainer extends Component {
         child.severity.push(
             <Severity 
                 key={keyVal}
-                severity={severityList[i]}
+                severity={severityList[i]}  // TODO: how can we clean this up? is this needed?
                 scenario={scenarioList[i]}
+                existingSevs={scenarioMap[scenarioList[i].key]}  // array = ['high, 'low]
                 isDisabled={isDisabled}
                 sevCount={severityList.length}
                 onSeverityClick={this.handleSeverityClick}
