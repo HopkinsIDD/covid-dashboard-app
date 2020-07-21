@@ -94,13 +94,11 @@ class Brush extends Component {
             .attr("stroke-opacity", 0.6)
             .on("end", () => {
                 // set new vals to state
-                // console.log('finished animateTransition update')
                 this.setState({ 
                     scales: updatedScales
                 })
             })
       } else {
-        // console.log('No animateTransition')
         simPathsNode.selectAll('.simPath')
             .data(series)
             .attr("d", d => lineGenerator(d.vals))
@@ -109,7 +107,6 @@ class Brush extends Component {
     }
   
     if (this.xAxisRef.current) {
-      console.log('updating brush xaxis')
       this.xAxis.scale(updatedScales.xScale)
       const xAxisNode = select(this.xAxisRef.current)
       xAxisNode.call(this.xAxis);
@@ -187,7 +184,6 @@ class Brush extends Component {
     }
     if (event.selection && event.sourceEvent !== null) {
       const [x1, x2] = event.selection;
-      const { series, dates, width, height } = this.props;
       const range = [this.state.scales.xScale.invert(x1), this.state.scales.xScale.invert(x2)];
       this.props.onBrushChange(range);
     }

@@ -82,7 +82,7 @@ class SeverityContainer extends Component<Props, State> {
 
     handleSeverityClick = (i: Child) => {this.props.onSeveritiesClick(i)}
 
-    handleSeverityHover = () => {this.props.onSeveritiesHover()}
+    handleSeverityHover = (i) => {this.props.onSeveritiesHover(i)}
 
     handleSeverityHoverLeave = () => {this.props.onSeveritiesHoverLeave()}
 
