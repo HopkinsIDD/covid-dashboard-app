@@ -12,8 +12,8 @@ import ModeToggle from '../Filters/ModeToggle';
 import Sliders from '../Filters/Sliders';
 
 import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
-import { buildScenarios, buildScenarioMap, getR0range, getConfBounds, getActuals, filterR0 } 
-    from '../../utils/utils';
+import { buildScenarios, buildScenarioMap, buildSeverities, getR0range, 
+    getConfBounds, getActuals, filterR0 } from '../../utils/utils';
 import { getStatThreshold, getDateThreshold, flagSimsOverThreshold, 
     getExceedences, flagSims, filterByDate } from '../../utils/threshold';
 import { utcParse } from 'd3-time-format';
@@ -73,19 +73,24 @@ class MainGraph extends Component {
 
     initialize = (dataset, stat, severity) => {
         // initialize() trigged on mount and Dataset change
-        const { dateRange, severityList } = this.state
+        const { dateRange } = this.state
 
-        // SCENARIOS: constant scenarios used for a given geoid
+        // SCENARIOS: various scenario variables used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioMap = buildScenarioMap(dataset);
-        const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
-        const series = dataset[SCENARIOS[0].key][severity.key][stat.key]
+        const firstScenario = SCENARIOS[0].key;
+        const firstSeverity = scenarioMap[firstScenario][0];
+
+        // firstSeverity need to be designated in case not all death rate LEVELS exist
+        const dates = dataset[firstScenario].dates.map( d => parseDate(d));
+        const series = dataset[firstScenario][firstSeverity][stat.key]
             .sims.slice(0, numDisplaySims);
+        const severityList = buildSeverities(scenarioMap, [], firstScenario);
         const sevList = _.cloneDeep(severityList);
-        sevList[0].scenario = SCENARIOS[0].key;
+        sevList[0].scenario = firstScenario;
 
         // allSims used for R0 histogram
-        const allSims = dataset[SCENARIOS[0].key][severity.key][stat.key].sims;
+        const allSims = dataset[firstScenario][firstSeverity][stat.key].sims;
 
         // initialize Threshold and slider ranges
         const idxMin = timeDay.count(dates[0], dateRange[0]);
@@ -136,7 +141,7 @@ class MainGraph extends Component {
         // update() triggered on Scenario, Stat, Severity, R0, Brush change
         const { dataset, geoid } = this.props;
         const { dates } = this.state;
-        
+
         const idxMin = timeDay.count(dates[0], dateRange[0]);
         const idxMax = timeDay.count(dates[0], dateRange[1]);
 
@@ -182,23 +187,20 @@ class MainGraph extends Component {
         this.update(seriesList, scenarioList, stat, severityList, dateRange);
     };
 
-    handleScenarioClickGraph = (items) => {
-        // items is Array of scenario names
+    handleScenarioClickGraph = (scenarios) => {
         const { dataset } = this.props;
-        const { stat, r0selected, dateRange } = this.state;
+        const { stat, r0selected, dateRange, scenarioMap } = this.state;
 
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
         let scenarioList = [];
         let severityList = [];
 
         // associate each severity with a scenario to enable hover over severity label
-        for (let item of items) {
-            const defaultSev = _.cloneDeep(LEVELS[0]); 
-            defaultSev.scenario = item;
-            severityList.push(defaultSev)
-
-            const scenario = this.state.SCENARIOS.filter(s => s.key === item)[0];
+        for (let scenObj of scenarios) {
+            const scenario = this.state.SCENARIOS.filter(s => s.key === scenObj)[0];
             scenarioList.push(scenario);
+
+            severityList = buildSeverities(scenarioMap, severityList, scenObj);
         }
 
         const seriesList = filterR0(
@@ -318,7 +320,6 @@ class MainGraph extends Component {
     }
 
     handleBrushRange = (dateRange) => {
-        // console.log('handleBrushRange')
         const { seriesListForBrush, scenarioList, stat, severityList } = this.state;
 
         this.setState({
@@ -479,7 +480,7 @@ class MainGraph extends Component {
                         <SeverityContainer
                             stat={this.state.stat}
                             severityList={this.state.severityList}
-                            scenarioList={this.state.scenarioList} // TODO: can this be removed?
+                            scenarioList={this.state.scenarioList} 
                             scenarioMap={this.state.scenarioMap}
                             onSeveritiesClick={this.handleSeveritiesClick}
                             onSeveritiesHover={this.handleSeveritiesHover}

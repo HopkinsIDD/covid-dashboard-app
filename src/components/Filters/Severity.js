@@ -33,11 +33,54 @@ class Severity extends Component {
             )
             children.push(child);
         }
-
         this.setState({children})
     }
 
-    // TODO: add componentDidUpdate
+    componentDidUpdate(prevProp) {
+        const { existingSevs } = this.props;
+
+        if (prevProp.existingSevs !== existingSevs ) {
+            const children = [];
+    
+            for (let level of LEVELS) {
+                const child = {
+                    key: `${level.key}-severity`,
+                    button: []
+                } 
+                child.button.push(
+                    <Radio.Button
+                        key={`${level.key}-severity`}
+                        // disable radio button if severity level does not exist
+                        disabled={!existingSevs.includes(level.key)}
+                        value={level.key}>{capitalize(level.key)}
+                    </Radio.Button>
+                )
+                children.push(child);
+            }
+            this.setState({children})
+        }
+    }
+
+    // initialize = () => {
+    //                 const children = [];
+    
+    //         for (let level of LEVELS) {
+    //             const child = {
+    //                 key: `${level.key}-severity`,
+    //                 button: []
+    //             } 
+    //             child.button.push(
+    //                 <Radio.Button
+    //                     key={`${level.key}-severity`}
+    //                     // disable radio button if severity level does not exist
+    //                     disabled={!existingSevs.includes(level.key)}
+    //                     value={level.key}>{capitalize(level.key)}
+    //                 </Radio.Button>
+    //             )
+    //             children.push(child);
+    //         }
+    //         this.setState({children})
+    // }
 
     handleChange = (e) => {
         // add scenario to obj so MainContainer knows which scenario is active
@@ -52,13 +95,9 @@ class Severity extends Component {
         this.setState({showTooltip: !this.state.showTooltip})
     }
 
-    handleMouseEnter = (e) => {
-        this.props.onSeverityHover(e);
-    }
+    handleMouseEnter = (e) => {this.props.onSeverityHover(e)}
 
-    handleMouseLeave= () => {
-        this.props.onSeverityHoverLeave();
-    }
+    handleMouseLeave= () => {this.props.onSeverityHoverLeave()}
 
     render() {
         const { severity, scenario, sevCount, isDisabled } = this.props; 
@@ -87,7 +126,7 @@ class Severity extends Component {
                     </TooltipHandler>
                 </div>
                 <Radio.Group
-                    value={severity.key}  // TODO: do I need this?
+                    value={severity.key} 
                     style={styles.Severity}
                     disabled={isDisabled}
                     onChange={this.handleChange}>

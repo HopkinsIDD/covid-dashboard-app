@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React, { Component, Fragment } from 'react'; 
 import { min, max, quantile } from 'd3-array';
 import { scaleLinear, scaleBand, scalePow } from 'd3-scale';

@@ -27,16 +27,12 @@ class MainContainer extends Component {
     };
 
     componentDidMount() {
-        // console.log('MainContainer componentDidMount')
         window.addEventListener('resize', this.updateGraphDimensions);
         window.addEventListener('resize', this.updateMapContainerDimensions);
 
         this.updateGraphDimensions();
         this.updateMapContainerDimensions();
-        
-        console.log('dataset', dataset)
-        // need to delete severity on mount in order to change Chart rendering
-        delete dataset['Scenario_A']['med'];
+
         this.setState({dataset}, () => {
             this.setState({dataLoaded: true});
         })
@@ -69,7 +65,6 @@ class MainContainer extends Component {
 
     handleCountySelect = (i) => {
         const dataset = require(`../store/geo${i.geoid}.json`);
-        // delete dataset['Scenario_A']['med'];
         this.setState({dataset, geoid: i.geoid})
     };
     

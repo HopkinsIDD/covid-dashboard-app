@@ -1,6 +1,8 @@
+import _ from 'lodash';
 import { timeDay } from 'd3-time';
 import { timeFormat, utcParse } from 'd3-time-format';
 import { addQuantiles } from '../utils/quantiles';
+import { LEVELS } from '../utils/constants';
 
 const parseDate = utcParse('%Y-%m-%d');
 
@@ -32,6 +34,23 @@ export function buildScenarioMap(dataset) {
     obj[scenario] = keys; 
   })
   return obj;
+}
+
+export function buildSeverities(scenarioMap, severityList, scenario) {
+  // populates severityList, ensures default severity exists for a given scenario
+  let defaultSev;
+  let i = 0;
+  while (!defaultSev) {
+      const level = LEVELS[i];
+      if (scenarioMap[scenario].includes(level.key)) {
+          defaultSev = _.cloneDeep(level); 
+      }
+      i++;
+  }
+  defaultSev.scenario = scenario;
+  severityList.push(defaultSev)
+
+  return severityList;
 }
 
 export function getConfBounds(dataset, scenarioList, severityList, stat, dates, idxMin, idxMax) {
