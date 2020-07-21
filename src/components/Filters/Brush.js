@@ -35,19 +35,12 @@ class Brush extends Component {
   }
 
   componentDidMount() {
-    // console.log('componentDidMount')
     this.setupBrush(this.props.series, this.props.dates, this.props.width, this.props.height);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // console.log('different series is ', this.props.series !== prevProps.series)
-    // console.log('different r0 is ', this.props.r0 !== prevProps.r0)
-    // console.log('different dimensions is', this.props.width !== prevProps.width )
-    // console.log('different dateThreshold is', this.props.dateThreshold !== prevProps.dateThreshold)
-    // console.log('different statThreshold is', this.props.statThreshold !== prevProps.statThreshold)
+
     if (this.props.width !== prevProps.width || this.props.height !== prevProps.height) {
-      // console.log('componentDidUpdate width height change');
-      // console.log('different dimensions is', this.props.width !== prevProps.width )
       const { series, dates, width, height } = this.props;
       const { lineGenerator } = prevState;
       this.updateSimPaths(lineGenerator, series, dates, width, height, false);
@@ -55,8 +48,6 @@ class Brush extends Component {
     }
 
     if (this.props.series !== prevProps.series) {
-      // console.log('different series is ', this.props.series !== prevProps.series)
-      // console.log('different animateTransition is ', this.props.animateTransition !== prevProps.animateTransition)
       const { series, dates, width, height, animateTransition } = this.props;
       const { lineGenerator } = prevState;
       this.updateSimPaths(lineGenerator, series, dates, width, height, animateTransition);
@@ -65,37 +56,28 @@ class Brush extends Component {
   }
 
   updateSimPaths = (lineGenerator, series, dates, width, height, animateTransition) => {
-    // console.log('updateSimPaths animateTransition is', animateTransition)
-    // const { lineGenerator } = this.state;
+    const updatedScales = this.getScales(series, dates, width, height)
+
     if (this.simPathsRef.current) {
       // update scale and data
-      const updatedScales = this.getScales(series, dates, width, height)
 
       lineGenerator.x((d,i) => updatedScales.xScale(dates[i]))
-      lineGenerator.y(d => {
-          // console.log(d)
-          // console.log(yScale(d))
-          return updatedScales.yScale(d)
-      })
+      lineGenerator.y(d => updatedScales.yScale(d))
     
       // generate simPaths from lineGenerator
       const simPaths = series.map( (d,i) => {
-          // console.log(i, typeof(d.vals))
           return lineGenerator(d.vals)
       })
 
       this.setState({ 
           series: series,
           dates: dates,
-          // xScale: this.props.xScale,
-          // yScale: this.props.yScale,
           lineGenerator: lineGenerator,
           simPaths: simPaths,
       })
     
       // get svg node
       const simPathsNode = select(this.simPathsRef.current)
-      // console.log(simPathsNode.selectAll('.simPath'))
       // update the paths with new data
       if (animateTransition) {
         simPathsNode.selectAll('.simPath')
@@ -104,7 +86,6 @@ class Brush extends Component {
             .duration(100)
             .ease(easeCubicOut)
                 .attr('stroke-opacity', 0)
-            
             .transition()
             .duration(700)
             .ease(easeCubicOut)
@@ -115,11 +96,7 @@ class Brush extends Component {
                 // set new vals to state
                 // console.log('finished animateTransition update')
                 this.setState({ 
-                    // series: series,
-                    // dates: dates,
-                    scales: updatedScales,
-                    // lineGenerator: lineGenerator,
-                    // simPaths: simPaths,
+                    scales: updatedScales
                 })
             })
       } else {
@@ -128,26 +105,26 @@ class Brush extends Component {
             .data(series)
             .attr("d", d => lineGenerator(d.vals))
             .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
-            .on("end", () => {
-                // set new vals to state
-                // console.log('finished no animateTransition update')
-                this.setState({ 
-                    // series: series,
-                    // dates: dates,
-                    scales: updatedScales,
-                    // lineGenerator: lineGenerator,
-                    // simPaths: simPaths,
-                })
-            })
         }
-
     }
   
-    // this.xAxis.scale(this.state.xScale);
     if (this.xAxisRef.current) {
+      console.log('updating brush xaxis')
+      this.xAxis.scale(updatedScales.xScale)
       const xAxisNode = select(this.xAxisRef.current)
       xAxisNode.call(this.xAxis);
     }
+    if (this.brushRef.current) {
+      this.brush.extent([
+            [margin.left, margin.top],
+            [this.props.width - margin.right, this.props.height - margin.bottom]
+      ])
+      const brushRefNode = select(this.brushRef.current)
+      brushRefNode.call(this.brush)
+        .call(this.brush.move, [ updatedScales.xScale(this.props.dateRange[0]), updatedScales.xScale(this.props.dateRange[1]) ])
+    }
+    // save new scales to state if transition doesn't animate
+    this.setState({ scales: updatedScales })
   }
 
   setupBrush = (series, dates, width, height) => {
@@ -159,7 +136,6 @@ class Brush extends Component {
     })
     // generate simPaths from lineGenerator
     const simPaths = series.map( (d) => {
-        // console.log(i, typeof(d.vals))
         return lineGenerator(d.vals)
     })
 
@@ -177,10 +153,6 @@ class Brush extends Component {
     }
 
     if (this.brushRef.current) {
-      // console.log(this.props.dateRange)
-      // console.log( updatedScales.xScale.range())
-      // console.log(updatedScales.xScale(this.props.dateRange[0]), updatedScales.xScale(this.props.dateRange[1]))
-      
       const brushRefNode = select(this.brushRef.current)
       brushRefNode.call(this.brush)
         .call(this.brush.move, [ updatedScales.xScale(this.props.dateRange[0]), updatedScales.xScale(this.props.dateRange[1]) ])
@@ -215,6 +187,7 @@ class Brush extends Component {
     }
     if (event.selection && event.sourceEvent !== null) {
       const [x1, x2] = event.selection;
+      const { series, dates, width, height } = this.props;
       const range = [this.state.scales.xScale.invert(x1), this.state.scales.xScale.invert(x2)];
       this.props.onBrushChange(range);
     }

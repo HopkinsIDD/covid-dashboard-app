@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
-import { margin } from '../utils/constants';
+import { margin, dimMultipliers } from '../utils/constants';
 
 import Search from './Search/Search'
 import MainGraph from './Graph/MainGraph';
@@ -44,8 +44,8 @@ class MainContainer extends Component {
     }
 
     updateGraphDimensions = () => {
-        const ratioH = 0.53;
-        const ratioW = window.innerWidth > 800 ? 0.6585 : 0.9; // account for mobile
+        const ratioH = dimMultipliers.graphDesktopH;
+        const ratioW = window.innerWidth > 800 ? dimMultipliers.graphDesktopW : dimMultipliers.graphMobileW; // account for mobile
 
         const graphH = window.innerHeight * ratioH;
         const graphW = (window.innerWidth * ratioW) - margin.yAxis; 
@@ -54,8 +54,8 @@ class MainContainer extends Component {
       }
 
     updateMapContainerDimensions = () => {
-        const ratioH = 0.35;
-        const ratioW = window.innerWidth > 800 ? 0.6585 : 1.8; // account for mobile 
+        const ratioH = dimMultipliers.mapDesktopH;
+        const ratioW = window.innerWidth > 800 ? dimMultipliers.graphDesktopW : dimMultipliers.mapMobileW; // account for mobile 
 
         const mapContainerH = window.innerHeight * ratioH;
         const mapContainerW = ((window.innerWidth * ratioW) - margin.yAxis) - (6 * (margin.left))
@@ -95,7 +95,7 @@ class MainContainer extends Component {
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
                     width={this.state.graphW - margin.left - margin.right}
-                    height={this.state.graphH * 1.15} 
+                    height={this.state.graphH * dimMultipliers.chartDesktopH} 
                 />}
 
                 {this.state.dataLoaded &&

@@ -4,18 +4,18 @@ import _ from 'lodash';
 import GraphContainer from './GraphContainer';
 import Brush from '../Filters/Brush';
 import Scenarios from '../Filters/Scenarios';
-import Indicators from '../Filters/Indicators';
-import SeverityContainer from '../Filters/SeverityContainer'
+import Indicators from '../Filters/Indicators.tsx';
+import SeverityContainer from '../Filters/SeverityContainer.tsx'
 import ActualSwitch from '../Filters/ActualSwitch';
 import R0 from '../Filters/R0';
-import ModeToggle from '../Filters/ModeToggle';
+import ModeToggle from '../Filters/ModeToggle.tsx';
 import Sliders from '../Filters/Sliders';
 
-import { styles, margin, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
 import { buildScenarios, buildScenarioMap, buildSeverities, getR0range, 
     getConfBounds, getActuals, filterR0 } from '../../utils/utils';
 import { getStatThreshold, getDateThreshold, flagSimsOverThreshold, 
     getExceedences, flagSims, filterByDate } from '../../utils/threshold';
+import { styles, margin, dimMultipliers, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
 import { utcParse } from 'd3-time-format';
 import { timeDay } from 'd3-time';
 
@@ -321,7 +321,6 @@ class MainGraph extends Component {
 
     handleBrushRange = (dateRange) => {
         const { seriesListForBrush, scenarioList, stat, severityList } = this.state;
-
         this.setState({
             dateRange, 
             animateTransition: false
@@ -448,7 +447,7 @@ class MainGraph extends Component {
                             height={80}
                             series={this.state.allDatesSeries}
                             dates={this.state.dates}
-                            x={margin.yAxis}
+                            x={margin.yAxis + (this.props.width * dimMultipliers.brushOffset)}
                             y={0}
                             animateTransition={this.state.animateTransition}
                             toggleAnimateTransition={this.toggleAnimateTransition}
