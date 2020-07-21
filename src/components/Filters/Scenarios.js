@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
+import { formatTitle } from '../../utils/utils';
 import { styles } from '../../utils/constants';
 
 class Scenarios extends Component {
@@ -28,7 +29,7 @@ class Scenarios extends Component {
             child.checkbox.push(
                 <Option
                     key={scenario.key}>
-                    {scenario.key.replace('_',' ')}
+                    {formatTitle(scenario.key)}
                 </Option>
             )
             children.push(child);
@@ -72,7 +73,7 @@ class Scenarios extends Component {
                         <Option
                             key={scenario.key}
                             disabled={scenario.disabled}>
-                            {scenario.key.replace('_',' ')}
+                            {formatTitle(scenario.key)}
                         </Option>
                     )
                     children.push(child);
@@ -99,7 +100,7 @@ class Scenarios extends Component {
                     child.checkbox.push(
                         <Option
                             key={scenario.key}>
-                            {scenario.key.replace('_',' ')}
+                            {formatTitle(scenario.key)}
                         </Option>
                     )
                     children.push(child);

@@ -3,7 +3,7 @@ import { Radio } from 'antd';
 import TooltipHandler from '../Filters/TooltipHandler';
 import _ from 'lodash';
 import { LEVELS, styles } from '../../utils/constants.js';
-import { capitalize } from '../../utils/utils.js';
+import { capitalize, formatTitle } from '../../utils/utils.js';
 
 class Severity extends Component {
     constructor(props) {
@@ -65,7 +65,7 @@ class Severity extends Component {
     //                 const children = [];
     
     //         for (let level of LEVELS) {
-    //             const child = {
+    //             const childreplace = {
     //                 key: `${level.key}-severity`,
     //                 button: []
     //             } 
@@ -102,7 +102,7 @@ class Severity extends Component {
     render() {
         const { severity, scenario, sevCount, isDisabled } = this.props; 
         const title = sevCount === 1 ?
-            'SEVERITY' : ('Severity for ' + scenario.name.replace('USA_','')) ;
+            'SEVERITY' : ('Severity for ' + formatTitle(scenario.name));
         return ( 
             <div
                 onMouseEnter={() => this.handleMouseEnter(scenario.name)}

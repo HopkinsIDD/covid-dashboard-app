@@ -7,7 +7,7 @@ import { easeCubicOut } from 'd3-ease'
 import _ from 'lodash';
 import { Tooltip } from 'antd';
 import Axis from '../Graph/Axis';
-import { getDateIdx, addCommas, capitalize } from '../../utils/utils';
+import { getDateIdx, addCommas, capitalize, formatTitle } from '../../utils/utils';
 import { margin } from '../../utils/constants'
 import colors, { gray, scenarioColorPalette } from '../../utils/colors';
 
@@ -324,7 +324,7 @@ class Chart extends Component {
             const tenth = quantileObj[stat][scenario][severity]['tenth']
             const ninetyith = quantileObj[stat][scenario][severity]['ninetyith']
             const severityText = stat === 'incidI' ? '' : `${capitalize(severity)} Severity<br>`;
-            const text =    `${scenarios[index].replace('_', ' ')}<br>` +
+            const text =    `${formatTitle(scenarios[index])}<br>` +
                             severityText +
                             `p90: ${addCommas(Math.ceil(ninetyith))}<br>` +
                             `median: ${addCommas(Math.ceil(median))}<br>` +

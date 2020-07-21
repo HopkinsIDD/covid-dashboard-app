@@ -4,7 +4,7 @@ import Chart from '../Chart/Chart';
 import CalloutLabel from '../Chart/CalloutLabel';
 import ChartLegend from '../Chart/ChartLegend';
 import { COUNTYNAMES } from '../../utils/geoids';
-import { getReadableDate } from '../../utils/utils';
+import { getReadableDate, formatTitle } from '../../utils/utils';
 
 class ChartContainer extends Component {
     constructor(props) {
@@ -89,8 +89,9 @@ class ChartContainer extends Component {
     }
 
     render() {
-        // TODO: replace('_') should be formatTitle()
-        const countyName = `${COUNTYNAMES[this.props.geoid]}`;
+        const { hoveredScenarioIdx } = this.state;
+        const { geoid, scenarios, datePickerActive } = this.props;
+        const countyName = `${COUNTYNAMES[geoid]}`;
         return (
             <Fragment>
                 <Row>
@@ -98,9 +99,9 @@ class ChartContainer extends Component {
                         <div className="scenario-title titleNarrow">{countyName}</div>
                         <div className="filter-label threshold-label callout callout-row">
                             {`Snapshot from `}
-                            <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
+                            <span className={datePickerActive ? 'underline-active' : 'bold underline'}>
                                 {getReadableDate(this.props.start)}</span>&nbsp;to&nbsp;
-                            <span className={this.props.datePickerActive ? 'underline-active' : 'bold underline'}>
+                            <span className={datePickerActive ? 'underline-active' : 'bold underline'}>
                                 {getReadableDate(this.props.end)}</span>
                         </div>
                     </Col>
@@ -109,12 +110,12 @@ class ChartContainer extends Component {
                 <Row justify="end">
                     <div className="widescreen-only">
                         <div className="chart-callout" style={{ display: 'block !important'}}>
-                            {this.state.hoveredScenarioIdx !== null &&
+                            {hoveredScenarioIdx !== null &&
                                 <CalloutLabel 
                                     classProps={'filter-label callout'}
                                     start={this.props.start}
                                     end={this.props.end}
-                                    scenario={this.props.scenarios[this.state.hoveredScenarioIdx].replace('_',' ')}
+                                    scenario={formatTitle(scenarios[hoveredScenarioIdx])}
                                     label={this.state.statLabel.toLowerCase()}
                                     median={this.state.median}
                                     tenth={this.state.tenth}

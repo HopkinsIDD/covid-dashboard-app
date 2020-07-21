@@ -146,4 +146,8 @@ export function capitalize(s) {
   return s.charAt(0).toUpperCase() + s.slice(1)
 }
 
+export function formatTitle(s) {
+  return s.replace('_',' ');
+}
+
 export const getReadableDate = timeFormat('%b %d, %Y');
