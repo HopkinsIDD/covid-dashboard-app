@@ -15,29 +15,23 @@ class SeverityContainer extends Component {
     }
 
     componentDidUpdate(prevProp) {
-        console.log('SeverityContainer componentDidUpdate')
         const { scenarioList, scenarioMap, severityList, stat } = this.props;
         const newChildren = [];
-
 
         if (prevProp.scenarioList !== scenarioList ||
             prevProp.scenarioMap !== scenarioMap ||
             prevProp.severityList !== severityList ||
             prevProp.stat !== stat ) {
 
-            // console.log('prevProp.scenarioMap', prevProp.scenarioMap)
-            // console.log('scenarioMap', scenarioMap)
             for (let i = 0; i < scenarioList.length; i++) {
                 const child = this.buildSeverity(i);
                 newChildren.push(child);
             }
             this.setState({ children: newChildren })    
-            // console.log('newChildren!', newChildren)
         }
     }
 
     buildSeverity(i) {
-        // console.log('buildingSeverity', i);
         const { scenarioList, scenarioMap, severityList, stat } = this.props;
         const keyVal = `${severityList[i].key}_${scenarioList[i].key}`;
 

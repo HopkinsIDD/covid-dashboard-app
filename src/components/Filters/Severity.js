@@ -15,9 +15,20 @@ class Severity extends Component {
     }
 
     componentDidMount() {
-        const children = [];
         const { existingSevs } = this.props;
+        this.initialize(existingSevs);
+    }
 
+    componentDidUpdate(prevProp) {
+        const { existingSevs } = this.props;
+        if (prevProp.existingSevs !== existingSevs ) {
+            this.initialize(existingSevs);
+        }
+    }
+
+    initialize = (existingSevs) => {
+        const children = [];
+    
         for (let level of LEVELS) {
             const child = {
                 key: `${level.key}-severity`,
@@ -35,52 +46,6 @@ class Severity extends Component {
         }
         this.setState({children})
     }
-
-    componentDidUpdate(prevProp) {
-        const { existingSevs } = this.props;
-
-        if (prevProp.existingSevs !== existingSevs ) {
-            const children = [];
-    
-            for (let level of LEVELS) {
-                const child = {
-                    key: `${level.key}-severity`,
-                    button: []
-                } 
-                child.button.push(
-                    <Radio.Button
-                        key={`${level.key}-severity`}
-                        // disable radio button if severity level does not exist
-                        disabled={!existingSevs.includes(level.key)}
-                        value={level.key}>{capitalize(level.key)}
-                    </Radio.Button>
-                )
-                children.push(child);
-            }
-            this.setState({children})
-        }
-    }
-
-    // initialize = () => {
-    //                 const children = [];
-    
-    //         for (let level of LEVELS) {
-    //             const childreplace = {
-    //                 key: `${level.key}-severity`,
-    //                 button: []
-    //             } 
-    //             child.button.push(
-    //                 <Radio.Button
-    //                     key={`${level.key}-severity`}
-    //                     // disable radio button if severity level does not exist
-    //                     disabled={!existingSevs.includes(level.key)}
-    //                     value={level.key}>{capitalize(level.key)}
-    //                 </Radio.Button>
-    //             )
-    //             children.push(child);
-    //         }
-    //         this.setState({children})
-    // }
 
     handleChange = (e) => {
         // add scenario to obj so MainContainer knows which scenario is active
