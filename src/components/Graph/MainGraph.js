@@ -4,11 +4,11 @@ import _ from 'lodash';
 import GraphContainer from './GraphContainer';
 import Brush from '../Filters/Brush';
 import Scenarios from '../Filters/Scenarios';
-import Indicators from '../Filters/Indicators';
-import SeverityContainer from '../Filters/SeverityContainer'
+import Indicators from '../Filters/Indicators.tsx';
+import SeverityContainer from '../Filters/SeverityContainer.tsx'
 import ActualSwitch from '../Filters/ActualSwitch';
 import R0 from '../Filters/R0';
-import ModeToggle from '../Filters/ModeToggle';
+import ModeToggle from '../Filters/ModeToggle.tsx';
 import Sliders from '../Filters/Sliders';
 
 import { styles, margin, dimMultipliers, numDisplaySims, STATS, LEVELS } from '../../utils/constants';

@@ -1,8 +1,29 @@
 import React, { Component } from 'react';
 import Severity from '../Filters/Severity';
+import { Scenario, ScenarioList, SeverityLevelList, Stat } from "../../utils/constantsTypes";
 
-class SeverityContainer extends Component {
-    constructor(props) {
+interface Child {
+    key: string,
+    scenario: Scenario,
+    severity: Array<any>, //FIXME how to type a component
+}
+
+interface Props {
+    scenarioList: ScenarioList,
+    severityList: SeverityLevelList,
+    stat: Stat,
+    onSeveritiesClick: (i: Child) => void,
+    onSeveritiesHover: () => void,
+    onSeveritiesHoverLeave: () => void,
+}
+
+interface State {
+    children: Array<Child>,
+}
+
+
+class SeverityContainer extends Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             children: []
@@ -14,7 +35,7 @@ class SeverityContainer extends Component {
         this.setState({ children: [child] })
     }
 
-    componentDidUpdate(prevProp) {
+    componentDidUpdate(prevProp: Props) {
         const { scenarioList, severityList, stat } = this.props;
         const newChildren = [];
 
@@ -26,24 +47,24 @@ class SeverityContainer extends Component {
                 const child = this.buildSeverity(i);
                 newChildren.push(child);
             }
-            this.setState({ children: newChildren })    
+            this.setState({ children: newChildren })
         }
     }
 
-    buildSeverity(i) {
+    buildSeverity(i: number) {
         const { scenarioList, severityList, stat } = this.props;
         const keyVal = `${severityList[i].key}_${scenarioList[i].key}`;
 
         // Infection values are the same across all severity
         const isDisabled = stat.name === 'Infections' ? true : false;
 
-        const child = {
+        const child: Child = {
             'key': keyVal,
             'scenario': scenarioList[i],
             'severity': []
         }
         child.severity.push(
-            <Severity 
+            <Severity
                 key={keyVal}
                 severity={severityList[i]}
                 scenario={scenarioList[i]}
@@ -52,17 +73,17 @@ class SeverityContainer extends Component {
                 onSeverityClick={this.handleSeverityClick}
                 onSeverityHover={this.handleSeverityHover}
                 onSeverityHoverLeave={this.handleSeverityHoverLeave}
-            />        
+            />
         )
         return child;
     }
 
-    handleSeverityClick = (i) => {
+    handleSeverityClick = (i: Child) => {
         this.props.onSeveritiesClick(i);
     }
 
-    handleSeverityHover = (i) => {
-        this.props.onSeveritiesHover(i);
+    handleSeverityHover = () => {
+        this.props.onSeveritiesHover();
     }
 
     handleSeverityHoverLeave = () => {

@@ -3,8 +3,17 @@ import { Radio } from 'antd';
 import TooltipHandler from './TooltipHandler';
 import { styles } from '../../utils/constants';
 
-class ModeToggle extends Component {
-    constructor(props) {
+interface Props {
+    showConfBounds: Boolean,
+    onConfClick: () => void,
+}
+
+interface State {
+    showTooltip: Boolean,
+}
+
+class ModeToggle extends Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             showTooltip: false
@@ -17,7 +26,7 @@ class ModeToggle extends Component {
 
     render() {
         const value = this.props.showConfBounds ? "confidence" : "exceedence";
-        return (  
+        return (
             <Fragment>
                 <div className="param-header">MODE
                     <TooltipHandler
@@ -46,7 +55,7 @@ class ModeToggle extends Component {
                     style={{ width: '70%', display: 'flex' }}
                     onChange={this.props.onConfClick}>
                     <Radio.Button
-                        key="exceedence" 
+                        key="exceedence"
                         style={styles.Radio}
                         value="exceedence">
                         Threshold Exceedence
@@ -57,8 +66,8 @@ class ModeToggle extends Component {
                         value="confidence">
                         Confidence Bounds
                     </Radio.Button>
-                </Radio.Group> 
-            </Fragment>  
+                </Radio.Group>
+            </Fragment>
         )
     }
 }

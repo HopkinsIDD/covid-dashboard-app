@@ -1,4 +1,4 @@
-import { CONFINTERVALS } from '../utils/constants';
+import { CONFINTERVALS } from './constants';
 
 function calcQuantile(sortedArr, percentile) {
     let result;
