@@ -31,14 +31,14 @@ class Map extends Component {
         }
         this.tooltipRef = React.createRef();
         this.mapRef = React.createRef();
-        this.zoom = zoom()
-            .scaleExtent([1,9])
-            .on('zoom', this.zoomed);
+        // this.zoom = zoom()
+        //     .scaleExtent([1,9])
+        //     .on('zoom', this.zoomed);
         
-        this.strokeWidthScale = scalePow().exponent(0.25)
-            .range([0.1, 0.8]).domain([9, 1])
-        this.strokeHoverWidthScale = scalePow().exponent(0.25)
-            .range([0.25, 1.8]).domain([9, 1])
+        // this.strokeWidthScale = scalePow().exponent(0.25)
+        //     .range([0.1, 0.8]).domain([9, 1])
+        // this.strokeHoverWidthScale = scalePow().exponent(0.25)
+        //     .range([0.25, 1.8]).domain([9, 1])
     }
     componentDidMount() {
         const gradientH = (this.props.width - gradientMargin) / 2;
@@ -203,17 +203,17 @@ class Map extends Component {
         this.setState({ hoveredCounty: null, countyIsHovered: false })
     }
 
-    zoomed = () => {
-        if (this.mapRef.current) {
-            // update paths on zoom event
-            const mapNode = select(this.mapRef.current)
-            mapNode.selectAll('path')
-                .attr('transform', event.transform)
-            const strokeWidth = this.strokeWidthScale(event.transform.k)
-            const strokeHoverWidth = this.strokeHoverWidthScale(event.transform.k)
-            this.setState({ strokeWidth, strokeHoverWidth })
-        }
-    }
+    // zoomed = () => {
+    //     if (this.mapRef.current) {
+    //         // update paths on zoom event
+    //         const mapNode = select(this.mapRef.current)
+    //         mapNode.selectAll('path')
+    //             .attr('transform', event.transform)
+    //         const strokeWidth = this.strokeWidthScale(event.transform.k)
+    //         const strokeHoverWidth = this.strokeHoverWidthScale(event.transform.k)
+    //         this.setState({ strokeWidth, strokeHoverWidth })
+    //     }
+    // }
 
     handleZoomIn = () => {
         if (this.mapRef.current) {

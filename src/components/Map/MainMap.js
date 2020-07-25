@@ -25,6 +25,14 @@ class MainMap extends Component {
             currentDateIndex: 0,
             dataLoaded: false
         };
+        this.zoom = zoom()
+            .scaleExtent([1,9])
+            .on('zoom', this.zoomed);
+        
+        this.strokeWidthScale = scalePow().exponent(0.25)
+            .range([0.1, 0.8]).domain([9, 1])
+        this.strokeHoverWidthScale = scalePow().exponent(0.25)
+            .range([0.25, 1.8]).domain([9, 1])
     };
 
     componentDidMount() {
