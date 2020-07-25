@@ -14,7 +14,7 @@ interface Props {
     scenarioMap: Array<any>, //FIXME ScenarioMap dict
     stat: Stat,
     onSeveritiesClick: (i: Child) => void,
-    onSeveritiesHover: () => void,
+    onSeveritiesHover: (i: string) => void,
     onSeveritiesHoverLeave: () => void,
 }
 
@@ -82,7 +82,7 @@ class SeverityContainer extends Component<Props, State> {
 
     handleSeverityClick = (i: Child) => {this.props.onSeveritiesClick(i)}
 
-    handleSeverityHover = (i) => {this.props.onSeveritiesHover(i)}
+    handleSeverityHover = (i: string) => {this.props.onSeveritiesHover(i)}
 
     handleSeverityHoverLeave = () => {this.props.onSeveritiesHoverLeave()}
 
