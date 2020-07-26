@@ -30,14 +30,15 @@ class MapContainer extends Component {
         this.initializeMaps(geoid, scenario, firstDate, selectedDate, width, height);
     }
 
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
 
         if (this.props.geoid !== prevProps.geoid 
             || this.props.selectedDate !== prevProps.selectedDate
             || this.props.countyBoundaries !== prevProps.countyBoundaries
             || this.props.scenario !== prevProps.scenario
             || this.props.width !== prevProps.width 
-            || this.props.height !== prevProps.height) {
+            || this.props.height !== prevProps.height
+            || this.state.strokeWidth !== prevState.strokeWidth) {
                 
             const { geoid, scenario, firstDate, selectedDate, width, height } = this.props;
             this.initializeMaps(geoid, scenario, firstDate, selectedDate, width, height);
