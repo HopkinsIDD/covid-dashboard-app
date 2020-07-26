@@ -3,7 +3,7 @@ import { Layout, Row, Col } from 'antd';
 import ChartContainer from './ChartContainer';
 import Scenarios from '../Filters/Scenarios';
 import DatePicker from './DatePicker';
-import ScaleToggle from './ScaleToggle';
+import ScaleToggle from './ScaleToggle.tsx';
 import IndicatorSelection from './IndicatorSelection';
 
 import { styles, STATS } from '../../utils/constants';
@@ -24,7 +24,7 @@ class MainChart extends Component {
             datePickerActive: false,
             start: new Date(),
             end: new Date(),
-            scale: 'power',
+            scale: 'power', // TS migration: ScaleTypeEnum
             dataLoaded: false
         };
     };
