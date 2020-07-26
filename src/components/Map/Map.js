@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { geoConicEqualArea, geoPath } from 'd3-geo';
-import { scaleLinear, scalePow } from 'd3-scale';
+import { scaleLinear } from 'd3-scale';
 import { max } from 'd3-array';
 import { zoom, zoomIdentity } from 'd3-zoom';
 import { select, event } from 'd3-selection';
@@ -25,20 +25,13 @@ class Map extends Component {
             yScale: scaleLinear(),
             countyIsHovered: false,
             hoveredCounty: null,
-            tooltipText: '',
-            strokeWidth: 0.8,
-            strokeHoverWidth: 1.8
+            tooltipText: ''
         }
         this.tooltipRef = React.createRef();
         this.mapRef = React.createRef();
         this.zoom = zoom()
             .scaleExtent([1,9])
             .on('zoom', this.zoomed);
-        
-        this.strokeWidthScale = scalePow().exponent(0.25)
-            .range([0.1, 0.8]).domain([9, 1])
-        this.strokeHoverWidthScale = scalePow().exponent(0.25)
-            .range([0.25, 1.8]).domain([9, 1])
     }
     componentDidMount() {
         const gradientH = (this.props.width - gradientMargin) / 2;
@@ -140,8 +133,8 @@ class Map extends Component {
                                 highColor : colors.gray,
                             strokeWidth: (hoveredCounty === d.properties.geoid) || 
                                 (geoid === d.properties.geoid) ? 
-                                this.state.strokeHoverWidth : 
-                                this.state.strokeWidth,
+                                this.props.strokeHoverWidth : 
+                                this.props.strokeWidth,
                             fill: d.properties[`${stat.key}Norm`].length > 0 ? 
                                 ramp(d.properties[`${stat.key}Norm`][dateIdx]) : 
                                 colors.lightGray,
@@ -204,15 +197,7 @@ class Map extends Component {
     }
 
     zoomed = () => {
-        if (this.mapRef.current) {
-            // update paths on zoom event
-            const mapNode = select(this.mapRef.current)
-            mapNode.selectAll('path')
-                .attr('transform', event.transform)
-            const strokeWidth = this.strokeWidthScale(event.transform.k)
-            const strokeHoverWidth = this.strokeHoverWidthScale(event.transform.k)
-            this.setState({ strokeWidth, strokeHoverWidth })
-        }
+        this.props.handleZoom(event)
     }
 
     handleZoomIn = () => {
