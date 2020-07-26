@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { STATS } from '../../utils/constants';
-import { getDateIdx, getReadableDate } from '../../utils/utils';
+import { getDateIdx, getReadableDate, formatTitle } from '../../utils/utils';
 import { COUNTYNAMES } from '../../utils/geoids';
 import { mapHighColorPalette, mapLowColorPalette } from '../../utils/colors';
 
@@ -66,7 +66,7 @@ class MapContainer extends Component {
     }
 
     render() {
-        const scenarioTitle = this.props.scenario.replace('_', ' ')
+        const scenarioTitle = formatTitle(this.props.scenario);
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <div>

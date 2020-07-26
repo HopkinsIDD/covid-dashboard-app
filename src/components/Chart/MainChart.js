@@ -7,7 +7,7 @@ import ScaleToggle from './ScaleToggle.tsx';
 import IndicatorSelection from './IndicatorSelection';
 
 import { styles, STATS } from '../../utils/constants';
-import { buildScenarios } from '../../utils/utils';
+import { buildScenarios, buildScenarioMap } from '../../utils/utils';
 import { utcParse } from 'd3-time-format'
 const parseDate = utcParse('%Y-%m-%d')
 
@@ -19,7 +19,8 @@ class MainChart extends Component {
             datasetChart: {},
             dates: [],
             SCENARIOS: [],
-            scenarioList: [],
+            scenarioList: [],   // selected scenarios in Chart view
+            scenarioMap: {},    // maps all scenarios to list of severities
             statList: [],
             datePickerActive: false,
             start: new Date(),
@@ -46,6 +47,7 @@ class MainChart extends Component {
         // instantiate scenarios, initial default indicators
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioList = SCENARIOS.map(s => s.name);
+        const scenarioMap = buildScenarioMap(dataset);
         const statList = STATS.slice(0,2)
 
         // instantiate start and end date (past 2 weeks) for summary stats
@@ -60,6 +62,7 @@ class MainChart extends Component {
             dates,
             SCENARIOS,
             scenarioList,
+            scenarioMap,
             statList,
             start,
         }, () => {
@@ -127,6 +130,7 @@ class MainChart extends Component {
                                 height={this.props.height} 
                                 dataset={this.state.datasetChart}
                                 scenarios={this.state.scenarioList}
+                                scenarioMap={this.state.scenarioMap}
                                 stats={this.state.statList}
                                 firstDate={this.state.dates[0]}
                                 start={this.state.start}

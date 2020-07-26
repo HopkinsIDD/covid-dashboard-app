@@ -3,7 +3,7 @@ import { Radio } from 'antd';
 import TooltipHandler from '../Filters/TooltipHandler';
 import _ from 'lodash';
 import { LEVELS, styles } from '../../utils/constants.js';
-import { capitalize } from '../../utils/utils.js';
+import { capitalize, formatTitle } from '../../utils/utils.js';
 
 class Severity extends Component {
     constructor(props) {
@@ -15,7 +15,20 @@ class Severity extends Component {
     }
 
     componentDidMount() {
+        const { existingSevs } = this.props;
+        this.initialize(existingSevs);
+    }
+
+    componentDidUpdate(prevProp) {
+        const { existingSevs } = this.props;
+        if (prevProp.existingSevs !== existingSevs ) {
+            this.initialize(existingSevs);
+        }
+    }
+
+    initialize = (existingSevs) => {
         const children = [];
+    
         for (let level of LEVELS) {
             const child = {
                 key: `${level.key}-severity`,
@@ -24,12 +37,13 @@ class Severity extends Component {
             child.button.push(
                 <Radio.Button
                     key={`${level.key}-severity`}
+                    // disable radio button if severity level does not exist
+                    disabled={!existingSevs.includes(level.key)}
                     value={level.key}>{capitalize(level.key)}
                 </Radio.Button>
             )
             children.push(child);
         }
-
         this.setState({children})
     }
 
@@ -46,18 +60,14 @@ class Severity extends Component {
         this.setState({showTooltip: !this.state.showTooltip})
     }
 
-    handleMouseEnter = (e) => {
-        this.props.onSeverityHover(e);
-    }
+    handleMouseEnter = (e) => {this.props.onSeverityHover(e)}
 
-    handleMouseLeave= () => {
-        this.props.onSeverityHoverLeave();
-    }
+    handleMouseLeave= () => {this.props.onSeverityHoverLeave()}
 
     render() {
         const { severity, scenario, sevCount, isDisabled } = this.props; 
         const title = sevCount === 1 ?
-            'SEVERITY' : ('Severity for ' + scenario.name.replace('USA_','')) ;
+            'SEVERITY' : ('Severity for ' + formatTitle(scenario.name));
         return ( 
             <div
                 onMouseEnter={() => this.handleMouseEnter(scenario.name)}

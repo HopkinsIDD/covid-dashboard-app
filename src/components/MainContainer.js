@@ -27,14 +27,12 @@ class MainContainer extends Component {
     };
 
     componentDidMount() {
-        // console.log('MainContainer componentDidMount')
         window.addEventListener('resize', this.updateGraphDimensions);
         window.addEventListener('resize', this.updateMapContainerDimensions);
 
         this.updateGraphDimensions();
         this.updateMapContainerDimensions();
         
-        console.log('dataset', dataset)
         this.setState({dataset}, () => {
             this.setState({dataLoaded: true});
         })

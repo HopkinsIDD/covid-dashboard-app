@@ -11,16 +11,16 @@ interface Child {
 interface Props {
     scenarioList: ScenarioList,
     severityList: SeverityLevelList,
+    scenarioMap: Array<any>, //FIXME ScenarioMap dict
     stat: Stat,
     onSeveritiesClick: (i: Child) => void,
-    onSeveritiesHover: () => void,
+    onSeveritiesHover: (i: string) => void,
     onSeveritiesHoverLeave: () => void,
 }
 
 interface State {
     children: Array<Child>,
 }
-
 
 class SeverityContainer extends Component<Props, State> {
     constructor(props: Props) {
@@ -36,10 +36,11 @@ class SeverityContainer extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProp: Props) {
-        const { scenarioList, severityList, stat } = this.props;
+        const { scenarioList, scenarioMap, severityList, stat } = this.props;
         const newChildren = [];
 
         if (prevProp.scenarioList !== scenarioList ||
+            prevProp.scenarioMap !== scenarioMap ||
             prevProp.severityList !== severityList ||
             prevProp.stat !== stat ) {
 
@@ -52,7 +53,7 @@ class SeverityContainer extends Component<Props, State> {
     }
 
     buildSeverity(i: number) {
-        const { scenarioList, severityList, stat } = this.props;
+        const { scenarioList, scenarioMap, severityList, stat } = this.props;
         const keyVal = `${severityList[i].key}_${scenarioList[i].key}`;
 
         // Infection values are the same across all severity
@@ -66,8 +67,9 @@ class SeverityContainer extends Component<Props, State> {
         child.severity.push(
             <Severity
                 key={keyVal}
-                severity={severityList[i]}
+                severity={severityList[i]} 
                 scenario={scenarioList[i]}
+                existingSevs={scenarioMap[scenarioList[i].key]}  // array of sev levels
                 isDisabled={isDisabled}
                 sevCount={severityList.length}
                 onSeverityClick={this.handleSeverityClick}
@@ -78,17 +80,11 @@ class SeverityContainer extends Component<Props, State> {
         return child;
     }
 
-    handleSeverityClick = (i: Child) => {
-        this.props.onSeveritiesClick(i);
-    }
+    handleSeverityClick = (i: Child) => {this.props.onSeveritiesClick(i)}
 
-    handleSeverityHover = () => {
-        this.props.onSeveritiesHover();
-    }
+    handleSeverityHover = (i: string) => {this.props.onSeveritiesHover(i)}
 
-    handleSeverityHoverLeave = () => {
-        this.props.onSeveritiesHoverLeave();
-    }
+    handleSeverityHoverLeave = () => {this.props.onSeveritiesHoverLeave()}
 
     render() {
         const { children } = this.state;

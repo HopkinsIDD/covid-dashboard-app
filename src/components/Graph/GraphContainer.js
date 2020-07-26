@@ -4,6 +4,7 @@ import Axis from './Axis';
 import ThresholdLabel from '../Graph/ThresholdLabel';
 import { scaleLinear, scaleUtc } from 'd3-scale';
 import { max, extent } from 'd3-array';
+import { formatTitle } from '../../utils/utils';
 import { margin } from '../../utils/constants';
 import { COUNTYNAMES } from '../../utils/geoids';
 
@@ -143,7 +144,7 @@ class GraphContainer extends Component {
               
               <div style={dimensions}></div>
                 {scenarioList.map((scenario, i) => {
-                    const scenarioTitle = scenario.name.replace('_', ' ');
+                    const scenarioTitle = formatTitle(scenario.name);
                     const isActive = scenario.name === scenarioHovered ? ' title-active' : '';
                     return (scenarioList && scenarioList.length > 1) ? 
                             <div key={scenario.key} style={{ width: width - margin.right}}>

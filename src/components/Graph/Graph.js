@@ -59,7 +59,6 @@ class Graph extends Component {
         }
 
         if (series !== prevProps.series) {
-            console.log('componentDidUpdate series change')
             const { lineGenerator, areaGenerator } = prevState;
             this.updateSimPaths(series, selectedDates, lineGenerator, animateTransition, width);
             if (confBounds && confBounds.length > 0) {
@@ -68,7 +67,6 @@ class Graph extends Component {
 
         const { xScale, yScale } = this.props;
         if (xScale !== prevProps.xScale || yScale !== prevProps.yScale) {
-            console.log('componentDidUpdate scale change')
             const { lineGenerator, areaGenerator } = prevState;
             this.updateSimPaths(series, selectedDates, lineGenerator, animateTransition, width);
             if (confBounds && confBounds.length > 0) {
@@ -270,7 +268,6 @@ class Graph extends Component {
 
     handleBetterSimMouseHover = (event) => {
         if (this.props.showConfBounds) return
-        // console.log('mousemove');
         event.preventDefault();
         const selector = `.graphSVG_${this.props.keyVal}`
         const node = document.querySelector(selector)
@@ -278,24 +275,19 @@ class Graph extends Component {
         point.x = event.clientX;
         point.y = event.clientY;
         point = point.matrixTransform(node.getScreenCTM().inverse());
-        // console.log(point)
         const xm = this.props.xScale.invert(point.x);
         const ym = this.props.yScale.invert(point.y);
-        // console.log(xm, ym);
         const i1 = bisectLeft(this.props.selectedDates, xm, 1);
         const i0 = i1 - 1;
         const i = xm - this.props.selectedDates[i0] > this.props.selectedDates[i1] - xm ? i1 : i0;
         const s = least(this.props.series, d => Math.abs(d.vals[i] - ym));
-        // console.log(s)
         if (s) {
             const hoveredIdx = this.props.series.findIndex( sim => sim.name === s.name)
-            // console.log(hoveredIdx)
             // we also want to find highest point of sim
             const peak = max(s.vals)
             const peakIndex = maxIndex(s.vals)
             const tooltipXPos = this.props.xScale(this.props.selectedDates[peakIndex])
             const tooltipYPos = this.props.yScale(peak)
-            // console.log(peakIndex, peak, tooltipXPos, tooltipYPos)
             this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `R0: ${s.r0}`, tooltipXPos, tooltipYPos })
         } 
     }
