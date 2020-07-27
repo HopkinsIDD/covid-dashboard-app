@@ -77,7 +77,7 @@ class Chart extends Component {
             const severities = scenarioMap[scenario]
             quantileObj[stat][scenario] = {};
             for (let severity of severities) {
-                const sumArray = dataset[scenario][severity][stat].sims.map(sim => {
+                const sumArray = dataset[scenario][severity][stat].map(sim => {
                     return sim.vals.slice(startIdx, endIdx).reduce((a, b) => a + b, 0)
                 } );
                 const minVal = min(sumArray)
