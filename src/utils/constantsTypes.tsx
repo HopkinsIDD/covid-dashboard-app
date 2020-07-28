@@ -30,8 +30,6 @@ export interface Scenario {
     disabled: boolean;
 }
 
-export type ScenarioList = Array<Scenario>
-
 export enum ViewEnum {
     chart = 'chart',
     map = 'map',

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Select } from 'antd';
 import { formatTitle } from '../../utils/utils';
 import { styles } from '../../utils/constants';
-import { Scenario, ScenarioList, ViewEnum, ViewType } from "../../utils/constantsTypes";
+import { Scenario, ViewEnum, ViewType } from "../../utils/constantsTypes";
 
 interface Child {
     key: string,
@@ -11,18 +11,18 @@ interface Child {
 
 
 interface Props {
-    scenarioList: ScenarioList,
+    scenarioList: Array<Scenario>,
     view: ViewType,
-    SCENARIOS: ScenarioList,
+    SCENARIOS: Array<Scenario>,
     scenario: Scenario,
-    onScenarioClick(scenarioList: ScenarioList): () => void,
-    onScenarioClickChart(scenarioList: ScenarioList): () => void,
+    onScenarioClick(scenarioList: Array<Scenario>): () => void,
+    onScenarioClickChart(scenarioList: Array<Scenario>): () => void,
     onScenarioClickMap(scenario: Scenario): () => void
 }
 
 interface State {
     children: Array<any>,
-    scenariosGraph: Array<any>
+    scenariosGraph: Array<Scenario>
 }
 
 class Scenarios extends Component<Props, State> {
