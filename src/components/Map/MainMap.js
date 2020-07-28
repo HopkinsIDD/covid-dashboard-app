@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
 import MapContainer from './MapContainer';
-import Scenarios from '../Filters/Scenarios';
+import Scenarios from '../Filters/Scenarios.tsx';
 import DateSlider from './DateSlider';
 import { styles } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
