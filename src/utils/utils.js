@@ -119,9 +119,11 @@ export function filterR0(
     const series = Array.from(
         dataset[scenarioList[i].key][severityList[i].key][stat.key]);
 
+    let filtered = series;
     const r0min = r0selected[0], r0max = r0selected[1];
-    const filtered = series.filter(s => s.r0 > r0min && s.r0 < r0max);
-
+    if (r0min !== r0max) {
+      filtered = series.filter(s => s.r0 > r0min && s.r0 < r0max);
+    } 
     // filter on numDisplaySims
     const displaySims = shuffle(filtered.map(s => s.name), numDisplaySims); 
     const seriesForBrush = filtered.filter(s => displaySims.includes(s.name));
