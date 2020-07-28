@@ -29,17 +29,3 @@ export interface Scenario {
     checked: boolean;
     disabled: boolean;
 }
-
-export enum SelectModeEnum {
-    chart = 'chart',
-    map = 'map',
-    graph = 'graph',
-    multiple = 'multiple',
-
-}
-
-export type SelectMode =
-    SelectModeEnum.chart |
-    SelectModeEnum.map |
-    SelectModeEnum.graph |
-    SelectModeEnum.multiple

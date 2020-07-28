@@ -2,7 +2,23 @@ import React, {Component} from 'react';
 import {Select} from 'antd';
 import {formatTitle} from '../../utils/utils';
 import {styles} from '../../utils/constants';
-import {Scenario, SelectModeEnum, SelectMode} from "../../utils/constantsTypes";
+import {Scenario} from "../../utils/constantsTypes";
+
+
+enum ScenariosModeEnum {
+    chart = 'chart',
+    map = 'map',
+    graph = 'graph',
+    multiple = 'multiple',
+
+}
+
+type ScenariosMode =
+    ScenariosModeEnum.chart |
+    ScenariosModeEnum.map |
+    ScenariosModeEnum.graph |
+    ScenariosModeEnum.multiple
+
 
 interface Child {
     key: string,
@@ -12,7 +28,7 @@ interface Child {
 
 interface Props {
     scenarioList: Array<Scenario>,
-    view: SelectMode,
+    view: ScenariosMode,
     SCENARIOS: Array<Scenario>,
     scenario: Scenario,
     onScenarioClick: (scenarioList: Array<Scenario>) => void,
@@ -64,7 +80,7 @@ class Scenarios extends Component<Props, State> {
 
     componentDidUpdate(prevProp: Props) {
 
-        if (this.props.view === SelectModeEnum.graph) {
+        if (this.props.view === ScenariosModeEnum.graph) {
             if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
                 prevProp.scenarioList !== this.props.scenarioList ||
                 prevProp.scenario !== this.props.scenario) {
@@ -104,7 +120,7 @@ class Scenarios extends Component<Props, State> {
                     children
                 })
             }
-        } else if (this.props.view === SelectModeEnum.chart) {
+        } else if (this.props.view === ScenariosModeEnum.chart) {
 
             if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
                 prevProp.scenarioList !== this.props.scenarioList) {
@@ -147,13 +163,13 @@ class Scenarios extends Component<Props, State> {
         }
 
         switch (this.props.view) {
-            case SelectModeEnum.graph:
+            case ScenariosModeEnum.graph:
                 this.props.onScenarioClick(event);
                 break;
-            case SelectModeEnum.chart:
+            case ScenariosModeEnum.chart:
                 this.props.onScenarioClickChart(event);
                 break;
-            case SelectModeEnum.map:
+            case ScenariosModeEnum.map:
                 this.props.onScenarioClickMap(event);
                 break;
         }
@@ -163,15 +179,15 @@ class Scenarios extends Component<Props, State> {
         let defaultScenario;
         let graphTags;
         switch (this.props.view) {
-            case SelectModeEnum.graph:
+            case ScenariosModeEnum.graph:
                 defaultScenario = [this.props.scenarioList[0].key];
                 graphTags = this.props.scenarioList.map(s => s.key);
                 break;
-            case SelectModeEnum.chart:
+            case ScenariosModeEnum.chart:
                 defaultScenario = this.props.SCENARIOS.map(s => s.name);
                 graphTags = this.props.scenarioList;
                 break;
-            case SelectModeEnum.map:
+            case ScenariosModeEnum.map:
                 defaultScenario = [this.props.scenario];
                 graphTags = defaultScenario;
                 break;
@@ -181,7 +197,7 @@ class Scenarios extends Component<Props, State> {
             <div>
                 <div className="param-header">SCENARIOS</div>
                 <Select
-                    mode={this.props.view === SelectModeEnum.map ? undefined : SelectModeEnum.multiple}
+                    mode={this.props.view === ScenariosModeEnum.map ? undefined : ScenariosModeEnum.multiple}
                     style={styles.Selector}
                     defaultValue={defaultScenario}
                     value={graphTags}
