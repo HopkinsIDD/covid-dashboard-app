@@ -71,8 +71,7 @@ class MainGraph extends Component {
         }
     };
 
-    // TODO: probably don't need to pass in severity as parameter
-    initialize = (dataset, stat, severity) => {
+    initialize = (dataset, stat) => {
         // initialize() trigged on mount and Dataset change
         const { dateRange } = this.state
 
@@ -107,11 +106,6 @@ class MainGraph extends Component {
             dataset, [SCENARIOS[0]], severityList, stat, dates, idxMin, idxMax)
         const actualList = getActuals(this.props.geoid, stat, [SCENARIOS[0]]);
 
-        console.log('dataset', dataset)
-        console.log('SCENARIOS[0]', SCENARIOS[0])
-        // console.log('sevList', sevList)
-        // console.log('severity', severity, 'firstSeverity', firstSeverity)
-        // console.log('stat', stat.key)
         const r0full = getR0range(dataset, SCENARIOS[0], sevList[0], stat);
         // seriesListForBrush used by handleBrush to initialize instead of R0 filtering 
         // series is updated and set to state in scenario, sev, stat, r0 change handlers
