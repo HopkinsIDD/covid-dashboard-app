@@ -30,7 +30,7 @@ export interface Scenario {
     disabled: boolean;
 }
 
-export enum ViewEnum {
+export enum SelectModeEnum {
     chart = 'chart',
     map = 'map',
     graph = 'graph',
@@ -38,8 +38,8 @@ export enum ViewEnum {
 
 }
 
-export type ViewType =
-    ViewEnum.chart |
-    ViewEnum.map |
-    ViewEnum.graph |
-    ViewEnum.multiple
+export type SelectMode =
+    SelectModeEnum.chart |
+    SelectModeEnum.map |
+    SelectModeEnum.graph |
+    SelectModeEnum.multiple

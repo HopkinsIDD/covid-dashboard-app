@@ -1,27 +1,27 @@
-import React, { Component } from 'react';
-import { Select } from 'antd';
-import { formatTitle } from '../../utils/utils';
-import { styles } from '../../utils/constants';
-import { Scenario, ViewEnum, ViewType } from "../../utils/constantsTypes";
+import React, {Component} from 'react';
+import {Select} from 'antd';
+import {formatTitle} from '../../utils/utils';
+import {styles} from '../../utils/constants';
+import {Scenario, SelectModeEnum, SelectMode} from "../../utils/constantsTypes";
 
 interface Child {
     key: string,
-    checkbox: Array<any>
+    checkbox: Array<any> // FIXME any should be of type Option Component
 }
 
 
 interface Props {
     scenarioList: Array<Scenario>,
-    view: ViewType,
+    view: SelectMode,
     SCENARIOS: Array<Scenario>,
     scenario: Scenario,
-    onScenarioClick(scenarioList: Array<Scenario>): () => void,
-    onScenarioClickChart(scenarioList: Array<Scenario>): () => void,
-    onScenarioClickMap(scenario: Scenario): () => void
+    onScenarioClick: (scenarioList: Array<Scenario>) => void,
+    onScenarioClickChart: (scenarioList: Array<Scenario>) => void,
+    onScenarioClickMap: (scenario: Scenario) => void
 }
 
 interface State {
-    children: Array<any>,
+    children: Array<Child>,
     scenariosGraph: Array<Scenario>
 }
 
@@ -44,7 +44,7 @@ class Scenarios extends Component<Props, State> {
             const child: Child = {
                 key: scenario.key,
                 checkbox: []
-            }
+            };
 
             child.checkbox.push(
                 // @ts-ignore value is not required
@@ -52,7 +52,7 @@ class Scenarios extends Component<Props, State> {
                     key={scenario.key}>
                     {formatTitle(scenario.key)}
                 </Option>
-            )
+            );
             children.push(child);
         }
 
@@ -64,7 +64,7 @@ class Scenarios extends Component<Props, State> {
 
     componentDidUpdate(prevProp: Props) {
 
-        if (this.props.view === ViewEnum.graph) {
+        if (this.props.view === SelectModeEnum.graph) {
             if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
                 prevProp.scenarioList !== this.props.scenarioList ||
                 prevProp.scenario !== this.props.scenario) {
@@ -79,7 +79,7 @@ class Scenarios extends Component<Props, State> {
                     } else {
                         return scenario.disabled = true;
                     }
-                })
+                });
                 const children = [];
                 const {Option} = Select;
 
@@ -87,7 +87,7 @@ class Scenarios extends Component<Props, State> {
                     const child: Child = {
                         key: scenario.key,
                         checkbox: []
-                    }
+                    };
                     child.checkbox.push(
                         // @ts-ignore value is not required
                         <Option
@@ -96,7 +96,7 @@ class Scenarios extends Component<Props, State> {
                         >
                             {formatTitle(scenario.key)}
                         </Option>
-                    )
+                    );
                     children.push(child);
                 }
                 this.setState({
@@ -104,7 +104,7 @@ class Scenarios extends Component<Props, State> {
                     children
                 })
             }
-        } else if (this.props.view === ViewEnum.chart) {
+        } else if (this.props.view === SelectModeEnum.chart) {
 
             if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
                 prevProp.scenarioList !== this.props.scenarioList) {
@@ -117,14 +117,14 @@ class Scenarios extends Component<Props, State> {
                     const child: Child = {
                         key: scenario.key,
                         checkbox: []
-                    }
+                    };
                     child.checkbox.push(
                         // @ts-ignore value is not required
                         <Option
                             key={scenario.key}>
                             {formatTitle(scenario.key)}
                         </Option>
-                    )
+                    );
                     children.push(child);
                 }
 
@@ -146,14 +146,14 @@ class Scenarios extends Component<Props, State> {
             return
         }
 
-        switch(this.props.view) {
-            case ViewEnum.graph:
+        switch (this.props.view) {
+            case SelectModeEnum.graph:
                 this.props.onScenarioClick(event);
                 break;
-            case ViewEnum.chart:
+            case SelectModeEnum.chart:
                 this.props.onScenarioClickChart(event);
                 break;
-            case ViewEnum.map:
+            case SelectModeEnum.map:
                 this.props.onScenarioClickMap(event);
                 break;
         }
@@ -162,16 +162,16 @@ class Scenarios extends Component<Props, State> {
     render() {
         let defaultScenario;
         let graphTags;
-        switch(this.props.view) {
-            case ViewEnum.graph:
+        switch (this.props.view) {
+            case SelectModeEnum.graph:
                 defaultScenario = [this.props.scenarioList[0].key];
                 graphTags = this.props.scenarioList.map(s => s.key);
                 break;
-            case ViewEnum.chart:
+            case SelectModeEnum.chart:
                 defaultScenario = this.props.SCENARIOS.map(s => s.name);
                 graphTags = this.props.scenarioList;
                 break;
-            case ViewEnum.map:
+            case SelectModeEnum.map:
                 defaultScenario = [this.props.scenario];
                 graphTags = defaultScenario;
                 break;
@@ -181,7 +181,7 @@ class Scenarios extends Component<Props, State> {
             <div>
                 <div className="param-header">SCENARIOS</div>
                 <Select
-                    mode={this.props.view === ViewEnum.map ? undefined : ViewEnum.multiple}
+                    mode={this.props.view === SelectModeEnum.map ? undefined : SelectModeEnum.multiple}
                     style={styles.Selector}
                     defaultValue={defaultScenario}
                     value={graphTags}
