@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {Select} from 'antd';
-import {formatTitle} from '../../utils/utils';
-import {styles} from '../../utils/constants';
-import {Scenario} from "../../utils/constantsTypes";
+import React, { Component } from 'react';
+import { Select } from 'antd';
+import { formatTitle } from '../../utils/utils';
+import { styles } from '../../utils/constants';
+import { Scenario } from "../../utils/constantsTypes";
 
 
 enum ScenariosModeEnum {
@@ -10,7 +10,6 @@ enum ScenariosModeEnum {
     map = 'map',
     graph = 'graph',
     multiple = 'multiple',
-
 }
 
 type ScenariosMode =
@@ -19,12 +18,10 @@ type ScenariosMode =
     ScenariosModeEnum.graph |
     ScenariosModeEnum.multiple
 
-
 interface Child {
     key: string,
     checkbox: Array<any> // FIXME any should be of type Option Component
 }
-
 
 interface Props {
     scenarioList: Array<Scenario>,
@@ -55,7 +52,6 @@ class Scenarios extends Component<Props, State> {
         const scenariosGraph = Array.from(this.props.SCENARIOS);
         const {Option} = Select;
 
-
         for (let scenario of scenariosGraph) {
             const child: Child = {
                 key: scenario.key,
@@ -84,7 +80,7 @@ class Scenarios extends Component<Props, State> {
             if (prevProp.SCENARIOS !== this.props.SCENARIOS ||
                 prevProp.scenarioList !== this.props.scenarioList ||
                 prevProp.scenario !== this.props.scenario) {
-                const {scenarioList} = this.props;
+                const { scenarioList } = this.props;
 
                 const keys = Object.values(scenarioList).map(scen => scen.key);
                 const scenariosGraph = Array.from(this.props.SCENARIOS);
@@ -127,7 +123,7 @@ class Scenarios extends Component<Props, State> {
 
                 const children = [];
                 const scenariosChart = Array.from(this.props.SCENARIOS);
-                const {Option} = Select;
+                const { Option } = Select;
 
                 for (let scenario of scenariosChart) {
                     const child: Child = {
