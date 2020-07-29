@@ -3,7 +3,7 @@ import { Layout, Row, Col } from 'antd';
 import _ from 'lodash';
 import GraphContainer from './GraphContainer';
 import Brush from '../Filters/Brush';
-import Scenarios from '../Filters/Scenarios';
+import Scenarios from '../Filters/Scenarios.tsx';
 import Indicators from '../Filters/Indicators.tsx';
 import SeverityContainer from '../Filters/SeverityContainer.tsx'
 import ActualSwitch from '../Filters/ActualSwitch';

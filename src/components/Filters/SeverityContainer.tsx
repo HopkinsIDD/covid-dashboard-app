@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Severity from '../Filters/Severity';
-import { Scenario, ScenarioList, SeverityLevelList, Stat } from "../../utils/constantsTypes";
+import { Scenario, SeverityLevelList, Stat } from "../../utils/constantsTypes";
 
 interface Child {
     key: string,
@@ -9,7 +9,7 @@ interface Child {
 }
 
 interface Props {
-    scenarioList: ScenarioList,
+    scenarioList: Array<Scenario>,
     severityList: SeverityLevelList,
     scenarioMap: Array<any>, //FIXME ScenarioMap dict
     stat: Stat,
@@ -67,7 +67,7 @@ class SeverityContainer extends Component<Props, State> {
         child.severity.push(
             <Severity
                 key={keyVal}
-                severity={severityList[i]} 
+                severity={severityList[i]}
                 scenario={scenarioList[i]}
                 existingSevs={scenarioMap[scenarioList[i].key]}  // array of sev levels
                 isDisabled={isDisabled}

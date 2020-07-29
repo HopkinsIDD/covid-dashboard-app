@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
 import ChartContainer from './ChartContainer';
-import Scenarios from '../Filters/Scenarios';
+import Scenarios from '../Filters/Scenarios.tsx';
 import DatePicker from './DatePicker';
 import ScaleToggle from './ScaleToggle.tsx';
 import IndicatorSelection from './IndicatorSelection';
