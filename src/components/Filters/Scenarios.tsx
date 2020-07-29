@@ -1,8 +1,8 @@
-import React, {Component} from 'react';
-import {Select} from 'antd';
-import {formatTitle} from '../../utils/utils';
-import {styles} from '../../utils/constants';
-import {Scenario} from "../../utils/constantsTypes";
+import React, { Component } from 'react';
+import { Select } from 'antd';
+import { formatTitle } from '../../utils/utils';
+import { styles } from '../../utils/constants';
+import { Scenario } from "../../utils/constantsTypes";
 
 
 enum ScenariosModeEnum {
@@ -53,7 +53,7 @@ class Scenarios extends Component<Props, State> {
     componentDidMount() {
         const children = [];
         const scenariosGraph = Array.from(this.props.SCENARIOS);
-        const {Option} = Select;
+        const { Option } = Select;
 
 
         for (let scenario of scenariosGraph) {
