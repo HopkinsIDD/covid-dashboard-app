@@ -10,7 +10,7 @@ class FileUploader extends Component {
         if (this.validateSize(file)) {
             reader.onload = () => {
                 const json = JSON.parse(reader.result);
-                const geoid = file.name.replace('geo','').replace('.json','');
+                const geoid = file.name.replace('.json','');
 
                 if (this.validateFile(json)) {
                     this.props.onUpload(json, geoid);

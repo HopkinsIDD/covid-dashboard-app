@@ -84,7 +84,7 @@ export function getActuals(geoid, stat, scenarioList) {
 
 export function getR0range(dataset, scenario, severity, stat) {
   const r0array = dataset[scenario.key][severity.key][stat.key]
-    .sims.map(sim => sim.r0);
+    .map(sim => sim.r0);
   const r0full = [Math.min(...r0array), Math.max(...r0array)];
   return r0full
 }
@@ -117,11 +117,13 @@ export function filterR0(
 
   for (let i = 0; i < scenarioList.length; i++) {
     const series = Array.from(
-        dataset[scenarioList[i].key][severityList[i].key][stat.key].sims);
+        dataset[scenarioList[i].key][severityList[i].key][stat.key]);
 
+    let filtered = series;
     const r0min = r0selected[0], r0max = r0selected[1];
-    const filtered = series.filter(s => s.r0 > r0min && s.r0 < r0max);
-
+    if (r0min !== r0max) {
+      filtered = series.filter(s => s.r0 > r0min && s.r0 < r0max);
+    } 
     // filter on numDisplaySims
     const displaySims = shuffle(filtered.map(s => s.name), numDisplaySims); 
     const seriesForBrush = filtered.filter(s => displaySims.includes(s.name));

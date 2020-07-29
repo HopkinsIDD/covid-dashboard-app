@@ -32,7 +32,7 @@ export function addQuantiles(dataset, scenario, severity, stat, dates) {
         confObj[interval] = [];
     }
     for (let d = 0; d < dates.length; d ++) {
-        const simObj = dataset[scenario][severity][stat].sims;
+        const simObj = dataset[scenario][severity][stat];
 
         const arrayByDay = [];
         for (let s = 0; s < simObj.length; s ++) {

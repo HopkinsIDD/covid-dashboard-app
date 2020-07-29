@@ -71,7 +71,7 @@ class MainGraph extends Component {
         }
     };
 
-    initialize = (dataset, stat, severity) => {
+    initialize = (dataset, stat) => {
         // initialize() trigged on mount and Dataset change
         const { dateRange } = this.state
 
@@ -84,13 +84,13 @@ class MainGraph extends Component {
         // firstSeverity need to be designated in case not all death rate LEVELS exist
         const dates = dataset[firstScenario].dates.map( d => parseDate(d));
         const series = dataset[firstScenario][firstSeverity][stat.key]
-            .sims.slice(0, numDisplaySims);
+            .slice(0, numDisplaySims);
         const severityList = buildSeverities(scenarioMap, [], firstScenario);
         const sevList = _.cloneDeep(severityList);
         sevList[0].scenario = firstScenario;
 
         // allSims used for R0 histogram
-        const allSims = dataset[firstScenario][firstSeverity][stat.key].sims;
+        const allSims = dataset[firstScenario][firstSeverity][stat.key];
 
         // initialize Threshold and slider ranges
         const idxMin = timeDay.count(dates[0], dateRange[0]);
@@ -106,7 +106,7 @@ class MainGraph extends Component {
             dataset, [SCENARIOS[0]], severityList, stat, dates, idxMin, idxMax)
         const actualList = getActuals(this.props.geoid, stat, [SCENARIOS[0]]);
 
-        const r0full = getR0range(dataset, SCENARIOS[0], severity, stat);
+        const r0full = getR0range(dataset, SCENARIOS[0], sevList[0], stat);
         // seriesListForBrush used by handleBrush to initialize instead of R0 filtering 
         // series is updated and set to state in scenario, sev, stat, r0 change handlers
         const seriesListForBrush = filterR0(
@@ -122,6 +122,7 @@ class MainGraph extends Component {
             allSims,
             seriesList: [filteredSeries],
             severityList: sevList,
+            severity: firstSeverity,
             seriesMax,
             seriesMin,
             statThreshold,
