@@ -9,7 +9,7 @@ import MainMap from './Map/MainMap';
 import Methodology from './Methodology';
 import About from './About';
 
-const dataset = require('../store/geo06085.json');
+const dataset = require('../store/06085.json');
 
 
 class MainContainer extends Component {
@@ -64,7 +64,7 @@ class MainContainer extends Component {
     }
 
     handleCountySelect = (i) => {
-        const dataset = require(`../store/geo${i.geoid}.json`);
+        const dataset = require(`../store/${i.geoid}.json`);
         this.setState({dataset, geoid: i.geoid})
     };
     
