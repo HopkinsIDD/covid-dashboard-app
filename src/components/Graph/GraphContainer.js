@@ -6,7 +6,7 @@ import { scaleLinear, scaleUtc } from 'd3-scale';
 import { max, extent } from 'd3-array';
 import { formatTitle } from '../../utils/utils';
 import { margin } from '../../utils/constants';
-import { COUNTYNAMES } from '../../utils/geoids';
+import { COUNTIES } from '../../utils/geoids';
 
 
 class GraphContainer extends Component {
@@ -132,7 +132,7 @@ class GraphContainer extends Component {
   render() {
       const { children } = this.state;
       const { scenarioList, scenarioHovered, width, stat } = this.props;
-      const countyName = `${COUNTYNAMES[this.props.geoid]}`;
+      const countyName = `${COUNTIES[this.props.geoid]}`;
       const dimensions = { width: margin.yAxis + margin.left, height: 40};
 
       return (
