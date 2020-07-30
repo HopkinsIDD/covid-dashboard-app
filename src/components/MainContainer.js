@@ -9,8 +9,32 @@ import MainMap from './Map/MainMap';
 import Methodology from './Methodology';
 import About from './About';
 
-const dataset = require('../store/06085.json');
 
+const dataset = require('../store/06085.json');
+const aws = require('aws-sdk');
+const config = require('../config.json');
+
+async function getS3Obj() {
+    try {
+        aws.config.setPromisesDependency();
+        aws.config.update({
+            accessKeyId: config.aws.accessKey,
+            secretAccessKey: config.aws.secretKey,
+            region: 'us-east-1'
+        })
+
+        const s3 = new aws.S3();
+        const response = await s3.listObjectsV2({
+            Bucket: 'covid-geoids'
+        }).promise();
+
+        console.log(response);
+
+    } catch (e) {
+        console.log('our error', e)
+    }
+    debugger;
+}
 
 class MainContainer extends Component {
     constructor(props) {
@@ -63,9 +87,10 @@ class MainContainer extends Component {
         this.setState({ mapContainerW, mapContainerH });
     }
 
-    handleCountySelect = (i) => {
-        const dataset = require(`../store/${i.geoid}.json`);
-        this.setState({dataset, geoid: i.geoid})
+    handleCountySelect = (geoid) => {
+        // const dataset = require(`../store/${geoid}.json`);
+        getS3Obj()
+        // this.setState({dataset, geoid})
     };
     
     handleUpload = (dataset, geoid) => {
