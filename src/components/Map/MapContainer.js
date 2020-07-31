@@ -18,13 +18,13 @@ class MapContainer extends Component {
             strokeHoverWidth: 1.8
         }
         this.mapRefContainer = React.createRef();
-        
+
         this.strokeWidthScale = scalePow().exponent(0.25)
             .range([0.1, 0.8]).domain([9, 1])
         this.strokeHoverWidthScale = scalePow().exponent(0.25)
             .range([0.25, 1.8]).domain([9, 1])
     }
-  
+
     componentDidMount() {
         const { geoid, scenario, firstDate, selectedDate, width, height } = this.props;
         this.initializeMaps(geoid, scenario, firstDate, selectedDate, width, height);
@@ -32,14 +32,14 @@ class MapContainer extends Component {
 
     componentDidUpdate(prevProps, prevState) {
 
-        if (this.props.geoid !== prevProps.geoid 
+        if (this.props.geoid !== prevProps.geoid
             || this.props.selectedDate !== prevProps.selectedDate
             || this.props.countyBoundaries !== prevProps.countyBoundaries
             || this.props.scenario !== prevProps.scenario
-            || this.props.width !== prevProps.width 
+            || this.props.width !== prevProps.width
             || this.props.height !== prevProps.height
             || this.state.strokeWidth !== prevState.strokeWidth) {
-                
+
             const { geoid, scenario, firstDate, selectedDate, width, height } = this.props;
             this.initializeMaps(geoid, scenario, firstDate, selectedDate, width, height);
         }
@@ -72,7 +72,7 @@ class MapContainer extends Component {
                     strokeHoverWidth={strokeHoverWidth}
                     handleZoom={this.handleZoom}
                 />
-            ) 
+            )
             children.push(child);
         }
         this.setState({ children });
@@ -95,10 +95,11 @@ class MapContainer extends Component {
         const countyName = `${COUNTYNAMES[this.props.geoid]}`;
         return (
             <div>
-                <div className="scenario-title titleNarrow">{countyName}</div> 
+                <div className="scenario-title titleNarrow">{countyName}</div>
                 <div className="scenario-title">{scenarioTitle}</div>
                 <div className="filter-label threshold-label callout callout-row">
                     {`Snapshot on `}
+                    {/*TS migration: Use getClassForActiveState(this.props.dateSliderActive)*/}
                     <span className={this.props.dateSliderActive ? 'underline-active' : 'bold underline'}>
                         {getReadableDate(this.props.selectedDate)}
                     </span>

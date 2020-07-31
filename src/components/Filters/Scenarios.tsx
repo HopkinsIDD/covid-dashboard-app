@@ -10,7 +10,6 @@ enum ScenariosModeEnum {
     map = 'map',
     graph = 'graph',
     multiple = 'multiple',
-
 }
 
 type ScenariosMode =

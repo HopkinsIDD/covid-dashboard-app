@@ -22,13 +22,13 @@ class ChartContainer extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.start !== this.props.start 
+        if (prevProps.start !== this.props.start
             || prevProps.end !== this.props.end
             || prevProps.dataset !== this.props.dataset
             || prevProps.scenarios !== this.props.scenarios
             || prevProps.stats !== this.props.stats
             || prevProps.scale !== this.props.scale
-            || prevProps.width !== this.props.width 
+            || prevProps.width !== this.props.width
             || prevProps.height !== this.props.height) {
 
             this.drawCharts();
@@ -44,7 +44,7 @@ class ChartContainer extends Component {
                 key: `${stat.key}-chart`,
                 chart: {},
             }
-            child.chart = 
+            child.chart =
                 <Chart
                     key={`${stat.key}-chart`}
                     dataset={dataset}
@@ -64,7 +64,7 @@ class ChartContainer extends Component {
                     scale={scale}
                 />
             children[stat.key] = child;
-        } 
+        }
         this.setState({children, selectedStats: stats}, () => {
             this.setState({
                 dataLoaded: true
@@ -99,8 +99,10 @@ class ChartContainer extends Component {
                         <div className="scenario-title titleNarrow">{countyName}</div>
                         <div className="filter-label threshold-label callout callout-row">
                             {`Snapshot from `}
+                            {/*TS migration: Use getClassForActiveState(datePickerActive)*/}
                             <span className={datePickerActive ? 'underline-active' : 'bold underline'}>
                                 {getReadableDate(this.props.start)}</span>&nbsp;to&nbsp;
+                            {/*TS migration: Use getClassForActiveState(datePickerActive)*/}
                             <span className={datePickerActive ? 'underline-active' : 'bold underline'}>
                                 {getReadableDate(this.props.end)}</span>
                         </div>
@@ -111,7 +113,7 @@ class ChartContainer extends Component {
                     <div className="widescreen-only">
                         <div className="chart-callout" style={{ display: 'block !important'}}>
                             {hoveredScenarioIdx !== null &&
-                                <CalloutLabel 
+                                <CalloutLabel
                                     classProps={'filter-label callout'}
                                     start={this.props.start}
                                     end={this.props.end}
@@ -145,4 +147,4 @@ class ChartContainer extends Component {
     }
 }
 
-export default ChartContainer 
+export default ChartContainer

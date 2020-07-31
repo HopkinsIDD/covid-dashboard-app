@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Severity from '../Filters/Severity';
-import { Scenario, SeverityLevelList, Stat } from "../../utils/constantsTypes";
+import { Scenario, SeverityLevel, Stat } from "../../utils/constantsTypes";
 
 interface Child {
     key: string,
@@ -10,7 +10,7 @@ interface Child {
 
 interface Props {
     scenarioList: Array<Scenario>,
-    severityList: SeverityLevelList,
+    severityList: Array<SeverityLevel>,
     scenarioMap: Array<any>, //FIXME ScenarioMap dict
     stat: Stat,
     onSeveritiesClick: (i: Child) => void,
