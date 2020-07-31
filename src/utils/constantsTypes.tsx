@@ -20,8 +20,6 @@ export interface SeverityLevel {
     name: string
 }
 
-export type SeverityLevelList = Array<SeverityLevel>
-
 export interface Scenario {
     id: number;
     key: any;

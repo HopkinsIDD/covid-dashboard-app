@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Graph from '../Graph/Graph';
 import Axis from './Axis';
-import ThresholdLabel from '../Graph/ThresholdLabel';
+import ThresholdLabel from '../Graph/ThresholdLabel.tsx';
 import { scaleLinear, scaleUtc } from 'd3-scale';
 import { max, extent } from 'd3-array';
 import { formatTitle } from '../../utils/utils';
@@ -52,7 +52,7 @@ class GraphContainer extends Component {
     // if the seriesList has changed, we want to remove existing graphs before drawing / updating
     // the way to solve this is by keeping track of scenarioChange click events and putting those in the graph keys
     // so that when the click events increment the keys change and the graph component remounts
-    if (prevProp.seriesList !== this.props.seriesList || 
+    if (prevProp.seriesList !== this.props.seriesList ||
         prevProp.showConfBounds !== this.props.showConfBounds ||
         prevProp.showActual !== this.props.showActual) {
         const graphWidth = scenarioList.length === 2 ? this.props.width / 2 : this.props.width;
@@ -68,7 +68,7 @@ class GraphContainer extends Component {
     const children = [];
     const { scenarioClickCounter } = this.props;
     for (let i = 0; i < scenarioList.length; i++) {
-        const showLegend = scenarioList.length === 1 || 
+        const showLegend = scenarioList.length === 1 ||
             (scenarioList.length > 1 && i === 1) ? true : false;
         const child = {
             key: `${scenarioList[i].key}_Graph_${scenarioClickCounter}`,
@@ -109,7 +109,7 @@ class GraphContainer extends Component {
         graphWidth,
         graphHeight,
         children,
-    })        
+    })
 }
 
   getScales = (seriesList, selectedDates, width, height) => {
@@ -141,19 +141,19 @@ class GraphContainer extends Component {
                   {`Daily ${stat.name}`}
               </div>
               <div className="graph-title-row">
-              
+
               <div style={dimensions}></div>
                 {scenarioList.map((scenario, i) => {
                     const scenarioTitle = formatTitle(scenario.name);
                     const isActive = scenario.name === scenarioHovered ? ' title-active' : '';
-                    return (scenarioList && scenarioList.length > 1) ? 
+                    return (scenarioList && scenarioList.length > 1) ?
                             <div key={scenario.key} style={{ width: width - margin.right}}>
-                                <div className={"scenario-title titleNarrow"}>{countyName}</div> 
+                                <div className={"scenario-title titleNarrow"}>{countyName}</div>
                                 <div className={"scenario-title" + isActive}>{scenarioTitle}</div>
                             </div>
                          :
                             <div key={scenario.key} style={{ width: width - margin.right}}>
-                                <div className="scenario-title titleNarrow">{countyName}</div> 
+                                <div className="scenario-title titleNarrow">{countyName}</div>
                                 <div className="scenario-title">{scenarioTitle}</div>
                             </div>
                 } )}
@@ -162,7 +162,7 @@ class GraphContainer extends Component {
                 <div style={dimensions}></div>
                     {children.map( (child, i) => {
                         return (
-                            scenarioList && 
+                            scenarioList &&
                             <ThresholdLabel
                                 key={`${child.key}-label`}
                                 classProps={'filter-label threshold-label callout'}
@@ -174,17 +174,17 @@ class GraphContainer extends Component {
                                 r0selected={this.props.r0selected}
                                 statSliderActive={this.props.statSliderActive}
                                 dateSliderActive={this.props.dateSliderActive} />
-                        )   
+                        )
                     })}
                 </div>
                 <div className="graph-container">
                   {this.state.scaleDomains &&
                   <Fragment>
-                        <svg 
+                        <svg
                             width={margin.yAxis}
-                            height={this.props.height} 
+                            height={this.props.height}
                         >
-                        <Axis 
+                        <Axis
                             width={this.state.graphWidth}
                             height={this.props.height}
                             orientation={'left'}
@@ -195,7 +195,7 @@ class GraphContainer extends Component {
                         </svg>
                         {children.map(child => {
                             return (
-                                <svg 
+                                <svg
                                     key={`graphSVG_${child.key}`}
                                     width={this.state.graphWidth}
                                     height={this.state.graphHeight}

@@ -1,22 +1,46 @@
 import React, { Component } from 'react';
 import TooltipHandler from '../Filters/TooltipHandler';
-import { addCommas, getReadableDate } from '../../utils/utils.js';
+import { addCommas, getReadableDate } from '../../utils/utils';
+import { getLabelForActiveState, LabelClassName, LabelClassNameEnum } from "../../utils/typeUtils";
 
-class ThresholdLabel extends Component {
-    constructor(props) {
+
+interface Props {
+    percExceedence: number,
+    onConfClick: () => void,
+    statThreshold: number,
+    dateThreshold: Date,
+    statSliderActive: boolean,
+    dateSliderActive: boolean,
+    classProps: string,
+    label: string,
+}
+
+interface State {
+    showTooltip: boolean,
+    activeClass: LabelClassName,
+    statClass: LabelClassName,
+    dateClass: LabelClassName,
+    chance: number,
+    val: string,
+    date: string,
+}
+
+class ThresholdLabel extends Component<Props, State> {
+
+    constructor(props: Props) {
         super(props);
         this.state = {
             showTooltip: false,
             chance: Math.round(100 * props.percExceedence),
             val: addCommas(Math.ceil(props.statThreshold / 100) * 100),
             date: getReadableDate(props.dateThreshold),
-            activeClass: 'bold underline',
-            statClass: 'bold underline',
-            dateClass: 'bold underline'
+            activeClass: LabelClassNameEnum.boldUnderline,
+            statClass: LabelClassNameEnum.boldUnderline,
+            dateClass: LabelClassNameEnum.boldUnderline
         }
     }
 
-    componentDidUpdate(prevProp) {
+    componentDidUpdate(prevProp: Props) {
         const { percExceedence, statThreshold, dateThreshold, statSliderActive, dateSliderActive } = this.props;
 
         if (percExceedence !== prevProp.percExceedence) {
@@ -30,12 +54,12 @@ class ThresholdLabel extends Component {
         )}
         if (statSliderActive !== prevProp.statSliderActive ||
             dateSliderActive !== prevProp.dateSliderActive) {
-            this.setState({ 
-                activeClass: statSliderActive || dateSliderActive ? 'underline-active' : 'bold underline',
-                statClass: statSliderActive ? 'underline-active' : 'bold underline',
-                dateClass: dateSliderActive ? 'underline-active' : 'bold underline',
+            this.setState({
+                activeClass: getLabelForActiveState(statSliderActive || dateSliderActive),
+                statClass: getLabelForActiveState(statSliderActive),
+                dateClass: getLabelForActiveState(dateSliderActive),
             }
-        )}    
+        )}
     }
 
     handleTooltipClick = () => {
@@ -59,9 +83,9 @@ class ThresholdLabel extends Component {
                     <div className="tooltip">&nbsp;&#9432;
                         {this.state.showTooltip &&
                         <span className="tooltip-text">
-                            This percentage is calculated using the remaining 
-                            simulation curves after filtering on all parameters 
-                            from the side menu, not on all possible simulation 
+                            This percentage is calculated using the remaining
+                            simulation curves after filtering on all parameters
+                            from the side menu, not on all possible simulation
                             curves available for this scenario.
                         </span> }
                     </div>
