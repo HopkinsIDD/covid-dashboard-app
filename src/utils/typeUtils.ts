@@ -5,6 +5,6 @@ export enum LabelClassNameEnum {
 
 export type LabelClassName =  'underline-active' | 'bold underline'
 
-export function getLabelForActiveState(isActive: boolean): LabelClassName  {
+export function getClassForActiveState(isActive: boolean): LabelClassNameEnum {
     return isActive ? LabelClassNameEnum.underlineActive : LabelClassNameEnum.boldUnderline
 }

@@ -99,7 +99,7 @@ class MapContainer extends Component {
                 <div className="scenario-title">{scenarioTitle}</div>
                 <div className="filter-label threshold-label callout callout-row">
                     {`Snapshot on `}
-                    {/*TS migration: Use getLabelIfActive(this.props.dateSliderActive)*/}
+                    {/*TS migration: Use getClassForActiveState(this.props.dateSliderActive)*/}
                     <span className={this.props.dateSliderActive ? 'underline-active' : 'bold underline'}>
                         {getReadableDate(this.props.selectedDate)}
                     </span>

@@ -99,10 +99,10 @@ class ChartContainer extends Component {
                         <div className="scenario-title titleNarrow">{countyName}</div>
                         <div className="filter-label threshold-label callout callout-row">
                             {`Snapshot from `}
-                            {/*TS migration: Use getLabelIfActive(datePickerActive)*/}
+                            {/*TS migration: Use getClassForActiveState(datePickerActive)*/}
                             <span className={datePickerActive ? 'underline-active' : 'bold underline'}>
                                 {getReadableDate(this.props.start)}</span>&nbsp;to&nbsp;
-                            {/*TS migration: Use getLabelIfActive(datePickerActive)*/}
+                            {/*TS migration: Use getClassForActiveState(datePickerActive)*/}
                             <span className={datePickerActive ? 'underline-active' : 'bold underline'}>
                                 {getReadableDate(this.props.end)}</span>
                         </div>

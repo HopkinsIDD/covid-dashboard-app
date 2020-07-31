@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TooltipHandler from '../Filters/TooltipHandler';
 import { addCommas, getReadableDate } from '../../utils/utils';
-import { getLabelForActiveState, LabelClassName, LabelClassNameEnum } from "../../utils/typeUtils";
+import { getClassForActiveState, LabelClassName, LabelClassNameEnum } from "../../utils/typeUtils";
 
 
 interface Props {
@@ -55,9 +55,9 @@ class ThresholdLabel extends Component<Props, State> {
         if (statSliderActive !== prevProp.statSliderActive ||
             dateSliderActive !== prevProp.dateSliderActive) {
             this.setState({
-                activeClass: getLabelForActiveState(statSliderActive || dateSliderActive),
-                statClass: getLabelForActiveState(statSliderActive),
-                dateClass: getLabelForActiveState(dateSliderActive),
+                activeClass: getClassForActiveState(statSliderActive || dateSliderActive),
+                statClass: getClassForActiveState(statSliderActive),
+                dateClass: getClassForActiveState(dateSliderActive),
             }
         )}
     }
