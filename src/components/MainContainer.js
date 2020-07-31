@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
-import { margin, dimMultipliers } from '../utils/constants';
-
+import { defaultGeoid, margin, dimMultipliers } from '../utils/constants';
+import { fetchGeoJSON } from '../utils/fetch';
 import Search from './Search/Search'
 import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
@@ -10,39 +10,13 @@ import Methodology from './Methodology';
 import About from './About';
 
 
-const dataset = require('../store/06085.json');
-const aws = require('aws-sdk');
-const config = require('../config.json');
-
-async function getS3Obj(geoid) {
-    try {
-        aws.config.setPromisesDependency();
-        aws.config.update({
-            accessKeyId: config.aws.accessKey,
-            secretAccessKey: config.aws.secretKey,
-            region: 'us-east-1'
-        })
-
-        const s3 = new aws.S3();
-        const response = await s3.getObject({
-            Bucket: 'covid-scenario-dashboard',
-            Key: `json-files/${geoid}.json`
-        }).promise();
-
-        return JSON.parse(response.Body.toString('utf-8'));
-
-    } catch (e) {
-        console.log('our error', e)
-    }
-}
-
 class MainContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
             dataset: {},
             dataLoaded: false, 
-            geoid: '06085', 
+            geoid: defaultGeoid, 
             graphW: 0,
             graphH: 0,
             mapContainerW: 0,
@@ -57,9 +31,11 @@ class MainContainer extends Component {
         this.updateGraphDimensions();
         this.updateMapContainerDimensions();
         
-        this.setState({dataset}, () => {
-            this.setState({dataLoaded: true});
-        })
+        const { geoid } = this.state;
+        fetchGeoJSON(geoid)
+            .then(dataset => this.setState({dataset}))
+            .catch(e => console.log('Fetch was problematic: ' + e.message))
+            .then(() => this.setState({dataLoaded: true}));
     };
 
     componentWillUnmount() {
@@ -93,7 +69,9 @@ class MainContainer extends Component {
     }
 
     handleCountySelect = (geoid) => {
-        getS3Obj(geoid).then(dataset => this.setState({dataset, geoid}));
+        fetchGeoJSON(geoid)
+            .then(dataset => this.setState({dataset, geoid}))
+            .catch(e => console.log('Fetch was problematic: ' + e.message));
     };
     
     handleUpload = (dataset, geoid) => {
