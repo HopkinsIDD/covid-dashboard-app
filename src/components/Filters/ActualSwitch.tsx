@@ -3,9 +3,13 @@ import { Row, Switch } from 'antd';
 import TooltipHandler from './TooltipHandler';
 import { styles } from '../../utils/constants';
 
+interface ActualObj {
+    date: Date,
+    val: number
+}
+
 interface Props {
-    //TODO: should an interface for this inner object be created?
-    actualList: Array<Array<object>>, 
+    actualList: Array<Array<ActualObj>>, 
     onChange: () => void,
 }
 
