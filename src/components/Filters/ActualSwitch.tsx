@@ -3,6 +3,7 @@ import { Row, Switch } from 'antd';
 import TooltipHandler from './TooltipHandler';
 import { styles } from '../../utils/constants';
 
+// TODO: use this interface in utils.js file for TS migration
 interface ActualObj {
     date: Date,
     val: number
