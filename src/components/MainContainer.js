@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { margin, dimMultipliers } from '../utils/constants';
 
-import Search from './Search/Search'
+import Search from './Search/Search.tsx'
 import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
 import MainMap from './Map/MainMap';

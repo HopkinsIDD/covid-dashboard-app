@@ -27,3 +27,11 @@ export interface Scenario {
     checked: boolean;
     disabled: boolean;
 }
+
+export type GeoId = string
+
+export type County = {
+    geoid: GeoId,
+    name: string,
+    usps: string
+}
