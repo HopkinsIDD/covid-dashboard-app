@@ -1,0 +1,48 @@
+# This workflow will do a clean install of node dependencies 
+# Build the static artifacts from the source code on a specific version of node
+# Configure AWS credentials
+# Sync and deploy artifacts to s3 bucket
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: Node.js Build Static Artifacts and Deploy to Amazon S3
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [6.x]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+        
+    - name: Clean install of node dependencies 
+      run: npm ci
+      
+    - name: Build static artifacts
+      run: npm run build --if-present
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-2
+
+    - name: Copy build directory files to AWS s3 bucket
+      run: |
+        cd build
+        aws s3 sync . s3://covid-scenario-dashboard --exclude ".DS_Store"
+        echo "synced with s3 bucket"
