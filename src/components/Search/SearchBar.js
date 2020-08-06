@@ -17,19 +17,16 @@ class SearchBar extends Component {
         const children = [];
         const { Option } = Select;
 
-        for (let county of COUNTIES) {
+        for (const [key, value] of Object.entries(COUNTIES)) {
             const child = {
-                key: `${county.geoid}-county`,
+                key: `${key}-county`,
                 button: []
             } 
-            const label = county.geoid.length === 2 ? county.name :
-                `${county.name}, ${county.usps}`;
-
             child.button.push(
                 <Option
-                    key={`${county.geoid}-county`}
-                    value={county.geoid}>
-                    {label}
+                    key={`${key}-county`}
+                    value={key}>
+                    {value}
                 </Option>
             )
             children.push(child);
@@ -38,21 +35,15 @@ class SearchBar extends Component {
     }
 
     handleCountySelect = (event) => {
-        console.log('county select')
-
-        const item = COUNTIES.filter(county => county.geoid === event)[0];
-
-        this.props.onCountySelect(item);
-        this.setState({
-            countyName: `${item.name}, ${item.usps}`
-        })
+        this.props.onCountySelect(event);
+        this.setState({countyName: COUNTIES[event]})
     }
 
     render() {
         return (
             <Select
                 showSearch
-                placeholder="Search for your state or county"
+                placeholder="Search for your county"
                 optionFilterProp="children"
                 style={this.props.style}
                 size={this.props.size}
