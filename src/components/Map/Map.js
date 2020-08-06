@@ -74,10 +74,14 @@ class Map extends Component {
             // check to see if stats exist for this county
             if (statsForCounty[geoid]) {
                 statArray = statsForCounty[geoid][scenario][stat.key]
-                normalizedStatArray = statArray.map( value => {
-                    return (value / population) * 10000
-                })
-                normalizedStatsAll.push(normalizedStatArray)
+                if (statArray) {
+                    normalizedStatArray = statArray.map( value => {
+                        return (value / population) * 10000
+                    })
+                    normalizedStatsAll.push(normalizedStatArray)
+                } else {
+                    console.log('Missing a stat key')
+                }
             } 
             countyBoundaries.features[i].properties[stat.key] = statArray
             countyBoundaries.features[i].properties[`${stat.key}Norm`] = normalizedStatArray

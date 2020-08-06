@@ -13,7 +13,7 @@ class MapContainer extends Component {
         this.state = {
             children: [],
             scaleColors: [],
-            numMaps: 4, // number of individual maps to display in Map View
+            numMaps: 3, // number of individual maps to display in Map View
             strokeWidth: 0.8,
             strokeHoverWidth: 1.8
         }

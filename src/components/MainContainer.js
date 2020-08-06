@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { defaultGeoid, margin, dimMultipliers } from '../utils/constants';
-import { fetchGeoJSON } from '../utils/fetch';
+import { fetchJSON } from '../utils/fetch';
 import Search from './Search/Search'
 import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
-// import MainMap from './Map/MainMap';
+import MainMap from './Map/MainMap';
 import Methodology from './Methodology';
 import About from './About';
 
@@ -32,7 +32,7 @@ class MainContainer extends Component {
         this.updateMapContainerDimensions();
         
         const { geoid } = this.state;
-        fetchGeoJSON(geoid)
+        fetchJSON(geoid)
             .then(dataset => this.setState({dataset}))
             .catch(e => console.log('Fetch was problematic: ' + e.message))
             .then(() => this.setState({dataLoaded: true}));
@@ -69,7 +69,7 @@ class MainContainer extends Component {
     }
 
     handleCountySelect = (geoid) => {
-        fetchGeoJSON(geoid)
+        fetchJSON(geoid)
             .then(dataset => this.setState({dataset, geoid}))
             .catch(e => console.log('Fetch was problematic: ' + e.message));
     };
@@ -104,13 +104,13 @@ class MainContainer extends Component {
                     height={this.state.graphH * dimMultipliers.chartDesktopH} 
                 />}
 
-                {/* {this.state.dataLoaded &&
+                {this.state.dataLoaded &&
                 <MainMap
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
                     width={this.state.mapContainerW - margin.left - margin.right}
                     height={this.state.mapContainerH}
-                />} */}
+                />}
                 
                 <Methodology />
                 <About />

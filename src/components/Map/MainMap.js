@@ -8,6 +8,7 @@ import { buildScenarios } from '../../utils/utils';
 import { utcParse, timeFormat } from 'd3-time-format'
 
 const statsForMap = require('../../store/statsForMap.json')
+console.log('statsForMap', statsForMap)
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
 
