@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
-import { STATS } from '../../utils/constants';
 import { getDateIdx, getReadableDate, formatTitle } from '../../utils/utils';
 import { COUNTIES } from '../../utils/geoids';
 import { mapHighColorPalette, mapLowColorPalette } from '../../utils/colors';
+import { numMaxMaps } from '../../utils/constants';
 import { scalePow } from 'd3-scale';
 import { select } from 'd3-selection';
+
 
 class MapContainer extends Component {
     constructor(props) {
@@ -13,7 +14,6 @@ class MapContainer extends Component {
         this.state = {
             children: [],
             scaleColors: [],
-            numMaps: 3, // number of individual maps to display in Map View
             strokeWidth: 0.8,
             strokeHoverWidth: 1.8
         }
@@ -47,10 +47,12 @@ class MapContainer extends Component {
 
     initializeMaps = (geoid, scenario, firstDate, selectedDate, width, height) => {
         const children = [];
+        const { STATS } = this.props;
+        const { strokeWidth, strokeHoverWidth } = this.state;
         const dateIdx = getDateIdx(firstDate, selectedDate);
-        const { numMaps, strokeWidth, strokeHoverWidth } = this.state;
 
-        for (let stat of STATS.slice(0, numMaps)) {
+        // limit number of individual maps to numMaxNaps
+        for (let stat of STATS.slice(0, numMaxMaps)) {
             const child = {
                 key: `${stat.key}-map`,
                 map: [],
@@ -79,7 +81,6 @@ class MapContainer extends Component {
     }
 
     handleZoom = (event) => {
-        // console.log(event)
         if (this.mapRefContainer.current) {
             const mapNode = select(this.mapRefContainer.current)
             mapNode.selectAll('path')
