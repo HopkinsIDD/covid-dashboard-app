@@ -1,14 +1,13 @@
 import React, { Component, Fragment } from 'react';
-import { Layout, Row, Col } from 'antd';
+import { Layout, Row, Col, Spin, Alert } from 'antd';
 import MapContainer from './MapContainer';
 import Scenarios from '../Filters/Scenarios.tsx';
 import DateSlider from './DateSlider';
 import { styles } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
+import { fetchJSON } from '../../utils/fetch';
 import { utcParse, timeFormat } from 'd3-time-format'
 
-const statsForMap = require('../../store/statsForMap.json')
-console.log('statsForMap', statsForMap)
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
 
@@ -24,13 +23,27 @@ class MainMap extends Component {
             countyBoundaries: { "type": "FeatureCollection", "features": []},
             statsForCounty: {},
             currentDateIndex: 0,
-            dataLoaded: false
+            dataLoaded: false,
+            statsLoading: true
         };
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         const { geoid, dataset } = this.props;
-        this.initializeMap(geoid, dataset)
+        const state = geoid.slice(0, 2);
+        
+        try {
+            this.setState({statsLoading: true});
+            const statsForMap = await fetchJSON('statsForMap');
+            this.setState({statsForCounty: statsForMap[state]});
+            this.initializeMap(geoid, dataset)
+        } catch (e) {
+            console.log('Fetch was problematic: ' + e.message)
+        } 
+        finally {
+            // loading finishes if call is successful or fails
+            this.setState({statsLoading: false});
+        }
     };
 
     componentDidUpdate(prevProp) {
@@ -51,7 +64,6 @@ class MainMap extends Component {
         // instantiate stats and boundaries given geoid
         const state = geoid.slice(0, 2);
         const countyBoundaries = require('../../store/countyBoundaries.json')[state];
-        const statsForCounty = statsForMap[state];
         const currentDateIndex = dates
             .findIndex(date => formatDate(date) === formatDate(new Date()));
 
@@ -61,7 +73,6 @@ class MainMap extends Component {
             SCENARIOS,
             scenario,
             countyBoundaries,
-            statsForCounty,
             currentDateIndex,
         }, () => {
             this.setState({dataLoaded: true});
@@ -83,6 +94,9 @@ class MainMap extends Component {
     render() {
         const { Content } = Layout;
         const { dates, currentDateIndex, SCENARIOS } = this.state;
+        const { statsLoading, dataLoaded, statsForCounty } = this.state;
+        const statsLen = Object.keys(statsForCounty).length;
+
         return (
             <Content id="geographic-map" style={styles.ContainerGray}>
                 <Col className="gutter-row container">
@@ -103,6 +117,8 @@ class MainMap extends Component {
                 <Row gutter={styles.gutter}>
                     <Col className="gutter-row container" style={styles.MapContainer}>
                         <div className="map-container">
+                            {/* Loaded Map, statsForCounty has been fetched */}
+                            {dataLoaded && statsLen > 0 &&
                             <MapContainer
                                 geoid={this.props.geoid}
                                 dataset={this.state.datasetMap}
@@ -112,18 +128,27 @@ class MainMap extends Component {
                                 firstDate={dates[0]}
                                 selectedDate={dates[currentDateIndex]}
                                 countyBoundaries={this.state.countyBoundaries}
-                                statsForCounty={this.state.statsForCounty}
+                                statsForCounty={statsForCounty}
                                 dateSliderActive={this.state.dateSliderActive}
-                            />
+                            />}
+                            {/* Loading finished but statsForCounty is undefined */}
+                            {!statsLoading && statsLen === 0 && 
+                                <Spin tip="Loading...">
+                                    <Alert
+                                    message="Data Unavailable"
+                                    description="Geographic data is unavailable for selected county."
+                                    type="info"
+                                    />
+                                </Spin>}
                         </div>
                     </Col>
 
                     <Col className="gutter-row filters"> 
-                        {this.state.dataLoaded &&
+                        {dataLoaded &&
                         <Fragment>
                             <Scenarios
                                 view="map"
-                                // temporary fix for different scenario array lengths between dataset and map
+                                // TODO: temporary fix for different scenario array lengths between dataset and map
                                 SCENARIOS={SCENARIOS.length > 3 ? SCENARIOS.slice(0, 3) : SCENARIOS}
                                 scenario={this.state.scenario}
                                 onScenarioClickMap={this.handleScenarioClick}
