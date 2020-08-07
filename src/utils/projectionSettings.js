@@ -1,12 +1,12 @@
 // from https://github.com/vis4/d3-geo-state-plane/blob/master/state-plane.js
 
-var prj = {
+export const prj = {
   merc: 'mercator',
   tmerc: 'transverseMercator',
   lcc: 'conicConformal'
 };
 
-var statePlaneDef = {
+export const STATEPLANES = {
   // "AL" EPSG:26729 - http://spatialreference.org/ref/epsg/26729/ 
   "01": { "proj": "tmerc", "rotate": [85.83333, -30.5], "bounds": [[-0.039122,-0.079084],[0.013939,0.004511]] },
   // "AK" ESRI:102006 - http://spatialreference.org/ref/esri/102006/
