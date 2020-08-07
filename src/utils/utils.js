@@ -73,9 +73,12 @@ export function getActuals(geoid, stat, scenarioList) {
     const indicator = stat.name.toLowerCase();
     const actualJSON = require('../store/actuals.json');
     if (Object.keys(actualJSON).includes(indicator)) {
+      // TODO: add more elegant catch if doesn't exist
+      if (actualJSON[indicator][geoid]) {
         actual = actualJSON[indicator][geoid].map( d => {
             return { date: parseDate(d.date), val: d.val}
         });
+      }
     }
     actualList.push(actual);
   }
