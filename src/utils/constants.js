@@ -13,9 +13,10 @@ export const defaultGeoid = '06085';
 export const STATS = [
     {'id': 1, 'key': 'incidH', 'name': 'Hospitalizations'},
     {'id': 2, 'key': 'incidD', 'name': 'Deaths'},
-    {'id': 3, 'key': 'incidI', 'name': 'Infections'},
-    {'id': 4, 'key': 'incidICU', 'name': 'ICU Cases'},
-    {'id': 5, 'key': 'incidVent', 'name': 'Ventilators Used'}
+    {'id': 3, 'key': 'incidC', 'name': 'Confirmed Cases'},
+    // {'id': 3, 'key': 'incidI', 'name': 'Infections'},
+    // {'id': 4, 'key': 'incidICU', 'name': 'ICU Cases'},
+    // {'id': 5, 'key': 'incidVent', 'name': 'Ventilators Used'}
 ];
 
 export const LEVELS = [
