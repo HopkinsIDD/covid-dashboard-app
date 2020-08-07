@@ -32,6 +32,7 @@ class MainContainer extends Component {
         this.updateMapContainerDimensions();
         
         const { geoid } = this.state;
+        // TODO: implement async/await similar to MainMap componentDidMount
         fetchJSON(geoid)
             .then(dataset => this.setState({dataset}))
             .catch(e => console.log('Fetch was problematic: ' + e.message))

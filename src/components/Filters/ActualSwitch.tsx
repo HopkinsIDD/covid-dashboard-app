@@ -3,8 +3,23 @@ import { Row, Switch } from 'antd';
 import TooltipHandler from './TooltipHandler';
 import { styles } from '../../utils/constants';
 
-class ActualSwitch extends Component {
-    constructor(props) {
+// TODO: use this interface in utils.js file for TS migration
+interface ActualObj {
+    date: Date,
+    val: number
+}
+
+interface Props {
+    actualList: Array<Array<ActualObj>>, 
+    onChange: () => void,
+}
+
+interface State {
+    showTooltip: boolean,
+}
+
+class ActualSwitch extends Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             showTooltip: false
@@ -16,7 +31,8 @@ class ActualSwitch extends Component {
     }
 
     render() {
-        const isDisabled = this.props.actualList[0].length === 0 ? true : false;
+        const { actualList } = this.props;
+        const isDisabled = actualList[0].length === 0 ? true : false;
         return (
             <Row gutter={styles.gutter} style={styles.Switch}>
                 <Switch

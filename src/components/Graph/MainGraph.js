@@ -6,7 +6,7 @@ import Brush from '../Filters/Brush';
 import Scenarios from '../Filters/Scenarios.tsx';
 import Indicators from '../Filters/Indicators.tsx';
 import SeverityContainer from '../Filters/SeverityContainer.tsx'
-import ActualSwitch from '../Filters/ActualSwitch';
+import ActualSwitch from '../Filters/ActualSwitch.tsx';
 import R0 from '../Filters/R0';
 import ModeToggle from '../Filters/ModeToggle.tsx';
 import Sliders from '../Filters/Sliders';
