@@ -5,10 +5,11 @@ import Scenarios from '../Filters/Scenarios.tsx';
 import DateSlider from './DateSlider';
 import { styles } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
+import { fetchJSON } from '../../utils/fetch';
 import { utcParse, timeFormat } from 'd3-time-format'
 
-const statsForMap = require('../../store/statsForMap.json')
-console.log('statsForMap', statsForMap)
+// const statsForMapOld = require('../../store/statsForMap.json')
+// console.log('statsForMapOld', statsForMapOld)
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
 
@@ -30,6 +31,18 @@ class MainMap extends Component {
 
     componentDidMount() {
         const { geoid, dataset } = this.props;
+        const state = geoid.slice(0, 2);
+
+        // fetch('https://covid-scenario-dashboard.s3.amazonaws.com/json-files/statsForMap.json')
+        //     .then(response => response.json())
+        //     .then(data => this.setState({statsForCounty: data[state]}));
+
+        fetchJSON(geoid)
+            .then(statsForMap => this.setState({statsForCounty: statsForMap[state]}))
+            .catch(e => console.log('Fetch was problematic: ' + e.message))
+            .then(() => {
+                this.initializeMap(geoid, dataset)
+            });
         this.initializeMap(geoid, dataset)
     };
 
@@ -43,6 +56,7 @@ class MainMap extends Component {
     };
 
     initializeMap(geoid, dataset) {
+        console.log('initializeMap statsForCounty', this.state.statsForCounty)
         // instantiate scenarios and dates
         const SCENARIOS = buildScenarios(dataset);  
         const scenario = SCENARIOS[0].key;       
@@ -51,7 +65,7 @@ class MainMap extends Component {
         // instantiate stats and boundaries given geoid
         const state = geoid.slice(0, 2);
         const countyBoundaries = require('../../store/countyBoundaries.json')[state];
-        const statsForCounty = statsForMap[state];
+        // const statsForCounty = statsForMap[state];
         const currentDateIndex = dates
             .findIndex(date => formatDate(date) === formatDate(new Date()));
 
@@ -61,7 +75,7 @@ class MainMap extends Component {
             SCENARIOS,
             scenario,
             countyBoundaries,
-            statsForCounty,
+            // statsForCounty,
             currentDateIndex,
         }, () => {
             this.setState({dataLoaded: true});
@@ -103,6 +117,7 @@ class MainMap extends Component {
                 <Row gutter={styles.gutter}>
                     <Col className="gutter-row container" style={styles.MapContainer}>
                         <div className="map-container">
+                            {this.state.dataLoaded &&
                             <MapContainer
                                 geoid={this.props.geoid}
                                 dataset={this.state.datasetMap}
@@ -114,7 +129,7 @@ class MainMap extends Component {
                                 countyBoundaries={this.state.countyBoundaries}
                                 statsForCounty={this.state.statsForCounty}
                                 dateSliderActive={this.state.dateSliderActive}
-                            />
+                            />}
                         </div>
                     </Col>
 
