@@ -15,12 +15,13 @@ import { buildScenarios, buildScenarioMap, buildSeverities, getR0range,
     getConfBounds, getActuals, filterR0 } from '../../utils/utils';
 import { getStatThreshold, getDateThreshold, flagSimsOverThreshold, 
     getExceedences, flagSims, filterByDate } from '../../utils/threshold';
-import { styles, margin, dimMultipliers, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
+import { styles, margin, dimMultipliers, numDisplaySims, LEVELS } from '../../utils/constants';
 import { utcParse } from 'd3-time-format';
 import { timeDay } from 'd3-time';
 
 const parseDate = utcParse('%Y-%m-%d');
-
+// const STATS = require('../../store/outcomes.json');
+// console.log('STATS', STATS)
 class MainGraph extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +32,7 @@ class MainGraph extends Component {
             allDatesSeries: {},       // used by Brush, entire series selection
             selectedDates: [],        // selected dates only
             dates: [],                // used by Brush, entire date selection
-            stat: STATS[0],
+            stat: {},
             SCENARIOS: [],
             scenarioList: [],         // TODO: can scenarioList be removed now that scenarioMap exists?
             scenarioMap: {},          // map of scenario to list of severities   
@@ -60,8 +61,10 @@ class MainGraph extends Component {
     };
 
     componentDidMount() {
-        const { severity, stat } = this.state;
-        this.initialize(this.props.dataset, stat, severity);
+        const { STATS } = this.props;
+        const { severity } = this.state;
+        // TODO: can we pass in STATS into initialize function instead of only one?
+        this.initialize(this.props.dataset, STATS[0], severity);
     };
 
     componentDidUpdate(prevProp) {
@@ -73,7 +76,8 @@ class MainGraph extends Component {
 
     initialize = (dataset, stat) => {
         // initialize() trigged on mount and Dataset change
-        const { dateRange } = this.state
+        const { STATS } = this.props;
+        const { dateRange } = this.state;
 
         // SCENARIOS: various scenario variables used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
@@ -116,6 +120,7 @@ class MainGraph extends Component {
             SCENARIOS,
             scenarioList: [SCENARIOS[0]],
             scenarioMap,
+            stat: STATS[0],
             selectedDates: newSelectedDates,
             dates: Array.from(dates),                  // dates for brush
             allDatesSeries: Array.from(series),        // series for brush
@@ -475,7 +480,8 @@ class MainGraph extends Component {
                             scenarioList={this.state.scenarioList}
                             onScenarioClick={this.handleScenarioClickGraph} />
                         <Indicators
-                            stat={this.state.stat}
+                            stat={this.state.stat}  // TODO: remove this
+                            STATS={this.props.STATS}
                             onIndicatorClick={this.handleIndicatorClick} />        
                         <SeverityContainer
                             stat={this.state.stat}

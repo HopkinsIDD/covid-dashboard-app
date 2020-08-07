@@ -6,7 +6,7 @@ import DatePicker from './DatePicker';
 import ScaleToggle from './ScaleToggle.tsx';
 import IndicatorSelection from './IndicatorSelection';
 
-import { styles, STATS } from '../../utils/constants';
+import { styles } from '../../utils/constants';
 import { buildScenarios, buildScenarioMap } from '../../utils/utils';
 import { utcParse } from 'd3-time-format'
 const parseDate = utcParse('%Y-%m-%d')
@@ -48,7 +48,10 @@ class MainChart extends Component {
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioList = SCENARIOS.map(s => s.name);
         const scenarioMap = buildScenarioMap(dataset);
-        const statList = STATS.slice(0,2)
+
+        // TODO: what if outcomes is less than 2?
+        // const outcomes = Object.keys(STATS).map((obj) => STATS[obj]);
+        const statList = this.props.STATS.slice(0,2)
 
         // instantiate start and end date (past 2 weeks) for summary stats
         const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
@@ -81,9 +84,8 @@ class MainChart extends Component {
     handleStatClickChart = (items) => {
         // items is Array of scenario names
         let newStats = []
-
         for (let item of items) {
-            const stat = STATS.filter(s => s.key === item)[0];
+            const stat = this.props.STATS.filter(s => s.key === item)[0];
             newStats.push(stat)
         }
         this.setState({
@@ -158,7 +160,8 @@ class MainChart extends Component {
                                     onScenarioClickChart={this.handleScenarioClickChart}
                                 />
                                 <IndicatorSelection
-                                    statList={this.state.statList}
+                                    statList={this.state.statList} // TODO: can i remove this
+                                    STATS={this.props.STATS}
                                     onStatClickChart={this.handleStatClickChart}
                                 />
                             </Fragment>

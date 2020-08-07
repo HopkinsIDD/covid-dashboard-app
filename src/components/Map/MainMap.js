@@ -20,11 +20,11 @@ class MainMap extends Component {
             SCENARIOS: [],
             scenario: '',         
             dateSliderActiveMap: false,
-            countyBoundaries: { "type": "FeatureCollection", "features": []},
+            countyBoundaries: {},
             statsForCounty: {},
             currentDateIndex: 0,
             dataLoaded: false,
-            statsLoading: true
+            isLoading: true
         };
     };
 
@@ -33,37 +33,35 @@ class MainMap extends Component {
         const state = geoid.slice(0, 2);
         
         try {
-            this.setState({statsLoading: true});
+            this.setState({isLoading: true});
             const statsForMap = await fetchJSON('statsForMap');
-            this.setState({statsForCounty: statsForMap[state]});
-            this.initializeMap(geoid, dataset)
+            const countyBoundaries = await fetchJSON('countyBoundaries');
+
+            this.setState({
+                statsForCounty: statsForMap[state],
+                countyBoundaries: countyBoundaries[state]
+            });
+            this.initializeMap(dataset)
         } catch (e) {
             console.log('Fetch was problematic: ' + e.message)
         } 
         finally {
             // loading finishes if call is successful or fails
-            this.setState({statsLoading: false});
+            this.setState({isLoading: false});
         }
     };
 
     componentDidUpdate(prevProp) {
-        const { geoid, dataset } = this.props;
-
-        if (geoid !== prevProp.geoid ||
-            dataset !== prevProp.dataset) {
-            this.initializeMap(geoid, dataset)
-            }
+        const { dataset } = this.props;
+        if (dataset !== prevProp.dataset) {this.initializeMap(dataset)        }
     };
 
-    initializeMap(geoid, dataset) {
+    initializeMap(dataset) {
         // instantiate scenarios and dates
         const SCENARIOS = buildScenarios(dataset);  
         const scenario = SCENARIOS[0].key;       
         const dates = dataset[scenario].dates.map( d => parseDate(d));
         
-        // instantiate stats and boundaries given geoid
-        const state = geoid.slice(0, 2);
-        const countyBoundaries = require('../../store/countyBoundaries.json')[state];
         const currentDateIndex = dates
             .findIndex(date => formatDate(date) === formatDate(new Date()));
 
@@ -72,7 +70,6 @@ class MainMap extends Component {
             dates,
             SCENARIOS,
             scenario,
-            countyBoundaries,
             currentDateIndex,
         }, () => {
             this.setState({dataLoaded: true});
@@ -94,7 +91,7 @@ class MainMap extends Component {
     render() {
         const { Content } = Layout;
         const { dates, currentDateIndex, SCENARIOS } = this.state;
-        const { statsLoading, dataLoaded, statsForCounty } = this.state;
+        const { isLoading, dataLoaded, statsForCounty } = this.state;
         const statsLen = Object.keys(statsForCounty).length;
 
         return (
@@ -122,6 +119,7 @@ class MainMap extends Component {
                             <MapContainer
                                 geoid={this.props.geoid}
                                 dataset={this.state.datasetMap}
+                                STATS={this.props.STATS}
                                 width={this.props.width}
                                 height={this.props.height}
                                 scenario={this.state.scenario}
@@ -132,7 +130,7 @@ class MainMap extends Component {
                                 dateSliderActive={this.state.dateSliderActive}
                             />}
                             {/* Loading finished but statsForCounty is undefined */}
-                            {!statsLoading && statsLen === 0 && 
+                            {!isLoading && statsLen === 0 && 
                                 <Spin tip="Loading...">
                                     <Alert
                                     message="Data Unavailable"

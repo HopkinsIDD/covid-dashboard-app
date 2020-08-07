@@ -17,6 +17,7 @@ class MainContainer extends Component {
             dataset: {},
             dataLoaded: false, 
             geoid: defaultGeoid, 
+            STATS: [],
             graphW: 0,
             graphH: 0,
             mapContainerW: 0,
@@ -24,21 +25,27 @@ class MainContainer extends Component {
         };
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         window.addEventListener('resize', this.updateGraphDimensions);
         window.addEventListener('resize', this.updateMapContainerDimensions);
 
         this.updateGraphDimensions();
         this.updateMapContainerDimensions();
-        
+
         const { geoid } = this.state;
-        // TODO: implement async/await similar to MainMap componentDidMount
-        fetchJSON(geoid)
-            .then(dataset => this.setState({dataset}))
-            .catch(e => console.log('Fetch was problematic: ' + e.message))
-            .then(() => this.setState({dataLoaded: true}));
+        try {
+            const dataset = await fetchJSON(geoid);
+            const outcomesRaw = await fetchJSON('outcomes');
+            const outcomes = Object.keys(outcomesRaw).map((obj) => outcomesRaw[obj]);
+
+            this.setState({dataset, STATS: outcomes});
+            this.setState({dataLoaded: true});
+        } catch (e) {
+            console.log('Fetch was problematic: ' + e.message)
+        } 
     };
 
+   
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateGraphDimensions)
         window.removeEventListener('resize', this.updateMapContainerDimensions)
@@ -93,6 +100,7 @@ class MainContainer extends Component {
                 <MainGraph 
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
+                    STATS={this.state.STATS}
                     width={this.state.graphW}
                     height={this.state.graphH}
                 />}
@@ -101,6 +109,7 @@ class MainContainer extends Component {
                 <MainChart 
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
+                    STATS={this.state.STATS}
                     width={this.state.graphW - margin.left - margin.right}
                     height={this.state.graphH * dimMultipliers.chartDesktopH} 
                 />}
@@ -109,6 +118,7 @@ class MainContainer extends Component {
                 <MainMap
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
+                    STATS={this.state.STATS}
                     width={this.state.mapContainerW - margin.left - margin.right}
                     height={this.state.mapContainerH}
                 />}

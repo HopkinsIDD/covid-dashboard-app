@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
-import { styles, STATS } from '../../utils/constants';
+import { styles } from '../../utils/constants';
 
 class IndicatorSelection extends Component {
     constructor(props) {
@@ -13,12 +13,13 @@ class IndicatorSelection extends Component {
 
     componentDidMount() {
         const children = [];
+        const { statList, STATS } = this.props;
         const statsForChart = Array.from(STATS);
         const { Option } = Select;
 
-        const keys = Object.values(this.props.statList).map(stat => stat.key);
+        const keys = Object.values(statList).map(stat => stat.key);
         
-        if (this.props.statList.length >= 2) {
+        if (statList.length >= 2) {
           statsForChart.map(stat => {
             if (keys.includes(stat.key)) {
                 return stat.disabled = false;
@@ -52,14 +53,12 @@ class IndicatorSelection extends Component {
 
     componentDidUpdate(prevProp) {
       if (prevProp.statList !== this.props.statList) {
-            // console.log('componentDidUpdate')
-
-          const { statList } = this.props;
+          const { statList, STATS } = this.props;
 
           const keys = Object.values(statList).map(stat => stat.key);
           const statsForChart = Array.from(STATS);
           
-          if (this.props.statList.length >= 3) {
+          if (statList.length >= 3) {
             statsForChart.map(stat => {
               if (keys.includes(stat.key)) {
                   return stat.disabled = false;

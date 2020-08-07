@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
-import { STATS, styles } from '../../utils/constants';
+import { styles } from '../../utils/constants';
 import { SelectValue } from "antd/lib/select";
 import { Stat } from "../../utils/constantsTypes";
 
@@ -10,8 +10,16 @@ interface Child {
     button: Array<any>
 }
 
+interface OutcomeObj {
+    id: number,
+    key: string,
+    name: string,
+    disabled: boolean
+}
+
 interface Props {
     onIndicatorClick: (stat: Stat) => void,
+    STATS: Array<OutcomeObj>, // TODO: update name stat vs outcome
     stat: Stat,
 }
 
@@ -31,7 +39,7 @@ class Indicators extends Component<Props, State> {
         const children = [];
         const {Option} = Select;
 
-        for (let stat of STATS) {
+        for (let stat of this.props.STATS) {
             const child: Child = {
                 key: `${stat.key}-stat`,
                 button: []
@@ -49,7 +57,7 @@ class Indicators extends Component<Props, State> {
     }
 
     handleChange = (e: SelectValue) => {
-        const item = STATS.filter(stat => stat.key === e)[0];
+        const item = this.props.STATS.filter(stat => stat.key === e)[0];
         this.props.onIndicatorClick(item);
     }
 
