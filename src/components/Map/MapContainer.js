@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { STATS } from '../../utils/constants';
 import { getDateIdx, getReadableDate, formatTitle } from '../../utils/utils';
-import { COUNTIES } from '../../utils/geoids';
+import { COUNTIES } from '../../utils/geoids.tsx';
 import { mapHighColorPalette, mapLowColorPalette } from '../../utils/colors';
 import { scalePow } from 'd3-scale';
 import { select } from 'd3-selection';

@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Select } from 'antd';
 import { COUNTIES } from '../../utils/geoids';
 import { SelectValue } from "antd/lib/select";
-import { County } from "../../utils/constantsTypes";
 import * as CSS from 'csstype';
 
 
@@ -41,7 +40,7 @@ class SearchBar extends Component<Props, State> {
             const child = {
                 key: `${key}-county`,
                 button: []
-            } 
+            };
             child.button.push(
                 // @ts-ignore
                 <Option
@@ -57,9 +56,12 @@ class SearchBar extends Component<Props, State> {
 
     handleCountySelect = (event: SelectValue) => {
         this.props.onCountySelect(event);
-        // @ts-ignore COUNTIES needs a type
-        this.setState({countyName: COUNTIES[event]})
-    }
+        if (typeof event === 'string') {
+            this.setState({ countyName: COUNTIES[event] })
+        } else {
+            console.log(`handleCountySelect(): unexpected event=${event.toString()}`)
+        }
+    };
 
     render() {
         return (
