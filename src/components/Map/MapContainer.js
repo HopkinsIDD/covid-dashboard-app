@@ -50,6 +50,15 @@ class MapContainer extends Component {
         const { STATS } = this.props;
         const { strokeWidth, strokeHoverWidth } = this.state;
         const dateIdx = getDateIdx(firstDate, selectedDate);
+        let divider;
+        console.log(width)
+        if (width < 350) {
+            divider = 1
+        } else if (width >= 350 && width < 700) {
+            divider = 2
+        } else {
+            divider = 3
+        }
 
         // limit number of individual maps to numMaxNaps
         for (let stat of STATS.slice(0, numMaxMaps)) {
@@ -66,7 +75,7 @@ class MapContainer extends Component {
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
                     statsForCounty={this.props.statsForCounty}
-                    width={width / 2}
+                    width={width / divider}
                     height={height}
                     lowColor={mapLowColorPalette[stat.id]}
                     highColor={mapHighColorPalette[stat.id]}
