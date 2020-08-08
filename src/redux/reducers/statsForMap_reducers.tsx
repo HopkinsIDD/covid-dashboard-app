@@ -1,14 +1,12 @@
-import { StatsForMapsActions, UPDATE_STATS_FOR_MAPS } from "../actions/actionTypes";
+import { StatsForMapActions, UPDATE_STATS_FOR_MAP } from "../actions/actionTypes";
 
 
-// This is where we set the initial state of statsToMap.
-// I don't know what this object looks like so I just put a string.
-const initialState: string = "initial state";
+const initialState: string | null = null;
 
-const statsForMap_reducers = (state = initialState, action: StatsForMapsActions) => {
+const statsForMap_reducers = (state = initialState, action: StatsForMapActions) => {
     switch (action.type) {
-        case UPDATE_STATS_FOR_MAPS: {
-            return action.statsForMaps;
+        case UPDATE_STATS_FOR_MAP: {
+            return action.statsForMap;
         }
         default: {
             return state;

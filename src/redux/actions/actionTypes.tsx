@@ -1,9 +1,9 @@
-export const UPDATE_STATS_FOR_MAPS = "UPDATE_STATS_FOR_MAPS";
+export const UPDATE_STATS_FOR_MAP = "UPDATE_STATS_FOR_MAP";
 
-export type UpdateStatsForMaps = {
-    type: typeof UPDATE_STATS_FOR_MAPS,
-    statsForMaps: string
+export type UpdateStatsForMap = {
+    type: typeof UPDATE_STATS_FOR_MAP,
+    statsForMap: string
 }
 
-export type StatsForMapsActions =
-    UpdateStatsForMaps;
+export type StatsForMapActions =
+    UpdateStatsForMap;

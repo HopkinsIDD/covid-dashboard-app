@@ -8,9 +8,11 @@ import rootReducer from './reducers'
 export default function configureStore() {
     const middlewares: Array<any> = [thunkMiddleware];
 
-    // This middleware will log all the state changes that happen in redux
-    const loggerMiddleware = createLogger();
-    middlewares.push(loggerMiddleware);
+    // This middleware will log all the state changes that happen in redux.
+    // keep this disabled as logging will slow down the app and clutter the
+    // console.
+    // const loggerMiddleware = createLogger();
+    // middlewares.push(loggerMiddleware);
 
     return createStore(
         rootReducer,
