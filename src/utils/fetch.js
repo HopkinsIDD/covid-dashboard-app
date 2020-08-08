@@ -5,7 +5,6 @@ export async function fetchJSON(fileName) {
     // e.g. "06085", "statsForMap", "actuals"
     
     let response = await fetch(`${s3BucketUrl}${fileName}.json`);
-    console.log("MEOW MEOW MEOW")
     if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
     } else {
