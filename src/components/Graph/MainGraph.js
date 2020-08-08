@@ -43,7 +43,6 @@ class MainGraph extends Component {
             seriesMax: Number.NEGATIVE_INFINITY, 
             seriesMin: Number.POSITIVE_INFINITY,
             dateThreshold: new Date(),
-            dateRange: [parseDate('2020-03-01'), parseDate('2020-07-27')],
             showActual: false,
             actualList: [],
             r0full: [0, 4],               // full range of r0
@@ -73,7 +72,6 @@ class MainGraph extends Component {
 
     initialize = (dataset, stat) => {
         // initialize() trigged on mount and Dataset change
-        const { dateRange } = this.state
 
         // SCENARIOS: various scenario variables used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
@@ -91,6 +89,12 @@ class MainGraph extends Component {
 
         // allSims used for R0 histogram
         const allSims = dataset[firstScenario][firstSeverity][stat.key];
+
+        // set dateRange to a default (though not on update)
+        const numDates = dates.length
+        // have a multiple of ten pad each side of the dateRange
+        const dateMargin =  Math.ceil(Math.ceil(numDates / 10) / 10) * 10
+        const dateRange = [dates[dateMargin], dates[dates.length - dateMargin]]
 
         // initialize Threshold and slider ranges
         const idxMin = timeDay.count(dates[0], dateRange[0]);
@@ -117,6 +121,7 @@ class MainGraph extends Component {
             scenarioList: [SCENARIOS[0]],
             scenarioMap,
             selectedDates: newSelectedDates,
+            dateRange,
             dates: Array.from(dates),                  // dates for brush
             allDatesSeries: Array.from(series),        // series for brush
             allSims,
