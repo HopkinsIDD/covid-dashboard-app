@@ -21,7 +21,6 @@ class Search extends Component {
     }
 
     handleUpload = (event, name) => {
-        console.log('handleUpload', event, name)
         this.props.onFileUpload(event, name);
     }
 

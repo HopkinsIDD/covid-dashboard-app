@@ -103,9 +103,6 @@ class IndicatorSelection extends Component {
     }
 
     render() {
-        
-        // console.log(this.props.view, defaultScenario)
-        // console.log(this.props.statList)
         return (
             <div>
                 <div className="param-header">INDICATORS</div>

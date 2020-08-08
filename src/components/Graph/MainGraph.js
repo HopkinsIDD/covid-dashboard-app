@@ -20,8 +20,6 @@ import { utcParse } from 'd3-time-format';
 import { timeDay } from 'd3-time';
 
 const parseDate = utcParse('%Y-%m-%d');
-// const STATS = require('../../store/outcomes.json');
-// console.log('STATS', STATS)
 class MainGraph extends Component {
     constructor(props) {
         super(props);

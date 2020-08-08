@@ -51,7 +51,6 @@ class MapContainer extends Component {
         const { strokeWidth, strokeHoverWidth } = this.state;
         const dateIdx = getDateIdx(firstDate, selectedDate);
         let divider;
-        console.log(width)
         if (width < 350) {
             divider = 1
         } else if (width >= 350 && width < 700) {

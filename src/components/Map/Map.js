@@ -125,7 +125,6 @@ class Map extends Component {
                     title={tooltipText}
                     visible={hoveredCounty === d.properties.geoid}
                     data-html="true"
-                    // onVisibleChange={(e) => console.log('visibility change', e)}
                     destroyTooltipOnHide={true}
                 >
                     <path
@@ -278,7 +277,6 @@ class Map extends Component {
                             strokeOpacity={0}
                             style={{ 'cursor': 'grab' }}
                             onMouseMove={this.handleMouseMove}
-                            // onMouseEnter={() => console.log('mouseenter')}
                             onMouseLeave={this.handleMouseMove}
                         /> 
                         {this.state.countyBoundaries.features && this.drawCounties()}

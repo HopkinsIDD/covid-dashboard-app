@@ -190,7 +190,6 @@ class Brush extends Component {
   }
 
   brushEnded = () => {
-    // console.log('defaultRange', this.state.defaultRange)
     if (!event.selection && this.brushRef.current) {
       const selection = brushSelection(this.brushRef.current) ? null : this.state.scales.xScale.range();
       select(this.brushRef.current).call(this.brush.move, selection)

@@ -98,7 +98,6 @@ function populateGeoObj() {
         const state = geoObj.properties.STATE;
         const geoid = geoObj.properties.STATE + geoObj.properties.COUNTY;
         const population = popObj[geoid]; 
-        console.log(population)
 
         geoObj.properties.geoid = geoid;
         geoObj.properties.population = population;
@@ -113,7 +112,6 @@ function populateGeoObj() {
         
         if (state in targetObj){
             targetObj[state].features.push(geoObj);
-
         } else {
             console.log('state', state)
         }

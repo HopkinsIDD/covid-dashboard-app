@@ -83,7 +83,6 @@ class MainContainer extends Component {
     };
     
     handleUpload = (dataset, geoid) => {
-        console.log('Main handleUpload', geoid, dataset)
         this.setState({dataset, geoid})
     };
 

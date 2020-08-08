@@ -320,7 +320,6 @@ class Graph extends Component {
                             width={this.props.width - margin.left - margin.right}
                             height={this.props.height - margin.bottom - margin.top}
                             fill={colors.graphBkgd}
-                            // onMouseEnter={() => console.log('entered')}
                             onMouseMove={(e) => this.handleBetterSimMouseHover(e)}
                             onMouseLeave={(e, i) => this.handleMouseLeave(e, i)}
                         />
@@ -346,7 +345,6 @@ class Graph extends Component {
                         })}
                         {// highlight simPaths
                         this.state.simPaths.map( (simPath, i) => {
-                            // console.log(i)
                             const simIsHovered = (i === this.state.hoveredSimPathId)
                             return <path
                                 d={simPath}
