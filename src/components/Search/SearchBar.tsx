@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
 import { COUNTIES } from '../../utils/geoids';
-import { SelectValue } from "antd/lib/select";
-import { County } from "../../utils/constantsTypes";
 import * as CSS from 'csstype';
 
 
@@ -12,7 +10,7 @@ type Child = {
 }
 
 interface Props {
-    onCountySelect: (county: County) => void,
+    onCountySelect: (county: string) => void,
     style: CSS.Properties,
 }
 
@@ -37,20 +35,16 @@ class SearchBar extends Component<Props, State> {
         const children = [];
         const { Option } = Select;
 
-        for (let county of COUNTIES) {
+        for (const [key, value] of Object.entries(COUNTIES)) {
             const child: Child = {
-                key: `${county.geoid}-county`,
+                key: `${key}-county`,
                 button: []
             };
-            const label = county.geoid.length === 2 ? county.name :
-                `${county.name}, ${county.usps}`;
-
             child.button.push(
                 <Option
-                    key={`${county.geoid}-county`}
-                    value={county.geoid}
-                >
-                    {label}
+                    key={`${key}-county`}
+                    value={key}>
+                    {value}
                 </Option>
             );
             children.push(child);
@@ -58,22 +52,19 @@ class SearchBar extends Component<Props, State> {
         this.setState({ children })
     }
 
-    handleCountySelect = (event: SelectValue) => {
-        console.log('county select');
-
-        const county: County = COUNTIES.filter(county => county.geoid === event)[0];
-
-        this.props.onCountySelect(county);
-        this.setState({
-            countyName: `${county.name}, ${county.usps}`
-        })
+    handleCountySelect = (geoid: string) => {
+        this.props.onCountySelect(geoid);
+        // TODO: Element implicitly has an 'any' type because expression of type 
+        // 'string' can't be used to index type '{ "01001": string; ...
+        this.setState({countyName: COUNTIES[geoid]})
     };
+
 
     render() {
         return (
             <Select
                 showSearch
-                placeholder="Search for your state or county"
+                placeholder="Search for your county"
                 optionFilterProp="children"
                 style={this.props.style}
                 size={"large"}

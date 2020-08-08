@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
-import { margin, dimMultipliers } from '../utils/constants';
-
+import { defaultGeoid, margin, dimMultipliers } from '../utils/constants';
+import { fetchJSON } from '../utils/fetch';
 import Search from './Search/Search.tsx'
 import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
 import MainMap from './Map/MainMap';
 import Methodology from './Methodology';
 import About from './About';
-
-const dataset = require('../store/06085.json');
 
 
 class MainContainer extends Component {
@@ -18,7 +16,7 @@ class MainContainer extends Component {
         this.state = {
             dataset: {},
             dataLoaded: false, 
-            geoid: '06085', 
+            geoid: defaultGeoid, 
             graphW: 0,
             graphH: 0,
             mapContainerW: 0,
@@ -33,9 +31,12 @@ class MainContainer extends Component {
         this.updateGraphDimensions();
         this.updateMapContainerDimensions();
         
-        this.setState({dataset}, () => {
-            this.setState({dataLoaded: true});
-        })
+        const { geoid } = this.state;
+        // TODO: implement async/await similar to MainMap componentDidMount
+        fetchJSON(geoid)
+            .then(dataset => this.setState({dataset}))
+            .catch(e => console.log('Fetch was problematic: ' + e.message))
+            .then(() => this.setState({dataLoaded: true}));
     };
 
     componentWillUnmount() {
@@ -45,7 +46,9 @@ class MainContainer extends Component {
 
     updateGraphDimensions = () => {
         const ratioH = dimMultipliers.graphDesktopH;
-        const ratioW = window.innerWidth > 800 ? dimMultipliers.graphDesktopW : dimMultipliers.graphMobileW; // account for mobile
+        const ratioW = window.innerWidth > 800 ? 
+            dimMultipliers.graphDesktopW : 
+            dimMultipliers.graphMobileW; // account for mobile
 
         const graphH = window.innerHeight * ratioH;
         const graphW = (window.innerWidth * ratioW) - margin.yAxis; 
@@ -55,17 +58,21 @@ class MainContainer extends Component {
 
     updateMapContainerDimensions = () => {
         const ratioH = dimMultipliers.mapDesktopH;
-        const ratioW = window.innerWidth > 800 ? dimMultipliers.graphDesktopW : dimMultipliers.mapMobileW; // account for mobile 
+        const ratioW = window.innerWidth > 800 ? 
+            dimMultipliers.graphDesktopW : 
+            dimMultipliers.mapMobileW; // account for mobile 
 
         const mapContainerH = window.innerHeight * ratioH;
-        const mapContainerW = ((window.innerWidth * ratioW) - margin.yAxis) - (6 * (margin.left))
+        const mapContainerW = ((window.innerWidth * ratioW) - margin.yAxis) - 
+            (6 * (margin.left));
         
         this.setState({ mapContainerW, mapContainerH });
     }
 
-    handleCountySelect = (i) => {
-        const dataset = require(`../store/${i.geoid}.json`);
-        this.setState({dataset, geoid: i.geoid})
+    handleCountySelect = (geoid) => {
+        fetchJSON(geoid)
+            .then(dataset => this.setState({dataset, geoid}))
+            .catch(e => console.log('Fetch was problematic: ' + e.message));
     };
     
     handleUpload = (dataset, geoid) => {
