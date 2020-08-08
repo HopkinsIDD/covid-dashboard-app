@@ -12,7 +12,7 @@ type Child = {
 }
 
 interface Props {
-    onCountySelect: (county: County) => void,
+    onCountySelect: (county: SelectValue) => void,
     style: CSS.Properties,
 }
 
@@ -37,20 +37,17 @@ class SearchBar extends Component<Props, State> {
         const children = [];
         const { Option } = Select;
 
-        for (let county of COUNTIES) {
-            const child: Child = {
-                key: `${county.geoid}-county`,
+        for (const [key, value] of Object.entries(COUNTIES)) {
+            const child = {
+                key: `${key}-county`,
                 button: []
-            };
-            const label = county.geoid.length === 2 ? county.name :
-                `${county.name}, ${county.usps}`;
-
+            } 
             child.button.push(
+                // @ts-ignore
                 <Option
-                    key={`${county.geoid}-county`}
-                    value={county.geoid}
-                >
-                    {label}
+                    key={`${key}-county`}
+                    value={key}>
+                    {value}
                 </Option>
             );
             children.push(child);
@@ -59,21 +56,16 @@ class SearchBar extends Component<Props, State> {
     }
 
     handleCountySelect = (event: SelectValue) => {
-        console.log('county select');
-
-        const county: County = COUNTIES.filter(county => county.geoid === event)[0];
-
-        this.props.onCountySelect(county);
-        this.setState({
-            countyName: `${county.name}, ${county.usps}`
-        })
-    };
+        this.props.onCountySelect(event);
+        // @ts-ignore COUNTIES needs a type
+        this.setState({countyName: COUNTIES[event]})
+    }
 
     render() {
         return (
             <Select
                 showSearch
-                placeholder="Search for your state or county"
+                placeholder="Search for your county"
                 optionFilterProp="children"
                 style={this.props.style}
                 size={"large"}

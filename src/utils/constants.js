@@ -2,15 +2,21 @@
 // number of sim curves to be displayed in Graph
 export const numDisplaySims = 30;  
 
+// s3 bucket location of 3147 county geoid jsons
+export const s3BucketUrl = 'https://covid-scenario-dashboard.s3.amazonaws.com/json-files/';
+
+export const defaultGeoid = '06085';
+
 // id: explicit key to list items in onChange()
 // key: use this to key into dataset
 // name: display name for visualization
 export const STATS = [
     {'id': 1, 'key': 'incidH', 'name': 'Hospitalizations'},
     {'id': 2, 'key': 'incidD', 'name': 'Deaths'},
-    {'id': 3, 'key': 'incidI', 'name': 'Infections'},
-    {'id': 4, 'key': 'incidICU', 'name': 'ICU Cases'},
-    {'id': 5, 'key': 'incidVent', 'name': 'Ventilators Used'}
+    {'id': 3, 'key': 'incidC', 'name': 'Confirmed Cases'},
+    // {'id': 3, 'key': 'incidI', 'name': 'Infections'},
+    // {'id': 4, 'key': 'incidICU', 'name': 'ICU Cases'},
+    // {'id': 5, 'key': 'incidVent', 'name': 'Ventilators Used'}
 ];
 
 export const LEVELS = [

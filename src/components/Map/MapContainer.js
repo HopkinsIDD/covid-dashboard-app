@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { STATS } from '../../utils/constants';
 import { getDateIdx, getReadableDate, formatTitle } from '../../utils/utils';
-import { COUNTYNAMES } from '../../utils/geoids';
+import { COUNTIES } from '../../utils/geoids';
 import { mapHighColorPalette, mapLowColorPalette } from '../../utils/colors';
 import { scalePow } from 'd3-scale';
 import { select } from 'd3-selection';
@@ -13,7 +13,7 @@ class MapContainer extends Component {
         this.state = {
             children: [],
             scaleColors: [],
-            numMaps: 4, // number of individual maps to display in Map View
+            numMaps: 3, // number of individual maps to display in Map View
             strokeWidth: 0.8,
             strokeHoverWidth: 1.8
         }
@@ -92,7 +92,7 @@ class MapContainer extends Component {
 
     render() {
         const scenarioTitle = formatTitle(this.props.scenario);
-        const countyName = `${COUNTYNAMES[this.props.geoid]}`;
+        const countyName = `${COUNTIES[this.props.geoid]}`;
         return (
             <div>
                 <div className="scenario-title titleNarrow">{countyName}</div>
