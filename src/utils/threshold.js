@@ -1,4 +1,4 @@
-import { extent } from 'd3-array';
+import { max, extent } from 'd3-array';
 import { timeFormat } from 'd3-time-format';
 
 const formatDate = timeFormat('%Y-%m-%d');
@@ -18,17 +18,13 @@ export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
   
     for (let i = 0; i < scenarioList.length; i++) {
       const filteredSeries = filterByDate(seriesList[i], idxMin, idxMax)
-      console.log(filteredSeries)
   
       // returns the minimum and maximum series peak
-      const seriesPeaks = filteredSeries.map(sim => sim.max);
-      console.log(seriesPeaks)
+      const seriesPeaks = filteredSeries.map(sim => max(sim.vals));
       const [seriesMin, seriesMax] = getRange(seriesPeaks);
-      console.log(seriesMin, seriesMax)
   
       // adds some granularity to make statThreshold selection "smarter"
       const statThreshold = seriesMin > seriesMax / 2 ? seriesMin : seriesMax / 2;
-      console.log(statThreshold)
       
       statThresholds.push(statThreshold);
       rangeDict['min'].push(seriesMin); 

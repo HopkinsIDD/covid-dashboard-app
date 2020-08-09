@@ -160,10 +160,8 @@ class MainGraph extends Component {
         const [flaggedSeriesList, simsOverList] = flagSimsOverThreshold(
             scenarioList, seriesList, dates, idxMin, idxMax, 
             statThreshold, dateThreshold)
-        console.log(flaggedSeriesList)
         const sPeaks = flaggedSeriesList[0].map(sim => sim.max);
         const [sMin, sMax] = getRange(sPeaks);
-        console.log(sMin, sMax)
 
         const percExceedenceList = getExceedences(
             scenarioList, seriesList, simsOverList);
