@@ -7,6 +7,7 @@ import { max, extent } from 'd3-array';
 import { formatTitle } from '../../utils/utils';
 import { margin } from '../../utils/constants';
 import { COUNTIES } from '../../utils/geoids';
+import { getRange } from '../../utils/threshold';
 
 
 class GraphContainer extends Component {
@@ -118,8 +119,15 @@ class GraphContainer extends Component {
     let scaleMaxVal = 0
     for (let i = 0; i < seriesList.length; i++) {
         const seriesMaxVal = max(seriesList[i], sims => max(sims.vals));
+        console.log('seriesMaxVal', seriesMaxVal)
         if (seriesMaxVal > scaleMaxVal) scaleMaxVal = seriesMaxVal
+
+        const sPeaks = seriesList[i].map(sim => sim.max);
+        console.log(sPeaks)
+        const [sMin, sMax] = getRange(sPeaks);
+        console.log(sMin, sMax)
     }
+    console.log('scaleMaxVal', scaleMaxVal)
     // set scale ranges to width and height of container
     const xScale = scaleUtc().range([margin.left, width - margin.right])
                             .domain(timeDomain);

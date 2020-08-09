@@ -14,7 +14,7 @@ import Sliders from '../Filters/Sliders';
 import { buildScenarios, buildScenarioMap, buildSeverities, getR0range, 
     getConfBounds, getActuals, filterR0 } from '../../utils/utils';
 import { getStatThreshold, getDateThreshold, flagSimsOverThreshold, 
-    getExceedences, flagSims, filterByDate } from '../../utils/threshold';
+    getExceedences, flagSims, filterByDate, getRange } from '../../utils/threshold';
 import { styles, margin, dimMultipliers, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
 import { utcParse } from 'd3-time-format';
 import { timeDay } from 'd3-time';
@@ -160,6 +160,10 @@ class MainGraph extends Component {
         const [flaggedSeriesList, simsOverList] = flagSimsOverThreshold(
             scenarioList, seriesList, dates, idxMin, idxMax, 
             statThreshold, dateThreshold)
+        console.log(flaggedSeriesList)
+        const sPeaks = flaggedSeriesList[0].map(sim => sim.max);
+        const [sMin, sMax] = getRange(sPeaks);
+        console.log(sMin, sMax)
 
         const percExceedenceList = getExceedences(
             scenarioList, seriesList, simsOverList);
