@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { geoConicEqualArea, geoPath, geoMercator, geoTransverseMercator, geoConicConformal, geoAlbers } from 'd3-geo';
+import { geoPath, geoMercator, geoTransverseMercator, geoConicConformal, geoAlbers } from 'd3-geo';
 import { scaleLinear } from 'd3-scale';
 import { max } from 'd3-array';
 import { zoom, zoomIdentity } from 'd3-zoom';
