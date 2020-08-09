@@ -39,12 +39,12 @@ class MainContainer extends Component {
             const outcomes = Object.keys(outcomesRaw).map((obj) => outcomesRaw[obj]);
 
             this.setState({dataset, STATS: outcomes});
-            this.setState({dataLoaded: true});
         } catch (e) {
             console.log('Fetch was problematic: ' + e.message)
-        } 
+        } finally {
+            this.setState({dataLoaded: true});
+        }
     };
-
    
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateGraphDimensions)
