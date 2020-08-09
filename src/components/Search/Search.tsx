@@ -29,7 +29,6 @@ class Search extends Component<Props, State> {
     }
 
     handleUpload = (json: JSON, geoId: GeoId) => {
-        console.log('handleUpload', json, geoId)
         this.props.onFileUpload(json, geoId);
     };
 

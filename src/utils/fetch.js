@@ -2,7 +2,7 @@ import { s3BucketUrl } from '../utils/constants';
 
 export async function fetchJSON(fileName) {
     // fetch json for given fileName from s3 bucket
-    // e.g. "06085", "statsForMap", "actuals"
+    // e.g. "06085", "indicatorsForMap", "actuals", "countyBoundaries"
     
     let response = await fetch(`${s3BucketUrl}${fileName}.json`);
     if (!response.ok) {

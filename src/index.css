@@ -440,6 +440,7 @@ li {
   display: flex;
   flex-flow: wrap;
   align-items: center;
+  justify-content: center;
 }
 
 @media screen and (max-width: 800px) {

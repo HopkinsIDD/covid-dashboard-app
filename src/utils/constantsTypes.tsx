@@ -2,10 +2,11 @@
  * Type file for constants.js
  */
 
-export interface Stat {
+export interface Indicator {
     id: number,
     key: string,
     name: string,
+    disabled: boolean
 }
 
 export enum SeverityLevelEnum {

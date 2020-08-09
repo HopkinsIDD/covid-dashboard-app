@@ -20,11 +20,11 @@ class MainMap extends Component {
             SCENARIOS: [],
             scenario: '',         
             dateSliderActiveMap: false,
-            countyBoundaries: { "type": "FeatureCollection", "features": []},
-            statsForCounty: {},
+            countyBoundaries: {},
+            indicatorsForCounty: {},
             currentDateIndex: 0,
             dataLoaded: false,
-            statsLoading: true
+            isLoading: true
         };
     };
 
@@ -33,39 +33,36 @@ class MainMap extends Component {
         const state = geoid.slice(0, 2);
         
         try {
-            this.setState({statsLoading: true});
-            const statsForMap = await fetchJSON('statsForMap');
-            this.setState({statsForCounty: statsForMap[state]});
-            this.initializeMap(geoid, dataset)
+            this.setState({isLoading: true});
+            // TODO: rename file in s3 bucket
+            const indicatorsForMap = await fetchJSON('statsForMap');
+            const countyBoundaries = await fetchJSON('countyBoundaries');
+
+            this.setState({
+                indicatorsForCounty: indicatorsForMap[state],
+                countyBoundaries: countyBoundaries[state]
+            });
+            this.initializeMap(dataset)
         } catch (e) {
             console.log('Fetch was problematic: ' + e.message)
         } 
         finally {
             // loading finishes if call is successful or fails
-            this.setState({statsLoading: false});
+            this.setState({isLoading: false});
         }
     };
 
     componentDidUpdate(prevProp) {
-        const { geoid, dataset } = this.props;
-
-        if (geoid !== prevProp.geoid ||
-            dataset !== prevProp.dataset) {
-            this.initializeMap(geoid, dataset)
-            }
+        const { dataset } = this.props;
+        if (dataset !== prevProp.dataset) {this.initializeMap(dataset)        }
     };
 
-    initializeMap(geoid, dataset) {
-        console.log('initializeMap statsForCounty', this.state.statsForCounty)
+    initializeMap(dataset) {
         // instantiate scenarios and dates
         const SCENARIOS = buildScenarios(dataset);  
         const scenario = SCENARIOS[0].key;       
         const dates = dataset[scenario].dates.map( d => parseDate(d));
         
-        // instantiate stats and boundaries given geoid
-        const state = geoid.slice(0, 2);
-        const countyBoundaries = require('../../store/countyBoundaries.json')[state];
-
         const currentDateIndex = dates
             .findIndex(date => formatDate(date) === formatDate(new Date()));
 
@@ -74,7 +71,6 @@ class MainMap extends Component {
             dates,
             SCENARIOS,
             scenario,
-            countyBoundaries,
             currentDateIndex,
         }, () => {
             this.setState({dataLoaded: true});
@@ -96,8 +92,8 @@ class MainMap extends Component {
     render() {
         const { Content } = Layout;
         const { dates, currentDateIndex, SCENARIOS } = this.state;
-        const { statsLoading, dataLoaded, statsForCounty } = this.state;
-        const statsLen = Object.keys(statsForCounty).length;
+        const { isLoading, dataLoaded, indicatorsForCounty } = this.state;
+        const indicatorsLen = Object.keys(indicatorsForCounty).length;
 
         return (
             <Content id="geographic-map" style={styles.ContainerGray}>
@@ -119,22 +115,23 @@ class MainMap extends Component {
                 <Row gutter={styles.gutter}>
                     <Col className="gutter-row container" style={styles.MapContainer}>
                         <div className="map-container">
-                            {/* Loaded Map, statsForCounty has been fetched */}
-                            {dataLoaded && statsLen > 0 &&
+                            {/* Loaded Map, indicatorsForCounty has been fetched */}
+                            {dataLoaded && indicatorsLen > 0 &&
                             <MapContainer
                                 geoid={this.props.geoid}
                                 dataset={this.state.datasetMap}
+                                indicators={this.props.indicators}
                                 width={this.props.width}
                                 height={this.props.height}
                                 scenario={this.state.scenario}
                                 firstDate={dates[0]}
                                 selectedDate={dates[currentDateIndex]}
                                 countyBoundaries={this.state.countyBoundaries}
-                                statsForCounty={statsForCounty}
+                                indicatorsForCounty={indicatorsForCounty}
                                 dateSliderActive={this.state.dateSliderActive}
                             />}
-                            {/* Loading finished but statsForCounty is undefined */}
-                            {!statsLoading && statsLen === 0 && 
+                            {/* Loading finished but indicatorsForCounty is undefined */}
+                            {!isLoading && indicatorsLen === 0 && 
                                 <Spin tip="Loading...">
                                     <Alert
                                     message="Data Unavailable"
@@ -150,8 +147,7 @@ class MainMap extends Component {
                         <Fragment>
                             <Scenarios
                                 view="map"
-                                // TODO: temporary fix for different scenario array lengths between dataset and map
-                                SCENARIOS={SCENARIOS.length > 3 ? SCENARIOS.slice(0, 3) : SCENARIOS}
+                                SCENARIOS={SCENARIOS}
                                 scenario={this.state.scenario}
                                 onScenarioClickMap={this.handleScenarioClick}
                             />

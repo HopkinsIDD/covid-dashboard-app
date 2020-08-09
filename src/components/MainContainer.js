@@ -15,8 +15,9 @@ class MainContainer extends Component {
         super(props);
         this.state = {
             dataset: {},
-            dataLoaded: false,
-            geoid: defaultGeoid,
+            dataLoaded: false, 
+            geoid: defaultGeoid, 
+            indicators: [],
             graphW: 0,
             graphH: 0,
             mapContainerW: 0,
@@ -24,7 +25,7 @@ class MainContainer extends Component {
         };
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         window.addEventListener('resize', this.updateGraphDimensions);
         window.addEventListener('resize', this.updateMapContainerDimensions);
 
@@ -32,13 +33,19 @@ class MainContainer extends Component {
         this.updateMapContainerDimensions();
 
         const { geoid } = this.state;
-        // TODO: implement async/await similar to MainMap componentDidMount
-        fetchJSON(geoid)
-            .then(dataset => this.setState({ dataset }))
-            .catch(e => console.log('Fetch was problematic: ' + e.message))
-            .then(() => this.setState({ dataLoaded: true }));
-    };
+        try {
+            const dataset = await fetchJSON(geoid);
+            const outcomes = await fetchJSON('outcomes');
+            const indicators = Object.keys(outcomes).map((obj) => outcomes[obj]);
 
+            this.setState({dataset, indicators});
+        } catch (e) {
+            console.log('Fetch was problematic: ' + e.message)
+        } finally {
+            this.setState({dataLoaded: true});
+        }
+    };
+   
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateGraphDimensions)
         window.removeEventListener('resize', this.updateMapContainerDimensions)
@@ -76,8 +83,7 @@ class MainContainer extends Component {
     };
 
     handleUpload = (dataset, geoid) => {
-        console.log('Main handleUpload', geoid, dataset)
-        this.setState({ dataset, geoid })
+        this.setState({dataset, geoid})
     };
 
     render() {
@@ -93,6 +99,7 @@ class MainContainer extends Component {
                 <MainGraph
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
+                    indicators={this.state.indicators}
                     width={this.state.graphW}
                     height={this.state.graphH}
                 />}
@@ -101,6 +108,7 @@ class MainContainer extends Component {
                 <MainChart
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
+                    indicators={this.state.indicators}
                     width={this.state.graphW - margin.left - margin.right}
                     height={this.state.graphH * dimMultipliers.chartDesktopH}
                 />}
@@ -109,6 +117,7 @@ class MainContainer extends Component {
                 <MainMap
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
+                    indicators={this.state.indicators}
                     width={this.state.mapContainerW - margin.left - margin.right}
                     height={this.state.mapContainerH}
                 />}

@@ -61,7 +61,7 @@ function initGeoObj() {
 }
 
 function formatPopulations() {
-    // use population estimates for each county to normalize all stat values 
+    // use population estimates for each county to normalize all indicator values 
     // to per 10k people. returns a dict of geoid and population
     try {
         // big data map file for all the populations in each county
@@ -98,7 +98,6 @@ function populateGeoObj() {
         const state = geoObj.properties.STATE;
         const geoid = geoObj.properties.STATE + geoObj.properties.COUNTY;
         const population = popObj[geoid]; 
-        console.log(population)
 
         geoObj.properties.geoid = geoid;
         geoObj.properties.population = population;
@@ -113,7 +112,6 @@ function populateGeoObj() {
         
         if (state in targetObj){
             targetObj[state].features.push(geoObj);
-
         } else {
             console.log('state', state)
         }
