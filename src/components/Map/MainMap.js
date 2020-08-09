@@ -1,12 +1,14 @@
 import React, { Component, Fragment } from 'react';
-import { Layout, Row, Col, Spin, Alert } from 'antd';
+import { Alert, Col, Layout, Row, Spin } from 'antd';
 import MapContainer from './MapContainer';
 import Scenarios from '../Filters/Scenarios.tsx';
 import DateSlider from './DateSlider';
 import { styles } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
 import { fetchJSON } from '../../utils/fetch';
-import { utcParse, timeFormat } from 'd3-time-format'
+import { timeFormat, utcParse } from 'd3-time-format'
+import { connect } from 'react-redux';
+import { fetchStatsForMap } from "../../redux/actions/statsForMap_actions";
 
 const parseDate = utcParse('%Y-%m-%d')
 const formatDate = timeFormat('%Y-%m-%d')
@@ -18,9 +20,9 @@ class MainMap extends Component {
             datasetMap: {},
             dates: [],
             SCENARIOS: [],
-            scenario: '',         
+            scenario: '',
             dateSliderActiveMap: false,
-            countyBoundaries: { "type": "FeatureCollection", "features": []},
+            countyBoundaries: { "type": "FeatureCollection", "features": [] },
             statsForCounty: {},
             currentDateIndex: 0,
             dataLoaded: false,
@@ -28,40 +30,29 @@ class MainMap extends Component {
         };
     };
 
-    async componentDidMount() {
-        const { geoid, dataset } = this.props;
-        const state = geoid.slice(0, 2);
-        
-        try {
-            this.setState({statsLoading: true});
-            const statsForMap = await fetchJSON('statsForMap');
-            this.setState({statsForCounty: statsForMap[state]});
-            this.initializeMap(geoid, dataset)
-        } catch (e) {
-            console.log('Fetch was problematic: ' + e.message)
-        } 
-        finally {
-            // loading finishes if call is successful or fails
-            this.setState({statsLoading: false});
-        }
+    componentDidMount() {
+        this.props.fetchStatsForMap();
     };
 
     componentDidUpdate(prevProp) {
-        const { geoid, dataset } = this.props;
+        const { geoid, dataset, statsForCounty } = this.props;
 
         if (geoid !== prevProp.geoid ||
-            dataset !== prevProp.dataset) {
-            this.initializeMap(geoid, dataset)
-            }
+            dataset !== prevProp.dataset ||
+            statsForCounty !== prevProp.statsForCounty) {
+            console.log("MainMap componentDidUpdate: initializeMap");
+            this.initializeMap(geoid, this.props.dataset);
+            this.setState({ statsLoading: false });
+        }
     };
 
     initializeMap(geoid, dataset) {
-        console.log('initializeMap statsForCounty', this.state.statsForCounty)
+        console.log('initializeMap statsForCounty', this.props.statsForCounty);
         // instantiate scenarios and dates
-        const SCENARIOS = buildScenarios(dataset);  
-        const scenario = SCENARIOS[0].key;       
-        const dates = dataset[scenario].dates.map( d => parseDate(d));
-        
+        const SCENARIOS = buildScenarios(dataset);
+        const scenario = SCENARIOS[0].key;
+        const dates = dataset[scenario].dates.map(d => parseDate(d));
+
         // instantiate stats and boundaries given geoid
         const state = geoid.slice(0, 2);
         const countyBoundaries = require('../../store/countyBoundaries.json')[state];
@@ -70,20 +61,24 @@ class MainMap extends Component {
             .findIndex(date => formatDate(date) === formatDate(new Date()));
 
         this.setState({
-            datasetMap: dataset, 
+            datasetMap: dataset,
             dates,
             SCENARIOS,
             scenario,
             countyBoundaries,
             currentDateIndex,
         }, () => {
-            this.setState({dataLoaded: true});
+            this.setState({ dataLoaded: true });
         })
     }
 
-    handleScenarioClick = (item) => {this.setState({scenario: item})};
+    handleScenarioClick = (item) => {
+        this.setState({ scenario: item })
+    };
 
-    handleMapSliderChange = (index) => {this.setState({currentDateIndex: +index})};
+    handleMapSliderChange = (index) => {
+        this.setState({ currentDateIndex: +index })
+    };
 
     handleSliderMouseEvent = (type) => {
         if (type === 'mousedown') {
@@ -95,19 +90,20 @@ class MainMap extends Component {
 
     render() {
         const { Content } = Layout;
-        const { dates, currentDateIndex, SCENARIOS } = this.state;
-        const { statsLoading, dataLoaded, statsForCounty } = this.state;
-        const statsLen = Object.keys(statsForCounty).length;
+        const { dates, currentDateIndex, SCENARIOS, statsLoading, dataLoaded } = this.state;
+        const { statsForCounty } = this.props;
+        const statsLen = statsForCounty && Object.keys(statsForCounty).length;
 
         return (
             <Content id="geographic-map" style={styles.ContainerGray}>
                 <Col className="gutter-row container">
-                <div className="content-section">
+                    <div className="content-section">
                         <div className="card-content">
                             <div className="titleNarrow description-header">
-                            A daily look at regional context</div>
+                                A daily look at regional context
+                            </div>
                             Hover over individual counties for more information
-                            for each indicator. Slide over the date selector to 
+                            for each indicator. Slide over the date selector to
                             view specific dates on the map. Use the right and
                             left arrow keys to increase or decrease by day.
                             <div className="mobile-alert">
@@ -120,7 +116,7 @@ class MainMap extends Component {
                     <Col className="gutter-row container" style={styles.MapContainer}>
                         <div className="map-container">
                             {/* Loaded Map, statsForCounty has been fetched */}
-                            {dataLoaded && statsLen > 0 &&
+                            {dataLoaded && statsForCounty && statsLen > 0 &&
                             <MapContainer
                                 geoid={this.props.geoid}
                                 dataset={this.state.datasetMap}
@@ -134,18 +130,18 @@ class MainMap extends Component {
                                 dateSliderActive={this.state.dateSliderActive}
                             />}
                             {/* Loading finished but statsForCounty is undefined */}
-                            {!statsLoading && statsLen === 0 && 
-                                <Spin tip="Loading...">
-                                    <Alert
+                            {!statsLoading && statsForCounty && statsLen === 0 &&
+                            <Spin tip="Loading...">
+                                <Alert
                                     message="Data Unavailable"
                                     description="Geographic data is unavailable for selected county."
                                     type="info"
-                                    />
-                                </Spin>}
+                                />
+                            </Spin>}
                         </div>
                     </Col>
 
-                    <Col className="gutter-row filters"> 
+                    <Col className="gutter-row filters">
                         {dataLoaded &&
                         <Fragment>
                             <Scenarios
@@ -170,4 +166,29 @@ class MainMap extends Component {
     }
 }
 
-export default MainMap
+// This is how you pick which redux states you want for a component
+// In this function, you need to return the props for the component.
+// This usually means you need to combine the parent props and the
+// redux state.
+function mapStateToProps(state, ownProps) {
+    const { statsForMap } = state;
+
+    let statsForCounty = null;
+    const slicedGeoId = ownProps.geoid.slice(0, 2);
+    if (statsForMap !== null && slicedGeoId !== null) {
+        statsForCounty = statsForMap[slicedGeoId];
+    }
+    return {
+        ...ownProps,
+        statsForCounty,
+    }
+}
+
+// This is how you pick which dispatch functions you want for a component.
+// These functions will be accessible like a prop. this.props.fetchStatsForMap()
+const mapDispatchToProps = {
+    fetchStatsForMap
+};
+
+// This is how you connect mapStateToProps and mapDispatchToProps to this component.
+export default connect(mapStateToProps, mapDispatchToProps)(MainMap)
