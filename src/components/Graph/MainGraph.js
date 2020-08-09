@@ -59,20 +59,16 @@ class MainGraph extends Component {
     };
 
     componentDidMount() {
-        const { STATS } = this.props;
-        const { severity } = this.state;
-        // TODO: can we pass in STATS into initialize function instead of only one?
-        this.initialize(this.props.dataset, STATS[0], severity);
+        this.initialize(this.props.dataset);
     };
 
     componentDidUpdate(prevProp) {
-        const { severity, stat } = this.state;
         if (this.props.dataset !== prevProp.dataset) {
-            this.initialize(this.props.dataset, stat, severity)
+            this.initialize(this.props.dataset)
         }
     };
 
-    initialize = (dataset, stat) => {
+    initialize = (dataset) => {
         // initialize() trigged on mount and Dataset change
         const { STATS } = this.props;
         const { dateRange } = this.state;
@@ -80,43 +76,44 @@ class MainGraph extends Component {
         // SCENARIOS: various scenario variables used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioMap = buildScenarioMap(dataset);
-        const firstScenario = SCENARIOS[0].key;
-        const firstSeverity = scenarioMap[firstScenario][0];
+        const firstScenario = SCENARIOS[0];
+        const firstStat = STATS[0];
+        const firstSeverity = scenarioMap[firstScenario.key][0];
 
         // firstSeverity need to be designated in case not all death rate LEVELS exist
-        const dates = dataset[firstScenario].dates.map( d => parseDate(d));
-        const series = dataset[firstScenario][firstSeverity][stat.key]
+        const dates = dataset[firstScenario.key].dates.map( d => parseDate(d));
+        const series = dataset[firstScenario.key][firstSeverity][firstStat.key]
             .slice(0, numDisplaySims);
-        const severityList = buildSeverities(scenarioMap, [], firstScenario);
+        const severityList = buildSeverities(scenarioMap, [], firstScenario.key);
         const sevList = _.cloneDeep(severityList);
-        sevList[0].scenario = firstScenario;
+        sevList[0].scenario = firstScenario.key;
 
         // allSims used for R0 histogram
-        const allSims = dataset[firstScenario][firstSeverity][stat.key];
+        const allSims = dataset[firstScenario.key][firstSeverity][firstStat.key];
 
         // initialize Threshold and slider ranges
         const idxMin = timeDay.count(dates[0], dateRange[0]);
         const idxMax = timeDay.count(dates[0], dateRange[1]);
         const [statThreshold, seriesMin, seriesMax] = getStatThreshold(
-            [SCENARIOS[0]], [series], idxMin, idxMax);
+            [firstScenario], [series], idxMin, idxMax);
         const simsOver = flagSims(
             series, statThreshold, dates, this.state.dateThreshold)        
         const newSelectedDates = Array.from(dates).slice(idxMin, idxMax);
         const filteredSeries = filterByDate(series, idxMin, idxMax)
 
         const confBoundsList = getConfBounds(
-            dataset, [SCENARIOS[0]], severityList, stat, dates, idxMin, idxMax)
-        const actualList = getActuals(this.props.geoid, stat, [SCENARIOS[0]]);
+            dataset, [firstScenario], severityList, firstStat, dates, idxMin, idxMax)
+        const actualList = getActuals(this.props.geoid, firstStat, [firstScenario]);
 
-        const r0full = getR0range(dataset, SCENARIOS[0], sevList[0], stat);
+        const r0full = getR0range(dataset, firstScenario, sevList[0], firstStat);
         // seriesListForBrush used by handleBrush to initialize instead of R0 filtering 
         // series is updated and set to state in scenario, sev, stat, r0 change handlers
         const seriesListForBrush = filterR0(
-            r0full, [SCENARIOS[0]], sevList, stat, dataset, numDisplaySims);
+            r0full, [firstScenario], sevList, firstStat, dataset, numDisplaySims);
 
         this.setState({
             SCENARIOS,
-            scenarioList: [SCENARIOS[0]],
+            scenarioList: [firstScenario],
             scenarioMap,
             stat: STATS[0],
             selectedDates: newSelectedDates,
