@@ -46,7 +46,7 @@ class Map extends Component {
 
     componentDidUpdate(prevProps) {
         if (prevProps.countyBoundaries !== this.props.countyBoundaries ||
-            prevProps.statsForCounty !== this.props.statsForCounty ||
+            prevProps.indicatorsForCounty !== this.props.indicatorsForCounty ||
             prevProps.scenario !== this.props.scenario) {
                 const gradientH = (this.props.width - gradientMargin) / 2;
                 this.setState({ gradientH }, () => this.calculateScales());
@@ -62,38 +62,38 @@ class Map extends Component {
     }
 
     calculateScales = () => {
-        const { stat, countyBoundaries, statsForCounty, scenario } = this.props;
+        const { indicator, countyBoundaries, indicatorsForCounty, scenario } = this.props;
         let statArray = [];
         let normalizedStatArray = [];
-        const normalizedStatsAll = []
+        const normalizedIndicatorsAll = []
         
         // iterate over this.props.countyBoundaries to plot up boundaries
-        // join each geoid to statsForCounty[geoid][scenario][stat][dateIdx]
+        // join each geoid to indicatorsForCounty[geoid][scenario][indicator][dateIdx]
         for (let i = 0; i < countyBoundaries.features.length; i++) {
             const geoid = countyBoundaries.features[i].properties.geoid;
             const population = countyBoundaries.features[i].properties.population;
-            // check to see if stats exist for this county
-            if (statsForCounty[geoid]) {
-                statArray = statsForCounty[geoid][scenario][stat.key]
+            // check to see if indicators exist for this county
+            if (indicatorsForCounty[geoid]) {
+                statArray = indicatorsForCounty[geoid][scenario][indicator.key]
                 if (statArray) {
                     normalizedStatArray = statArray.map( value => {
                         return (value / population) * 10000
                     })
-                    normalizedStatsAll.push(normalizedStatArray)
+                    normalizedIndicatorsAll.push(normalizedStatArray)
                 } else {
-                    console.log('Missing a stat key')
+                    console.log('Missing a indicator key')
                 }
             } 
-            countyBoundaries.features[i].properties[stat.key] = statArray
-            countyBoundaries.features[i].properties[`${stat.key}Norm`] = normalizedStatArray
+            countyBoundaries.features[i].properties[indicator.key] = statArray
+            countyBoundaries.features[i].properties[`${indicator.key}Norm`] = normalizedStatArray
         }
-        // get max of all values in stat array for colorscale
-        const maxVal = max(Object.values(statsForCounty).map( county => {
-            return max(county[scenario][stat.key])
+        // get max of all values in indicator array for colorscale
+        const maxVal = max(Object.values(indicatorsForCounty).map( county => {
+            return max(county[scenario][indicator.key])
         }))
         const minVal = maxVal * 0.3333;
 
-        const maxValNorm = max(normalizedStatsAll.map( val => {
+        const maxValNorm = max(normalizedIndicatorsAll.map( val => {
             return max(val)
         }))
         const minValNorm = maxValNorm * 0.3333;
@@ -104,7 +104,7 @@ class Map extends Component {
     drawCounties = () => {
         // optimize projection for CA or NY
         // TODO add to constants file for other states
-        const { geoid, stat, width, height } = this.props;
+        const { geoid, indicator, width, height } = this.props;
         const { lowColor, highColor, dateIdx } = this.props;
         const { maxValNorm, tooltipText, hoveredCounty, countyBoundaries } = this.state;
         const statePlane = STATEPLANES[geoid.slice(0,2)]
@@ -158,8 +158,8 @@ class Map extends Component {
                                 (geoid === d.properties.geoid) ? 
                                 this.props.strokeHoverWidth : 
                                 this.props.strokeWidth,
-                            fill: d.properties[`${stat.key}Norm`].length > 0 ? 
-                                ramp(d.properties[`${stat.key}Norm`][dateIdx]) : 
+                            fill: d.properties[`${indicator.key}Norm`].length > 0 ? 
+                                ramp(d.properties[`${indicator.key}Norm`][dateIdx]) : 
                                 colors.lightGray,
                             fillOpacity: 1,
                             cursor: 'pointer'
@@ -174,7 +174,7 @@ class Map extends Component {
     }
 
     handleCountyEnter = _.debounce((feature) => {
-        const { stat, dateIdx } = this.props;
+        const { indicator, dateIdx } = this.props;
         const tooltips = document.querySelectorAll('.ant-tooltip')
         tooltips.forEach(tooltip => {
             tooltip.style.visibility = "hidden"
@@ -185,8 +185,8 @@ class Map extends Component {
         
         if (!this.state.countyIsHovered) {
             let statInfo = ''
-            if (feature.properties[stat.key].length > 0) {
-                statInfo = `${stat.name}: ${addCommas(feature.properties[stat.key][dateIdx])}`
+            if (feature.properties[indicator.key].length > 0) {
+                statInfo = `${indicator.name}: ${addCommas(feature.properties[indicator.key][dateIdx])}`
             } else {
                 statInfo = 'No Indicator Data'
             }
@@ -242,7 +242,7 @@ class Map extends Component {
     render() {
         return (
             <div className="map-parent">
-                <div className='titleNarrow map-title'>{`${this.props.stat.name} per 10K people`}</div>
+                <div className='titleNarrow map-title'>{`${this.props.indicator.name} per 10K people`}</div>
                 <div className="map-parent">
                     <div><button className="zoom" id="zoom_in" onClick={this.handleZoomIn}>+</button></div>
                     <div><button className="zoom" id="zoom_out" onClick={this.handleZoomOut}>-</button></div>
@@ -250,7 +250,7 @@ class Map extends Component {
                 <svg width={legendW} height={this.props.height}>
                     <defs>
                         <linearGradient 
-                            id={`map-legend-gradient-${this.props.stat.key}`} 
+                            id={`map-legend-gradient-${this.props.indicator.key}`} 
                             x1="100%"
                             y1="0%"
                             x2="100%"
@@ -265,7 +265,7 @@ class Map extends Component {
                         width={gradientW}
                         height={this.state.gradientH}
                         transform={`translate(0, ${gradientMargin})`}
-                        style={{ fill: `url(#map-legend-gradient-${this.props.stat.key}` }}
+                        style={{ fill: `url(#map-legend-gradient-${this.props.indicator.key}` }}
                     >
                     </rect>
                     <Axis 
@@ -280,7 +280,7 @@ class Map extends Component {
                 <svg 
                     width={this.props.width - legendW}
                     height={this.props.height}
-                    className={`mapSVG-${this.props.stat.key}`}
+                    className={`mapSVG-${this.props.indicator.key}`}
                     ref={this.mapRef}
                 >
                     <g>

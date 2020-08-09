@@ -7,7 +7,7 @@ import { getClassForActiveState, LabelClassName, LabelClassNameEnum } from "../.
 interface Props {
     percExceedence: number,
     onConfClick: () => void,
-    statThreshold: number,
+    indicatorThreshold: number,
     dateThreshold: Date,
     statSliderActive: boolean,
     dateSliderActive: boolean,
@@ -32,7 +32,7 @@ class ThresholdLabel extends Component<Props, State> {
         this.state = {
             showTooltip: false,
             chance: Math.round(100 * props.percExceedence),
-            val: addCommas(Math.ceil(props.statThreshold / 100) * 100),
+            val: addCommas(Math.ceil(props.indicatorThreshold / 100) * 100),
             date: getReadableDate(props.dateThreshold),
             activeClass: LabelClassNameEnum.boldUnderline,
             statClass: LabelClassNameEnum.boldUnderline,
@@ -41,13 +41,13 @@ class ThresholdLabel extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProp: Props) {
-        const { percExceedence, statThreshold, dateThreshold, statSliderActive, dateSliderActive } = this.props;
+        const { percExceedence, indicatorThreshold, dateThreshold, statSliderActive, dateSliderActive } = this.props;
 
         if (percExceedence !== prevProp.percExceedence) {
             this.setState({ chance: Math.round(100 * percExceedence) }
         )}
-        if (statThreshold !== prevProp.statThreshold) {
-            this.setState({ val: addCommas(Math.ceil(statThreshold / 100) * 100) }
+        if (indicatorThreshold !== prevProp.indicatorThreshold) {
+            this.setState({ val: addCommas(Math.ceil(indicatorThreshold / 100) * 100) }
         )}
         if (dateThreshold !== prevProp.dateThreshold) {
             this.setState({ date: getReadableDate(dateThreshold) }

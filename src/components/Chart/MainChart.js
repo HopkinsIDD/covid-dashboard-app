@@ -48,9 +48,9 @@ class MainChart extends Component {
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioList = SCENARIOS.map(s => s.name);
         const scenarioMap = buildScenarioMap(dataset);
-        const statList = this.props.STATS.slice(0,2)
+        const statList = this.props.indicators.slice(0,2)
 
-        // instantiate start and end date (past 2 weeks) for summary stats
+        // instantiate start and end date (past 2 weeks) for summary indicators
         const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
         const start = new Date(); 
         start.setDate(start.getDate() - 14); 
@@ -80,13 +80,13 @@ class MainChart extends Component {
     
     handleStatClickChart = (items) => {
         // items is Array of scenario names
-        let newStats = []
+        let newIndicators = []
         for (let item of items) {
-            const stat = this.props.STATS.filter(s => s.key === item)[0];
-            newStats.push(stat)
+            const indicator = this.props.indicators.filter(s => s.key === item)[0];
+            newIndicators.push(indicator)
         }
         this.setState({
-            statList: newStats
+            statList: newIndicators
         })
     }
 
@@ -130,7 +130,7 @@ class MainChart extends Component {
                                 dataset={this.state.datasetChart}
                                 scenarios={this.state.scenarioList}
                                 scenarioMap={this.state.scenarioMap}
-                                stats={this.state.statList}
+                                indicators={this.state.statList}
                                 firstDate={this.state.dates[0]}
                                 start={this.state.start}
                                 end={this.state.end}
@@ -158,7 +158,7 @@ class MainChart extends Component {
                                 />
                                 <IndicatorSelection
                                     statList={this.state.statList}
-                                    STATS={this.props.STATS}
+                                    indicators={this.props.indicators}
                                     onStatClickChart={this.handleStatClickChart}
                                 />
                             </Fragment>

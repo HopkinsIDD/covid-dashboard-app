@@ -46,7 +46,7 @@ class MapContainer extends Component {
 
     initializeMaps = (geoid, scenario, firstDate, selectedDate, width, height) => {
         const children = [];
-        const { STATS } = this.props;
+        const { indicators } = this.props;
         const { strokeWidth, strokeHoverWidth } = this.state;
         const dateIdx = getDateIdx(firstDate, selectedDate);
         let divider;
@@ -58,24 +58,24 @@ class MapContainer extends Component {
             divider = 3
         }
 
-        for (let stat of STATS) {
+        for (let indicator of indicators) {
             const child = {
-                key: `${stat.key}-map`,
+                key: `${indicator.key}-map`,
                 map: [],
             }
             child.map.push(
                 <Map
-                    key={`${stat.key}-map`}
-                    stat={stat}
+                    key={`${indicator.key}-map`}
+                    indicator={indicator}
                     geoid={geoid}
                     scenario={scenario}
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
-                    statsForCounty={this.props.statsForCounty}
+                    indicatorsForCounty={this.props.indicatorsForCounty}
                     width={width / divider}
                     height={height}
-                    lowColor={mapLowColorPalette[stat.id]}
-                    highColor={mapHighColorPalette[stat.id]}
+                    lowColor={mapLowColorPalette[indicator.id]}
+                    highColor={mapHighColorPalette[indicator.id]}
                     strokeWidth={strokeWidth}
                     strokeHoverWidth={strokeHoverWidth}
                     handleZoom={this.handleZoom}

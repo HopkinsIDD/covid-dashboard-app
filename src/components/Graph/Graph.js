@@ -18,7 +18,7 @@ class Graph extends Component {
             height: this.props.height,
             series: this.props.series,
             selectedDates: this.props.selectedDates,
-            statThreshold: this.props.statThreshold,
+            indicatorThreshold: this.props.indicatorThreshold,
             dateThreshold: this.props.dateThreshold,
             xScale: this.props.xScale,
             yScale: this.props.yScale,
@@ -433,11 +433,11 @@ class Graph extends Component {
                     <g ref={this.thresholdRef}>
                         <line
                             x1={margin.left}
-                            y1={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
+                            y1={this.props.yScale(this.props.indicatorThreshold) < margin.top ? margin.top : this.props.yScale(this.props.indicatorThreshold)}
                             x2={this.props.width - margin.right}
-                            y2={this.props.yScale(this.props.statThreshold) < margin.top ? margin.top : this.props.yScale(this.props.statThreshold)}
+                            y2={this.props.yScale(this.props.indicatorThreshold) < margin.top ? margin.top : this.props.yScale(this.props.indicatorThreshold)}
                             stroke={colors.gray}
-                            className={'statThreshold'}
+                            className={'indicatorThreshold'}
                             strokeDasharray="4 2"
                         ></line>
                         <line
@@ -451,7 +451,7 @@ class Graph extends Component {
                         ></line>
                         <circle
                             cx={this.props.xScale(this.props.dateThreshold)}
-                            cy={this.props.yScale(this.props.statThreshold)}
+                            cy={this.props.yScale(this.props.indicatorThreshold)}
                             r={4}
                             fill={colors.gray}
                             className={'thresholdCircle'}

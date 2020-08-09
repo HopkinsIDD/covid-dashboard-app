@@ -61,7 +61,7 @@ function initGeoObj() {
 }
 
 function formatPopulations() {
-    // use population estimates for each county to normalize all stat values 
+    // use population estimates for each county to normalize all indicator values 
     // to per 10k people. returns a dict of geoid and population
     try {
         // big data map file for all the populations in each county

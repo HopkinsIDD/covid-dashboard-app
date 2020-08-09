@@ -43,7 +43,7 @@ class Chart extends Component {
         if (prevProps.start !== this.props.start || 
             prevProps.end !== this.props.end ||
             prevProps.dataset !== this.props.dataset ||
-            prevProps.stats !== this.props.stats ||
+            prevProps.indicators !== this.props.indicators ||
             prevProps.width !== this.props.width ||
             prevProps.height !== this.props.height) {
 
@@ -59,15 +59,15 @@ class Chart extends Component {
         if (prevProps.scenarios !== this.props.scenarios ||
             prevProps.scale !== this.props.scale) {
             const calc = this.calculateQuantiles();
-            this.updateSummaryStats(
+            this.updateSummaryIndicators(
                 calc.quantileObj, calc.xScale, calc.yScale, calc.scaleDomains);
         }
     }
 
     calculateQuantiles = () => {
         const { dataset, scenarios, scenarioMap } = this.props;
-        const { firstDate, start, end, stat, width, height } = this.props;
-        let quantileObj = {[stat]: {}};
+        const { firstDate, start, end, indicator, width, height } = this.props;
+        let quantileObj = {[indicator]: {}};
         
         const startIdx = getDateIdx(firstDate, start);
         const endIdx = getDateIdx(firstDate, end);
@@ -75,9 +75,9 @@ class Chart extends Component {
 
         for (let scenario of scenarios) {
             const severities = scenarioMap[scenario]
-            quantileObj[stat][scenario] = {};
+            quantileObj[indicator][scenario] = {};
             for (let severity of severities) {
-                const sumArray = dataset[scenario][severity][stat].map(sim => {
+                const sumArray = dataset[scenario][severity][indicator].map(sim => {
                     return sim.vals.slice(startIdx, endIdx).reduce((a, b) => a + b, 0)
                 } );
                 const minVal = min(sumArray)
@@ -91,7 +91,7 @@ class Chart extends Component {
                 // keep track of largest value across all the severities and scenarios for yAxis
                 if (maxVal > globalMaxVal) globalMaxVal = maxVal
 
-                quantileObj[stat][scenario][severity] = {
+                quantileObj[indicator][scenario][severity] = {
                     minVal, maxVal, tenth, quartile, median, thirdquartile, ninetyith, //xScale, yScale
                 }
             }
@@ -109,9 +109,9 @@ class Chart extends Component {
         return { quantileObj, xScale, yScale, scaleDomains}
     }
 
-    updateSummaryStats = (quantileObj, xScale, yScale, scaleDomains) => {
+    updateSummaryIndicators = (quantileObj, xScale, yScale, scaleDomains) => {
         if (this.chartRef.current) {
-            const { scenarios, width, stat, scenarioMap } = this.props;
+            const { scenarios, width, indicator, scenarioMap } = this.props;
             // always calculate barWidth for three severities even if there are fewer
             const barWidth = ((width / 3) / scenarios.length) - margin.left - margin.right;
             const barMargin = 10;
@@ -121,7 +121,7 @@ class Chart extends Component {
 
             scenarios.map( (scenario, i) => {
                 const severities = scenarioMap[scenario]
-                Object.entries(quantileObj[stat][scenario]).forEach( ([severity, value], j) => {
+                Object.entries(quantileObj[indicator][scenario]).forEach( ([severity, value], j) => {
                     // place scenarios with fewer severities around the center tick mark
                     if (severities.length === 1) {
                         j = 1
@@ -174,8 +174,8 @@ class Chart extends Component {
         }
     }
 
-    drawSummaryStats = () => {
-        const { width, height, scenarios, stat, scenarioMap } = this.props;
+    drawSummaryIndicators = () => {
+        const { width, height, scenarios, indicator, scenarioMap } = this.props;
         const { quantileObj, yScale, xScale, hoveredRect, tooltipText } = this.state;
         // always calculate barWidth for three severities even if there are fewer
         const barWidth = ((width / 3) / scenarios.length) - margin.left - margin.right;
@@ -196,9 +196,9 @@ class Chart extends Component {
             {scenarios.map( (scenario, i) => {
                 const severities = scenarioMap[scenario]
                 return (
-                    quantileObj[stat][scenario] && 
+                    quantileObj[indicator][scenario] && 
                     <g key={`chart-group-${scenario}`}>
-                    { Object.entries(quantileObj[stat][scenario]).map( ([severity, value], j) => {
+                    { Object.entries(quantileObj[indicator][scenario]).map( ([severity, value], j) => {
                         // place scenarios with fewer severities around the center tick mark
                         if (severities.length === 1) {
                             j = 1
@@ -210,7 +210,7 @@ class Chart extends Component {
                         // case for Infections (incidI) having the same results for low, med and high severities
                         // solution: only display med severity
                         // severity (key) is the severity, value is the object of quantiles calculated
-                        if (!(stat === 'incidI' && (severity === 'high' || severity === 'low'))) {
+                        if (!(indicator === 'incidI' && (severity === 'high' || severity === 'low'))) {
                             return (
                                 <Fragment key={`chart-fragment-${scenario}-${severity}`}>
                                     <rect 
@@ -320,11 +320,11 @@ class Chart extends Component {
                 'scenario': scenario,
                 'index': index
             }
-            const { stat, statLabel, scenarios, handleCalloutInfo, handleScenarioHover } = this.props;
-            const median = quantileObj[stat][scenario][severity]['median']
-            const tenth = quantileObj[stat][scenario][severity]['tenth']
-            const ninetyith = quantileObj[stat][scenario][severity]['ninetyith']
-            const severityText = stat === 'incidI' ? '' : `${capitalize(severity)} Severity<br>`;
+            const { indicator, statLabel, scenarios, handleCalloutInfo, handleScenarioHover } = this.props;
+            const median = quantileObj[indicator][scenario][severity]['median']
+            const tenth = quantileObj[indicator][scenario][severity]['tenth']
+            const ninetyith = quantileObj[indicator][scenario][severity]['ninetyith']
+            const severityText = indicator === 'incidI' ? '' : `${capitalize(severity)} Severity<br>`;
             const text =    `${formatTitle(scenarios[index])}<br>` +
                             severityText +
                             `p90: ${addCommas(Math.ceil(ninetyith))}<br>` +
@@ -393,7 +393,7 @@ class Chart extends Component {
                     height={height}
                     ref={this.chartRef}
                     >
-                    {this.drawSummaryStats()}
+                    {this.drawSummaryIndicators()}
                     <Axis 
                         ref={this.chartXAxisRef}
                         view={'chart'}

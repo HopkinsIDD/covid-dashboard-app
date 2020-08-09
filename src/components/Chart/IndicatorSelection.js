@@ -6,91 +6,91 @@ class IndicatorSelection extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            statsForChart: [],
+            indicatorsForChart: [],
             children: []
         }
     }
 
     componentDidMount() {
         const children = [];
-        const { statList, STATS } = this.props;
-        const statsForChart = Array.from(STATS);
         const { Option } = Select;
-
-        const keys = Object.values(statList).map(stat => stat.key);
+        const { statList, indicators } = this.props;
+        
+        const indicatorsForChart = Array.from(indicators);
+        const keys = Object.values(statList).map(indicator => indicator.key);
         
         if (statList.length >= 2) {
-          statsForChart.map(stat => {
-            if (keys.includes(stat.key)) {
-                return stat.disabled = false;
+          indicatorsForChart.map(indicator => {
+            if (keys.includes(indicator.key)) {
+                return indicator.disabled = false;
             } else {
-              return stat.disabled = true;
+              return indicator.disabled = true;
               }
           })
         } else {
-          statsForChart.map(stat => {return stat.disabled = false})
+          indicatorsForChart.map(indicator => {return indicator.disabled = false})
         }
 
-        for (let stat of statsForChart) {
+        for (let indicator of indicatorsForChart) {
             const child = {
-                key: stat.key,
+                key: indicator.key,
                 checkbox: []
             } 
             child.checkbox.push(
                 <Option
-                    key={stat.key}>
-                    {stat.name}
+                    key={indicator.key}>
+                    {indicator.name}
                 </Option>
             )
             children.push(child);
         }
 
         this.setState({
-            statsForChart,
+            indicatorsForChart,
             children,
         })
     }
 
     componentDidUpdate(prevProp) {
       if (prevProp.statList !== this.props.statList) {
-          const { statList, STATS } = this.props;
+          const { statList, indicators } = this.props;
 
-          const keys = Object.values(statList).map(stat => stat.key);
-          const statsForChart = Array.from(STATS);
+          const keys = Object.values(statList).map(indicator => indicator.key);
+          const indicatorsForChart = Array.from(indicators);
           
           if (statList.length >= 3) {
-            statsForChart.map(stat => {
-              if (keys.includes(stat.key)) {
-                  return stat.disabled = false;
+            indicatorsForChart.map(indicator => {
+              if (keys.includes(indicator.key)) {
+                  return indicator.disabled = false;
               } else {
-                return stat.disabled = true;
+                return indicator.disabled = true;
               }
             })
           } else {
-            statsForChart.map(stat => {return stat.disabled = false})
+            indicatorsForChart.map(indicator => {return indicator.disabled = false})
           }
 
 
           const children = [];
           const { Option } = Select;
   
-          for (let stat of statsForChart) {
+          for (let indicator of indicatorsForChart) {
               const child = {
-                  key: stat.key,
+                  key: indicator.key,
                   checkbox: []
               } 
               child.checkbox.push(
                   <Option
-                      key={stat.key}
-                      disabled={stat.disabled}>
-                      {stat.name}
+                      key={indicator.key}
+                      disabled={indicator.disabled}>
+                      {indicator.name}
                   </Option>
               )
               children.push(child);
           }
 
           this.setState({
-              statsForChart,
+              indicatorsForChart,
               children
           })
       }

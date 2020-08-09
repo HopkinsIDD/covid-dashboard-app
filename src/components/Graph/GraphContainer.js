@@ -78,7 +78,7 @@ class GraphContainer extends Component {
             <Graph
                 key={`${scenarioList[i].key}_Graph_${scenarioClickCounter}`}
                 keyVal={`${scenarioList[i].key}_Graph_${scenarioClickCounter}`}
-                stat={this.props.stat}
+                indicator={this.props.indicator}
                 geoid={this.props.geoid}
                 scenario={this.props.scenarioList[i]}
                 severity={this.props.severity}
@@ -90,7 +90,7 @@ class GraphContainer extends Component {
                 actual={this.props.actualList[i]}
                 series={this.props.seriesList[i]}
                 selectedDates={this.props.selectedDates}
-                statThreshold={this.props.statThreshold}
+                indicatorThreshold={this.props.indicatorThreshold}
                 dateThreshold={this.props.dateThreshold}
                 brushActive={this.props.brushActive}
                 width={graphWidth}
@@ -131,14 +131,14 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
-      const { scenarioList, scenarioHovered, width, stat } = this.props;
+      const { scenarioList, scenarioHovered, width, indicator } = this.props;
       const countyName = `${COUNTIES[this.props.geoid]}`;
       const dimensions = { width: margin.yAxis + margin.left, height: 40};
 
       return (
           <div className="graph-wrapper">
               <div className="y-axis-label titleNarrow graph-yLabel">
-                  {`Daily ${stat.name}`}
+                  {`Daily ${indicator.name}`}
               </div>
               <div className="graph-title-row">
 
@@ -166,10 +166,10 @@ class GraphContainer extends Component {
                             <ThresholdLabel
                                 key={`${child.key}-label`}
                                 classProps={'filter-label threshold-label callout'}
-                                statThreshold={this.props.statThreshold}
+                                indicatorThreshold={this.props.indicatorThreshold}
                                 dateThreshold={this.props.dateThreshold}
                                 percExceedence={this.props.percExceedenceList[i]}
-                                label={stat.name.toLowerCase()}
+                                label={indicator.name.toLowerCase()}
                                 r0full={this.props.r0full}
                                 r0selected={this.props.r0selected}
                                 statSliderActive={this.props.statSliderActive}

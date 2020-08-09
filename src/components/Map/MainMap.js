@@ -21,7 +21,7 @@ class MainMap extends Component {
             scenario: '',         
             dateSliderActiveMap: false,
             countyBoundaries: {},
-            statsForCounty: {},
+            indicatorsForCounty: {},
             currentDateIndex: 0,
             dataLoaded: false,
             isLoading: true
@@ -34,11 +34,12 @@ class MainMap extends Component {
         
         try {
             this.setState({isLoading: true});
-            const statsForMap = await fetchJSON('statsForMap');
+            // TODO: rename file in s3 bucket
+            const indicatorsForMap = await fetchJSON('statsForMap');
             const countyBoundaries = await fetchJSON('countyBoundaries');
 
             this.setState({
-                statsForCounty: statsForMap[state],
+                indicatorsForCounty: indicatorsForMap[state],
                 countyBoundaries: countyBoundaries[state]
             });
             this.initializeMap(dataset)
@@ -91,8 +92,8 @@ class MainMap extends Component {
     render() {
         const { Content } = Layout;
         const { dates, currentDateIndex, SCENARIOS } = this.state;
-        const { isLoading, dataLoaded, statsForCounty } = this.state;
-        const statsLen = Object.keys(statsForCounty).length;
+        const { isLoading, dataLoaded, indicatorsForCounty } = this.state;
+        const indicatorsLen = Object.keys(indicatorsForCounty).length;
 
         return (
             <Content id="geographic-map" style={styles.ContainerGray}>
@@ -114,23 +115,23 @@ class MainMap extends Component {
                 <Row gutter={styles.gutter}>
                     <Col className="gutter-row container" style={styles.MapContainer}>
                         <div className="map-container">
-                            {/* Loaded Map, statsForCounty has been fetched */}
-                            {dataLoaded && statsLen > 0 &&
+                            {/* Loaded Map, indicatorsForCounty has been fetched */}
+                            {dataLoaded && indicatorsLen > 0 &&
                             <MapContainer
                                 geoid={this.props.geoid}
                                 dataset={this.state.datasetMap}
-                                STATS={this.props.STATS}
+                                indicators={this.props.indicators}
                                 width={this.props.width}
                                 height={this.props.height}
                                 scenario={this.state.scenario}
                                 firstDate={dates[0]}
                                 selectedDate={dates[currentDateIndex]}
                                 countyBoundaries={this.state.countyBoundaries}
-                                statsForCounty={statsForCounty}
+                                indicatorsForCounty={indicatorsForCounty}
                                 dateSliderActive={this.state.dateSliderActive}
                             />}
-                            {/* Loading finished but statsForCounty is undefined */}
-                            {!isLoading && statsLen === 0 && 
+                            {/* Loading finished but indicatorsForCounty is undefined */}
+                            {!isLoading && indicatorsLen === 0 && 
                                 <Spin tip="Loading...">
                                     <Alert
                                     message="Data Unavailable"
