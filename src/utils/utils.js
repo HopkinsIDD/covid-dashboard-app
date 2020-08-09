@@ -67,13 +67,14 @@ export function getConfBounds(dataset, scenarioList, severityList, stat, dates, 
 
 export function getActuals(geoid, stat, scenarioList) {
   const actualList = [];
-  // instantiate actuals data if data for specific indicator exists
+  // instantiate ground truth data if data for specific indicator exists
   for (let i = 0; i < scenarioList.length; i++) {
     let actual = [];
     const indicator = stat.name.toLowerCase();
     const actualJSON = require('../store/actuals.json');
     if (Object.keys(actualJSON).includes(indicator)) {
-      // TODO: add more elegant catch if doesn't exist
+      // return empty list if geoid or indicator lacks actual data
+      // will result in ActualSwitch being disabled
       if (actualJSON[indicator][geoid]) {
         actual = actualJSON[indicator][geoid].map( d => {
             return { date: parseDate(d.date), val: d.val}
