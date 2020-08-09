@@ -48,9 +48,6 @@ class MainChart extends Component {
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioList = SCENARIOS.map(s => s.name);
         const scenarioMap = buildScenarioMap(dataset);
-
-        // TODO: what if outcomes is less than 2?
-        // const outcomes = Object.keys(STATS).map((obj) => STATS[obj]);
         const statList = this.props.STATS.slice(0,2)
 
         // instantiate start and end date (past 2 weeks) for summary stats
@@ -160,7 +157,7 @@ class MainChart extends Component {
                                     onScenarioClickChart={this.handleScenarioClickChart}
                                 />
                                 <IndicatorSelection
-                                    statList={this.state.statList} // TODO: can i remove this
+                                    statList={this.state.statList}
                                     STATS={this.props.STATS}
                                     onStatClickChart={this.handleStatClickChart}
                                 />

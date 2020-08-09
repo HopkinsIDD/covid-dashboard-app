@@ -146,8 +146,7 @@ class MainMap extends Component {
                         <Fragment>
                             <Scenarios
                                 view="map"
-                                // TODO: temporary fix for different scenario array lengths between dataset and map
-                                SCENARIOS={SCENARIOS.length > 3 ? SCENARIOS.slice(0, 3) : SCENARIOS}
+                                SCENARIOS={SCENARIOS}
                                 scenario={this.state.scenario}
                                 onScenarioClickMap={this.handleScenarioClick}
                             />
