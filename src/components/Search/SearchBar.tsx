@@ -1,10 +1,29 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
-import { COUNTIES } from '../../utils/geoids.js';
+import { COUNTIES } from '../../utils/geoids';
+import { SelectValue } from "antd/lib/select";
+import * as CSS from 'csstype';
 
 
-class SearchBar extends Component {
-    constructor(props) {
+type Child = {
+    key: string,
+    button: Array<any>, // FIXME any should be of type Option Component
+}
+
+interface Props {
+    onCountySelect: (county: SelectValue) => void,
+    style: CSS.Properties,
+}
+
+interface State {
+    fileName: string,
+    countyName: string,
+    children: Array<Child>
+}
+
+
+class SearchBar extends Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             fileName: '',
@@ -21,23 +40,28 @@ class SearchBar extends Component {
             const child = {
                 key: `${key}-county`,
                 button: []
-            } 
+            };
             child.button.push(
+                // @ts-ignore
                 <Option
                     key={`${key}-county`}
                     value={key}>
                     {value}
                 </Option>
-            )
+            );
             children.push(child);
         }
-        this.setState({children})
+        this.setState({ children })
     }
 
-    handleCountySelect = (event) => {
+    handleCountySelect = (event: SelectValue) => {
         this.props.onCountySelect(event);
-        this.setState({countyName: COUNTIES[event]})
-    }
+        if (typeof event === 'string') {
+            this.setState({ countyName: COUNTIES[event] })
+        } else {
+            console.log(`handleCountySelect(): unexpected event=${event.toString()}`)
+        }
+    };
 
     render() {
         return (
@@ -46,10 +70,10 @@ class SearchBar extends Component {
                 placeholder="Search for your county"
                 optionFilterProp="children"
                 style={this.props.style}
-                size={this.props.size}
+                size={"large"}
                 onChange={this.handleCountySelect}
                 filterOption={(input, option) =>
-                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                    option?.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                 }>
                 {this.state.children.map(county => county.button)}
             </Select>

@@ -27,3 +27,5 @@ export interface Scenario {
     checked: boolean;
     disabled: boolean;
 }
+
+export type GeoId = string

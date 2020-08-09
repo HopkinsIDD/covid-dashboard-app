@@ -6,7 +6,7 @@ import { scaleLinear, scaleUtc } from 'd3-scale';
 import { max, extent } from 'd3-array';
 import { formatTitle } from '../../utils/utils';
 import { margin } from '../../utils/constants';
-import { COUNTIES } from '../../utils/geoids';
+import { COUNTIES } from '../../utils/geoids.tsx';
 
 
 class GraphContainer extends Component {

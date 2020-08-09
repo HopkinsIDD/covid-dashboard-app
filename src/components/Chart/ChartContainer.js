@@ -3,7 +3,7 @@ import { Row, Col } from 'antd';
 import Chart from '../Chart/Chart';
 import CalloutLabel from '../Chart/CalloutLabel';
 import ChartLegend from '../Chart/ChartLegend';
-import { COUNTIES } from '../../utils/geoids';
+import { COUNTIES } from '../../utils/geoids.tsx';
 import { getReadableDate, formatTitle } from '../../utils/utils';
 
 class ChartContainer extends Component {
