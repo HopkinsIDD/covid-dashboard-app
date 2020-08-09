@@ -6,6 +6,7 @@ export interface Stat {
     id: number,
     key: string,
     name: string,
+    disabled: boolean
 }
 
 export enum SeverityLevelEnum {

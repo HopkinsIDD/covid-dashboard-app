@@ -10,16 +10,9 @@ interface Child {
     button: Array<any>
 }
 
-interface OutcomeObj {
-    id: number,
-    key: string,
-    name: string,
-    disabled: boolean
-}
-
 interface Props {
     onIndicatorClick: (stat: Stat) => void,
-    STATS: Array<OutcomeObj>, // TODO: update name stat vs outcome
+    STATS: Array<Stat>,
     stat: Stat,
 }
 
