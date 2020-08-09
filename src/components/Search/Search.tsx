@@ -1,14 +1,26 @@
 import React, { Component } from 'react';
 import { Layout, Col, Row, Switch } from 'antd';
-import SearchBar from './SearchBar';
 import FileUploader from './FileUploader';
 import { ReactComponent as GraphLogo } from '../../assets/graph.svg';
 import { ReactComponent as ChartLogo } from '../../assets/chart.svg';
 import { ReactComponent as MapLogo } from '../../assets/globe.svg';
 import { styles } from '../../utils/constants';
+import { GeoId } from "../../utils/constantsTypes";
+import SearchBar from "./SearchBar";
 
-class Search extends Component {
-    constructor(props) {
+interface Props {
+    onCountySelect: () => void,
+    onFileUpload: (json: JSON, geoId: GeoId) => void,
+    geoid: GeoId,
+}
+
+interface State {
+    fileName: string,
+    showFileUpload: boolean,
+}
+
+class Search extends Component<Props, State> {
+    constructor(props: Props) {
         super(props);
         this.state = {
             fileName: '',
@@ -16,23 +28,19 @@ class Search extends Component {
         }
     }
 
-    handleCountySelect = (event) => {
-        this.props.onCountySelect(event);
-    }
-
-    handleUpload = (event, name) => {
-        this.props.onFileUpload(event, name);
-    }
+    handleUpload = (json: JSON, geoId: GeoId) => {
+        this.props.onFileUpload(json, geoId);
+    };
 
     handleUploadToggle = () => {
-        this.setState({showFileUpload: !this.state.showFileUpload})
+        this.setState({ showFileUpload: !this.state.showFileUpload })
     };
 
     render() {
         const { showFileUpload } = this.state;
         const { Content } = Layout;
-        const uploadMessage = showFileUpload ? 
-            "Upload File provided by the Johns Hopkins IDD Working Group, for example, geo06085.json" : 
+        const uploadMessage = showFileUpload ?
+            "Upload File provided by the Johns Hopkins IDD Working Group, for example, geo06085.json" :
             "Upload File";
         return (
             <Content id="search" style={styles.ContainerWhite}>
@@ -44,10 +52,10 @@ class Search extends Component {
                     <div className="content-section">
                         <div>The&nbsp;
                             <a className="customLink" href="http://www.iddynamics.jhsph.edu/">
-                            Johns Hopkins IDD Working Group</a> has generated model 
-                            simulations for select intervention scenarios from 
+                            Johns Hopkins IDD Working Group</a> has generated model
+                            simulations for select intervention scenarios from
                             January 2020 to June 2021. Scroll down to compare scenarios
-                            by: 
+                            by:
                         </div>
                         <ul>
                             <li>
@@ -68,7 +76,7 @@ class Search extends Component {
                                         width={25}
                                         style={styles.iconChart}/>
                                 </span>
-                                Exploring expected number of hospitalizations, 
+                                Exploring expected number of hospitalizations,
                                 deaths, etc. in the coming weeks
                             </li>
                             <li>
@@ -82,26 +90,24 @@ class Search extends Component {
                                 Visualizing state-wide trends
                             </li>
                         </ul>
-                        <br />
+                        <br/>
                         <div>
-                            Find your state or county in our registry 
+                            Find your state or county in our registry
                             to start comparing scenarios now.
                         </div>
-                    <SearchBar
-                        geoid={this.props.geoid}
-                        onCountySelect={this.handleCountySelect}
-                        style={styles.SearchBar}
-                        size="large" />
-                    <Row gutter={styles.gutter} style={styles.Switch}>
-                        <Switch
-                            style={{ 'marginTop': '0.1rem' }}
-                            onChange={this.handleUploadToggle}
-                            size="small"/>
-                        <div className="upload-toggle">{uploadMessage}</div>
-                    </Row>   
-                    <br />
-                    {showFileUpload &&
-                    <FileUploader onUpload={this.handleUpload}/> }
+                        <SearchBar
+                            onCountySelect={this.props.onCountySelect}
+                            style={styles.SearchBar}/>
+                        <Row gutter={styles.gutter} style={styles.Switch}>
+                            <Switch
+                                style={{ 'marginTop': '0.1rem' }}
+                                onChange={this.handleUploadToggle}
+                                size="small"/>
+                            <div className="upload-toggle">{uploadMessage}</div>
+                        </Row>
+                        <br/>
+                        {showFileUpload &&
+                        <FileUploader onUpload={this.handleUpload}/>}
                     </div>
                 </Col>
             </Content>

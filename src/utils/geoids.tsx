@@ -1,5 +1,9 @@
 
-export const COUNTIES = {
+export type Counties = {
+    [key: string]: string
+}
+
+export const COUNTIES: Counties = {
     "01001": "Autauga County, AL",
     "01003": "Baldwin County, AL",
     "01005": "Barbour County, AL",

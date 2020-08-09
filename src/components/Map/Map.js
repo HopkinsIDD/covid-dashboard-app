@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { geoConicEqualArea, geoPath } from 'd3-geo';
+import { geoConicEqualArea, geoPath, geoMercator, geoTransverseMercator, geoConicConformal, geoAlbers } from 'd3-geo';
 import { scaleLinear } from 'd3-scale';
 import { max } from 'd3-array';
 import { zoom, zoomIdentity } from 'd3-zoom';
@@ -10,6 +10,7 @@ import Axis from '../Graph/Axis';
 
 import { addCommas } from '../../utils/utils';
 import colors from '../../utils/colors';
+import { STATEPLANES } from '../../utils/projectionSettings';
 
 const legendW = 60;
 const gradientMargin = 20;
@@ -106,13 +107,32 @@ class Map extends Component {
         const { geoid, stat, width, height } = this.props;
         const { lowColor, highColor, dateIdx } = this.props;
         const { maxValNorm, tooltipText, hoveredCounty, countyBoundaries } = this.state;
-        const parallels = (geoid.slice(0,2) === '06') ? [34, 40.5] : [40.5, 41.5]
-        const rotation = (geoid.slice(0,2) === '06') ? [120, 0] : [74, 0]
-        
-        const projection = geoConicEqualArea()
-            .parallels(parallels)
-            .rotate(rotation)
-            .fitSize([width - legendW, height], countyBoundaries)
+        const statePlane = STATEPLANES[geoid.slice(0,2)]
+        const parallels = STATEPLANES[geoid.slice(0,2)].parallels ? STATEPLANES[geoid.slice(0,2)].parallels : []
+        const rotation = STATEPLANES[geoid.slice(0,2)].rotate ? STATEPLANES[geoid.slice(0,2)].rotate : []
+        let projection
+        if (statePlane.proj === 'merc') {
+            projection = geoMercator()
+                // .parallels(parallels)
+                // .rotate(rotation)
+                .fitSize([width - legendW, height], countyBoundaries)
+        } else if (statePlane.proj === 'tmerc') {
+            projection = geoTransverseMercator()
+                // .parallels(parallels)
+                .rotate(rotation)
+                .fitSize([width - legendW, height], countyBoundaries)
+        } else if (statePlane.proj === 'lcc'){
+            projection = geoConicConformal()
+                .parallels(parallels)
+                .rotate(rotation)
+                .fitSize([width - legendW, height], countyBoundaries)
+        } else {
+            // albers
+            projection = geoAlbers()
+                .parallels(parallels)
+                .rotate(rotation)
+                .fitSize([width - legendW, height], countyBoundaries)
+        }
 
         const pathGenerator = geoPath().projection(projection)
         const ramp = scaleLinear().domain([ 0, maxValNorm ])

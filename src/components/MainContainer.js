@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { defaultGeoid, margin, dimMultipliers } from '../utils/constants';
 import { fetchJSON } from '../utils/fetch';
-import Search from './Search/Search'
+import Search from './Search/Search.tsx'
 import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
 import MainMap from './Map/MainMap';
@@ -53,35 +53,35 @@ class MainContainer extends Component {
 
     updateGraphDimensions = () => {
         const ratioH = dimMultipliers.graphDesktopH;
-        const ratioW = window.innerWidth > 800 ? 
-            dimMultipliers.graphDesktopW : 
+        const ratioW = window.innerWidth > 800 ?
+            dimMultipliers.graphDesktopW :
             dimMultipliers.graphMobileW; // account for mobile
 
         const graphH = window.innerHeight * ratioH;
-        const graphW = (window.innerWidth * ratioW) - margin.yAxis; 
+        const graphW = (window.innerWidth * ratioW) - margin.yAxis;
 
         this.setState({ graphW, graphH, animateTransition: false });
-      }
+    }
 
     updateMapContainerDimensions = () => {
         const ratioH = dimMultipliers.mapDesktopH;
-        const ratioW = window.innerWidth > 800 ? 
-            dimMultipliers.graphDesktopW : 
+        const ratioW = window.innerWidth > 800 ?
+            dimMultipliers.graphDesktopW :
             dimMultipliers.mapMobileW; // account for mobile 
 
         const mapContainerH = window.innerHeight * ratioH;
-        const mapContainerW = ((window.innerWidth * ratioW) - margin.yAxis) - 
+        const mapContainerW = ((window.innerWidth * ratioW) - margin.yAxis) -
             (6 * (margin.left));
-        
+
         this.setState({ mapContainerW, mapContainerH });
     }
 
     handleCountySelect = (geoid) => {
         fetchJSON(geoid)
-            .then(dataset => this.setState({dataset, geoid}))
+            .then(dataset => this.setState({ dataset, geoid }))
             .catch(e => console.log('Fetch was problematic: ' + e.message));
     };
-    
+
     handleUpload = (dataset, geoid) => {
         this.setState({dataset, geoid})
     };
@@ -96,7 +96,7 @@ class MainContainer extends Component {
                 </Search>
 
                 {this.state.dataLoaded &&
-                <MainGraph 
+                <MainGraph
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
                     STATS={this.state.STATS}
@@ -105,12 +105,12 @@ class MainContainer extends Component {
                 />}
 
                 {this.state.dataLoaded &&
-                <MainChart 
+                <MainChart
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
                     STATS={this.state.STATS}
                     width={this.state.graphW - margin.left - margin.right}
-                    height={this.state.graphH * dimMultipliers.chartDesktopH} 
+                    height={this.state.graphH * dimMultipliers.chartDesktopH}
                 />}
 
                 {this.state.dataLoaded &&
@@ -121,9 +121,9 @@ class MainContainer extends Component {
                     width={this.state.mapContainerW - margin.left - margin.right}
                     height={this.state.mapContainerH}
                 />}
-                
-                <Methodology />
-                <About />
+
+                <Methodology/>
+                <About/>
             </Layout>
         )
     }
