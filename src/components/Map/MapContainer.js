@@ -3,7 +3,6 @@ import Map from '../Map/Map';
 import { getDateIdx, getReadableDate, formatTitle } from '../../utils/utils';
 import { COUNTIES } from '../../utils/geoids.tsx';
 import { mapHighColorPalette, mapLowColorPalette } from '../../utils/colors';
-import { numMaxMaps } from '../../utils/constants';
 import { scalePow } from 'd3-scale';
 import { select } from 'd3-selection';
 
@@ -59,8 +58,7 @@ class MapContainer extends Component {
             divider = 3
         }
 
-        // limit number of individual maps to numMaxNaps
-        for (let stat of STATS.slice(0, numMaxMaps)) {
+        for (let stat of STATS) {
             const child = {
                 key: `${stat.key}-map`,
                 map: [],

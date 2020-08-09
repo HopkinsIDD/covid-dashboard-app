@@ -8,9 +8,6 @@ export const defaultGeoid = '06085';
 // number of sim curves to be displayed in Graph
 export const numDisplaySims = 30;  
 
-// max number of maps to display in Map
-export const numMaxMaps = 6;
-
 // id: explicit key to list items in onChange()
 // key: use this to key into dataset
 // name: display name for visualization
