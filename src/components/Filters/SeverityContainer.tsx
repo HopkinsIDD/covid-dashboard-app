@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Severity from '../Filters/Severity';
-import { Scenario, SeverityLevel, Stat } from "../../utils/constantsTypes";
+import { Scenario, SeverityLevel, Indicator } from "../../utils/constantsTypes";
 
 interface Child {
     key: string,
@@ -12,7 +12,7 @@ interface Props {
     scenarioList: Array<Scenario>,
     severityList: Array<SeverityLevel>,
     scenarioMap: Array<any>, //FIXME ScenarioMap dict
-    stat: Stat,
+    indicator: Indicator,
     onSeveritiesClick: (i: Child) => void,
     onSeveritiesHover: (i: string) => void,
     onSeveritiesHoverLeave: () => void,
@@ -36,13 +36,13 @@ class SeverityContainer extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProp: Props) {
-        const { scenarioList, scenarioMap, severityList, stat } = this.props;
+        const { scenarioList, scenarioMap, severityList, indicator } = this.props;
         const newChildren = [];
 
         if (prevProp.scenarioList !== scenarioList ||
             prevProp.scenarioMap !== scenarioMap ||
             prevProp.severityList !== severityList ||
-            prevProp.stat !== stat ) {
+            prevProp.indicator !== indicator ) {
 
             for (let i = 0; i < scenarioList.length; i++) {
                 const child = this.buildSeverity(i);
@@ -53,11 +53,11 @@ class SeverityContainer extends Component<Props, State> {
     }
 
     buildSeverity(i: number) {
-        const { scenarioList, scenarioMap, severityList, stat } = this.props;
+        const { scenarioList, scenarioMap, severityList, indicator } = this.props;
         const keyVal = `${severityList[i].key}_${scenarioList[i].key}`;
 
         // Infection values are the same across all severity
-        const isDisabled = stat.name === 'Infections' ? true : false;
+        const isDisabled = indicator.name === 'Infections' ? true : false;
 
         const child: Child = {
             'key': keyVal,

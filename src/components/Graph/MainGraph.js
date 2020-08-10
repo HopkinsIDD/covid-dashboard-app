@@ -13,15 +13,14 @@ import Sliders from '../Filters/Sliders';
 
 import { buildScenarios, buildScenarioMap, buildSeverities, getR0range, 
     getConfBounds, getActuals, filterR0 } from '../../utils/utils';
-import { getStatThreshold, getDateThreshold, flagSimsOverThreshold, 
-    getExceedences, flagSims, filterByDate, getRange } from '../../utils/threshold';
-import { styles, margin, dimMultipliers, numDisplaySims, STATS, LEVELS } from '../../utils/constants';
+import { getindicatorThreshold, getDateThreshold, flagSimsOverThreshold, 
+    getExceedences, flagSims, filterByDate } from '../../utils/threshold';
+import { styles, margin, dimMultipliers, numDisplaySims, LEVELS } from '../../utils/constants';
 import { utcParse, timeFormat } from 'd3-time-format';
 import { timeDay } from 'd3-time';
 
 const parseDate = utcParse('%Y-%m-%d');
 const formatDate = timeFormat('%Y-%m-%d');
-
 class MainGraph extends Component {
     constructor(props) {
         super(props);
@@ -32,14 +31,14 @@ class MainGraph extends Component {
             allDatesSeries: {},       // used by Brush, entire series selection
             selectedDates: [],        // selected dates only
             dates: [],                // used by Brush, entire date selection
-            stat: STATS[0],
+            indicator: {},
             SCENARIOS: [],
             scenarioList: [],         // TODO: can scenarioList be removed now that scenarioMap exists?
             scenarioMap: {},          // map of scenario to list of severities   
             severity: _.cloneDeep(LEVELS[0]), 
             severityList: [_.cloneDeep(LEVELS[0])],
             scenarioHovered: '',
-            statThreshold: 0,
+            indicatorThreshold: 0,
             statSliderActive: false,
             seriesMax: Number.NEGATIVE_INFINITY, 
             seriesMin: Number.POSITIVE_INFINITY,
@@ -60,37 +59,38 @@ class MainGraph extends Component {
     };
 
     componentDidMount() {
-        const { severity, stat } = this.state;
-        this.initialize(this.props.dataset, stat, severity);
+        this.initialize(this.props.dataset);
     };
 
     componentDidUpdate(prevProp) {
-        const { severity, stat } = this.state;
         if (this.props.dataset !== prevProp.dataset) {
-            this.initialize(this.props.dataset, stat, severity)
+            this.initialize(this.props.dataset)
         }
     };
 
-    initialize = (dataset, stat) => {
+    initialize = (dataset) => {
         // initialize() trigged on mount and Dataset change
+        const { indicators } = this.props;
         const { dateThreshold } = this.state;
+
 
         // SCENARIOS: various scenario variables used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioMap = buildScenarioMap(dataset);
-        const firstScenario = SCENARIOS[0].key;
-        const firstSeverity = scenarioMap[firstScenario][0];
+        const firstScenario = SCENARIOS[0];
+        const firstIndicator = indicators[0];
+        const firstSeverity = scenarioMap[firstScenario.key][0];
 
         // firstSeverity need to be designated in case not all death rate LEVELS exist
-        const dates = dataset[firstScenario].dates.map( d => parseDate(d));
-        const series = dataset[firstScenario][firstSeverity][stat.key]
+        const dates = dataset[firstScenario.key].dates.map( d => parseDate(d));
+        const series = dataset[firstScenario.key][firstSeverity][firstIndicator.key]
             .slice(0, numDisplaySims);
-        const severityList = buildSeverities(scenarioMap, [], firstScenario);
+        const severityList = buildSeverities(scenarioMap, [], firstScenario.key);
         const sevList = _.cloneDeep(severityList);
-        sevList[0].scenario = firstScenario;
+        sevList[0].scenario = firstScenario.key;
 
         // allSims used for R0 histogram
-        const allSims = dataset[firstScenario][firstSeverity][stat.key];
+        const allSims = dataset[firstScenario.key][firstSeverity][firstIndicator.key];
 
         // set dateRange to a default based on equal padding around current date
         // TODO: replace current date with date of run. need Josh to implement that in pipeline
@@ -106,27 +106,28 @@ class MainGraph extends Component {
         // initialize Threshold and slider ranges
         const idxMin = timeDay.count(dates[0], dateRange[0]);
         const idxMax = timeDay.count(dates[0], dateRange[1]);
-        const [statThreshold, seriesMin, seriesMax] = getStatThreshold(
-            [SCENARIOS[0]], [series], idxMin, idxMax);
+        const [indicatorThreshold, seriesMin, seriesMax] = getindicatorThreshold(
+            [firstScenario], [series], idxMin, idxMax);
         const simsOver = flagSims(
-            series, statThreshold, dates, this.state.dateThreshold)        
+            series, indicatorThreshold, dates, this.state.dateThreshold)        
         const newSelectedDates = Array.from(dates).slice(idxMin, idxMax);
         const filteredSeries = filterByDate(series, idxMin, idxMax)
 
         const confBoundsList = getConfBounds(
-            dataset, [SCENARIOS[0]], severityList, stat, dates, idxMin, idxMax)
-        const actualList = getActuals(this.props.geoid, stat, [SCENARIOS[0]]);
+            dataset, [firstScenario], severityList, firstIndicator, dates, idxMin, idxMax)
+        const actualList = getActuals(this.props.geoid, firstIndicator, [firstScenario]);
 
-        const r0full = getR0range(dataset, SCENARIOS[0], sevList[0], stat);
+        const r0full = getR0range(dataset, firstScenario, sevList[0], firstIndicator);
         // seriesListForBrush used by handleBrush to initialize instead of R0 filtering 
-        // series is updated and set to state in scenario, sev, stat, r0 change handlers
+        // series is updated and set to state in scenario, sev, indicator, r0 change handlers
         const seriesListForBrush = filterR0(
-            r0full, [SCENARIOS[0]], sevList, stat, dataset, numDisplaySims);
+            r0full, [firstScenario], sevList, firstIndicator, dataset, numDisplaySims);
 
         this.setState({
             SCENARIOS,
-            scenarioList: [SCENARIOS[0]],
+            scenarioList: [firstScenario],
             scenarioMap,
+            indicator: indicators[0],
             selectedDates: newSelectedDates,
             dateRange,
             dates: Array.from(dates),                  // dates for brush
@@ -137,7 +138,7 @@ class MainGraph extends Component {
             severity: firstSeverity,
             seriesMax,
             seriesMin,
-            statThreshold,
+            indicatorThreshold,
             percExceedenceList: [simsOver / series.length],
             confBoundsList,
             showConfBounds: false,
@@ -150,8 +151,8 @@ class MainGraph extends Component {
         })
     }
 
-    update = (seriesList, scenarioList, stat, severityList, dateRange) => {
-        // update() triggered on Scenario, Stat, Severity, R0, Brush change
+    update = (seriesList, scenarioList, indicator, severityList, dateRange) => {
+        // update() triggered on Scenario, Indicator, Severity, R0, Brush change
         const { dataset, geoid } = this.props;
         const { dates } = this.state;
 
@@ -161,27 +162,25 @@ class MainGraph extends Component {
         const newSelectedDates = Array.from(dates).slice(idxMin, idxMax);
 
         const dateThreshold = getDateThreshold(dates, idxMin, idxMax);
-        const [statThreshold, seriesMin, seriesMax] = getStatThreshold(
+        const [indicatorThreshold, seriesMin, seriesMax] = getindicatorThreshold(
             scenarioList, seriesList, idxMin, idxMax);
 
         const [flaggedSeriesList, simsOverList] = flagSimsOverThreshold(
             scenarioList, seriesList, dates, idxMin, idxMax, 
-            statThreshold, dateThreshold)
-        const sPeaks = flaggedSeriesList[0].map(sim => sim.max);
-        const [sMin, sMax] = getRange(sPeaks);
+            indicatorThreshold, dateThreshold)
 
         const percExceedenceList = getExceedences(
             scenarioList, seriesList, simsOverList);
 
         const confBoundsList = getConfBounds(
-            dataset, scenarioList, severityList, stat, dates, idxMin, idxMax)
-        const actualList = getActuals(geoid, stat, scenarioList);
+            dataset, scenarioList, severityList, indicator, dates, idxMin, idxMax)
+        const actualList = getActuals(geoid, indicator, scenarioList);
 
         this.setState({
             seriesList: flaggedSeriesList,
             allDatesSeries: seriesList[0],  // brush uses first series
             selectedDates: newSelectedDates,
-            statThreshold,
+            indicatorThreshold,
             dateThreshold,
             seriesMin,
             seriesMax,
@@ -191,20 +190,20 @@ class MainGraph extends Component {
         })
     }
 
-    handleIndicatorClick = (stat) => {
+    handleIndicatorClick = (indicator) => {
         const { dataset } = this.props;
         const { scenarioList, severityList, r0selected, dateRange } = this.state;
 
         const seriesList = filterR0(
-            r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
+            r0selected, scenarioList, severityList, indicator, dataset, numDisplaySims);
 
-        this.setState({stat, seriesListForBrush: seriesList, animateTransition: true})
-        this.update(seriesList, scenarioList, stat, severityList, dateRange);
+        this.setState({indicator, seriesListForBrush: seriesList, animateTransition: true})
+        this.update(seriesList, scenarioList, indicator, severityList, dateRange);
     };
 
     handleScenarioClickGraph = (scenarios) => {
         const { dataset } = this.props;
-        const { stat, r0selected, dateRange, scenarioMap } = this.state;
+        const { indicator, r0selected, dateRange, scenarioMap } = this.state;
 
         const scenarioClkCntr = this.state.scenarioClickCounter + 1;
         let scenarioList = [];
@@ -219,7 +218,7 @@ class MainGraph extends Component {
         }
 
         const seriesList = filterR0(
-            r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
+            r0selected, scenarioList, severityList, indicator, dataset, numDisplaySims);
         
         this.setState({
             scenarioList,
@@ -228,12 +227,12 @@ class MainGraph extends Component {
             seriesListForBrush: seriesList,
             animateTransition: true
         })      
-        this.update(seriesList, scenarioList, stat, severityList, dateRange); 
+        this.update(seriesList, scenarioList, indicator, severityList, dateRange); 
     };
 
     handleSeveritiesClick = (i) => {
         const { dataset } = this.props;
-        const { scenarioList, stat, r0selected, dateRange } = this.state;
+        const { scenarioList, indicator, r0selected, dateRange } = this.state;
 
         let severityList = _.cloneDeep(this.state.severityList);
         severityList.forEach(sev => {
@@ -242,14 +241,14 @@ class MainGraph extends Component {
             }
         })
         const seriesList = filterR0(
-            r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
+            r0selected, scenarioList, severityList, indicator, dataset, numDisplaySims);
         
         this.setState({
             severityList, 
             seriesListForBrush: seriesList,
             animateTransition: true
         });
-        this.update(seriesList, scenarioList, stat, severityList, dateRange); 
+        this.update(seriesList, scenarioList, indicator, severityList, dateRange); 
     };
 
     handleSeveritiesHover = (i) => {this.setState({scenarioHovered: i})};
@@ -258,32 +257,32 @@ class MainGraph extends Component {
 
     handleR0Change = (r0selected) => {
         const { dataset } = this.props;
-        const { scenarioList, severityList, stat, dateRange } = this.state;
+        const { scenarioList, severityList, indicator, dateRange } = this.state;
 
         const seriesList = filterR0(
-            r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
+            r0selected, scenarioList, severityList, indicator, dataset, numDisplaySims);
         
         this.setState({
             r0selected,
             seriesListForBrush: seriesList,
             animateTransition: true
         })
-        this.update(seriesList, scenarioList, stat, severityList, dateRange);     
+        this.update(seriesList, scenarioList, indicator, severityList, dateRange);     
     };
 
     handleR0Resample = () => {
         const { dataset } = this.props;
-        const { scenarioList, severityList, stat, r0selected, dateRange } = this.state;
+        const { scenarioList, severityList, indicator, r0selected, dateRange } = this.state;
 
         const seriesList = filterR0(
-            r0selected, scenarioList, severityList, stat, dataset, numDisplaySims);
+            r0selected, scenarioList, severityList, indicator, dataset, numDisplaySims);
         
         this.setState({
             r0selected,
             seriesListForBrush: seriesList,
             animateTransition: true
         })
-        this.update(seriesList, scenarioList, stat, severityList, dateRange);     
+        this.update(seriesList, scenarioList, indicator, severityList, dateRange);     
     };
 
     handleActualChange = () => {
@@ -306,22 +305,22 @@ class MainGraph extends Component {
         this.setState({
             seriesList,
             allDatesSeries,
-            statThreshold: +thresh,
+            indicatorThreshold: +thresh,
             percExceedenceList,
             animateTransition: false
         });
     };
 
     handleDateSliderChange = (thresh) => {
-        const { statThreshold, selectedDates, dates } = this.state;
+        const { indicatorThreshold, selectedDates, dates } = this.state;
         const seriesList = Array.from(this.state.seriesList);
         const allDatesSeries = Array.from(this.state.allDatesSeries);
         // flag Sims for Brush
-        flagSims(allDatesSeries, statThreshold, dates, thresh);
+        flagSims(allDatesSeries, indicatorThreshold, dates, thresh);
         const percExceedenceList = [];
         // flag Sims for seriesList
         for (let i = 0; i < seriesList.length; i++) {
-            const simsOver = flagSims(seriesList[i], statThreshold, selectedDates, thresh);
+            const simsOver = flagSims(seriesList[i], indicatorThreshold, selectedDates, thresh);
             const percExceedence = simsOver / seriesList[i].length;
             percExceedenceList.push(percExceedence);
         }
@@ -335,12 +334,12 @@ class MainGraph extends Component {
     }
 
     handleBrushRange = (dateRange) => {
-        const { seriesListForBrush, scenarioList, stat, severityList } = this.state;
+        const { seriesListForBrush, scenarioList, indicator, severityList } = this.state;
         this.setState({
             dateRange, 
             animateTransition: false
         });
-        this.update(seriesListForBrush, scenarioList, stat, severityList, dateRange);
+        this.update(seriesListForBrush, scenarioList, indicator, severityList, dateRange);
     };
 
     handleBrushStart = () => { this.setState({brushActive: true, animateTransition: false} )}
@@ -355,13 +354,13 @@ class MainGraph extends Component {
 
     handleConfClick = () => {
         const { dataset } = this.props;
-        const { scenarioList, severityList, stat, dates, dateRange } = this.state;
+        const { scenarioList, severityList, indicator, dates, dateRange } = this.state;
 
         const idxMin = timeDay.count(dates[0], dateRange[0]);
         const idxMax = timeDay.count(dates[0], dateRange[1]);
 
         const confBoundsList = getConfBounds(
-            dataset, scenarioList, severityList, stat, dates, idxMin, idxMax);
+            dataset, scenarioList, severityList, indicator, dates, idxMin, idxMax);
 
         this.setState({
             confBoundsList, 
@@ -376,7 +375,7 @@ class MainGraph extends Component {
 
     handleSliderMouseEvent = (type, slider, view) => {
         if (view === 'graph') {
-            if (slider === 'stat') {
+            if (slider === 'indicator') {
                 if (type === 'mousedown') {
                     this.setState({ statSliderActive: true })
                 } else {
@@ -438,7 +437,7 @@ class MainGraph extends Component {
                             selectedDates={this.state.selectedDates}
                             scenarioList={this.state.scenarioList}
                             seriesList={this.state.seriesList}
-                            stat={this.state.stat}
+                            indicator={this.state.indicator}
                             severity={this.state.severity}
                             r0full={this.state.r0full}
                             r0selected={this.state.r0selected}
@@ -447,7 +446,7 @@ class MainGraph extends Component {
                             confBoundsList={this.state.confBoundsList}
                             actualList={this.state.actualList}
                             showActual={this.state.showActual}
-                            statThreshold={this.state.statThreshold}
+                            indicatorThreshold={this.state.indicatorThreshold}
                             dateThreshold={this.state.dateThreshold}
                             percExceedenceList={this.state.percExceedenceList}
                             dateRange={this.state.dateRange}
@@ -468,7 +467,7 @@ class MainGraph extends Component {
                             toggleAnimateTransition={this.toggleAnimateTransition}
                             dateRange={this.state.dateRange}
                             dateThreshold={this.state.dateThreshold}
-                            statThreshold={this.state.statThreshold}
+                            indicatorThreshold={this.state.indicatorThreshold}
                             onBrushChange={this.handleBrushRange}
                             onBrushStart={this.handleBrushStart}
                             onBrushEnd={this.handleBrushEnd}
@@ -489,10 +488,11 @@ class MainGraph extends Component {
                             scenarioList={this.state.scenarioList}
                             onScenarioClick={this.handleScenarioClickGraph} />
                         <Indicators
-                            stat={this.state.stat}
+                            indicator={this.state.indicator}  // TODO: remove this
+                            indicators={this.props.indicators}
                             onIndicatorClick={this.handleIndicatorClick} />        
                         <SeverityContainer
-                            stat={this.state.stat}
+                            indicator={this.state.indicator}
                             severityList={this.state.severityList}
                             scenarioList={this.state.scenarioList} 
                             scenarioMap={this.state.scenarioMap}
@@ -513,11 +513,11 @@ class MainGraph extends Component {
                             showConfBounds={this.state.showConfBounds}
                             onConfClick={this.handleConfClick} /> 
                         <Sliders 
-                            stat={this.state.stat}
+                            indicator={this.state.indicator}
                             selectedDates={this.state.selectedDates}
                             seriesMax={this.state.seriesMax}
                             showConfBounds={this.state.showConfBounds}
-                            statThreshold={this.state.statThreshold}
+                            indicatorThreshold={this.state.indicatorThreshold}
                             dateThreshold={this.state.dateThreshold}
                             dateThresholdIdx={this.state.dateThresholdIdx}
                             dateRange={this.state.dateRange}

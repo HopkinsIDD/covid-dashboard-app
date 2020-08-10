@@ -11,9 +11,9 @@ export function getDateThreshold(allTimeDates, idxMin, idxMax) {
     return dateThreshold
 }
   
-export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
-    // calculate smart default statThreshold and return slider range as well
-    const statThresholds = [];
+export function getindicatorThreshold(scenarioList, seriesList, idxMin, idxMax) {
+    // calculate smart default indicatorThreshold and return slider range as well
+    const indicatorThresholds = [];
     let rangeDict = {'min': [], 'max': []};
   
     for (let i = 0; i < scenarioList.length; i++) {
@@ -23,10 +23,10 @@ export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
       const seriesPeaks = filteredSeries.map(sim => max(sim.vals));
       const [seriesMin, seriesMax] = getRange(seriesPeaks);
   
-      // adds some granularity to make statThreshold selection "smarter"
-      const statThreshold = seriesMin > seriesMax / 2 ? seriesMin : seriesMax / 2;
+      // adds some granularity to make indicatorThreshold selection "smarter"
+      const indicatorThreshold = seriesMin > seriesMax / 2 ? seriesMin : seriesMax / 2;
       
-      statThresholds.push(statThreshold);
+      indicatorThresholds.push(indicatorThreshold);
       rangeDict['min'].push(seriesMin); 
       rangeDict['max'].push(seriesMax)
     }
@@ -34,19 +34,19 @@ export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
     const sliderMin = Math.min(...rangeDict['min'])
     const sliderMax = Math.max(...rangeDict['max'])
   
-    // statThreshold defaults to the statThreshold of the first scenario
-    return [statThresholds[0], sliderMin, sliderMax]; 
+    // indicatorThreshold defaults to the indicatorThreshold of the first scenario
+    return [indicatorThresholds[0], sliderMin, sliderMax]; 
   }
   
   export function flagSimsOverThreshold(scenarioList, seriesList, allTimeDates, 
-    idxMin, idxMax, statThreshold, dateThreshold) {
+    idxMin, idxMax, indicatorThreshold, dateThreshold) {
     // return series with sims flagged above or below thresholds
     const filteredSeriesList = [];
     const simsOverList = [];
   
     for (let i = 0; i < scenarioList.length; i++) {
       // mutate seriesList to flag which sims are above/below thresholds
-      const simsOver = flagSims(seriesList[i], statThreshold, allTimeDates, dateThreshold);
+      const simsOver = flagSims(seriesList[i], indicatorThreshold, allTimeDates, dateThreshold);
       // filter mutated seriesList by dates
       const filteredSeries = filterByDate(seriesList[i], idxMin, idxMax)
   
@@ -56,8 +56,8 @@ export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
     return [filteredSeriesList, simsOverList]
   }
   
-  export function flagSims(series, statThreshold, dates, dateThreshold) {
-    // MUTATION: flags which sims in a series are above stat and date threshold 
+  export function flagSims(series, indicatorThreshold, dates, dateThreshold) {
+    // MUTATION: flags which sims in a series are above indicator and date threshold 
     const dateIndex = dates.findIndex(
       date => formatDate(date) === formatDate(dateThreshold));
   
@@ -65,7 +65,7 @@ export function getStatThreshold(scenarioList, seriesList, idxMin, idxMax) {
     Object.values(series).forEach((sim) => {
       let simOver = false;
       for (let i = 0; i < dateIndex; i++) {
-        if (sim.vals[i] > statThreshold){
+        if (sim.vals[i] > indicatorThreshold){
           simsOver = simsOver + 1;
           simOver = true;
           break;

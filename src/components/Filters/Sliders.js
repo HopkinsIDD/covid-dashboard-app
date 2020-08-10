@@ -35,7 +35,6 @@ class Sliders extends Component {
     }
 
     handleStatChange = (i) => {
-        // console.log(i)
         this.props.onStatSliderChange(i);
     }
 
@@ -45,7 +44,7 @@ class Sliders extends Component {
     }
 
     handleStatMouseEvent = (e) => {
-        this.props.onSliderMouseEvent(e.type, 'stat', 'graph')
+        this.props.onSliderMouseEvent(e.type, 'indicator', 'graph')
     }
 
     handleDateMouseEvent = (e) => {
@@ -63,25 +62,25 @@ class Sliders extends Component {
     }
 
     render() {
-        const { stat, statThreshold, seriesMax, selectedDates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
+        const { indicator, indicatorThreshold, seriesMax, selectedDates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
         const stepVal = this.getStepValue(seriesMax)
-        const roundedStat = Math.ceil(statThreshold / stepVal) * stepVal;
+        const roundedStat = Math.ceil(indicatorThreshold / stepVal) * stepVal;
         const isDisabled = this.props.showConfBounds ? "disabled" : "";
         return (
             <div className={`slider-menu ${isDisabled}`}>
-                {/* Stat Threshold */}
+                {/* Indicator Threshold */}
                 <div className="param-header">THRESHOLD</div>
                 <div className="filter-label">
                     <span className='callout'>
-                        {addCommas(roundedStat)}&nbsp;{stat.name}
+                        {addCommas(roundedStat)}&nbsp;{indicator.name}
                     </span>
                 </div>
                 <input
-                    id="statThreshold"
+                    id="indicatorThreshold"
                     type="range"
                     min="0"
                     max={seriesMax.toString()}
-                    value={statThreshold.toString()}
+                    value={indicatorThreshold.toString()}
                     step={stepVal}
                     style={styles.Selector}
                     ref={ref => this.statInput = ref}

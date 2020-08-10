@@ -26,13 +26,13 @@ function transformQuantiles(confObj, dates) {
     return confArray
 }
 
-export function addQuantiles(dataset, scenario, severity, stat, dates) {
+export function addQuantiles(dataset, scenario, severity, indicator, dates) {
     let confObj = {}
     for (let interval of CONFINTERVALS) {
         confObj[interval] = [];
     }
     for (let d = 0; d < dates.length; d ++) {
-        const simObj = dataset[scenario][severity][stat];
+        const simObj = dataset[scenario][severity][indicator];
 
         const arrayByDay = [];
         for (let s = 0; s < simObj.length; s ++) {

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
-import { STATS } from '../../utils/constants';
 import { getDateIdx, getReadableDate, formatTitle } from '../../utils/utils';
-import { COUNTIES } from '../../utils/geoids';
+import { COUNTIES } from '../../utils/geoids.tsx';
 import { mapHighColorPalette, mapLowColorPalette } from '../../utils/colors';
 import { scalePow } from 'd3-scale';
 import { select } from 'd3-selection';
+
 
 class MapContainer extends Component {
     constructor(props) {
@@ -13,7 +13,6 @@ class MapContainer extends Component {
         this.state = {
             children: [],
             scaleColors: [],
-            numMaps: 3, // number of individual maps to display in Map View
             strokeWidth: 0.8,
             strokeHoverWidth: 1.8
         }
@@ -47,27 +46,36 @@ class MapContainer extends Component {
 
     initializeMaps = (geoid, scenario, firstDate, selectedDate, width, height) => {
         const children = [];
+        const { indicators } = this.props;
+        const { strokeWidth, strokeHoverWidth } = this.state;
         const dateIdx = getDateIdx(firstDate, selectedDate);
-        const { numMaps, strokeWidth, strokeHoverWidth } = this.state;
+        let divider;
+        if (width < 350) {
+            divider = 1
+        } else if (width >= 350 && width < 700) {
+            divider = 2
+        } else {
+            divider = 3
+        }
 
-        for (let stat of STATS.slice(0, numMaps)) {
+        for (let indicator of indicators) {
             const child = {
-                key: `${stat.key}-map`,
+                key: `${indicator.key}-map`,
                 map: [],
             }
             child.map.push(
                 <Map
-                    key={`${stat.key}-map`}
-                    stat={stat}
+                    key={`${indicator.key}-map`}
+                    indicator={indicator}
                     geoid={geoid}
                     scenario={scenario}
                     dateIdx={dateIdx}
                     countyBoundaries={this.props.countyBoundaries}
-                    statsForCounty={this.props.statsForCounty}
-                    width={width / 2}
+                    indicatorsForCounty={this.props.indicatorsForCounty}
+                    width={width / divider}
                     height={height}
-                    lowColor={mapLowColorPalette[stat.id]}
-                    highColor={mapHighColorPalette[stat.id]}
+                    lowColor={mapLowColorPalette[indicator.id]}
+                    highColor={mapHighColorPalette[indicator.id]}
                     strokeWidth={strokeWidth}
                     strokeHoverWidth={strokeHoverWidth}
                     handleZoom={this.handleZoom}
@@ -79,7 +87,6 @@ class MapContainer extends Component {
     }
 
     handleZoom = (event) => {
-        // console.log(event)
         if (this.mapRefContainer.current) {
             const mapNode = select(this.mapRefContainer.current)
             mapNode.selectAll('path')

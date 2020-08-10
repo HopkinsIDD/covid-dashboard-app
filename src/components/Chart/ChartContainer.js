@@ -3,7 +3,7 @@ import { Row, Col } from 'antd';
 import Chart from '../Chart/Chart';
 import CalloutLabel from '../Chart/CalloutLabel';
 import ChartLegend from '../Chart/ChartLegend';
-import { COUNTIES } from '../../utils/geoids';
+import { COUNTIES } from '../../utils/geoids.tsx';
 import { getReadableDate, formatTitle } from '../../utils/utils';
 
 class ChartContainer extends Component {
@@ -12,7 +12,7 @@ class ChartContainer extends Component {
         this.state = {
             dataLoaded: false,
             children: {},
-            selectedStats: {},
+            selectedIndicators: {},
             hoveredScenarioIdx: null
         }
     }
@@ -26,7 +26,7 @@ class ChartContainer extends Component {
             || prevProps.end !== this.props.end
             || prevProps.dataset !== this.props.dataset
             || prevProps.scenarios !== this.props.scenarios
-            || prevProps.stats !== this.props.stats
+            || prevProps.indicators !== this.props.indicators
             || prevProps.scale !== this.props.scale
             || prevProps.width !== this.props.width
             || prevProps.height !== this.props.height) {
@@ -37,35 +37,35 @@ class ChartContainer extends Component {
 
     drawCharts = () => {
         const { children } = this.state;
-        const { stats, dataset, scenarios, width, height, scale } = this.props;
+        const { indicators, dataset, scenarios, width, height, scale } = this.props;
 
-        for (let stat of stats) {
+        for (let indicator of indicators) {
             const child = {
-                key: `${stat.key}-chart`,
+                key: `${indicator.key}-chart`,
                 chart: {},
             }
             child.chart =
                 <Chart
-                    key={`${stat.key}-chart`}
+                    key={`${indicator.key}-chart`}
                     dataset={dataset}
                     scenarios={scenarios}
                     scenarioMap={this.props.scenarioMap}
                     firstDate={this.props.firstDate}
                     start={this.props.start}
                     end={this.props.end}
-                    stat={stat.key}
-                    statLabel={stat.name}
-                    stats={stats}
+                    indicator={indicator.key}
+                    statLabel={indicator.name}
+                    indicators={indicators}
                     width={width}
-                    height={height / Object.keys(stats).length}
+                    height={height / Object.keys(indicators).length}
                     handleCalloutInfo={this.handleCalloutInfo}
                     handleCalloutLeave={this.handleCalloutLeave}
                     handleScenarioHover={this.handleScenarioHighlight}
                     scale={scale}
                 />
-            children[stat.key] = child;
+            children[indicator.key] = child;
         }
-        this.setState({children, selectedStats: stats}, () => {
+        this.setState({children, selectedIndicators: indicators}, () => {
             this.setState({
                 dataLoaded: true
             });
@@ -132,11 +132,11 @@ class ChartContainer extends Component {
                     </div>
                 </Row>
                 <Row>
-                {this.state.dataLoaded && this.state.selectedStats.map(stat => {
+                {this.state.dataLoaded && this.state.selectedIndicators.map(indicator => {
                     return (
-                        <div className="row" key={`chart-row-${stat.key}`}>
-                            <div className="chart" key={`chart-${stat.key}`}>
-                                {this.state.children[stat.key].chart}
+                        <div className="row" key={`chart-row-${indicator.key}`}>
+                            <div className="chart" key={`chart-${indicator.key}`}>
+                                {this.state.children[indicator.key].chart}
                             </div>
                         </div>
                     )

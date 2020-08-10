@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { defaultGeoid, margin, dimMultipliers } from '../utils/constants';
 import { fetchJSON } from '../utils/fetch';
-import Search from './Search/Search'
+import Search from './Search/Search.tsx'
 import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
 import MainMap from './Map/MainMap';
@@ -17,6 +17,7 @@ class MainContainer extends Component {
             dataset: {},
             dataLoaded: false, 
             geoid: defaultGeoid, 
+            indicators: [],
             graphW: 0,
             graphH: 0,
             mapContainerW: 0,
@@ -24,21 +25,27 @@ class MainContainer extends Component {
         };
     };
 
-    componentDidMount() {
+    async componentDidMount() {
         window.addEventListener('resize', this.updateGraphDimensions);
         window.addEventListener('resize', this.updateMapContainerDimensions);
 
         this.updateGraphDimensions();
         this.updateMapContainerDimensions();
-        
-        const { geoid } = this.state;
-        // TODO: implement async/await similar to MainMap componentDidMount
-        fetchJSON(geoid)
-            .then(dataset => this.setState({dataset}))
-            .catch(e => console.log('Fetch was problematic: ' + e.message))
-            .then(() => this.setState({dataLoaded: true}));
-    };
 
+        const { geoid } = this.state;
+        try {
+            const dataset = await fetchJSON(geoid);
+            const outcomes = await fetchJSON('outcomes');
+            const indicators = Object.keys(outcomes).map((obj) => outcomes[obj]);
+
+            this.setState({dataset, indicators});
+        } catch (e) {
+            console.log('Fetch was problematic: ' + e.message)
+        } finally {
+            this.setState({dataLoaded: true});
+        }
+    };
+   
     componentWillUnmount() {
         window.removeEventListener('resize', this.updateGraphDimensions)
         window.removeEventListener('resize', this.updateMapContainerDimensions)
@@ -46,37 +53,36 @@ class MainContainer extends Component {
 
     updateGraphDimensions = () => {
         const ratioH = dimMultipliers.graphDesktopH;
-        const ratioW = window.innerWidth > 800 ? 
-            dimMultipliers.graphDesktopW : 
+        const ratioW = window.innerWidth > 800 ?
+            dimMultipliers.graphDesktopW :
             dimMultipliers.graphMobileW; // account for mobile
 
         const graphH = window.innerHeight * ratioH;
-        const graphW = (window.innerWidth * ratioW) - margin.yAxis; 
+        const graphW = (window.innerWidth * ratioW) - margin.yAxis;
 
         this.setState({ graphW, graphH, animateTransition: false });
-      }
+    }
 
     updateMapContainerDimensions = () => {
         const ratioH = dimMultipliers.mapDesktopH;
-        const ratioW = window.innerWidth > 800 ? 
-            dimMultipliers.graphDesktopW : 
+        const ratioW = window.innerWidth > 800 ?
+            dimMultipliers.graphDesktopW :
             dimMultipliers.mapMobileW; // account for mobile 
 
         const mapContainerH = window.innerHeight * ratioH;
-        const mapContainerW = ((window.innerWidth * ratioW) - margin.yAxis) - 
+        const mapContainerW = ((window.innerWidth * ratioW) - margin.yAxis) -
             (6 * (margin.left));
-        
+
         this.setState({ mapContainerW, mapContainerH });
     }
 
     handleCountySelect = (geoid) => {
         fetchJSON(geoid)
-            .then(dataset => this.setState({dataset, geoid}))
+            .then(dataset => this.setState({ dataset, geoid }))
             .catch(e => console.log('Fetch was problematic: ' + e.message));
     };
-    
+
     handleUpload = (dataset, geoid) => {
-        console.log('Main handleUpload', geoid, dataset)
         this.setState({dataset, geoid})
     };
 
@@ -90,31 +96,34 @@ class MainContainer extends Component {
                 </Search>
 
                 {this.state.dataLoaded &&
-                <MainGraph 
+                <MainGraph
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
+                    indicators={this.state.indicators}
                     width={this.state.graphW}
                     height={this.state.graphH}
                 />}
 
                 {this.state.dataLoaded &&
-                <MainChart 
+                <MainChart
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
+                    indicators={this.state.indicators}
                     width={this.state.graphW - margin.left - margin.right}
-                    height={this.state.graphH * dimMultipliers.chartDesktopH} 
+                    height={this.state.graphH * dimMultipliers.chartDesktopH}
                 />}
 
                 {this.state.dataLoaded &&
                 <MainMap
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
+                    indicators={this.state.indicators}
                     width={this.state.mapContainerW - margin.left - margin.right}
                     height={this.state.mapContainerH}
                 />}
-                
-                <Methodology />
-                <About />
+
+                <Methodology/>
+                <About/>
             </Layout>
         )
     }

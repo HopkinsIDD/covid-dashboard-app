@@ -53,11 +53,11 @@ export function buildSeverities(scenarioMap, severityList, scenario) {
   return severityList;
 }
 
-export function getConfBounds(dataset, scenarioList, severityList, stat, dates, idxMin, idxMax) {
+export function getConfBounds(dataset, scenarioList, severityList, indicator, dates, idxMin, idxMax) {
   const confBoundsList = [];
   for (let i = 0; i < scenarioList.length; i++) {
     const confBounds = addQuantiles(
-      dataset, scenarioList[i].key, severityList[i].key, stat.key, dates)
+      dataset, scenarioList[i].key, severityList[i].key, indicator.key, dates)
     const filteredConfBounds = confBounds.slice(idxMin, idxMax);
 
     confBoundsList.push(filteredConfBounds);
@@ -65,17 +65,18 @@ export function getConfBounds(dataset, scenarioList, severityList, stat, dates, 
   return confBoundsList
 }
 
-export function getActuals(geoid, stat, scenarioList) {
+export function getActuals(geoid, indicator, scenarioList) {
   const actualList = [];
-  // instantiate actuals data if data for specific indicator exists
+  // instantiate ground truth data if data for specific indicator exists
   for (let i = 0; i < scenarioList.length; i++) {
     let actual = [];
-    const indicator = stat.name.toLowerCase();
+    const indicatorName = indicator.name.toLowerCase();
     const actualJSON = require('../store/actuals.json');
-    if (Object.keys(actualJSON).includes(indicator)) {
-      // TODO: add more elegant catch if doesn't exist
-      if (actualJSON[indicator][geoid]) {
-        actual = actualJSON[indicator][geoid].map( d => {
+    if (Object.keys(actualJSON).includes(indicatorName)) {
+      // return empty list if geoid or indicator lacks actual data
+      // will result in ActualSwitch being disabled
+      if (actualJSON[indicatorName][geoid]) {
+        actual = actualJSON[indicatorName][geoid].map( d => {
             return { date: parseDate(d.date), val: d.val}
         });
       }
@@ -85,8 +86,8 @@ export function getActuals(geoid, stat, scenarioList) {
   return actualList
 }
 
-export function getR0range(dataset, scenario, severity, stat) {
-  const r0array = dataset[scenario.key][severity.key][stat.key]
+export function getR0range(dataset, scenario, severity, indicator) {
+  const r0array = dataset[scenario.key][severity.key][indicator.key]
     .map(sim => sim.r0);
   const r0full = [Math.min(...r0array), Math.max(...r0array)];
   return r0full
@@ -114,13 +115,13 @@ function shuffle(array, numDisplaySims) {
 }
 
 export function filterR0(
-  r0selected, scenarioList, severityList, stat, dataset, numDisplaySims) {
+  r0selected, scenarioList, severityList, indicator, dataset, numDisplaySims) {
   // return series filtered on R0 range and numDisplaySims
   const seriesListForBrush = []
 
   for (let i = 0; i < scenarioList.length; i++) {
     const series = Array.from(
-        dataset[scenarioList[i].key][severityList[i].key][stat.key]);
+        dataset[scenarioList[i].key][severityList[i].key][indicator.key]);
 
     let filtered = series;
     const r0min = r0selected[0], r0max = r0selected[1];

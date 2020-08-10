@@ -31,8 +31,8 @@ class ActualSwitch extends Component<Props, State> {
     }
 
     render() {
-        const { actualList } = this.props;
-        const isDisabled = actualList[0].length === 0 ? true : false;
+        // assumes ground truth data exists for all scenarios if it exists for one
+        const isDisabled = this.props.actualList[0].length === 0 ? true : false;
         return (
             <Row gutter={styles.gutter} style={styles.Switch}>
                 <Switch
