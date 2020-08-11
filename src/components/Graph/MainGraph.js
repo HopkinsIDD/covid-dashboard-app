@@ -16,10 +16,11 @@ import { buildScenarios, buildScenarioMap, buildSeverities, getR0range,
 import { getindicatorThreshold, getDateThreshold, flagSimsOverThreshold, 
     getExceedences, flagSims, filterByDate } from '../../utils/threshold';
 import { styles, margin, dimMultipliers, numDisplaySims, LEVELS } from '../../utils/constants';
-import { utcParse } from 'd3-time-format';
+import { utcParse, timeFormat } from 'd3-time-format';
 import { timeDay } from 'd3-time';
 
 const parseDate = utcParse('%Y-%m-%d');
+const formatDate = timeFormat('%Y-%m-%d');
 class MainGraph extends Component {
     constructor(props) {
         super(props);
@@ -41,8 +42,7 @@ class MainGraph extends Component {
             statSliderActive: false,
             seriesMax: Number.NEGATIVE_INFINITY, 
             seriesMin: Number.POSITIVE_INFINITY,
-            dateThreshold: new Date(),
-            dateRange: [parseDate('2020-03-01'), parseDate('2020-07-27')],
+            dateThreshold: new Date(), // TODO: set date from data, should be same as the run day
             showActual: false,
             actualList: [],
             r0full: [0, 4],               // full range of r0
@@ -71,7 +71,8 @@ class MainGraph extends Component {
     initialize = (dataset) => {
         // initialize() trigged on mount and Dataset change
         const { indicators } = this.props;
-        const { dateRange } = this.state;
+        const { dateThreshold } = this.state;
+
 
         // SCENARIOS: various scenario variables used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
@@ -90,6 +91,17 @@ class MainGraph extends Component {
 
         // allSims used for R0 histogram
         const allSims = dataset[firstScenario.key][firstSeverity][firstIndicator.key];
+
+        // set dateRange to a default based on equal padding around current date
+        // TODO: replace current date with date of run. need Josh to implement that in pipeline
+        const currIdx = dates.findIndex(date => formatDate(date) === formatDate(dateThreshold))
+        const datePadding = dates.length - currIdx
+        const startIdx = dates.length - 1 - (datePadding * 2)
+        
+        // have a multiple of ten pad each side of the dateRange - alternative way
+        // const numDates = dates.length
+        // const dateMargin =  Math.ceil(Math.ceil(numDates / 10) / 10) * 10
+        const dateRange = [dates[startIdx], dates[dates.length - 1]]
 
         // initialize Threshold and slider ranges
         const idxMin = timeDay.count(dates[0], dateRange[0]);
@@ -117,6 +129,7 @@ class MainGraph extends Component {
             scenarioMap,
             indicator: indicators[0],
             selectedDates: newSelectedDates,
+            dateRange,
             dates: Array.from(dates),                  // dates for brush
             allDatesSeries: Array.from(series),        // series for brush
             allSims,
