@@ -1,4 +1,4 @@
-import { extent } from 'd3-array';
+import { max, extent } from 'd3-array';
 import { timeFormat } from 'd3-time-format';
 
 const formatDate = timeFormat('%Y-%m-%d');
@@ -20,11 +20,11 @@ export function getindicatorThreshold(scenarioList, seriesList, idxMin, idxMax) 
       const filteredSeries = filterByDate(seriesList[i], idxMin, idxMax)
   
       // returns the minimum and maximum series peak
-      const seriesPeaks = filteredSeries.map(sim => sim.max);
+      const seriesPeaks = filteredSeries.map(sim => max(sim.vals));
       const [seriesMin, seriesMax] = getRange(seriesPeaks);
   
       // adds some granularity to make indicatorThreshold selection "smarter"
-      const indicatorThreshold = seriesMin < seriesMax / 2 ? seriesMin : seriesMax / 2;
+      const indicatorThreshold = seriesMin > seriesMax / 2 ? seriesMin : seriesMax / 2;
       
       indicatorThresholds.push(indicatorThreshold);
       rangeDict['min'].push(seriesMin); 

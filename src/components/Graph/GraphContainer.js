@@ -8,7 +8,6 @@ import { formatTitle } from '../../utils/utils';
 import { margin } from '../../utils/constants';
 import { COUNTIES } from '../../utils/geoids.tsx';
 
-
 class GraphContainer extends Component {
   constructor(props) {
       super(props);
