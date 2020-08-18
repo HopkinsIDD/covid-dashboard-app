@@ -29,18 +29,15 @@ class MainMap extends Component {
     };
 
     async componentDidMount() {
-        const { geoid, dataset } = this.props;
-        const state = geoid.slice(0, 2);
-        
+        const { dataset } = this.props;
         try {
             this.setState({isLoading: true});
-            // TODO: rename file in s3 bucket
             const indicatorsForMap = await fetchJSON('statsForMap');
-            const countyBoundaries = await fetchJSON('countyBoundaries');
+            const stateBoundaries = await fetchJSON('countyBoundaries');
 
             this.setState({
-                indicatorsForCounty: indicatorsForMap[state],
-                countyBoundaries: countyBoundaries[state]
+                indicatorsForMap,
+                stateBoundaries
             });
             this.initializeMap(dataset)
         } catch (e) {
@@ -54,10 +51,16 @@ class MainMap extends Component {
 
     componentDidUpdate(prevProp) {
         const { dataset } = this.props;
-        if (dataset !== prevProp.dataset) {this.initializeMap(dataset)        }
+        if (dataset !== prevProp.dataset) {
+            this.initializeMap(dataset)        
+        }
     };
 
     initializeMap(dataset) {
+        const { geoid } = this.props;
+        const { indicatorsForMap, stateBoundaries } = this.state;
+        const state = geoid.slice(0, 2);
+
         // instantiate scenarios and dates
         const SCENARIOS = buildScenarios(dataset);  
         const scenario = SCENARIOS[0].key;       
@@ -71,6 +74,8 @@ class MainMap extends Component {
             dates,
             SCENARIOS,
             scenario,
+            indicatorsForCounty: indicatorsForMap[state],
+            countyBoundaries: stateBoundaries[state],
             currentDateIndex,
         }, () => {
             this.setState({dataLoaded: true});
