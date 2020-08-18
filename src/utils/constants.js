@@ -1,7 +1,7 @@
 
 // s3 bucket location of 3147 county geoid jsons
 // export const s3BucketUrl = 'https://idd-dashboard-runs.s3.amazonaws.com/json-files/';
-export const s3BucketUrl = 'https://covid-scenario-dashboard.s3.amazonaws.com/json-files/';
+export const s3BucketUrl = 'https://idd-dashboard-runs-staging.s3.amazonaws.com/json-files/';
 
 export const defaultGeoid = '06085';
 

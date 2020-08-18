@@ -44,5 +44,5 @@ jobs:
     - name: Copy build directory files to AWS s3 bucket
       run: |
         cd build
-        aws s3 sync . s3://covid-scenario-dashboard --exclude ".DS_Store"
+        aws s3 sync . s3://idd-dashboard-runs-staging --exclude ".DS_Store"
         echo "synced with s3 bucket"
