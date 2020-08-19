@@ -26,11 +26,11 @@ class R0 extends Component {
     
     handleChange = (r0new) => {
         const { step } = this.state;
-        const { r0selected } = this.props;
+        const { r0selected, onR0Change } = this.props;
 
         // prevent user from selecting no range
         const range = r0new[1] - r0new[0] < step ? r0selected : r0new;
-        this.props.onR0Change(range);
+        onR0Change(range);
     }
 
     handleTooltipClick = () => {
@@ -48,8 +48,7 @@ class R0 extends Component {
         const { r0full, r0selected, allSims, selectedSims, onR0Resample } = this.props;
         const { step, sortedSims, r0min, r0max } = this.state;
         const minR0 = r0full[0], maxR0 = r0full[1];
-        const activeMin = r0selected[0], activeMax = r0selected[1];
-        console.log('activeMin', activeMin, 'activeMax', activeMax)
+        const activeMin = r0selected[0].toFixed(1), activeMax = r0selected[1].toFixed(1);
         return (
             <div>
                 <div className="param-header">REPRODUCTION NUMBER 
