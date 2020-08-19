@@ -18,6 +18,7 @@ class MainContainer extends Component {
             dataLoaded: false, 
             geoid: defaultGeoid, 
             indicators: [],
+            actuals: {},
             graphW: 0,
             graphH: 0,
             mapContainerW: 0,
@@ -35,10 +36,12 @@ class MainContainer extends Component {
         const { geoid } = this.state;
         try {
             const dataset = await fetchJSON(geoid);
+            const actuals = await fetchJSON('actuals');
             const outcomes = await fetchJSON('outcomes');
             const indicators = Object.keys(outcomes).map((obj) => outcomes[obj]);
+            console.log('componentDidMount actuals', actuals)
 
-            this.setState({dataset, indicators});
+            this.setState({dataset, actuals: actuals[geoid], indicators});
         } catch (e) {
             console.log('Fetch was problematic: ' + e.message)
         } finally {
@@ -100,6 +103,7 @@ class MainContainer extends Component {
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
                     indicators={this.state.indicators}
+                    actuals={this.state.actuals}
                     width={this.state.graphW}
                     height={this.state.graphH}
                 />}

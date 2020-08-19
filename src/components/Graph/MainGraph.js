@@ -73,7 +73,6 @@ class MainGraph extends Component {
         const { indicators } = this.props;
         const { dateThreshold } = this.state;
 
-
         // SCENARIOS: various scenario variables used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
         const scenarioMap = buildScenarioMap(dataset);
@@ -115,7 +114,10 @@ class MainGraph extends Component {
 
         const confBoundsList = getConfBounds(
             dataset, [firstScenario], severityList, firstIndicator, dates, idxMin, idxMax)
-        const actualList = getActuals(this.props.geoid, firstIndicator, [firstScenario]);
+
+        console.log('MainGraph initialize this.props.actuals', this.props.actuals)
+        const actualList = getActuals(this.props.actuals, this.props.geoid, firstIndicator, [firstScenario]);
+        console.log('init...', firstIndicator, 'actualList', actualList)
 
         const r0full = getR0range(dataset, firstScenario, sevList[0], firstIndicator);
         // seriesListForBrush used by handleBrush to initialize instead of R0 filtering 
@@ -174,7 +176,8 @@ class MainGraph extends Component {
 
         const confBoundsList = getConfBounds(
             dataset, scenarioList, severityList, indicator, dates, idxMin, idxMax)
-        const actualList = getActuals(geoid, indicator, scenarioList);
+        const actualList = getActuals(this.props.actuals, geoid, indicator, scenarioList);
+        console.log('update...', indicator, 'actualList', actualList)
 
         this.setState({
             seriesList: flaggedSeriesList,
