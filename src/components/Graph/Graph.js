@@ -414,17 +414,18 @@ class Graph extends Component {
                             ></rect>
                         </clipPath>
                         {this.props.actual.map( (d, i) => {
-                            return ( 
-                                <circle
-                                    key={`actual-data-${i}`}
-                                    cx={this.props.xScale(d.date)}
-                                    cy={this.props.yScale(d.val)}
-                                    r={1.5}
+                            return (
+                                <rect
+                                    key={`actual-data-${i}-rect`}
+                                    x={this.props.xScale(d.date)}
+                                    y={this.props.yScale(d.val)}
+                                    width={1.5}
+                                    height={this.props.height - this.props.yScale(d.val)}
                                     fill={colors.actual}
                                     clipPath={'url(#actualClip)'}
                                     className={'actualDataCircle'}
                                 >
-                                </circle>
+                                </rect>
                             )
                         })}
                     </g>
