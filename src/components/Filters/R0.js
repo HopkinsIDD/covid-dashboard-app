@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TooltipHandler from '../Filters/TooltipHandler';
 import Histogram from '../Filters/Histogram';
-import { min, max, range } from 'd3-array';
+import { min, max } from 'd3-array';
 import { Button, Slider } from 'antd';
 import { styles } from '../../utils/constants';
 

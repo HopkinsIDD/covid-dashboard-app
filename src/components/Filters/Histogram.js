@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bin, min, max, range } from 'd3-array';
+import { bin, max, range } from 'd3-array';
 import { scaleLinear }  from 'd3-scale';
 import { colors } from '../../utils/colors.js';
 
