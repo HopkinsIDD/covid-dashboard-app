@@ -65,27 +65,20 @@ export function getConfBounds(dataset, scenarioList, severityList, indicator, da
   return confBoundsList
 }
 
-export function getActuals(actualJSON, geoid, indicator, scenarioList) {
+export function getActuals(obj, indicator, scenarioList) {
   // instantiate ground truth data if data for geoid + indicator exists
   // ActualSwitch will be disabled if geoid or indicator lack data
-  // try {
     const actualList = [];
     for (let i = 0; i < scenarioList.length; i++) {
       let actual = [];
-      // TODO: only grab actuals for that data
-      // const actualJSON = fetchJSON('actuals');
-      // if (geoid in actualJSON && Object.keys(actualJSON[geoid]).includes(indicator.key)) {
-      if (Object.keys(actualJSON).includes(indicator.key)) {
-        actual = actualJSON[indicator.key].map( d => {
+      if (obj && Object.keys(obj).includes(indicator.key)) {
+        actual = obj[indicator.key].map( d => {
           return { date: parseDate(d.date), val: d.value }
         });    
       }
       actualList.push(actual);
     }
     return actualList
-  // } catch (e) {
-  //   console.log('Fetch was problematic: ' + e.message)
-  // }
 }
 
 export function getR0range(dataset, scenario, severity, indicator) {

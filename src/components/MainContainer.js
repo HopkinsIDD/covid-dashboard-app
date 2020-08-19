@@ -39,7 +39,6 @@ class MainContainer extends Component {
             const actuals = await fetchJSON('actuals');
             const outcomes = await fetchJSON('outcomes');
             const indicators = Object.keys(outcomes).map((obj) => outcomes[obj]);
-            console.log('componentDidMount actuals', actuals)
 
             this.setState({dataset, actuals: actuals[geoid], indicators});
         } catch (e) {

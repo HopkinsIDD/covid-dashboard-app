@@ -70,7 +70,7 @@ class MainGraph extends Component {
 
     initialize = (dataset) => {
         // initialize() trigged on mount and Dataset change
-        const { indicators } = this.props;
+        const { indicators, actuals } = this.props;
         const { dateThreshold } = this.state;
 
         // SCENARIOS: various scenario variables used for a given geoid
@@ -115,9 +115,7 @@ class MainGraph extends Component {
         const confBoundsList = getConfBounds(
             dataset, [firstScenario], severityList, firstIndicator, dates, idxMin, idxMax)
 
-        console.log('MainGraph initialize this.props.actuals', this.props.actuals)
-        const actualList = getActuals(this.props.actuals, this.props.geoid, firstIndicator, [firstScenario]);
-        console.log('init...', firstIndicator, 'actualList', actualList)
+        const actualList = getActuals(actuals, firstIndicator, [firstScenario]);
 
         const r0full = getR0range(dataset, firstScenario, sevList[0], firstIndicator);
         // seriesListForBrush used by handleBrush to initialize instead of R0 filtering 
@@ -155,7 +153,7 @@ class MainGraph extends Component {
 
     update = (seriesList, scenarioList, indicator, severityList, dateRange) => {
         // update() triggered on Scenario, Indicator, Severity, R0, Brush change
-        const { dataset, geoid } = this.props;
+        const { dataset, actuals } = this.props;
         const { dates } = this.state;
 
         const idxMin = timeDay.count(dates[0], dateRange[0]);
@@ -176,8 +174,7 @@ class MainGraph extends Component {
 
         const confBoundsList = getConfBounds(
             dataset, scenarioList, severityList, indicator, dates, idxMin, idxMax)
-        const actualList = getActuals(this.props.actuals, geoid, indicator, scenarioList);
-        console.log('update...', indicator, 'actualList', actualList)
+        const actualList = getActuals(actuals, indicator, scenarioList);
 
         this.setState({
             seriesList: flaggedSeriesList,
