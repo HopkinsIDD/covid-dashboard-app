@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import TooltipHandler from '../Filters/TooltipHandler';
 import Histogram from '../Filters/Histogram';
+import { min, max } from 'd3-array';
 import { Button, Slider } from 'antd';
 import { styles } from '../../utils/constants';
 
@@ -13,14 +14,23 @@ class R0 extends Component {
             step: 0.1 
         }
     }
+
+    componentDidMount() {
+        const { allSims } = this.props;
+        const sorted_sims = allSims.slice().sort((a,b) => a.r0 - b.r0)
+        const r0min = min(sorted_sims, d => d.r0)
+        const r0max = max(sorted_sims, d => d.r0)
+        const step = (r0max - r0min) / 10
+        this.setState({ step, sortedSims: sorted_sims, r0min, r0max })
+    }
     
     handleChange = (r0new) => {
         const { step } = this.state;
-        const { r0selected } = this.props;
+        const { r0selected, onR0Change } = this.props;
 
         // prevent user from selecting no range
         const range = r0new[1] - r0new[0] < step ? r0selected : r0new;
-        this.props.onR0Change(range);
+        onR0Change(range);
     }
 
     handleTooltipClick = () => {
@@ -35,9 +45,10 @@ class R0 extends Component {
     }
  
     render() {
-        const { r0full, r0selected, allSims, selectedSims } = this.props;
-        const min = r0full[0], max = r0full[1];
-        const activeMin = r0selected[0], activeMax = r0selected[1];
+        const { r0full, r0selected, allSims, selectedSims, onR0Resample } = this.props;
+        const { step, sortedSims, r0min, r0max } = this.state;
+        const minR0 = r0full[0], maxR0 = r0full[1];
+        const activeMin = r0selected[0].toFixed(1), activeMax = r0selected[1].toFixed(1);
         return (
             <div>
                 <div className="param-header">REPRODUCTION NUMBER 
@@ -67,8 +78,12 @@ class R0 extends Component {
                         <Histogram
                             allSims={allSims}
                             selectedSims={selectedSims}
+                            sortedSims={sortedSims}
                             selected={r0selected}
+                            r0min={r0min}
+                            r0max={r0max}
                             height={25}
+                            step={step}
                         />
                     </div>
                     <div className="filter-label">
@@ -81,10 +96,10 @@ class R0 extends Component {
                     <div className="r0-slider" id="r0Slider">
                         <Slider
                             range
-                            marks={this.showMarks(min, max)}
-                            min={min}
-                            max={max} 
-                            step={this.state.step}
+                            marks={this.showMarks(minR0, maxR0)}
+                            min={minR0}
+                            max={maxR0} 
+                            step={step}
                             included={true}
                             tooltipVisible={false}
                             defaultValue={r0selected}
@@ -95,7 +110,7 @@ class R0 extends Component {
                         <Button 
                             type="dashed" 
                             size="small"
-                            onClick={this.props.onR0Resample}>resample
+                            onClick={onR0Resample}>resample
                         </Button>
                     </div>
                 </div>

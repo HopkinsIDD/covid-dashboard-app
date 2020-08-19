@@ -87,8 +87,9 @@ export function getActuals(geoid, indicator, scenarioList) {
 }
 
 export function getR0range(dataset, scenario, severity, indicator) {
+  // round r0 to 1 decimal place
   const r0array = dataset[scenario.key][severity.key][indicator.key]
-    .map(sim => sim.r0);
+    .map(sim => parseFloat(sim.r0.toFixed(1)));
   const r0full = [Math.min(...r0array), Math.max(...r0array)];
   return r0full
 }
