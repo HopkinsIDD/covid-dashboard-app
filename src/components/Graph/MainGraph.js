@@ -92,8 +92,7 @@ class MainGraph extends Component {
         // allSims used for R0 histogram
         const allSims = dataset[firstScenario.key][firstSeverity][firstIndicator.key];
 
-        // set dateRange to a default based on equal padding around current date
-        // TODO: replace current date with date of run. need Josh to implement that in pipeline
+        // set dateRange to a default based on equal padding around date of scenario run
         const currIdx = dates.findIndex(date => formatDate(date) === formatDate(dateThreshold))
         const datePadding = dates.length - currIdx
         const startIdx = dates.length - 1 - (datePadding * 2)
