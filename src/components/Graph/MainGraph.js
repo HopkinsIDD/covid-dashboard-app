@@ -16,11 +16,11 @@ import { buildScenarios, buildScenarioMap, buildSeverities, getR0range,
 import { getindicatorThreshold, getDateThreshold, flagSimsOverThreshold, 
     getExceedences, flagSims, filterByDate } from '../../utils/threshold';
 import { styles, margin, dimMultipliers, numDisplaySims, LEVELS } from '../../utils/constants';
-import { utcParse, timeFormat } from 'd3-time-format';
+import { utcParse, utcFormat } from 'd3-time-format';
 import { timeDay } from 'd3-time';
 
 const parseDate = utcParse('%Y-%m-%d');
-const formatDate = timeFormat('%Y-%m-%d');
+const formatDate = utcFormat('%Y-%m-%d');
 class MainGraph extends Component {
     constructor(props) {
         super(props);
@@ -42,7 +42,6 @@ class MainGraph extends Component {
             statSliderActive: false,
             seriesMax: Number.NEGATIVE_INFINITY, 
             seriesMin: Number.POSITIVE_INFINITY,
-            dateThreshold: new Date(), // TODO: set date from data, should be same as the run day
             showActual: false,
             actualList: [],
             r0full: [0, 4],               // full range of r0
@@ -71,8 +70,6 @@ class MainGraph extends Component {
     initialize = (dataset) => {
         // initialize() trigged on mount and Dataset change
         const { indicators } = this.props;
-        const { dateThreshold } = this.state;
-
 
         // SCENARIOS: various scenario variables used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
@@ -80,6 +77,9 @@ class MainGraph extends Component {
         const firstScenario = SCENARIOS[0];
         const firstIndicator = indicators[0];
         const firstSeverity = scenarioMap[firstScenario.key][0];
+        // '2020-07-19-21-44-47-inference'
+        const dateString = firstScenario.key.substring(0,10)
+        const dateThreshold = parseDate(dateString)
 
         // firstSeverity need to be designated in case not all death rate LEVELS exist
         const dates = dataset[firstScenario.key].dates.map( d => parseDate(d));
@@ -92,8 +92,7 @@ class MainGraph extends Component {
         // allSims used for R0 histogram
         const allSims = dataset[firstScenario.key][firstSeverity][firstIndicator.key];
 
-        // set dateRange to a default based on equal padding around current date
-        // TODO: replace current date with date of run. need Josh to implement that in pipeline
+        // set dateRange to a default based on equal padding around date of scenario run
         const currIdx = dates.findIndex(date => formatDate(date) === formatDate(dateThreshold))
         const datePadding = dates.length - currIdx
         const startIdx = dates.length - 1 - (datePadding * 2)
@@ -109,7 +108,7 @@ class MainGraph extends Component {
         const [indicatorThreshold, seriesMin, seriesMax] = getindicatorThreshold(
             [firstScenario], [series], idxMin, idxMax);
         const simsOver = flagSims(
-            series, indicatorThreshold, dates, this.state.dateThreshold)        
+            series, indicatorThreshold, dates, dateThreshold)        
         const newSelectedDates = Array.from(dates).slice(idxMin, idxMax);
         const filteredSeries = filterByDate(series, idxMin, idxMax)
 
@@ -130,6 +129,7 @@ class MainGraph extends Component {
             indicator: indicators[0],
             selectedDates: newSelectedDates,
             dateRange,
+            dateThreshold,
             dates: Array.from(dates),                  // dates for brush
             allDatesSeries: Array.from(series),        // series for brush
             allSims,
