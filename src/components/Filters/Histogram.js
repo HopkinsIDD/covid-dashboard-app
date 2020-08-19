@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { bin, max } from 'd3-array';
+import { bin, min, max, range } from 'd3-array';
 import { scaleLinear }  from 'd3-scale';
 import { colors } from '../../utils/colors.js';
 
@@ -25,17 +25,28 @@ class Histogram extends Component {
   makeBins = () => {
     const sorted_sims = this.props.allSims.slice().sort((a,b) => a.r0 - b.r0)
     const sorted_selected_sims = this.props.selectedSims.slice().sort((a,b) => a.r0 - b.r0)
-   
-    const xScale = scaleLinear().domain([2, 3]).range([0, this.state.width])
+    // console.log(sorted_sims)
+    const r0only = sorted_sims.map(d => d.r0)
+    console.log(r0only)
+    const r0min = min(sorted_sims, d => d.r0)
+    const r0max = max(sorted_sims, d => d.r0)
+    console.log(r0min, r0max)
+    const xScale = scaleLinear().domain([r0min, r0max]).range([0, this.state.width]).nice()
     const yScale = scaleLinear().range([this.props.height, 1])
+    const skipFactor = (r0max - r0min) / 10
+    console.log(skipFactor)
+    const thresholds = range(r0min, r0max, skipFactor)
+    console.log(thresholds)
 
     const binGenerator = bin()
         .value(d => d.r0)
         .domain(xScale.domain())
-        .thresholds(10)
+        .thresholds(thresholds)
 
     const bins = binGenerator(sorted_sims)
+    console.log(bins)
     const selectedBins = binGenerator(sorted_selected_sims)
+    console.log(selectedBins)
 
     yScale.domain([0, max(bins, d => d.length)])
     this.setState({ xScale, yScale, binGenerator, bins, selectedBins })
