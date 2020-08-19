@@ -23,19 +23,20 @@ class Histogram extends Component {
   }
 
   makeBins = () => {
-    const sorted_sims = this.props.allSims.slice().sort((a,b) => a.r0 - b.r0)
-    const sorted_selected_sims = this.props.selectedSims.slice().sort((a,b) => a.r0 - b.r0)
+    const { sortedSims, selectedSims, r0min, r0max, step } = this.props;
+    // const sorted_sims = sortedSims//this.props.allSims.slice().sort((a,b) => a.r0 - b.r0)
+    const sorted_selected_sims = selectedSims.slice().sort((a,b) => a.r0 - b.r0)
     // console.log(sorted_sims)
-    const r0only = sorted_sims.map(d => d.r0)
+    const r0only = sortedSims.map(d => d.r0)
     console.log(r0only)
-    const r0min = min(sorted_sims, d => d.r0)
-    const r0max = max(sorted_sims, d => d.r0)
-    console.log(r0min, r0max)
+    // const r0min = min(sorted_sims, d => d.r0)
+    // const r0max = max(sorted_sims, d => d.r0)
+    // console.log(r0min, r0max)
     const xScale = scaleLinear().domain([r0min, r0max]).range([0, this.state.width]).nice()
     const yScale = scaleLinear().range([this.props.height, 1])
-    const skipFactor = (r0max - r0min) / 10
-    console.log(skipFactor)
-    const thresholds = range(r0min, r0max, skipFactor)
+    // const skipFactor = (r0max - r0min) / 10
+    // console.log(skipFactor)
+    const thresholds = range(r0min, r0max, step)
     console.log(thresholds)
 
     const binGenerator = bin()
@@ -43,7 +44,7 @@ class Histogram extends Component {
         .domain(xScale.domain())
         .thresholds(thresholds)
 
-    const bins = binGenerator(sorted_sims)
+    const bins = binGenerator(sortedSims)
     console.log(bins)
     const selectedBins = binGenerator(sorted_selected_sims)
     console.log(selectedBins)
@@ -66,12 +67,14 @@ class Histogram extends Component {
 
   render() {
     const { xScale, yScale, bins, selectedBins } = this.state;
+    // const { width, height } = this.props;
       return (
         <div>
-        {this.state.width && this.state.xScale &&
-          <svg width={this.state.width} height={this.props.height}>
+        {this.props.width && this.state.xScale &&
+          <svg width={this.props.width} height={this.props.height}>
             <g>
               {bins.map( (bin,i) => {
+                console.log(bin)
               return (
                 <rect 
                   key={`hist-${i}`}
