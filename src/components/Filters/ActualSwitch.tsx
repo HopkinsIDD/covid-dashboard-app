@@ -32,14 +32,14 @@ class ActualSwitch extends Component<Props, State> {
     }
 
     render() {
-        // TODO: tooltip description should not hardcode indicators that exist
+        const { showActual, actualList } = this.props;
         // assumes ground truth data exists for all scenarios if it exists for one
-        const isDisabled = this.props.actualList[0].length === 0 ? true : false;
+        const isDisabled = actualList[0].length === 0 ? true : false;
         return (
             <Row gutter={styles.gutter} style={styles.Switch}>
                 <Switch
                     style={{ 'marginTop': '0.1rem' }}
-                    checked={this.props.showActual}
+                    checked={showActual}
                     onChange={this.props.onChange}
                     disabled={isDisabled}
                     size="small"/>
@@ -51,9 +51,8 @@ class ActualSwitch extends Component<Props, State> {
                         <div className="tooltip">&nbsp;&#9432;
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
-                                Currently, actual data is only 
-                                available for the <i>death</i>&nbsp; 
-                                and <i>confirmed cases</i> indicators.&nbsp;&nbsp;
+                                If toggle is disabled, then ground truth data is 
+                                unavailable for the selected indicator.
                                 Source: USA Facts.
                             </span> }
                         </div>
