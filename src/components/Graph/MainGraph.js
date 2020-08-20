@@ -69,7 +69,8 @@ class MainGraph extends Component {
 
     initialize = (dataset) => {
         // initialize() trigged on mount and Dataset change
-        const { indicators } = this.props;
+
+        const { indicators, actuals } = this.props;
 
         // SCENARIOS: various scenario variables used for a given geoid
         const SCENARIOS = buildScenarios(dataset);  
@@ -114,7 +115,8 @@ class MainGraph extends Component {
 
         const confBoundsList = getConfBounds(
             dataset, [firstScenario], severityList, firstIndicator, dates, idxMin, idxMax)
-        const actualList = getActuals(this.props.geoid, firstIndicator, [firstScenario]);
+
+        const actualList = getActuals(actuals, firstIndicator, [firstScenario]);
 
         const r0full = getR0range(dataset, firstScenario, sevList[0], firstIndicator);
         // seriesListForBrush used by handleBrush to initialize instead of R0 filtering 
@@ -143,6 +145,7 @@ class MainGraph extends Component {
             confBoundsList,
             showConfBounds: false,
             actualList,
+            showActual: false,
             r0full,
             r0selected: r0full, 
             seriesListForBrush 
@@ -153,7 +156,7 @@ class MainGraph extends Component {
 
     update = (seriesList, scenarioList, indicator, severityList, dateRange) => {
         // update() triggered on Scenario, Indicator, Severity, R0, Brush change
-        const { dataset, geoid } = this.props;
+        const { dataset, actuals } = this.props;
         const { dates } = this.state;
 
         const idxMin = timeDay.count(dates[0], dateRange[0]);
@@ -174,7 +177,7 @@ class MainGraph extends Component {
 
         const confBoundsList = getConfBounds(
             dataset, scenarioList, severityList, indicator, dates, idxMin, idxMax)
-        const actualList = getActuals(geoid, indicator, scenarioList);
+        const actualList = getActuals(actuals, indicator, scenarioList);
 
         this.setState({
             seriesList: flaggedSeriesList,
@@ -508,6 +511,7 @@ class MainGraph extends Component {
                             selectedSims={this.state.seriesList[0]} />
                         <ActualSwitch
                             onChange={this.handleActualChange}
+                            showActual={this.state.showActual}
                             actualList={this.state.actualList} />
                         <ModeToggle
                             showConfBounds={this.state.showConfBounds}

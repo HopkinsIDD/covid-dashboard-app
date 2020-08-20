@@ -287,7 +287,10 @@ class Graph extends Component {
             const peakIndex = maxIndex(s.vals)
             const tooltipXPos = this.props.xScale(this.props.selectedDates[peakIndex])
             const tooltipYPos = this.props.yScale(peak)
-            this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `R0: ${s.r0}`, tooltipXPos, tooltipYPos })
+            this.setState({ 
+                hoveredSimPathId: hoveredIdx, 
+                tooltipText: `R0: ${s.r0.toFixed(1)}`, 
+                tooltipXPos, tooltipYPos })
         } 
     }
 
@@ -414,17 +417,32 @@ class Graph extends Component {
                             ></rect>
                         </clipPath>
                         {this.props.actual.map( (d, i) => {
-                            return ( 
+                            return (
+                                <g key={`actual-data-${i}-group`}>
+                                    {(i < this.props.actual.length - 1) &&
+                                    <line
+                                        key={`actual-data-${i}-line`}
+                                        x1={this.props.xScale(d.date)}
+                                        y1={this.props.yScale(d.val)}
+                                        x2={this.props.xScale(this.props.actual[i+1].date)}
+                                        y2={this.props.yScale(this.props.actual[i+1].val)}
+                                        stroke={colors.actual}
+                                        clipPath={'url(#actualClip)'}
+                                    >
+                                    </line>
+                                    }
                                 <circle
-                                    key={`actual-data-${i}`}
+                                    key={`actual-data-${i}-circle`}
                                     cx={this.props.xScale(d.date)}
                                     cy={this.props.yScale(d.val)}
                                     r={1.5}
+                                    // height={this.props.height - this.props.yScale(d.val)}
                                     fill={colors.actual}
                                     clipPath={'url(#actualClip)'}
                                     className={'actualDataCircle'}
                                 >
                                 </circle>
+                                </g>
                             )
                         })}
                     </g>

@@ -18,6 +18,7 @@ class MainContainer extends Component {
             dataLoaded: false, 
             geoid: defaultGeoid, 
             indicators: [],
+            actuals: {},
             graphW: 0,
             graphH: 0,
             mapContainerW: 0,
@@ -35,10 +36,11 @@ class MainContainer extends Component {
         const { geoid } = this.state;
         try {
             const dataset = await fetchJSON(geoid);
+            const actuals = await fetchJSON(`${geoid}_actuals`);
             const outcomes = await fetchJSON('outcomes');
             const indicators = Object.keys(outcomes).map((obj) => outcomes[obj]);
 
-            this.setState({dataset, indicators});
+            this.setState({dataset, actuals, indicators});
         } catch (e) {
             console.log('Fetch was problematic: ' + e.message)
         } finally {
@@ -76,10 +78,15 @@ class MainContainer extends Component {
         this.setState({ mapContainerW, mapContainerH });
     }
 
-    handleCountySelect = (geoid) => {
-        fetchJSON(geoid)
-            .then(dataset => this.setState({ dataset, geoid }))
-            .catch(e => console.log('Fetch was problematic: ' + e.message));
+    handleCountySelect = async (geoid) => {
+        try {
+            const dataset = await fetchJSON(geoid);
+            const actuals = await fetchJSON(`${geoid}_actuals`);
+
+            this.setState({ dataset, geoid, actuals });
+        } catch (e) {
+            console.log('Fetch was problematic: ' + e.message)
+        }
     };
 
     handleUpload = (dataset, geoid) => {
@@ -100,6 +107,7 @@ class MainContainer extends Component {
                     geoid={this.state.geoid}
                     dataset={this.state.dataset}
                     indicators={this.state.indicators}
+                    actuals={this.state.actuals}
                     width={this.state.graphW}
                     height={this.state.graphH}
                 />}
