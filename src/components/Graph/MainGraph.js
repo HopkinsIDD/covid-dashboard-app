@@ -143,6 +143,7 @@ class MainGraph extends Component {
             confBoundsList,
             showConfBounds: false,
             actualList,
+            showActual: false,
             r0full,
             r0selected: r0full, 
             seriesListForBrush 

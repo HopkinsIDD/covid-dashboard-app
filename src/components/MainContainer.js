@@ -36,11 +36,11 @@ class MainContainer extends Component {
         const { geoid } = this.state;
         try {
             const dataset = await fetchJSON(geoid);
-            const actuals = await fetchJSON('actuals');
+            const actuals = await fetchJSON(`${geoid}_actuals`);
             const outcomes = await fetchJSON('outcomes');
             const indicators = Object.keys(outcomes).map((obj) => outcomes[obj]);
 
-            this.setState({dataset, actuals: actuals[geoid], indicators});
+            this.setState({dataset, actuals, indicators});
         } catch (e) {
             console.log('Fetch was problematic: ' + e.message)
         } finally {
@@ -78,10 +78,20 @@ class MainContainer extends Component {
         this.setState({ mapContainerW, mapContainerH });
     }
 
-    handleCountySelect = (geoid) => {
-        fetchJSON(geoid)
-            .then(dataset => this.setState({ dataset, geoid }))
-            .catch(e => console.log('Fetch was problematic: ' + e.message));
+    async handleCountySelect(geoid) {
+        try {
+            const dataset = await fetchJSON(geoid);
+            const actuals = await fetchJSON(`${geoid}_actuals`);
+
+            this.setState({ dataset, geoid, actuals });
+        } catch (e) {
+            console.log('Fetch was problematic: ' + e.message)
+        }
+        
+        // Originally, looked like this --> 
+        // fetchJSON(geoid)
+        //     .then(dataset => this.setState({ dataset, geoid}))
+        //     .catch(e => console.log('Fetch was problematic: ' + e.message))
     };
 
     handleUpload = (dataset, geoid) => {
