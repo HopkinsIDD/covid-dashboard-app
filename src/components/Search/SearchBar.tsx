@@ -50,7 +50,6 @@ class SearchBar extends Component<Props, State> {
                     {value}
                 </Option>
             );
-            // console.log(child);
             children.push(child);
         }
         this.setState({ children })
