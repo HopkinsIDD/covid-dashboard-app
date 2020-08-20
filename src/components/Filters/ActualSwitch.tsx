@@ -10,6 +10,7 @@ interface ActualObj {
 }
 
 interface Props {
+    showActual: boolean,
     actualList: Array<Array<ActualObj>>, 
     onChange: () => void,
 }
@@ -38,6 +39,7 @@ class ActualSwitch extends Component<Props, State> {
             <Row gutter={styles.gutter} style={styles.Switch}>
                 <Switch
                     style={{ 'marginTop': '0.1rem' }}
+                    checked={this.props.showActual}
                     onChange={this.props.onChange}
                     disabled={isDisabled}
                     size="small"/>

@@ -509,6 +509,7 @@ class MainGraph extends Component {
                             selectedSims={this.state.seriesList[0]} />
                         <ActualSwitch
                             onChange={this.handleActualChange}
+                            showActual={this.state.showActual}
                             actualList={this.state.actualList} />
                         <ModeToggle
                             showConfBounds={this.state.showConfBounds}
