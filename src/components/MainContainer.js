@@ -78,7 +78,7 @@ class MainContainer extends Component {
         this.setState({ mapContainerW, mapContainerH });
     }
 
-    async handleCountySelect(geoid) {
+    handleCountySelect = async (geoid) => {
         try {
             const dataset = await fetchJSON(geoid);
             const actuals = await fetchJSON(`${geoid}_actuals`);
@@ -87,11 +87,6 @@ class MainContainer extends Component {
         } catch (e) {
             console.log('Fetch was problematic: ' + e.message)
         }
-        
-        // Originally, looked like this --> 
-        // fetchJSON(geoid)
-        //     .then(dataset => this.setState({ dataset, geoid}))
-        //     .catch(e => console.log('Fetch was problematic: ' + e.message))
     };
 
     handleUpload = (dataset, geoid) => {
