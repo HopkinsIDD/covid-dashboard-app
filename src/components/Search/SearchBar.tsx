@@ -3,8 +3,6 @@ import { Select } from 'antd';
 import { COUNTIES } from '../../utils/geoids';
 import { SelectValue } from "antd/lib/select";
 import * as CSS from 'csstype';
-import { checkPropTypes } from 'prop-types';
-
 
 type Child = {
     key: string,
