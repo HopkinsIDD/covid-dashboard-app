@@ -60,6 +60,8 @@ class Indicators extends Component<Props, State> {
             <div>
                 <div className="param-header">INDICATOR</div>
                 <Select
+                    // re-render every time indicator key changes
+                    key={indicator.key}
                     defaultValue={indicator.key}
                     style={styles.Selector}
                     onChange={this.handleChange}>
