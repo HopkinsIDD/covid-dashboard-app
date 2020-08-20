@@ -287,7 +287,10 @@ class Graph extends Component {
             const peakIndex = maxIndex(s.vals)
             const tooltipXPos = this.props.xScale(this.props.selectedDates[peakIndex])
             const tooltipYPos = this.props.yScale(peak)
-            this.setState({ hoveredSimPathId: hoveredIdx, tooltipText: `R0: ${s.r0}`, tooltipXPos, tooltipYPos })
+            this.setState({ 
+                hoveredSimPathId: hoveredIdx, 
+                tooltipText: `R0: ${s.r0.toFixed(1)}`, 
+                tooltipXPos, tooltipYPos })
         } 
     }
 
