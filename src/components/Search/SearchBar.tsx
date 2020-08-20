@@ -4,7 +4,6 @@ import { COUNTIES } from '../../utils/geoids';
 import { SelectValue } from "antd/lib/select";
 import * as CSS from 'csstype';
 
-
 type Child = {
     key: string,
     button: Array<any>, // FIXME any should be of type Option Component
@@ -36,7 +35,7 @@ class SearchBar extends Component<Props, State> {
         const children = [];
         const { Option } = Select;
 
-        for (const [key, value] of Object.entries(COUNTIES)) {
+        for (const [key, value] of Object.entries(COUNTIES).sort((a,b) => parseInt(a[0]) - parseInt(b[0]))) {
             const child = {
                 key: `${key}-county`,
                 button: []
