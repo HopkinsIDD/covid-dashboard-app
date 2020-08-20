@@ -415,7 +415,7 @@ class Graph extends Component {
                         </clipPath>
                         {this.props.actual.map( (d, i) => {
                             return (
-                                <g>
+                                <g key={`actual-data-${i}-group`}>
                                     {(i < this.props.actual.length - 1) &&
                                     <line
                                         key={`actual-data-${i}-line`}
