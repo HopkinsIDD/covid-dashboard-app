@@ -31,6 +31,7 @@ class ActualSwitch extends Component<Props, State> {
     }
 
     render() {
+        // TODO: tooltip description should not hardcode indicators that exist
         // assumes ground truth data exists for all scenarios if it exists for one
         const isDisabled = this.props.actualList[0].length === 0 ? true : false;
         return (
