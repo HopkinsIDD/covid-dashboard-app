@@ -49,7 +49,8 @@ class ActualSwitch extends Component<Props, State> {
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
                                 Currently, actual data is only 
-                                available for the <i>death</i> indicator.
+                                available for the <i>death</i>&nbsp; 
+                                and <i>confirmed cases</i> indicators.&nbsp;&nbsp;
                                 Source: USA Facts.
                             </span> }
                         </div>
