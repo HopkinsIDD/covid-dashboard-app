@@ -98,6 +98,7 @@ If you are trying to reach the endpoint `iddynamics.jhsph.edu/covid/dashboard` a
 - Block Public Access is turned off
 - Static website hosting has been enabled
 - Ensure the account that owns the bucket also owns all objects in bucket
+```aws s3api get-object-acl --bucket idd-dashboard-runs --key index.html```
 - Bucket policy allows `s3:GetObject` for all
 ```
 {
