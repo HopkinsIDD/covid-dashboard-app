@@ -13,7 +13,7 @@ class Footer extends Component {
               <Logo height="60"/>
             </Col>
             <Col className="gutter-row" offset={14} span={4}>
-              <div className="footer">© 2020 IDD Group</div>
+              <div className="footer">© 2020 IDD Working Group</div>
             </Col>
           </Row>
         </div>
