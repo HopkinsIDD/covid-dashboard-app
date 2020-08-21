@@ -4,7 +4,7 @@
 # Sync and deploy artifacts to s3 bucket
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Node.js Build Static Artifacts and Deploy to Amazon S3
+name: Build
 
 on:
   push:

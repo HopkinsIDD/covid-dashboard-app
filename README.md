@@ -2,7 +2,7 @@
 <img src="src/assets/idd.png" alt="drawing" width="600"/>
 
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+![Build](https://github.com/HopkinsIDD/covid-dashboard-app/workflows/Build/badge.svg) [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
  
 This is the code repository for [www.iddynamics.jhsph.edu/covid/dashboard](https://www.iddynamics.jhsph.edu/covid/dashboard), an interactive tool for visualizing COVID-19 intervention scenario models produced by the Johns Hopkins University's Infectious Disease Dynamics Working Group ([IDD Working Group](www.iddynamics.jhsph.edu/)) in support of the COVID-19 operational response of federal and state agencies.
 
