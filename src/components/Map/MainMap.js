@@ -5,7 +5,7 @@ import Scenarios from '../Filters/Scenarios.tsx';
 import DateSlider from './DateSlider';
 import { styles } from '../../utils/constants';
 import { buildScenarios } from '../../utils/utils';
-import { fetchJSON } from '../../utils/fetch';
+import { fetchConfig } from '../../utils/fetch';
 import { utcParse, timeFormat } from 'd3-time-format'
 
 const parseDate = utcParse('%Y-%m-%d')
@@ -32,8 +32,8 @@ class MainMap extends Component {
         const { dataset } = this.props;
         try {
             this.setState({isLoading: true});
-            const indicatorsForMap = await fetchJSON('statsForMap');
-            const stateBoundaries = await fetchJSON('countyBoundaries');
+            const indicatorsForMap = await fetchConfig('statsForMap');
+            const stateBoundaries = await fetchConfig('countyBoundaries');
 
             this.setState({
                 indicatorsForMap,
