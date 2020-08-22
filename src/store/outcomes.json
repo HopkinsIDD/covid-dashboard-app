@@ -1,0 +1,5 @@
+{
+    "1": {"id": 1, "key": "incidC", "name": "Confirmed Cases"},
+    "2": {"id": 2, "key": "incidH", "name": "Hospitalizations"},
+    "3": {"id": 3, "key": "incidD", "name": "Deaths"}
+}

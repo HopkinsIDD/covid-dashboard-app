@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { defaultGeoid, margin, dimMultipliers } from '../utils/constants';
-import { fetchJSON } from '../utils/fetch';
+import { fetchDataset, fetchActuals, fetchConfig } from '../utils/fetch';
 import Search from './Search/Search.tsx'
 import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
@@ -35,9 +35,9 @@ class MainContainer extends Component {
 
         const { geoid } = this.state;
         try {
-            const dataset = await fetchJSON(geoid);
-            const actuals = await fetchJSON(`${geoid}_actuals`);
-            const outcomes = await fetchJSON('outcomes');
+            const dataset = await fetchDataset(geoid);
+            const actuals = await fetchActuals(geoid);
+            const outcomes = await fetchConfig('outcomes');
             const indicators = Object.keys(outcomes).map((obj) => outcomes[obj]);
 
             this.setState({dataset, actuals, indicators});
@@ -80,8 +80,8 @@ class MainContainer extends Component {
 
     handleCountySelect = async (geoid) => {
         try {
-            const dataset = await fetchJSON(geoid);
-            const actuals = await fetchJSON(`${geoid}_actuals`);
+            const dataset = await fetchDataset(geoid);
+            const actuals = await fetchActuals(geoid);
 
             this.setState({ dataset, geoid, actuals });
         } catch (e) {
