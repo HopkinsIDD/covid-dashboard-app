@@ -14,29 +14,23 @@ Public health decision makers look to epidemiological models for decision suppor
 
 ## Summary
 
-- [Contributing](#contributing)
+- [Getting Started](#getting-started)
 - [Deployment](#deployment)
 - [Bugs and Feature Requests](#bugs-and-feature-requests)
 - [Troubleshooting](#troubleshooting)
 - [Future Work](#future-work)
 - [License](#license)
 
-## Contributing
+## Getting Started
+
+#### Prerequisites
+npm >= 10.22.0
 
 #### Development
 
-If you would like to contribute to this project, follow these steps to set up your local development environment:
+If you would like to contribute to this project, set up your local development environment like so:
 
 ```shell
-# ensure npm >= 10.22.0
-$ npm -version
-
-# clone repo and enter directory
-$ git clone git@github.com:HopkinsIDD/covid-dashboard-app.git
-$ cd covid-dashboard-app/
-
-# switch to a development branch
-$ git checkout -b new-dev-branch
 
 # install node dependencies
 $ npm init
@@ -99,6 +93,7 @@ If you are trying to reach the endpoint `iddynamics.jhsph.edu/covid/dashboard` a
 - Static website hosting has been enabled
 - Ensure the account that owns the bucket also owns all objects in bucket
 ```aws s3api get-object-acl --bucket idd-dashboard-runs --key index.html```
+The AWS secret keys stored in this repo should belong to the owner of the s3 bucket
 - Bucket policy allows `s3:GetObject` for all
 ```
 {
@@ -113,7 +108,9 @@ If you are trying to reach the endpoint `iddynamics.jhsph.edu/covid/dashboard` a
 Additional information can be found in the [aws docs](https://aws.amazon.com/premiumsupport/knowledge-center/s3-troubleshoot-403/). 
 
 ## Future Work
-- Testing Framework
+- Add Testing Framework
+- Finish TypeScript Migration
+- Add Redux
 
 ## License
 
