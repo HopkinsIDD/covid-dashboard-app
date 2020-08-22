@@ -1,24 +1,25 @@
 // config file used for testing local data files
-// config and data files must exist in the store dir
+// config and data files to test must exist in the store dir
+// set file type to test to use_local = true and add update file_name value
 
 export const USE_LOCAL_GEOID = false
-export const LOCAL_GEOID = 'new_06085.json'
+export const LOCAL_GEOID = ''
 
 export const USE_LOCAL_ACTUALS = false
-export const LOCAL_ACTUALS = 'new_06085_actuals.json'
+export const LOCAL_ACTUALS = ''
 
 // static files
 export const CONFIGS = {
     'outcomes': {
         'use_local': false,
-        'file_name': 'new_outcomes.json'
+        'file_name': ''
     },
     'statsForMap': {
         'use_local': false,
-        'file_name': 'new_statsForMap.json'
+        'file_name': ''
     },
     'countyBoundaries': {
         'use_local': false,
-        'file_name': 'new_countyBoundaries.json'
+        'file_name': ''
     }
 }

@@ -41,14 +41,23 @@ $ npm start
 
 #### Testing with local data files
 
-Currently the data files are being fetched from the IDD Working Group's s3 bucket `idd-dashboard-runs`. However, if you would like to use your own data or change the data format for testing, substitute the fetch functions with a local module loader, like so:
+Currently the data files are being fetched from the IDD Working Group's s3 bucket `idd-dashboard-runs`. However, if you would like to test your own data files or change the data format for testing, drop the new data files into the `store` directory and indicate in `store/config.tsx` which data files should use the local copy. For example, if you would like to use a local `countyBoundaries` files for testing, indicate like so:
 
 ```shell
-# if you would like to sub out the outcomes.json for a local copy
-const outcomes = await fetchJSON(`outcomes`);
-
-# then replace with something like this
-const outcomes = require('../store/new_outcomes.json') 
+export const CONFIGS = {
+    'outcomes': {
+        'use_local': false,
+        'file_name': ''
+    },
+    'statsForMap': {
+        'use_local': false,
+        'file_name': ''
+    },
+    'countyBoundaries': {
+        'use_local': true,
+        'file_name': 'countyBoundaries_to_test.json'
+    }
+}
 ```
 
 ## Deployment
