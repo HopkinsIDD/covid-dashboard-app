@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { Layout } from 'antd';
 import { defaultGeoid, margin, dimMultipliers } from '../utils/constants';
 import { fetchJSON } from '../utils/fetch';
+import { USE_LOCAL_OUTCOMES_FILE, LOCAL_OUTCOMES_FILE, USE_LOCAL_GEOID_FILE, 
+    LOCAL_GEOID_FILE, USE_LOCAL_ACTUAL_FILE, LOCAL_ACTUAL_FILE } from '../store/config.tsx';
 import Search from './Search/Search.tsx'
 import MainGraph from './Graph/MainGraph';
 import MainChart from './Chart/MainChart';
@@ -26,6 +28,16 @@ class MainContainer extends Component {
         };
     };
 
+    // async get(fileType, useLocal, localFile) {
+    //     let dataset;
+    //     if (useLocal) {
+    //         dataset = require(`../store/${localFile}`);
+    //     } else {
+    //         dataset = await fetchJSON(fileType);
+    //     }
+    //     return dataset;
+    // }
+
     async componentDidMount() {
         window.addEventListener('resize', this.updateGraphDimensions);
         window.addEventListener('resize', this.updateMapContainerDimensions);
@@ -35,9 +47,34 @@ class MainContainer extends Component {
 
         const { geoid } = this.state;
         try {
-            const dataset = await fetchJSON(geoid);
-            const actuals = await fetchJSON(`${geoid}_actuals`);
-            const outcomes = await fetchJSON('outcomes');
+            // const dataset = this.get(geoid, USE_LOCAL_GEOID_FILE, LOCAL_GEOID_FILE);
+            // const actuals = this.get(`${geoid}_actuals`, USE_LOCAL_ACTUAL_FILE, LOCAL_ACTUAL_FILE) 
+            // const outcomes = this.get('outcomes', USE_LOCAL_OUTCOMES_FILE, LOCAL_OUTCOMES_FILE) 
+            // const indicators = Object.keys(outcomes).map((obj) => outcomes[obj]);
+
+            // dataset fetch
+            let dataset;
+            if (USE_LOCAL_GEOID_FILE) {
+                dataset = require(`../store/${LOCAL_GEOID_FILE}`);
+            } else {
+                dataset = await fetchJSON(geoid);
+            }
+
+            // actuals fetch
+            let actuals;
+            if (USE_LOCAL_ACTUAL_FILE) {
+                actuals = require(`../store/${LOCAL_ACTUAL_FILE}`);
+            } else {
+                actuals = await fetchJSON(`${geoid}_actuals`);
+            }
+            
+            // outcomes fetch
+            let outcomes;
+            if (USE_LOCAL_OUTCOMES_FILE) {
+                outcomes = require(`../store/${LOCAL_OUTCOMES_FILE}`);
+            } else {
+                outcomes = await fetchJSON('outcomes');
+            }
             const indicators = Object.keys(outcomes).map((obj) => outcomes[obj]);
 
             this.setState({dataset, actuals, indicators});
