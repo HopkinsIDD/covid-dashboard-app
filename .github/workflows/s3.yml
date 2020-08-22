@@ -41,8 +41,12 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
 
+    - name: Push outcomes temporarily
+      run: aws s3 cp src/store/outcomes.json s3://idd-dashboard-runs-staging/json-files/outcomes.json
+
     - name: Copy build directory files to AWS s3 bucket
       run: |
         cd build
         aws s3 sync . s3://idd-dashboard-runs-staging --exclude ".DS_Store"
         echo "synced with s3 bucket"
+
