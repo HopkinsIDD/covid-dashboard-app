@@ -11,8 +11,8 @@ export const LOCAL_ACTUALS = ''
 // static files
 export const CONFIGS = {
     'outcomes': {
-        'use_local': false,
-        'file_name': ''
+        'use_local': true,
+        'file_name': 'outcomes.json'
     },
     'statsForMap': {
         'use_local': false,
