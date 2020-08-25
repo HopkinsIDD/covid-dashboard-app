@@ -132,6 +132,7 @@ class MainGraph extends Component {
             selectedDates: newSelectedDates,
             dateRange,
             dateThreshold,
+            runDate: dateThreshold,
             dates: Array.from(dates),                  // dates for brush
             allDatesSeries: Array.from(series),        // series for brush
             allSims,
@@ -450,6 +451,7 @@ class MainGraph extends Component {
                             showActual={this.state.showActual}
                             indicatorThreshold={this.state.indicatorThreshold}
                             dateThreshold={this.state.dateThreshold}
+                            runDate={this.state.runDate}
                             percExceedenceList={this.state.percExceedenceList}
                             dateRange={this.state.dateRange}
                             brushActive={this.state.brushActive}
