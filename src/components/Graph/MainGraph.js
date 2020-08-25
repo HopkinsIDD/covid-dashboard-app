@@ -49,7 +49,7 @@ class MainGraph extends Component {
             seriesListForBrush: [],       // used by Brush in handler
             percExceedenceList: [],
             confBounds: {},
-            showConfBounds: false,
+            showConfBounds: true,
             confBoundsList: [],
             brushActive: false,
             animateTransition: true,
@@ -143,7 +143,7 @@ class MainGraph extends Component {
             indicatorThreshold,
             percExceedenceList: [simsOver / series.length],
             confBoundsList,
-            showConfBounds: false,
+            showConfBounds: true,
             actualList,
             showActual: false,
             r0full,
@@ -151,7 +151,7 @@ class MainGraph extends Component {
             seriesListForBrush 
         }, () => {
             this.setState({dataLoaded: true});
-        })
+        });
     }
 
     update = (seriesList, scenarioList, indicator, severityList, dateRange) => {
@@ -374,7 +374,6 @@ class MainGraph extends Component {
     };
 
     handleBrushEnd = () => { this.setState({brushActive: false, animateTransition: false} )}
-
 
     handleSliderMouseEvent = (type, slider, view) => {
         if (view === 'graph') {
