@@ -57,13 +57,6 @@ function Legend(props) {
                 props.showActual &&
                     <g className="legend">
                         <g className="legend-actual">
-                            <line
-                                x1={props.x}
-                                y1={props.y + 40}
-                                x2={props.x + 20}
-                                y2={props.y + 40}
-                                stroke={colors.actual}
-                            />
                             <circle
                                 cx={props.x + 10}
                                 cy={props.y + 40}
@@ -159,13 +152,6 @@ function Legend(props) {
                 props.showActual &&
                     <g className="legend">
                         <g className="legend-actual">
-                            <line
-                                x1={props.x}
-                                y1={props.y + 60}
-                                x2={props.x + 20}
-                                y2={props.y + 60}
-                                stroke={colors.actual}
-                            />
                             <circle
                                 cx={props.x + 10}
                                 cy={props.y + 60}
