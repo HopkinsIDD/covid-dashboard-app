@@ -444,6 +444,15 @@ class Graph extends Component {
                             strokeDasharray="4 2"
                         ></line>
                         <line
+                            x1={this.props.xScale(this.props.runDate) < margin.left ? margin.left : this.props.xScale(this.props.runDate)}
+                            y1={margin.top}
+                            x2={this.props.xScale(this.props.runDate) < margin.left ? margin.left : this.props.xScale(this.props.runDate)}
+                            y2={this.props.height - margin.bottom}
+                            stroke={colors.blue}
+                            strokeOpacity={0.8}
+                            className={'runDate'}
+                        ></line>
+                        <line
                             x1={this.props.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.props.xScale(this.props.dateThreshold)}
                             y1={margin.top}
                             x2={this.props.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.props.xScale(this.props.dateThreshold)}

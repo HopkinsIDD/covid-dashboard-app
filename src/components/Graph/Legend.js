@@ -53,19 +53,40 @@ function Legend(props) {
                         </text>
                     </g>
                 </g>
+                <g className="legend">
+                    <g className="legend-runDate">
+                        <line
+                            x1={props.x + 10}
+                            y1={props.y + 32}
+                            x2={props.x + 10}
+                            y2={props.y + 48}
+                            stroke={colors.blue}
+                            strokeOpacity={0.8}
+                            strokeWidth="1"
+                        />
+                        <text
+                            x={props.x + 25}
+                            y={props.y + 40 + 4}
+                            opacity={0.65}
+                            className="titleNarrow"
+                        >
+                            date of simulation run
+                        </text>
+                    </g>
+                </g>
                 {
                 props.showActual &&
                     <g className="legend">
                         <g className="legend-actual">
                             <circle
                                 cx={props.x + 10}
-                                cy={props.y + 40}
+                                cy={props.y + 60}
                                 fill={colors.actual}
                                 r={2}
                             />
                             <text
                                 x={props.x + 25}
-                                y={props.y + 40 + 4}
+                                y={props.y + 60 + 4}
                                 opacity={0.65}
                                 className="titleNarrow"
                             >
@@ -148,19 +169,40 @@ function Legend(props) {
                         </text>
                     </g>
                 </g>
+                <g className="legend">
+                    <g className="legend-runDate">
+                        <line
+                            x1={props.x + 10}
+                            y1={props.y + 52}
+                            x2={props.x + 10}
+                            y2={props.y + 68}
+                            stroke={colors.blue}
+                            strokeOpacity={0.8}
+                            strokeWidth="1"
+                        />
+                        <text
+                            x={props.x + 25}
+                            y={props.y + 60 + 4}
+                            opacity={0.65}
+                            className="titleNarrow"
+                        >
+                            date of simulation run
+                        </text>
+                    </g>
+                </g>
                 {
                 props.showActual &&
                     <g className="legend">
                         <g className="legend-actual">
                             <circle
                                 cx={props.x + 10}
-                                cy={props.y + 60}
+                                cy={props.y + 80}
                                 fill={colors.actual}
                                 r={2}
                             />
                             <text
                                 x={props.x + 25}
-                                y={props.y + 60 + 4}
+                                y={props.y + 80 + 4}
                                 opacity={0.65}
                                 className="titleNarrow"
                             >
@@ -222,19 +264,40 @@ function Legend(props) {
                         </text>
                     </g>
                 </g>
+                <g className="legend">
+                    <g className="legend-runDate">
+                        <line
+                            x1={props.x + 10}
+                            y1={props.y + 32}
+                            x2={props.x + 10}
+                            y2={props.y + 48}
+                            stroke={colors.blue}
+                            strokeOpacity={0.8}
+                            strokeWidth="1"
+                        />
+                        <text
+                            x={props.x + 25}
+                            y={props.y + 40 + 4}
+                            opacity={0.65}
+                            className="titleNarrow"
+                        >
+                            date of simulation run
+                        </text>
+                    </g>
+                </g>
                 {
                 props.showActual &&
                     <g className="legend">
                         <g className="legend-actual">
                             <circle
-                                cx={props.x + 18}
-                                cy={props.y + 40}
+                                cx={props.x + 10}
+                                cy={props.y + 60}
                                 fill={colors.actual}
                                 r={2}
                             />
                             <text
                                 x={props.x + 25}
-                                y={props.y + 40 + 4}
+                                y={props.y + 60 + 4}
                                 opacity={0.65}
                                 className="titleNarrow"
                             >

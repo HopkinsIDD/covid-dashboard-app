@@ -91,6 +91,7 @@ class GraphContainer extends Component {
                 selectedDates={this.props.selectedDates}
                 indicatorThreshold={this.props.indicatorThreshold}
                 dateThreshold={this.props.dateThreshold}
+                runDate={this.props.runDate}
                 brushActive={this.props.brushActive}
                 width={graphWidth}
                 height={graphHeight}
