@@ -40,10 +40,11 @@ class Graph extends Component {
     }
     
     componentDidMount() {
-        const { series, selectedDates, confBounds, areaGenerator, dates } = this.state;
+        const { series, selectedDates, confBounds, areaGenerator } = this.state;
         this.drawSimPaths(series, selectedDates);
+        
         if (confBounds && confBounds.length > 0) {
-            this.drawConfBounds(confBounds, areaGenerator, dates)
+            this.drawConfBounds(confBounds, areaGenerator, selectedDates)
         };
     }
 
