@@ -1,8 +1,13 @@
 
 // s3 bucket location of 3147 county geoid jsons
-// TODO: fetch should be based on if staging or production
-// export const s3BucketUrl = 'https://idd-dashboard-runs.s3.amazonaws.com/json-files/';
-export const s3BucketUrl = 'https://idd-dashboard-runs-staging.s3.amazonaws.com/json-files/';
+let dataLocation;
+if (process.env.NODE_ENV === 'development') {
+    dataLocation = 'https://idd-dashboard-runs-staging.s3.amazonaws.com/json-files/';
+} else { 
+    // indicate key prefix of relative bucket (could be staging or production)
+    dataLocation = 'json-files/';
+}
+export const s3BucketUrl = dataLocation;
 
 export const defaultGeoid = '06085';
 
@@ -31,13 +36,20 @@ export const margin = {
 };
 
 export const dimMultipliers = {
-    graphDesktopW: 0.6585, // multiplier for window.innerWidth to get graphW
-    graphDesktopH: 0.53, // multiplier for window.innerHeight to get graphH
-    graphMobileW: 0.9, // mobile view ratio multiplier for window.innerWidth to get graphW
-    chartDesktopH: 1.15, // multiplies graphH to give chart a bit more height
-    mapDesktopH: 0.35, // mobile view ratio multiplier for window.innerHeight to give each map quadrant less height than the full graph
-    mapMobileW: 1.8, // mobile view ratio multiplier for window.innerWidth to get graphW for map
-    brushOffset: 0.03, // multiplier of graphW so Brush is aligned with graph (accounts for width of y-axis label in flex container)
+    // multiplier for window.innerWidth to get graphW
+    graphDesktopW: 0.6585,
+    // multiplier for window.innerHeight to get graphH
+    graphDesktopH: 0.53,
+    // mobile view ratio multiplier for window.innerWidth to get graphW
+    graphMobileW: 0.9,
+    // multiplies graphH to give chart a bit more height
+    chartDesktopH: 1.15,
+    // mobile view ratio multiplier for window.innerHeight to give each map quadrant less height than the full graph
+    mapDesktopH: 0.35,
+    // mobile view ratio multiplier for window.innerWidth to get graphW for map
+    mapMobileW: 1.8,
+    // multiplier of graphW so Brush is aligned with graph (accounts for width of y-axis label in flex container)
+    brushOffset: 0.03,
 }
 
 // ant design components are inline styled (and resist styling via css classes)
