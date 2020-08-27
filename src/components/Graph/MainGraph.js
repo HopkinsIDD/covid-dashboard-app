@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Layout, Row, Col } from 'antd';
+import { Layout, Row, Col, Modal } from 'antd';
+import { PlusCircleTwoTone } from '@ant-design/icons';
 import _ from 'lodash';
 import GraphContainer from './GraphContainer';
 import Brush from '../Filters/Brush';
@@ -54,12 +55,24 @@ class MainGraph extends Component {
             brushActive: false,
             animateTransition: true,
             scenarioClickCounter: 0,
+            modalVisible: false,
+            firstModalVisit: true,
         };
+        this.scrollElem = React.createRef();
     };
 
     componentDidMount() {
         this.initialize(this.props.dataset);
+        
+        window.addEventListener("scroll", this.handleScroll, true);
+        
+        
     };
+
+    componentWillUnmount() {
+        window.removeEventListener("scroll", this.handleScroll, true);
+        
+    }
 
     componentDidUpdate(prevProp) {
         if (this.props.dataset !== prevProp.dataset) {
@@ -394,144 +407,197 @@ class MainGraph extends Component {
         } 
     }
 
+    handleModalCancel = (e) => {
+        // console.log(e);
+        this.setState({
+            modalVisible: false,
+            firstModalVisit: false,
+        });
+    }
+
+    showModal = () => {
+        this.setState({
+            modalVisible: true,
+        });
+    }
+
+    handleScroll = (e) => {
+        // console.log(e)
+        // console.log(this.scrollElem.current)
+        if (this.scrollElem.current) {
+            const bounds = this.scrollElem.current.getBoundingClientRect();
+            console.log(bounds)
+            console.log('body', document.body.scrollTop)
+            console.log('scrollElem offset', this.scrollElem.current.offsetTop)
+        }
+        
+        if(this.scrollElem.current && this.state.firstModalVisit && (document.body.scrollTop > this.scrollElem.current.offsetTop - 60 && document.body.scrollTop < this.scrollElem.current.offsetTop)) {
+            // do your stuff
+            console.log('interactive graph in view')
+            this.setState({
+                modalVisible: true,
+            });
+        }
+      }
+      
+
     render() {
         const { Content } = Layout;
         return (
-            <Content id="interactive-graph" style={styles.ContainerGray}>
-                {/* text span is 1 grid value higher than Graph to allow text-wrapping */}
-                <Col className="gutter-row container">
-                    <div className="content-section">
-                        <div className="card-content">
-                            <div className="titleNarrow description-header">
-                                What can scenario modeling tell us?
+            <div ref={this.scrollElem}>
+                <Content id="interactive-graph" style={styles.ContainerGray} >
+                    {/* text span is 1 grid value higher than Graph to allow text-wrapping */}
+                    {/* <Col className="gutter-row container">
+                        <div className="content-section">
+                            <div className="card-content">
+                                <div className="titleNarrow description-header">
+                                    What can scenario modeling tell us?
+                                </div>
+                                This graph aims to display as much about the scenario model as possible.
+                                Each intervention scenario is represented by multiple 
+                                simulation curves - each of these curves represent one 
+                                possible outcome based on a given set of parameters. Each simulation 
+                                curve is just as likely to occur as another. <br /><br />
+                                <div className="desktop-only">
+                                    Select two intervention scenarios from the menu on
+                                    the right to compare side by side. Toggle between 
+                                    different indicators such as hospitalizations and deaths,
+                                    as well as the scenario's potential severity level. Filter 
+                                    simulations down to curves within a specific range of R<sub>0</sub>. 
+                                    You can also choose between exploring exceedence thresholds
+                                    and displaying confidence bounds. To explore exceedence, 
+                                    use the threshold sliders to change values and dates to determine
+                                    how likely a given indicator, such as hospitalizations, 
+                                    will exceed a certain number by a given date.
+                                </div>
+                                <div className="mobile-alert">
+                                    &#9888; Please use a desktop to access the full feature set, 
+                                    including scenario comparisons and filtering on R<sub>0</sub>.
+                                </div>
                             </div>
-                            This graph aims to display as much about the scenario model as possible.
-                            Each intervention scenario is represented by multiple 
-                            simulation curves - each of these curves represent one 
-                            possible outcome based on a given set of parameters. Each simulation 
-                            curve is just as likely to occur as another. <br /><br />
-                            <div className="desktop-only">
-                                Select two intervention scenarios from the menu on
-                                the right to compare side by side. Toggle between 
-                                different indicators such as hospitalizations and deaths,
-                                as well as the scenario's potential severity level. Filter 
-                                simulations down to curves within a specific range of R<sub>0</sub>. 
-                                You can also choose between exploring exceedence thresholds
-                                and displaying confidence bounds. To explore exceedence, 
-                                use the threshold sliders to change values and dates to determine
-                                how likely a given indicator, such as hospitalizations, 
-                                will exceed a certain number by a given date.
-                            </div>
+                        </div>
+                    </Col> */}
+
+                    {this.state.dataLoaded &&
+                    <Row gutter={styles.gutter}>
+                        <Col className="gutter-row container">
+                            <Modal
+                                title="What can scenario modeling tell us?"
+                                visible={this.state.modalVisible}
+                                onCancel={this.handleModalCancel}
+                                footer={null}
+                                getContainer="#interactive-graph"
+                                centered={true}
+                            >
+                                <p>This graph aims to display as much about the scenario model as possible. Each intervention scenario is represented by multiple simulation curves - each of these curves represent one possible outcome based on a given set of parameters. Each simulation curve is just as likely to occur as another.</p>
+                                <p>Select two intervention scenarios from the menu on the right to compare side by side. Toggle between different indicators such as hospitalizations and deaths, as well as the scenario's potential severity level. Filter simulations down to curves within a specific range of R0. You can also choose between exploring exceedence thresholds and displaying confidence bounds. To explore exceedence, use the threshold sliders to change values and dates to determine how likely a given indicator, such as hospitalizations, will exceed a certain number by a given date.</p>
+                            </Modal>
+                            <GraphContainer 
+                                geoid={this.props.geoid}
+                                width={this.props.width}
+                                height={this.props.height}
+                                selectedDates={this.state.selectedDates}
+                                scenarioList={this.state.scenarioList}
+                                seriesList={this.state.seriesList}
+                                indicator={this.state.indicator}
+                                severity={this.state.severity}
+                                r0full={this.state.r0full}
+                                r0selected={this.state.r0selected}
+                                animateTransition={this.state.animateTransition}
+                                showConfBounds={this.state.showConfBounds}
+                                confBoundsList={this.state.confBoundsList}
+                                actualList={this.state.actualList}
+                                showActual={this.state.showActual}
+                                indicatorThreshold={this.state.indicatorThreshold}
+                                dateThreshold={this.state.dateThreshold}
+                                runDate={this.state.runDate}
+                                percExceedenceList={this.state.percExceedenceList}
+                                dateRange={this.state.dateRange}
+                                brushActive={this.state.brushActive}
+                                scenarioClickCounter={this.state.scenarioClickCounter}
+                                scenarioHovered={this.state.scenarioHovered}
+                                statSliderActive={this.state.statSliderActive}
+                                dateSliderActive={this.state.dateSliderActive}
+                            /> 
+                            <Brush
+                                width={this.props.width}
+                                height={80}
+                                series={this.state.allDatesSeries}
+                                dates={this.state.dates}
+                                x={margin.yAxis + (this.props.width * dimMultipliers.brushOffset)}
+                                y={0}
+                                animateTransition={this.state.animateTransition}
+                                toggleAnimateTransition={this.toggleAnimateTransition}
+                                dateRange={this.state.dateRange}
+                                dateThreshold={this.state.dateThreshold}
+                                indicatorThreshold={this.state.indicatorThreshold}
+                                onBrushChange={this.handleBrushRange}
+                                onBrushStart={this.handleBrushStart}
+                                onBrushEnd={this.handleBrushEnd}
+                            />
+                        </Col>
+
+                        <Col className="gutter-row container mobile-only">
                             <div className="mobile-alert">
-                                &#9888; Please use a desktop to access the full feature set, 
-                                including scenario comparisons and filtering on R<sub>0</sub>.
+                                &#9888; The filters below are disabled on mobile devices.
                             </div>
-                        </div>
-                    </div>
-                </Col>
+                        </Col>
 
-                {this.state.dataLoaded &&
-                <Row gutter={styles.gutter}>
-                    <Col className="gutter-row container">
-                        <GraphContainer 
-                            geoid={this.props.geoid}
-                            width={this.props.width}
-                            height={this.props.height}
-                            selectedDates={this.state.selectedDates}
-                            scenarioList={this.state.scenarioList}
-                            seriesList={this.state.seriesList}
-                            indicator={this.state.indicator}
-                            severity={this.state.severity}
-                            r0full={this.state.r0full}
-                            r0selected={this.state.r0selected}
-                            animateTransition={this.state.animateTransition}
-                            showConfBounds={this.state.showConfBounds}
-                            confBoundsList={this.state.confBoundsList}
-                            actualList={this.state.actualList}
-                            showActual={this.state.showActual}
-                            indicatorThreshold={this.state.indicatorThreshold}
-                            dateThreshold={this.state.dateThreshold}
-                            runDate={this.state.runDate}
-                            percExceedenceList={this.state.percExceedenceList}
-                            dateRange={this.state.dateRange}
-                            brushActive={this.state.brushActive}
-                            scenarioClickCounter={this.state.scenarioClickCounter}
-                            scenarioHovered={this.state.scenarioHovered}
-                            statSliderActive={this.state.statSliderActive}
-                            dateSliderActive={this.state.dateSliderActive}
-                        /> 
-                        <Brush
-                            width={this.props.width}
-                            height={80}
-                            series={this.state.allDatesSeries}
-                            dates={this.state.dates}
-                            x={margin.yAxis + (this.props.width * dimMultipliers.brushOffset)}
-                            y={0}
-                            animateTransition={this.state.animateTransition}
-                            toggleAnimateTransition={this.toggleAnimateTransition}
-                            dateRange={this.state.dateRange}
-                            dateThreshold={this.state.dateThreshold}
-                            indicatorThreshold={this.state.indicatorThreshold}
-                            onBrushChange={this.handleBrushRange}
-                            onBrushStart={this.handleBrushStart}
-                            onBrushEnd={this.handleBrushEnd}
-                        />
-                    </Col>
-
-                    <Col className="gutter-row container mobile-only">
-                        <div className="mobile-alert">
-                            &#9888; The filters below are disabled on mobile devices.
-                        </div>
-                    </Col>
-
-                    <Col className="gutter-row graph-filters mobile">
-                        <Scenarios
-                            view="graph"
-                            SCENARIOS={this.state.SCENARIOS}
-                            scenario={this.state.SCENARIOS[0]}
-                            scenarioList={this.state.scenarioList}
-                            onScenarioClick={this.handleScenarioClickGraph} />
-                        <Indicators
-                            indicator={this.state.indicator}  // TODO: remove this
-                            indicators={this.props.indicators}
-                            onIndicatorClick={this.handleIndicatorClick} />        
-                        <SeverityContainer
-                            indicator={this.state.indicator}
-                            severityList={this.state.severityList}
-                            scenarioList={this.state.scenarioList} 
-                            scenarioMap={this.state.scenarioMap}
-                            onSeveritiesClick={this.handleSeveritiesClick}
-                            onSeveritiesHover={this.handleSeveritiesHover}
-                            onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave} />
-                        <R0
-                            r0full={this.state.r0full}
-                            r0selected={this.state.r0selected}
-                            onR0Change={this.handleR0Change}
-                            onR0Resample={this.handleR0Resample}
-                            allSims={this.state.allSims} 
-                            selectedSims={this.state.seriesList[0]} />
-                        <ActualSwitch
-                            onChange={this.handleActualChange}
-                            showActual={this.state.showActual}
-                            actualList={this.state.actualList} />
-                        <ModeToggle
-                            showConfBounds={this.state.showConfBounds}
-                            onConfClick={this.handleConfClick} /> 
-                        <Sliders 
-                            indicator={this.state.indicator}
-                            selectedDates={this.state.selectedDates}
-                            seriesMax={this.state.seriesMax}
-                            showConfBounds={this.state.showConfBounds}
-                            indicatorThreshold={this.state.indicatorThreshold}
-                            dateThreshold={this.state.dateThreshold}
-                            dateThresholdIdx={this.state.dateThresholdIdx}
-                            dateRange={this.state.dateRange}
-                            onStatSliderChange={this.handleStatSliderChange}
-                            onDateSliderChange={this.handleDateSliderChange}
-                            onSliderMouseEvent={this.handleSliderMouseEvent} />
-                    </Col>
-                </Row>}
-            </Content>
+                        <Col className="gutter-row graph-filters mobile">
+                            <div className="instructions-wrapper">
+                                <div className="param-header">INSTRUCTIONS</div>
+                                <div className="instructions-icon" onClick={this.showModal}>
+                                    <PlusCircleTwoTone />
+                                </div>
+                            </div>
+                            <Scenarios
+                                view="graph"
+                                SCENARIOS={this.state.SCENARIOS}
+                                scenario={this.state.SCENARIOS[0]}
+                                scenarioList={this.state.scenarioList}
+                                onScenarioClick={this.handleScenarioClickGraph} />
+                            <Indicators
+                                indicator={this.state.indicator}  // TODO: remove this
+                                indicators={this.props.indicators}
+                                onIndicatorClick={this.handleIndicatorClick} />        
+                            <SeverityContainer
+                                indicator={this.state.indicator}
+                                severityList={this.state.severityList}
+                                scenarioList={this.state.scenarioList} 
+                                scenarioMap={this.state.scenarioMap}
+                                onSeveritiesClick={this.handleSeveritiesClick}
+                                onSeveritiesHover={this.handleSeveritiesHover}
+                                onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave} />
+                            <R0
+                                r0full={this.state.r0full}
+                                r0selected={this.state.r0selected}
+                                onR0Change={this.handleR0Change}
+                                onR0Resample={this.handleR0Resample}
+                                allSims={this.state.allSims} 
+                                selectedSims={this.state.seriesList[0]} />
+                            <ActualSwitch
+                                onChange={this.handleActualChange}
+                                showActual={this.state.showActual}
+                                actualList={this.state.actualList} />
+                            <ModeToggle
+                                showConfBounds={this.state.showConfBounds}
+                                onConfClick={this.handleConfClick} /> 
+                            <Sliders 
+                                indicator={this.state.indicator}
+                                selectedDates={this.state.selectedDates}
+                                seriesMax={this.state.seriesMax}
+                                showConfBounds={this.state.showConfBounds}
+                                indicatorThreshold={this.state.indicatorThreshold}
+                                dateThreshold={this.state.dateThreshold}
+                                dateThresholdIdx={this.state.dateThresholdIdx}
+                                dateRange={this.state.dateRange}
+                                onStatSliderChange={this.handleStatSliderChange}
+                                onDateSliderChange={this.handleDateSliderChange}
+                                onSliderMouseEvent={this.handleSliderMouseEvent} />
+                        </Col>
+                    </Row>}
+                </Content>
+            </div>
         )
     }
 }
