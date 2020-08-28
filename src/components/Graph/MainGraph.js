@@ -445,59 +445,10 @@ class MainGraph extends Component {
         const { Content } = Layout;
         return (
             <div ref={this.scrollElem}>
-                <Content id="interactive-graph" style={styles.ContainerGray} >
-                    {/* text span is 1 grid value higher than Graph to allow text-wrapping */}
-                    {/* <Col className="gutter-row container">
-                        <div className="content-section">
-                            <div className="card-content">
-                                <div className="titleNarrow description-header">
-                                    What can scenario modeling tell us?
-                                </div>
-                                This graph aims to display as much about the scenario model as possible.
-                                Each intervention scenario is represented by multiple 
-                                simulation curves - each of these curves represent one 
-                                possible outcome based on a given set of parameters. Each simulation 
-                                curve is just as likely to occur as another. <br /><br />
-                                <div className="desktop-only">
-                                    Select two intervention scenarios from the menu on
-                                    the right to compare side by side. Toggle between 
-                                    different indicators such as hospitalizations and deaths,
-                                    as well as the scenario's potential severity level. Filter 
-                                    simulations down to curves within a specific range of R<sub>0</sub>. 
-                                    You can also choose between exploring exceedence thresholds
-                                    and displaying confidence bounds. To explore exceedence, 
-                                    use the threshold sliders to change values and dates to determine
-                                    how likely a given indicator, such as hospitalizations, 
-                                    will exceed a certain number by a given date.
-                                </div>
-                                <div className="mobile-alert">
-                                    &#9888; Please use a desktop to access the full feature set, 
-                                    including scenario comparisons and filtering on R<sub>0</sub>.
-                                </div>
-                            </div>
-                        </div>
-                    </Col> */}
-
+                <Content id="interactive-graph" style={styles.ContainerGray} > 
                     {this.state.dataLoaded &&
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
-                            {/* <Modal
-                                title="What can scenario modeling tell us?"
-                                visible={this.state.modalVisible}
-                                onCancel={this.handleModalCancel}
-                                footer={null}
-                                getContainer="#interactive-graph"
-                                centered={true}
-                            >
-                                <p>This graph aims to display as much about the scenario model as possible. Each intervention scenario is represented by multiple simulation curves - each of these curves represent one possible outcome based on a given set of parameters. Each simulation curve is just as likely to occur as another.</p>
-                                <ol>
-                                    <li>Toggle between different indicators such as hospitalizations and deaths, as well as the scenario's potential severity level.</li> 
-                                    <li>Filter simulations down to curves within a specific range of R0, or resample the curves within the selected R0 range.</li> 
-                                    <li>You can also choose between displaying confidence bounds and exploring exceedence thresholds.</li>
-                                    <li>To explore exceedence, use the threshold sliders to change values and dates to determine how likely a given indicator, such as hospitalizations, will exceed a certain number by a given date.</li>
-                                    <li>Select two intervention scenarios from the menu on the right to compare side by side.</li>
-                                </ol>
-                            </Modal> */}
                             <ViewModal 
                                 modalTitle="What can scenario modeling tell us?"
                                 modalVisible={this.state.modalVisible}
