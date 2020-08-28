@@ -136,25 +136,6 @@ class MainChart extends Component {
         return (
             <div ref={this.scrollElemChart}>
                 <Content id="exploration" style={styles.ContainerWhite}>
-                    {/* <Col className="gutter-row container">
-                        <div className="content-section">
-                            <div className="card-content card-content-white">
-                                <div className="titleNarrow description-header">A time-based tool you can customize</div>
-                                Use this tool to explore expected infections, hospitalizations,
-                                ICU cases, ventilators needed, and deaths in your municipality.
-                                For example, if you would like to know how many people will 
-                                be hospitalized in 6 weeks, select hospitalizations  
-                                from the indicator dropdown, today as the start date, and 6 weeks out
-                                as the end date. Then, compare expected hospitalization 
-                                numbers across all 
-                                intervention scenarios at varying degrees of severity.
-                                <div className="mobile-alert">
-                                    &#9888; Please use a desktop to access the full feature set, 
-                                    including selecting indicators and date range.
-                                </div>
-                            </div>
-                        </div>
-                    </Col> */}
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
                             <ViewModal 
