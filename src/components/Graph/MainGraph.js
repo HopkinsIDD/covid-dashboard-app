@@ -422,12 +422,12 @@ class MainGraph extends Component {
     handleScroll = (e) => {
         // console.log(e)
         // console.log(this.scrollElem.current)
-        if (this.scrollElem.current) {
-            const bounds = this.scrollElem.current.getBoundingClientRect();
-            console.log(bounds)
-            console.log('body', document.body.scrollTop)
-            console.log('scrollElem offset', this.scrollElem.current.offsetTop)
-        }
+        // if (this.scrollElem.current) {
+        //     const bounds = this.scrollElem.current.getBoundingClientRect();
+        //     console.log(bounds)
+        //     console.log('body', document.body.scrollTop)
+        //     console.log('scrollElem offset', this.scrollElem.current.offsetTop)
+        // }
         
         if(this.scrollElem.current && this.state.firstModalVisit && 
             (document.body.scrollTop > this.scrollElem.current.offsetTop - 60 && 
