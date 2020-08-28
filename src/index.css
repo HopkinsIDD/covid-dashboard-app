@@ -882,13 +882,17 @@ input[type=range]:disabled::-moz-range-thumb {
 .instructions-wrapper {
   display: flex;
   align-items: baseline;
+  cursor: default;
+}
+
+.instructions-wrapper:hover {
+  cursor: pointer;
+}
+
+.instructions-label {
+  color: #1890ff;
 }
 
 .instructions-icon {
-  cursor: default;
   padding-left: 5px;
-}
-
-.instructions-icon:hover {
-  cursor: pointer;
 }

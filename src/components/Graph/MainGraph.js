@@ -490,7 +490,13 @@ class MainGraph extends Component {
                                 centered={true}
                             >
                                 <p>This graph aims to display as much about the scenario model as possible. Each intervention scenario is represented by multiple simulation curves - each of these curves represent one possible outcome based on a given set of parameters. Each simulation curve is just as likely to occur as another.</p>
-                                <p>Select two intervention scenarios from the menu on the right to compare side by side. Toggle between different indicators such as hospitalizations and deaths, as well as the scenario's potential severity level. Filter simulations down to curves within a specific range of R0. You can also choose between exploring exceedence thresholds and displaying confidence bounds. To explore exceedence, use the threshold sliders to change values and dates to determine how likely a given indicator, such as hospitalizations, will exceed a certain number by a given date.</p>
+                                <ol>
+                                    <li>Toggle between different indicators such as hospitalizations and deaths, as well as the scenario's potential severity level.</li> 
+                                    <li>Filter simulations down to curves within a specific range of R0, or resample the curves within the selected R0 range.</li> 
+                                    <li>You can also choose between displaying confidence bounds and exploring exceedence thresholds.</li>
+                                    <li>To explore exceedence, use the threshold sliders to change values and dates to determine how likely a given indicator, such as hospitalizations, will exceed a certain number by a given date.</li>
+                                    <li>Select two intervention scenarios from the menu on the right to compare side by side.</li>
+                                </ol>
                             </Modal>
                             <GraphContainer 
                                 geoid={this.props.geoid}
@@ -544,9 +550,9 @@ class MainGraph extends Component {
                         </Col>
 
                         <Col className="gutter-row graph-filters mobile">
-                            <div className="instructions-wrapper">
-                                <div className="param-header">INSTRUCTIONS</div>
-                                <div className="instructions-icon" onClick={this.showModal}>
+                            <div className="instructions-wrapper" onClick={this.showModal}>
+                                <div className="param-header instructions-label">INSTRUCTIONS</div>
+                                <div className="instructions-icon">
                                     <PlusCircleTwoTone />
                                 </div>
                             </div>
