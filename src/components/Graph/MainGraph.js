@@ -419,16 +419,7 @@ class MainGraph extends Component {
         });
     }
 
-    handleScroll = (e) => {
-        // console.log(e)
-        // console.log(this.scrollElem.current)
-        // if (this.scrollElem.current) {
-        //     const bounds = this.scrollElem.current.getBoundingClientRect();
-        //     console.log(bounds)
-        //     console.log('body', document.body.scrollTop)
-        //     console.log('scrollElem offset', this.scrollElem.current.offsetTop)
-        // }
-        
+    handleScroll = (e) => {        
         if(this.scrollElem.current && this.state.firstModalVisit && 
             (document.body.scrollTop > this.scrollElem.current.offsetTop - 60 && 
                 document.body.scrollTop < this.scrollElem.current.offsetTop)) {
@@ -464,6 +455,9 @@ class MainGraph extends Component {
                                             <li>To explore exceedence, use the threshold sliders to change values and dates to determine how likely a given indicator, such as hospitalizations, will exceed a certain number by a given date.</li>
                                             <li>Select two intervention scenarios from the menu on the right to compare side by side.</li>
                                         </ol>
+                                        <div className="mobile-alert">
+                                            &#9888; Please use a desktop to access the full feature set.
+                                        </div>
                                     </div>
                                 }
                             />

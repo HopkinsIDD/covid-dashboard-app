@@ -129,7 +129,7 @@ class MainChart extends Component {
                 modalVisible: true,
             });
         }
-      }
+    }
 
     render() {
         const { Content } = Layout;
