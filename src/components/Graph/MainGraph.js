@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Row, Col, Modal } from 'antd';
+import { Layout, Row, Col } from 'antd';
 import { PlusCircleTwoTone } from '@ant-design/icons';
 import _ from 'lodash';
 import GraphContainer from './GraphContainer';
@@ -11,6 +11,7 @@ import ActualSwitch from '../Filters/ActualSwitch.tsx';
 import R0 from '../Filters/R0';
 import ModeToggle from '../Filters/ModeToggle.tsx';
 import Sliders from '../Filters/Sliders';
+import ViewModal from '../ViewModal.js';
 
 import { buildScenarios, buildScenarioMap, buildSeverities, getR0range, 
     getConfBounds, getActuals, filterR0 } from '../../utils/utils';
@@ -63,10 +64,7 @@ class MainGraph extends Component {
 
     componentDidMount() {
         this.initialize(this.props.dataset);
-        
         window.addEventListener("scroll", this.handleScroll, true);
-        
-        
     };
 
     componentWillUnmount() {
@@ -431,7 +429,9 @@ class MainGraph extends Component {
             console.log('scrollElem offset', this.scrollElem.current.offsetTop)
         }
         
-        if(this.scrollElem.current && this.state.firstModalVisit && (document.body.scrollTop > this.scrollElem.current.offsetTop - 60 && document.body.scrollTop < this.scrollElem.current.offsetTop)) {
+        if(this.scrollElem.current && this.state.firstModalVisit && 
+            (document.body.scrollTop > this.scrollElem.current.offsetTop - 60 && 
+                document.body.scrollTop < this.scrollElem.current.offsetTop)) {
             // do your stuff
             console.log('interactive graph in view')
             this.setState({
@@ -481,7 +481,7 @@ class MainGraph extends Component {
                     {this.state.dataLoaded &&
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
-                            <Modal
+                            {/* <Modal
                                 title="What can scenario modeling tell us?"
                                 visible={this.state.modalVisible}
                                 onCancel={this.handleModalCancel}
@@ -497,7 +497,25 @@ class MainGraph extends Component {
                                     <li>To explore exceedence, use the threshold sliders to change values and dates to determine how likely a given indicator, such as hospitalizations, will exceed a certain number by a given date.</li>
                                     <li>Select two intervention scenarios from the menu on the right to compare side by side.</li>
                                 </ol>
-                            </Modal>
+                            </Modal> */}
+                            <ViewModal 
+                                modalTitle="What can scenario modeling tell us?"
+                                modalVisible={this.state.modalVisible}
+                                onCancel={this.handleModalCancel}
+                                modalContainer="#interactive-graph"
+                                modalText={
+                                    <div>
+                                        <p>This graph aims to display as much about the scenario model as possible. Each intervention scenario is represented by multiple simulation curves - each of these curves represent one possible outcome based on a given set of parameters. Each simulation curve is just as likely to occur as another.</p>
+                                        <ol>
+                                            <li>Toggle between different indicators such as hospitalizations and deaths, as well as the scenario's potential severity level.</li> 
+                                            <li>Filter simulations down to curves within a specific range of R0, or resample the curves within the selected R0 range.</li> 
+                                            <li>You can also choose between displaying confidence bounds and exploring exceedence thresholds.</li>
+                                            <li>To explore exceedence, use the threshold sliders to change values and dates to determine how likely a given indicator, such as hospitalizations, will exceed a certain number by a given date.</li>
+                                            <li>Select two intervention scenarios from the menu on the right to compare side by side.</li>
+                                        </ol>
+                                    </div>
+                                }
+                            />
                             <GraphContainer 
                                 geoid={this.props.geoid}
                                 width={this.props.width}
