@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
+import { PlusCircleTwoTone } from '@ant-design/icons';
 import ChartContainer from './ChartContainer';
 import Scenarios from '../Filters/Scenarios.tsx';
 import DatePicker from './DatePicker';
@@ -27,13 +28,21 @@ class MainChart extends Component {
             start: new Date(),
             end: new Date(),
             scale: 'power', // TS migration: ScaleTypeEnum
-            dataLoaded: false
+            dataLoaded: false,
+            modalVisible: false,
+            firstModalVisit: true,
         };
+        this.scrollElemChart = React.createRef();
     };
 
     componentDidMount() {
         const { dataset } = this.props;
-        this.initializeChart(dataset)
+        this.initializeChart(dataset);
+        window.addEventListener("scroll", this.handleScroll, true);
+    };
+
+    componentWillUnmount() {
+        window.removeEventListener("scroll", this.handleScroll, true);
     };
 
     componentDidUpdate(prevProp) {
@@ -112,20 +121,10 @@ class MainChart extends Component {
     }
 
     handleScroll = (e) => {
-        // console.log(e)
-        // console.log(this.scrollElem.current)
-        if (this.scrollElem.current) {
-            const bounds = this.scrollElem.current.getBoundingClientRect();
-            console.log(bounds)
-            console.log('body', document.body.scrollTop)
-            console.log('scrollElem offset', this.scrollElem.current.offsetTop)
-        }
-        
-        if(this.scrollElem.current && this.state.firstModalVisit && 
-            (document.body.scrollTop > this.scrollElem.current.offsetTop - 60 && 
-                document.body.scrollTop < this.scrollElem.current.offsetTop)) {
-            // do your stuff
-            console.log('interactive graph in view')
+        if(this.scrollElemChart.current && this.state.firstModalVisit && 
+            (document.body.scrollTop > this.scrollElemChart.current.offsetTop - 60 && 
+                document.body.scrollTop < this.scrollElemChart.current.offsetTop)) {
+            console.log('interactive chart in view')
             this.setState({
                 modalVisible: true,
             });
@@ -137,7 +136,7 @@ class MainChart extends Component {
         return (
             <div ref={this.scrollElemChart}>
                 <Content id="exploration" style={styles.ContainerWhite}>
-                    <Col className="gutter-row container">
+                    {/* <Col className="gutter-row container">
                         <div className="content-section">
                             <div className="card-content card-content-white">
                                 <div className="titleNarrow description-header">A time-based tool you can customize</div>
@@ -155,9 +154,31 @@ class MainChart extends Component {
                                 </div>
                             </div>
                         </div>
-                    </Col>
+                    </Col> */}
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
+                            <ViewModal 
+                                modalTitle="A time-based tool you can customize"
+                                modalVisible={this.state.modalVisible}
+                                onCancel={this.handleModalCancel}
+                                modalContainer="#exploration"
+                                modalText={
+                                    <div>
+                                        Use this tool to explore expected infections, hospitalizations,
+                                        ICU cases, ventilators needed, and deaths in your municipality.
+                                        For example, if you would like to know how many people will 
+                                        be hospitalized in 6 weeks, select hospitalizations  
+                                        from the indicator dropdown, today as the start date, and 6 weeks out
+                                        as the end date. Then, compare expected hospitalization 
+                                        numbers across all 
+                                        intervention scenarios at varying degrees of severity.
+                                        <div className="mobile-alert">
+                                            &#9888; Please use a desktop to access the full feature set, 
+                                            including selecting indicators and date range.
+                                        </div>
+                                    </div>
+                                }
+                            />
                             <div className="map-container">
                                 {this.state.dataLoaded &&
                                 <ChartContainer
@@ -186,6 +207,12 @@ class MainChart extends Component {
 
                         <Col className="gutter-row filters mobile">
                             <Fragment>
+                                <div className="instructions-wrapper" onClick={this.showModal}>
+                                    <div className="param-header instructions-label">INSTRUCTIONS</div>
+                                    <div className="instructions-icon">
+                                        <PlusCircleTwoTone />
+                                    </div>
+                                </div>
                                 <Fragment>
                                     <Scenarios 
                                         view="chart"
