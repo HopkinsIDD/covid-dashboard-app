@@ -385,6 +385,15 @@ class Graph extends Component {
                                 className={'tooltipCircle'}
                             ></circle>
                         </Tooltip>
+                        <line
+                            x1={this.props.xScale(this.props.runDate) < margin.left ? -margin.left : this.props.xScale(this.props.runDate)}
+                            y1={margin.top}
+                            x2={this.props.xScale(this.props.runDate) < margin.left ? -margin.left : this.props.xScale(this.props.runDate)}
+                            y2={this.props.height - margin.bottom}
+                            stroke={colors.blue}
+                            strokeOpacity={0.8}
+                            className={'runDate'}
+                        ></line>
                     </g>
                     {(this.props.showConfBounds && this.props.confBounds) &&
                     <g ref={this.confBoundsRef}>
@@ -402,8 +411,8 @@ class Graph extends Component {
                             fillOpacity={0}
                         ></path>
                     </g>
-                        }
-                        {(this.props.showActual && this.props.actual) &&
+                    }
+                    {(this.props.showActual && this.props.actual) &&
                     <g ref={this.actualRef}>
                         <clipPath 
                             id={'actualClip'}
@@ -434,6 +443,7 @@ class Graph extends Component {
                         })}
                     </g>
                     }
+                    {!this.props.showConfBounds &&
                     <g ref={this.thresholdRef}>
                         <line
                             x1={margin.left}
@@ -443,15 +453,6 @@ class Graph extends Component {
                             stroke={colors.gray}
                             className={'indicatorThreshold'}
                             strokeDasharray="4 2"
-                        ></line>
-                        <line
-                            x1={this.props.xScale(this.props.runDate) < margin.left ? margin.left : this.props.xScale(this.props.runDate)}
-                            y1={margin.top}
-                            x2={this.props.xScale(this.props.runDate) < margin.left ? margin.left : this.props.xScale(this.props.runDate)}
-                            y2={this.props.height - margin.bottom}
-                            stroke={colors.blue}
-                            strokeOpacity={0.8}
-                            className={'runDate'}
                         ></line>
                         <line
                             x1={this.props.xScale(this.props.dateThreshold) < margin.left ? margin.left : this.props.xScale(this.props.dateThreshold)}
@@ -470,6 +471,7 @@ class Graph extends Component {
                             className={'thresholdCircle'}
                         ></circle>
                     </g>
+                    }
                     {
                         this.props.showLegend &&
                         <Legend 
