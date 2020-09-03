@@ -487,6 +487,7 @@ class MainGraph extends Component {
                                 scenarioHovered={this.state.scenarioHovered}
                                 statSliderActive={this.state.statSliderActive}
                                 dateSliderActive={this.state.dateSliderActive}
+                                seriesMax={this.state.seriesMax}
                             /> 
                             <Brush
                                 width={this.props.width}

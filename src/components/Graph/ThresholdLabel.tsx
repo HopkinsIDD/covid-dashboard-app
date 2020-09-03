@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import TooltipHandler from '../Filters/TooltipHandler';
-import { addCommas, getReadableDate } from '../../utils/utils';
+import { addCommas, getReadableDate, getStepValue } from '../../utils/utils';
 import { getClassForActiveState, LabelClassName, LabelClassNameEnum } from "../../utils/typeUtils";
 
 
@@ -13,6 +13,7 @@ interface Props {
     dateSliderActive: boolean,
     classProps: string,
     label: string,
+    seriesMax: number,
 }
 
 interface State {
@@ -41,13 +42,15 @@ class ThresholdLabel extends Component<Props, State> {
     }
 
     componentDidUpdate(prevProp: Props) {
-        const { percExceedence, indicatorThreshold, dateThreshold, statSliderActive, dateSliderActive } = this.props;
+        const { percExceedence, indicatorThreshold, dateThreshold, statSliderActive, dateSliderActive, seriesMax } = this.props;
 
         if (percExceedence !== prevProp.percExceedence) {
             this.setState({ chance: Math.round(100 * percExceedence) }
         )}
         if (indicatorThreshold !== prevProp.indicatorThreshold) {
-            this.setState({ val: addCommas(Math.ceil(indicatorThreshold / 100) * 100) }
+            const stepVal = getStepValue(seriesMax)
+            const roundedStat = Math.ceil(indicatorThreshold / stepVal) * stepVal;
+            this.setState({ val: addCommas(roundedStat) }
         )}
         if (dateThreshold !== prevProp.dateThreshold) {
             this.setState({ date: getReadableDate(dateThreshold) }
