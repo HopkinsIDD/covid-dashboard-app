@@ -18,7 +18,7 @@ class Sliders extends Component {
     }
 
     componentDidMount() {
-
+        
         const dateIdx = this.props.selectedDates.indexOf(this.props.dateThreshold).toString();
         const stepVal = getStepValue(this.props.seriesMax)
         const roundedStat = Math.ceil(this.props.indicatorThreshold / stepVal) * stepVal;
