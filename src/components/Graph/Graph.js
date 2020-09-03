@@ -397,11 +397,24 @@ class Graph extends Component {
                     </g>
                     {(this.props.showConfBounds && this.props.confBounds) &&
                     <g ref={this.confBoundsRef}>
+                        <clipPath 
+                            id={'confClip'}
+                        >
+                            <rect 
+                                x={margin.left}
+                                y={margin.top}
+                                width={this.props.width - margin.left - margin.right}
+                                height={this.props.height - margin.bottom - margin.top}
+                                fill={'pink'}
+                                fillOpacity={0.5}
+                            ></rect>
+                        </clipPath>
                         <path
                             className={'confBoundsArea'}
                             d={this.state.confBoundsAreaPath}
                             fill={colors.green}
                             fillOpacity={0.3}
+                            clipPath={'url(#confClip)'}
                         ></path>
                         <path
                             className={'confBoundsMean'}
@@ -409,6 +422,7 @@ class Graph extends Component {
                             stroke={colors.green}
                             strokeWidth={2}
                             fillOpacity={0}
+                            clipPath={'url(#confClip)'}
                         ></path>
                     </g>
                     }
