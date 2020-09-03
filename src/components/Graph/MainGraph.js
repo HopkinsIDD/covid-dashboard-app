@@ -503,6 +503,10 @@ class MainGraph extends Component {
                             onSeveritiesClick={this.handleSeveritiesClick}
                             onSeveritiesHover={this.handleSeveritiesHover}
                             onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave} />
+                        <ActualSwitch
+                            onChange={this.handleActualChange}
+                            showActual={this.state.showActual}
+                            actualList={this.state.actualList} />
                         <R0
                             r0full={this.state.r0full}
                             r0selected={this.state.r0selected}
@@ -510,10 +514,6 @@ class MainGraph extends Component {
                             onR0Resample={this.handleR0Resample}
                             allSims={this.state.allSims} 
                             selectedSims={this.state.seriesList[0]} />
-                        <ActualSwitch
-                            onChange={this.handleActualChange}
-                            showActual={this.state.showActual}
-                            actualList={this.state.actualList} />
                         <ModeToggle
                             showConfBounds={this.state.showConfBounds}
                             onConfClick={this.handleConfClick} /> 
