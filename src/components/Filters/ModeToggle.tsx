@@ -55,16 +55,16 @@ class ModeToggle extends Component<Props, State> {
                     style={{ width: '70%', display: 'flex' }}
                     onChange={this.props.onConfClick}>
                     <Radio.Button
-                        key="exceedence"
-                        style={styles.Radio}
-                        value="exceedence">
-                        Threshold Exceedence
-                    </Radio.Button>
-                    <Radio.Button
                         key="confidence"
                         style={styles.Radio}
                         value="confidence">
                         Confidence Bounds
+                    </Radio.Button>
+                    <Radio.Button
+                        key="exceedence"
+                        style={styles.Radio}
+                        value="exceedence">
+                        Threshold Exceedence
                     </Radio.Button>
                 </Radio.Group>
             </Fragment>
