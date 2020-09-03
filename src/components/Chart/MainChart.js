@@ -1,10 +1,12 @@
 import React, { Component, Fragment } from 'react';
 import { Layout, Row, Col } from 'antd';
+import { PlusCircleTwoTone } from '@ant-design/icons';
 import ChartContainer from './ChartContainer';
 import Scenarios from '../Filters/Scenarios.tsx';
 import DatePicker from './DatePicker';
 import ScaleToggle from './ScaleToggle.tsx';
 import IndicatorSelection from './IndicatorSelection';
+import ViewModal from '../ViewModal.js';
 
 import { styles } from '../../utils/constants';
 import { buildScenarios, buildScenarioMap } from '../../utils/utils';
@@ -26,13 +28,21 @@ class MainChart extends Component {
             start: new Date(),
             end: new Date(),
             scale: 'power', // TS migration: ScaleTypeEnum
-            dataLoaded: false
+            dataLoaded: false,
+            modalVisible: false,
+            firstModalVisit: true,
         };
+        this.scrollElemChart = React.createRef();
     };
 
     componentDidMount() {
         const { dataset } = this.props;
-        this.initializeChart(dataset)
+        this.initializeChart(dataset);
+        window.addEventListener("scroll", this.handleScroll, true);
+    };
+
+    componentWillUnmount() {
+        window.removeEventListener("scroll", this.handleScroll, true);
     };
 
     componentDidUpdate(prevProp) {
@@ -96,87 +106,123 @@ class MainChart extends Component {
 
     handleScaleToggle = (scale) => {this.setState({ scale: scale })}
 
+    handleModalCancel = (e) => {
+        // console.log(e);
+        this.setState({
+            modalVisible: false,
+            firstModalVisit: false,
+        });
+    }
+
+    showModal = () => {
+        this.setState({
+            modalVisible: true,
+        });
+    }
+
+    handleScroll = (e) => {
+        if(this.scrollElemChart.current && this.state.firstModalVisit && 
+            (document.body.scrollTop > this.scrollElemChart.current.offsetTop - 60 && 
+                document.body.scrollTop < this.scrollElemChart.current.offsetTop)) {
+            console.log('interactive chart in view')
+            this.setState({
+                modalVisible: true,
+            });
+        }
+    }
+
     render() {
         const { Content } = Layout;
         return (
-            <Content id="exploration" style={styles.ContainerWhite}>
-                <Col className="gutter-row container">
-                    <div className="content-section">
-                        <div className="card-content card-content-white">
-                            <div className="titleNarrow description-header">A time-based tool you can customize</div>
-                            Use this tool to explore expected infections, hospitalizations,
-                            ICU cases, ventilators needed, and deaths in your municipality.
-                            For example, if you would like to know how many people will 
-                            be hospitalized in 6 weeks, select hospitalizations  
-                            from the indicator dropdown, today as the start date, and 6 weeks out
-                            as the end date. Then, compare expected hospitalization 
-                            numbers across all 
-                            intervention scenarios at varying degrees of severity.
-                            <div className="mobile-alert">
-                                &#9888; Please use a desktop to access the full feature set, 
-                                including selecting indicators and date range.
-                            </div>
-                        </div>
-                    </div>
-                </Col>
-                <Row gutter={styles.gutter}>
-                    <Col className="gutter-row container">
-                        <div className="map-container">
-                            {this.state.dataLoaded &&
-                            <ChartContainer
-                                geoid={this.props.geoid}
-                                width={this.props.width}
-                                height={this.props.height} 
-                                dataset={this.state.datasetChart}
-                                scenarios={this.state.scenarioList}
-                                scenarioMap={this.state.scenarioMap}
-                                indicators={this.state.statList}
-                                firstDate={this.state.dates[0]}
-                                start={this.state.start}
-                                end={this.state.end}
-                                scale={this.state.scale}
-                                datePickerActive={this.state.datePickerActive}
+            <div ref={this.scrollElemChart}>
+                <Content id="exploration" style={styles.ContainerWhite}>
+                    <Row gutter={styles.gutter}>
+                        <Col className="gutter-row container">
+                            <ViewModal 
+                                modalTitle="A time-based tool you can customize"
+                                modalVisible={this.state.modalVisible}
+                                onCancel={this.handleModalCancel}
+                                modalContainer="#exploration"
+                                modalText={
+                                    <div>
+                                        Use this tool to explore expected infections, hospitalizations,
+                                        ICU cases, ventilators needed, and deaths in your municipality.
+                                        For example, if you would like to know how many people will 
+                                        be hospitalized in 6 weeks, select hospitalizations  
+                                        from the indicator dropdown, today as the start date, and 6 weeks out
+                                        as the end date. Then, compare expected hospitalization 
+                                        numbers across all 
+                                        intervention scenarios at varying degrees of severity.
+                                        <div className="mobile-alert">
+                                            &#9888; Please use a desktop to access the full feature set, 
+                                            including selecting indicators and date range.
+                                        </div>
+                                    </div>
+                                }
                             />
-                            }
-                        </div>
-                    </Col>
-
-                    <Col className="gutter-row container mobile-only">
-                        <div className="mobile-alert">
-                            &#9888; The filters below are disabled on mobile devices.
-                        </div>
-                    </Col>
-
-                    <Col className="gutter-row filters mobile">
-                        <Fragment>
-                            <Fragment>
-                                <Scenarios 
-                                    view="chart"
-                                    SCENARIOS={this.state.SCENARIOS}
-                                    scenarioList={this.state.scenarioList}
-                                    onScenarioClickChart={this.handleScenarioClickChart}
+                            <div className="map-container">
+                                {this.state.dataLoaded &&
+                                <ChartContainer
+                                    geoid={this.props.geoid}
+                                    width={this.props.width}
+                                    height={this.props.height} 
+                                    dataset={this.state.datasetChart}
+                                    scenarios={this.state.scenarioList}
+                                    scenarioMap={this.state.scenarioMap}
+                                    indicators={this.state.statList}
+                                    firstDate={this.state.dates[0]}
+                                    start={this.state.start}
+                                    end={this.state.end}
+                                    scale={this.state.scale}
+                                    datePickerActive={this.state.datePickerActive}
                                 />
-                                <IndicatorSelection
-                                    statList={this.state.statList}
-                                    indicators={this.props.indicators}
-                                    onStatClickChart={this.handleStatClickChart}
+                                }
+                            </div>
+                        </Col>
+
+                        <Col className="gutter-row container mobile-only">
+                            <div className="mobile-alert">
+                                &#9888; The filters below are disabled on mobile devices.
+                            </div>
+                        </Col>
+
+                        <Col className="gutter-row filters mobile">
+                            <Fragment>
+                                <div className="instructions-wrapper" onClick={this.showModal}>
+                                    <div className="param-header instructions-label">INSTRUCTIONS</div>
+                                    <div className="instructions-icon">
+                                        <PlusCircleTwoTone />
+                                    </div>
+                                </div>
+                                <Fragment>
+                                    <Scenarios 
+                                        view="chart"
+                                        SCENARIOS={this.state.SCENARIOS}
+                                        scenarioList={this.state.scenarioList}
+                                        onScenarioClickChart={this.handleScenarioClickChart}
+                                    />
+                                    <IndicatorSelection
+                                        statList={this.state.statList}
+                                        indicators={this.props.indicators}
+                                        onStatClickChart={this.handleStatClickChart}
+                                    />
+                                </Fragment>
+                                <DatePicker 
+                                    firstDate={this.state.dates[0]}
+                                    start={this.state.start}
+                                    end={this.state.end}
+                                    onHandleSummaryDates={this.handleSummaryDates}
+                                    onHandleDatePicker={this.handleDatePicker}
+                                />
+                                <ScaleToggle
+                                    scale={this.state.scale}
+                                    onScaleToggle={this.handleScaleToggle}
                                 />
                             </Fragment>
-                            <DatePicker 
-                                firstDate={this.state.dates[0]}
-                                start={this.state.start}
-                                end={this.state.end}
-                                onHandleSummaryDates={this.handleSummaryDates}
-                                onHandleDatePicker={this.handleDatePicker}
-                            />
-                            <ScaleToggle
-                                scale={this.state.scale}
-                                onScaleToggle={this.handleScaleToggle}
-                            />
-                        </Fragment>
-                    </Col>
-                </Row>
-            </Content>
+                        </Col>
+                    </Row>
+                </Content>
+            </div>
         )
     }
 }
