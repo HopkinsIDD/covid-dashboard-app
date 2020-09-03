@@ -90,7 +90,7 @@ class Brush extends Component {
             .duration(700)
             .ease(easeCubicOut)
             .attr("d", d => lineGenerator(d.vals))
-            .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
+            .attr("stroke", (d,i) => this.props.showConfBounds ? colors.gray : series[i].over ? colors.red : colors.green )
             .attr("stroke-opacity", 0.6)
             .on("end", () => {
                 // set new vals to state
@@ -102,7 +102,7 @@ class Brush extends Component {
         simPathsNode.selectAll('.simPath')
             .data(series)
             .attr("d", d => lineGenerator(d.vals))
-            .attr("stroke", (d,i) => series[i].over ? colors.red : colors.green )
+            .attr("stroke", (d,i) => this.props.showConfBounds ? colors.gray : series[i].over ? colors.red : colors.green )
         }
     }
   
@@ -224,7 +224,7 @@ class Brush extends Component {
                     id={`simPath-${i}`}
                     className={`simPath`}
                     fill='none' 
-                    stroke = { this.state.series[i].over ? colors.red : colors.green }
+                    stroke = { this.props.showConfBounds ? colors.gray : this.state.series[i].over ? colors.red : colors.green }
                     strokeWidth={'1'}
                     strokeOpacity={ 0.4 }
                 />

@@ -500,6 +500,7 @@ class MainGraph extends Component {
                                 dateRange={this.state.dateRange}
                                 dateThreshold={this.state.dateThreshold}
                                 indicatorThreshold={this.state.indicatorThreshold}
+                                showConfBounds={this.state.showConfBounds}
                                 onBrushChange={this.handleBrushRange}
                                 onBrushStart={this.handleBrushStart}
                                 onBrushEnd={this.handleBrushEnd}
