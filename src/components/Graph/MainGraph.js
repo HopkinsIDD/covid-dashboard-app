@@ -406,7 +406,6 @@ class MainGraph extends Component {
     }
 
     handleModalCancel = (e) => {
-        // console.log(e);
         this.setState({
             modalVisible: false,
             firstModalVisit: false,
@@ -423,8 +422,6 @@ class MainGraph extends Component {
         if(this.scrollElem.current && this.state.firstModalVisit && 
             (document.body.scrollTop > this.scrollElem.current.offsetTop - 60 && 
                 document.body.scrollTop < this.scrollElem.current.offsetTop)) {
-            // do your stuff
-            console.log('interactive graph in view')
             this.setState({
                 modalVisible: true,
             });
