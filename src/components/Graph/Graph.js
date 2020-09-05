@@ -25,6 +25,7 @@ class Graph extends Component {
             lineGenerator: line().defined(d => !isNaN(d)),
             simPaths: [],
             hoveredSimPathId: null,
+            clickedSimPathId: null,
             areaGenerator: area().curve(curveLinear),
             confBounds: this.props.confBounds,
             confBoundsAreaPath: [],
@@ -267,7 +268,8 @@ class Graph extends Component {
     }
 
     handleBetterSimMouseHover = (event) => {
-        if (this.props.showConfBounds) return
+        console.log(event)
+        //if (this.props.showConfBounds) return
         event.preventDefault();
         const selector = `.graphSVG_${this.props.keyVal}`
         const node = document.querySelector(selector)
@@ -295,6 +297,40 @@ class Graph extends Component {
         } 
     }
 
+    handleBetterSimMouseClick = (event) => {
+        if (this.state.clickedSimPathId) {
+            console.log(this.state.clickedSimPathId, 'is clicked')
+        }
+        //if (this.props.showConfBounds) return
+        event.preventDefault();
+        const selector = `.graphSVG_${this.props.keyVal}`
+        const node = document.querySelector(selector)
+        let point = node.createSVGPoint();
+        
+        point.x = event.clientX;
+        point.y = event.clientY;
+        point = point.matrixTransform(node.getScreenCTM().inverse());
+        
+        const xm = this.props.xScale.invert(point.x);
+        const ym = this.props.yScale.invert(point.y);
+        const i1 = bisectLeft(this.props.selectedDates, xm, 1);
+        const i0 = i1 - 1;
+        const i = xm - this.props.selectedDates[i0] > this.props.selectedDates[i1] - xm ? i1 : i0;
+        const s = least(this.props.series, d => Math.abs(d.vals[i] - ym));
+        if (s) {
+            const clickedIdx = this.props.series.findIndex( sim => sim.name === s.name)
+            // we also want to find highest point of sim
+            const peak = max(s.vals)
+            const peakIndex = maxIndex(s.vals)
+            const tooltipXPos = this.props.xScale(this.props.selectedDates[peakIndex])
+            const tooltipYPos = this.props.yScale(peak)
+            this.setState({ 
+                clickedSimPathId: clickedIdx, 
+                tooltipText: `R0: ${s.r0.toFixed(1)}`, 
+                tooltipXPos, tooltipYPos })
+        } 
+    }
+
     render() {
         return (
             // <div className="graph-area">
@@ -304,6 +340,7 @@ class Graph extends Component {
                     transform={`translate(${this.props.x}, ${this.props.y})`}
                     ref={this.simPathsRef}
                 >
+                    
                     <g> 
                         { // debug graph red outline
                         /* <rect
@@ -324,8 +361,28 @@ class Graph extends Component {
                             height={this.props.height - margin.bottom - margin.top}
                             fill={colors.graphBkgd}
                             onMouseMove={(e) => this.handleBetterSimMouseHover(e)}
+                            onClick={(e) => this.handleBetterSimMouseClick(e)}
                             onMouseLeave={(e, i) => this.handleMouseLeave(e, i)}
                         />
+                        {(this.props.showConfBounds && this.props.confBounds) &&
+                        <g ref={this.confBoundsRef}>
+                            <path
+                                className={'confBoundsArea'}
+                                d={this.state.confBoundsAreaPath}
+                                fill={colors.green}
+                                fillOpacity={0.3}
+                                style={{'pointer-events': 'none'}}
+                            ></path>
+                            <path
+                                className={'confBoundsMean'}
+                                d={this.state.confBoundsMeanLinePath}
+                                stroke={colors.green}
+                                strokeWidth={2}
+                                fillOpacity={0}
+                                style={{'pointer-events': 'none'}}
+                            ></path>
+                        </g>
+                        }
                         {
                         // visible simPaths
                         this.state.simPaths.map( (simPath, i) => {
@@ -339,34 +396,35 @@ class Graph extends Component {
                                     fill='none' 
                                     stroke = { this.state.series[i].over ? colors.red : colors.green}
                                     strokeWidth={'1'}
-                                    strokeOpacity={ this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 0 : 0.6}
-                                    onMouseMove={(e) => this.handleMouseMove(e, i)}
-                                    onMouseEnter={(e) => this.handleMouseEnter(e, i)}
-                                    onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                                    strokeOpacity={ (this.state.hoveredSimPathId || this.state.clickedSimPathId) || (this.props.showConfBounds && this.props.confBounds) ? 0 : 0.6}
+                                    // onMouseMove={(e) => this.handleMouseMove(e, i)}
+                                    // onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                                    // onMouseLeave={(e) => this.handleMouseLeave(e, i)}
                                 />
                             ) 
                         })}
                         {// highlight simPaths
                         this.state.simPaths.map( (simPath, i) => {
                             const simIsHovered = (i === this.state.hoveredSimPathId)
+                            const simIsClicked = (i === this.state.clickedSimPathId)
                             return <path
                                 d={simPath}
                                 key={`simPath-${i}-hover`}
                                 id={`simPath-${i}-hover`}
                                 className={`simPath-hover`}
                                 fill='none' 
-                                stroke={simIsHovered ? colors.blue : colors.lightGray}
-                                strokeWidth={simIsHovered ? '2' : '1'}
-                                strokeOpacity={this.state.hoveredSimPathId || (this.props.showConfBounds && this.props.confBounds) ? 1 : 0}
-                                onMouseMove={(e) => this.handleMouseMove(e, i)}
-                                onMouseEnter={(e) => this.handleMouseEnter(e, i)}
-                                onMouseLeave={(e) => this.handleMouseLeave(e, i)}
+                                stroke={(simIsHovered || simIsClicked) ? colors.blue : colors.lightGray}
+                                strokeWidth={(simIsHovered || simIsClicked) ? '2' : '1'}
+                                strokeOpacity={(this.state.hoveredSimPathId || this.state.clickedSimPathId) || (this.props.showConfBounds && this.props.confBounds) ? 1 : 0}
+                                // onMouseMove={(e) => this.handleMouseMove(e, i)}
+                                // onMouseEnter={(e) => this.handleMouseEnter(e, i)}
+                                // onMouseLeave={(e) => this.handleMouseLeave(e, i)}
                             />
                         })}
                         <Tooltip
                             key={`sim-tooltip`}
                             title={this.state.tooltipText}
-                            visible={this.state.hoveredSimPathId ? true : false}
+                            visible={(this.state.hoveredSimPathId || this.state.clickedSimPathId) ? true : false}
                             // visible={true}
                             // align={{
                             //     points: ['bc', 'tc'],        // align top left point of sourceNode with top right point of targetNode
@@ -395,23 +453,6 @@ class Graph extends Component {
                             className={'runDate'}
                         ></line>
                     </g>
-                    {(this.props.showConfBounds && this.props.confBounds) &&
-                    <g ref={this.confBoundsRef}>
-                        <path
-                            className={'confBoundsArea'}
-                            d={this.state.confBoundsAreaPath}
-                            fill={colors.green}
-                            fillOpacity={0.3}
-                        ></path>
-                        <path
-                            className={'confBoundsMean'}
-                            d={this.state.confBoundsMeanLinePath}
-                            stroke={colors.green}
-                            strokeWidth={2}
-                            fillOpacity={0}
-                        ></path>
-                    </g>
-                    }
                     {(this.props.showActual && this.props.actual) &&
                     <g ref={this.actualRef}>
                         <clipPath 
