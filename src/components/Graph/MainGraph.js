@@ -487,6 +487,7 @@ class MainGraph extends Component {
                                 scenarioHovered={this.state.scenarioHovered}
                                 statSliderActive={this.state.statSliderActive}
                                 dateSliderActive={this.state.dateSliderActive}
+                                seriesMax={this.state.seriesMax}
                             /> 
                             <Brush
                                 width={this.props.width}
@@ -500,6 +501,7 @@ class MainGraph extends Component {
                                 dateRange={this.state.dateRange}
                                 dateThreshold={this.state.dateThreshold}
                                 indicatorThreshold={this.state.indicatorThreshold}
+                                showConfBounds={this.state.showConfBounds}
                                 onBrushChange={this.handleBrushRange}
                                 onBrushStart={this.handleBrushStart}
                                 onBrushEnd={this.handleBrushEnd}
@@ -519,112 +521,54 @@ class MainGraph extends Component {
                                     <PlusCircleTwoTone />
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </Col>
-
-                {this.state.dataLoaded &&
-                <Row gutter={styles.gutter}>
-                    <Col className="gutter-row container">
-                        <GraphContainer 
-                            geoid={this.props.geoid}
-                            width={this.props.width}
-                            height={this.props.height}
-                            selectedDates={this.state.selectedDates}
-                            scenarioList={this.state.scenarioList}
-                            seriesList={this.state.seriesList}
-                            indicator={this.state.indicator}
-                            severity={this.state.severity}
-                            r0full={this.state.r0full}
-                            r0selected={this.state.r0selected}
-                            animateTransition={this.state.animateTransition}
-                            showConfBounds={this.state.showConfBounds}
-                            confBoundsList={this.state.confBoundsList}
-                            actualList={this.state.actualList}
-                            showActual={this.state.showActual}
-                            indicatorThreshold={this.state.indicatorThreshold}
-                            dateThreshold={this.state.dateThreshold}
-                            runDate={this.state.runDate}
-                            percExceedenceList={this.state.percExceedenceList}
-                            dateRange={this.state.dateRange}
-                            brushActive={this.state.brushActive}
-                            scenarioClickCounter={this.state.scenarioClickCounter}
-                            scenarioHovered={this.state.scenarioHovered}
-                            statSliderActive={this.state.statSliderActive}
-                            dateSliderActive={this.state.dateSliderActive}
-                        /> 
-                        <Brush
-                            width={this.props.width}
-                            height={80}
-                            series={this.state.allDatesSeries}
-                            dates={this.state.dates}
-                            x={margin.yAxis + (this.props.width * dimMultipliers.brushOffset)}
-                            y={0}
-                            animateTransition={this.state.animateTransition}
-                            toggleAnimateTransition={this.toggleAnimateTransition}
-                            dateRange={this.state.dateRange}
-                            dateThreshold={this.state.dateThreshold}
-                            indicatorThreshold={this.state.indicatorThreshold}
-                            onBrushChange={this.handleBrushRange}
-                            onBrushStart={this.handleBrushStart}
-                            onBrushEnd={this.handleBrushEnd}
-                        />
-                    </Col>
-
-                    <Col className="gutter-row container mobile-only">
-                        <div className="mobile-alert">
-                            &#9888; The filters below are disabled on mobile devices.
-                        </div>
-                    </Col>
-
-                    <Col className="gutter-row graph-filters mobile">
-                        <Scenarios
-                            view="graph"
-                            SCENARIOS={this.state.SCENARIOS}
-                            scenario={this.state.SCENARIOS[0]}
-                            scenarioList={this.state.scenarioList}
-                            onScenarioClick={this.handleScenarioClickGraph} />
-                        <Indicators
-                            indicator={this.state.indicator}  // TODO: remove this
-                            indicators={this.props.indicators}
-                            onIndicatorClick={this.handleIndicatorClick} />        
-                        <SeverityContainer
-                            indicator={this.state.indicator}
-                            severityList={this.state.severityList}
-                            scenarioList={this.state.scenarioList} 
-                            scenarioMap={this.state.scenarioMap}
-                            onSeveritiesClick={this.handleSeveritiesClick}
-                            onSeveritiesHover={this.handleSeveritiesHover}
-                            onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave} />
-                        <ActualSwitch
-                            onChange={this.handleActualChange}
-                            showActual={this.state.showActual}
-                            actualList={this.state.actualList} />
-                        <R0
-                            r0full={this.state.r0full}
-                            r0selected={this.state.r0selected}
-                            onR0Change={this.handleR0Change}
-                            onR0Resample={this.handleR0Resample}
-                            allSims={this.state.allSims} 
-                            selectedSims={this.state.seriesList[0]} />
-                        <ModeToggle
-                            showConfBounds={this.state.showConfBounds}
-                            onConfClick={this.handleConfClick} /> 
-                        <Sliders 
-                            indicator={this.state.indicator}
-                            selectedDates={this.state.selectedDates}
-                            seriesMax={this.state.seriesMax}
-                            showConfBounds={this.state.showConfBounds}
-                            indicatorThreshold={this.state.indicatorThreshold}
-                            dateThreshold={this.state.dateThreshold}
-                            dateThresholdIdx={this.state.dateThresholdIdx}
-                            dateRange={this.state.dateRange}
-                            onStatSliderChange={this.handleStatSliderChange}
-                            onDateSliderChange={this.handleDateSliderChange}
-                            onSliderMouseEvent={this.handleSliderMouseEvent} />
-                    </Col>
-                </Row>}
-            </Content>
+                            <Scenarios
+                                view="graph"
+                                SCENARIOS={this.state.SCENARIOS}
+                                scenario={this.state.SCENARIOS[0]}
+                                scenarioList={this.state.scenarioList}
+                                onScenarioClick={this.handleScenarioClickGraph} />
+                            <Indicators
+                                indicator={this.state.indicator}  // TODO: remove this
+                                indicators={this.props.indicators}
+                                onIndicatorClick={this.handleIndicatorClick} />        
+                            <SeverityContainer
+                                indicator={this.state.indicator}
+                                severityList={this.state.severityList}
+                                scenarioList={this.state.scenarioList} 
+                                scenarioMap={this.state.scenarioMap}
+                                onSeveritiesClick={this.handleSeveritiesClick}
+                                onSeveritiesHover={this.handleSeveritiesHover}
+                                onSeveritiesHoverLeave={this.handleSeveritiesHoverLeave} />
+                            <R0
+                                r0full={this.state.r0full}
+                                r0selected={this.state.r0selected}
+                                onR0Change={this.handleR0Change}
+                                onR0Resample={this.handleR0Resample}
+                                allSims={this.state.allSims} 
+                                selectedSims={this.state.seriesList[0]} />
+                            <ActualSwitch
+                                onChange={this.handleActualChange}
+                                showActual={this.state.showActual}
+                                actualList={this.state.actualList} />
+                            <ModeToggle
+                                showConfBounds={this.state.showConfBounds}
+                                onConfClick={this.handleConfClick} /> 
+                            <Sliders 
+                                indicator={this.state.indicator}
+                                selectedDates={this.state.selectedDates}
+                                seriesMax={this.state.seriesMax}
+                                showConfBounds={this.state.showConfBounds}
+                                indicatorThreshold={this.state.indicatorThreshold}
+                                dateThreshold={this.state.dateThreshold}
+                                dateThresholdIdx={this.state.dateThresholdIdx}
+                                dateRange={this.state.dateRange}
+                                onStatSliderChange={this.handleStatSliderChange}
+                                onDateSliderChange={this.handleDateSliderChange}
+                                onSliderMouseEvent={this.handleSliderMouseEvent} />
+                        </Col>
+                    </Row>}
+                </Content>
+            </div>
         )
     }
 }
