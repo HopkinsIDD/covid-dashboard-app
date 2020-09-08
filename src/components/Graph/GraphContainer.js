@@ -167,6 +167,7 @@ class GraphContainer extends Component {
                                 key={`${child.key}-label`}
                                 classProps={'filter-label threshold-label callout'}
                                 indicatorThreshold={this.props.indicatorThreshold}
+                                seriesMax={this.props.seriesMax}
                                 dateThreshold={this.props.dateThreshold}
                                 percExceedence={this.props.percExceedenceList[i]}
                                 label={indicator.name.toLowerCase()}

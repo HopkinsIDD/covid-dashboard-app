@@ -4,6 +4,7 @@ import { addCommas } from '../../utils/utils.js';
 import { timeFormat } from 'd3-time-format';
 import { timeDay }  from 'd3-time';
 import { styles } from '../../utils/constants';
+import { getStepValue } from '../../utils/utils';
 
 const getDate = timeFormat('%b %d, %Y');
 const getMonth = timeFormat('%b %d');
@@ -15,14 +16,19 @@ class Sliders extends Component {
             showTooltipThreshold: false,
             showTooltipDateThreshold: false,
             dateIdx: "150",
+            val: addCommas(this.props.indicatorThreshold.toString())
         }
     }
 
     componentDidMount() {
-
+        
         const dateIdx = this.props.selectedDates.indexOf(this.props.dateThreshold).toString();
+        const stepVal = getStepValue(this.props.seriesMax)
+        const roundedStat = Math.ceil(this.props.indicatorThreshold / stepVal) * stepVal;
         this.setState({
             dateIdx,
+            stepVal, 
+            val: addCommas(roundedStat)
         })
     }
             
@@ -34,6 +40,11 @@ class Sliders extends Component {
             this.setState({
                 dateIdx,
             })
+        }
+        if (this.props.indicatorThreshold !== prevProps.indicatorThreshold) {
+            const stepVal = getStepValue(this.props.seriesMax)
+            const roundedStat = Math.ceil(this.props.indicatorThreshold / stepVal) * stepVal;
+            this.setState({ stepVal, val: addCommas(roundedStat) })
         }
     }
 
@@ -74,8 +85,6 @@ class Sliders extends Component {
 
     render() {
         const { indicator, indicatorThreshold, seriesMax, selectedDates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
-        const stepVal = this.getStepValue(seriesMax)
-        const roundedStat = Math.ceil(indicatorThreshold / stepVal) * stepVal;
         const isDisabled = this.props.showConfBounds ? "disabled" : "";
         return (
             <div className={`slider-menu`}>
@@ -96,7 +105,7 @@ class Sliders extends Component {
                 </div>
                 <div className="filter-label">
                     <span className='callout'>
-                        {addCommas(roundedStat)}&nbsp;{indicator.name}
+                        {this.state.val}&nbsp;{indicator.name}
                     </span>
                 </div>
                 <input
@@ -105,7 +114,7 @@ class Sliders extends Component {
                     min="0"
                     max={seriesMax.toString()}
                     value={indicatorThreshold.toString()}
-                    step={stepVal}
+                    step={this.state.stepVal}
                     style={styles.Selector}
                     ref={ref => this.statInput = ref}
                     disabled={isDisabled}
