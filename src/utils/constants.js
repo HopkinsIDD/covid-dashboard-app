@@ -1,14 +1,4 @@
 
-// s3 bucket location of 3147 county geoid jsons
-let dataLocation;
-if (process.env.NODE_ENV === 'development') {
-    dataLocation = 'https://idd-dashboard-runs-staging.s3.amazonaws.com/json-files/';
-} else { 
-    // indicate key prefix of relative bucket (could be staging or production)
-    dataLocation = 'json-files/';
-}
-export const s3BucketUrl = dataLocation;
-
 export const defaultGeoid = '06085';
 
 // number of sim curves to be displayed in Graph
