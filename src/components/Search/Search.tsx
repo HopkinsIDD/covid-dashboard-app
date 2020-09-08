@@ -50,14 +50,18 @@ class Search extends Component<Props, State> {
 
                 <Col className="gutter-row container">
                     <div className="content-section">
-                        <div>The&nbsp;
+                        <div>Welcome to the visualization dashboard for COVID-19 projections from the&nbsp;
                             <a className="customLink" href="http://www.iddynamics.jhsph.edu/">
-                            Johns Hopkins IDD Working Group</a> has generated model
-                            simulations for select intervention scenarios from
-                            January 2020 to June 2021. Scroll down to compare scenarios
-                            by:
+                            Johns Hopkins ID Dynamics COVID-19 Working Group</a>.
+                            Here we display more detailed data on the weekly model 
+                            projections that we submit to the&nbsp;
+                            <a className="customLink" href="https://viz.covid19forecasthub.org/">
+                            COVID-19 Forecast Hub </a>
+                            as well as occasional long-term scenario planning projections 
+                            for locations in the United States. 
+                            Scroll down and use this dashboard to:
                         </div>
-                        <ul>
+                        <ul className="search-bullets">
                             <li>
                                 <span>
                                     <GraphLogo
@@ -66,7 +70,7 @@ class Search extends Component<Props, State> {
                                         width={35}
                                         style={styles.iconGraph}/>
                                 </span>
-                                Interacting with individual simulation curves
+                                Interact with individual simulation curves
                             </li>
                             <li>
                                 <span>
@@ -76,8 +80,8 @@ class Search extends Component<Props, State> {
                                         width={25}
                                         style={styles.iconChart}/>
                                 </span>
-                                Exploring expected number of hospitalizations,
-                                deaths, etc. in the coming weeks
+                                Explore the estimated number of confirmed cases, 
+                                hospitalizations, and deaths in coming weeks
                             </li>
                             <li>
                                 <span>
@@ -87,13 +91,13 @@ class Search extends Component<Props, State> {
                                         width={30}
                                         style={styles.iconMap}/>
                                 </span>
-                                Visualizing state-wide trends
+                                Visualize county-level and state-level trends
                             </li>
                         </ul>
                         <br/>
                         <div>
-                            Find your state or county in our registry
-                            to start comparing scenarios now.
+                            Find your state or county in our registry to start 
+                            examining projections now.
                         </div>
                         <SearchBar
                             onCountySelect={this.props.onCountySelect}

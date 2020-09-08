@@ -80,12 +80,11 @@ class Severity extends Component {
                         <div className="tooltip">&nbsp;&#9432;
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
-                                High, medium, and low severity correspond
-                                to 1%, 0.5%, and 0.25% infection fatality rate (IFR), 
-                                and 10%, 5% and 2.5% hospitalization rate, respectively.      
-                                <br /><br />
-                                <i>Infections</i> values are the same across
-                                all severity levels.               
+                            The high, medium, and low severity labels correspond 
+                            to 1%, 0.5%, and 0.25% infection fatality ratios (IFR), 
+                            and 10%, 5% and 2.5% hospitalization rates, respectively. 
+                            Note that models are simulated independently for each severity level, 
+                            even for the same model scenario.
                             </span> }
                         </div>
                     </TooltipHandler>

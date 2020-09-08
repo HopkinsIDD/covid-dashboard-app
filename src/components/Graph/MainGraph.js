@@ -438,20 +438,36 @@ class MainGraph extends Component {
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
                             <ViewModal 
-                                modalTitle="What can scenario modeling tell us?"
+                                modalTitle="Interpreting the daily projections graph"
                                 modalVisible={this.state.modalVisible}
                                 onCancel={this.handleModalCancel}
                                 modalContainer="#interactive-graph"
                                 modalText={
                                     <div>
-                                        <p>This graph aims to display as much about the scenario model as possible. Each intervention scenario is represented by multiple simulation curves - each of these curves represent one possible outcome based on a given set of parameters. Each simulation curve is just as likely to occur as another.</p>
-                                        <ol>
-                                            <li>Toggle between different indicators such as hospitalizations and deaths, as well as the scenario's potential severity level.</li> 
-                                            <li>Filter simulations down to curves within a specific range of R0, or resample the curves within the selected R0 range.</li> 
-                                            <li>You can also choose between displaying confidence bounds and exploring exceedence thresholds.</li>
-                                            <li>To explore exceedence, use the threshold sliders to change values and dates to determine how likely a given indicator, such as hospitalizations, will exceed a certain number by a given date.</li>
-                                            <li>Select two intervention scenarios from the menu on the right to compare side by side.</li>
-                                        </ol>
+                                        <p>This graph shows a sample of the daily model projections for an indicator 
+                                        (e.g., confirmed cases, hospitalizations, deaths) 
+                                        over time for a given modeled scenario. 
+                                        Each line represents a single stochastic model simulation, 
+                                        and all simulation curves are equally likely to occur. 
+                                        Note that not all simulation curves are displayed at once, 
+                                        for visualization purposes.</p>
+                                        <p>Use the control panel on the right side to:</p>
+                                        <ul>
+                                            <li>Choose one or more scenarios to compare (e.g., model forecasts made on two different dates)</li> 
+                                            <li>Change the displayed indicator (e.g., confirmed cases)</li>
+                                            <li>Compare scenarios with different severity assumptions (e.g., high infection fatality ratio)</li>
+                                            <li>Filter simulations within a specific range of the baseline reproduction number </li>
+                                            <li>Toggle the display of reported ground truth data, when available</li>
+                                        </ul>
+                                        <p>Drag, lengthen, or shorten the grey area in the miniature simulation 
+                                        image below the main display graph in order to capture the time period of interest.</p>
+                                        <p>Typically, we interpret all of the simulation outputs from a single model run collectively and probabilistically. 
+                                        This dashboard presents this summarized information with two modes. In “Confidence Bounds” mode, 
+                                        you can see a time-averaged median line and 10-90% prediction interval ribbon overlaid 
+                                        on top of the individual simulations. 
+                                        In “Threshold Exceedance” mode, you can use the Threshold and Date Threshold sliders 
+                                        to change values and dates to determine how likely a given indicator 
+                                        will exceed a certain threshold number by a given threshold date.</p>
                                         <div className="mobile-alert">
                                             &#9888; Please use a desktop to access the full feature set.
                                         </div>

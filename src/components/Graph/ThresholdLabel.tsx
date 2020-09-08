@@ -86,10 +86,10 @@ class ThresholdLabel extends Component<Props, State> {
                     <div className="tooltip">&nbsp;&#9432;
                         {this.state.showTooltip &&
                         <span className="tooltip-text">
-                            This percentage is calculated using the remaining
-                            simulation curves after filtering on all parameters
-                            from the side menu, not on all possible simulation
-                            curves available for this scenario.
+                            This percentage is calculated only for model simulations that 
+                            meet the criteria specified in the control panel. 
+                            Modify the Threshold and Date Threshold sliders in 
+                            “Threshold Exceedance” mode to see how this percentage changes.
                         </span> }
                     </div>
                 </TooltipHandler>

@@ -3,6 +3,7 @@ import { Select } from 'antd';
 import { formatTitle } from '../../utils/utils';
 import { styles } from '../../utils/constants';
 import { Scenario } from "../../utils/constantsTypes";
+import TooltipHandler from './TooltipHandler';
 
 
 enum ScenariosModeEnum {
@@ -37,6 +38,7 @@ interface Props {
 
 interface State {
     children: Array<Child>,
+    showTooltip: boolean,
     scenariosGraph: Array<Scenario>
 }
 
@@ -45,6 +47,7 @@ class Scenarios extends Component<Props, State> {
         super(props);
         this.state = {
             scenariosGraph: [],
+            showTooltip: false,
             children: []
         }
     }
@@ -154,6 +157,9 @@ class Scenarios extends Component<Props, State> {
         }
     }
 
+    handleTooltipClick = () => {
+        this.setState({showTooltip: !this.state.showTooltip})
+    }
 
     handleChange = (event: any) => { //FIXME Import TS for react-select
         // prevent user from deselecting all scenarios
@@ -194,7 +200,21 @@ class Scenarios extends Component<Props, State> {
 
         return (
             <div>
-                <div className="param-header">SCENARIOS</div>
+                <div className="param-header">SCENARIOS
+                    <TooltipHandler
+                        showTooltip={this.state.showTooltip}
+                        onClick={this.handleTooltipClick}
+                        >
+                        <div className="tooltip">&nbsp;&#9432;
+                            {this.state.showTooltip &&
+                            <span className="tooltip-text">
+                                Scenarios are named for the model run date. 
+                                This means that the model is calibrated only to ground truth data 
+                                that was reported prior to the model run date.
+                            </span> }
+                        </div>
+                    </TooltipHandler>
+                </div>
                 <Select
                     mode={this.props.view === ScenariosModeEnum.map ? undefined : ScenariosModeEnum.multiple}
                     style={styles.Selector}

@@ -260,7 +260,7 @@ li a {
   padding-left: 0px;
 }
 
-ul {
+.search-bullets {
   list-style-type: none;
   padding: 10px 0 0 30px;
 }
