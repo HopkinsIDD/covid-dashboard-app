@@ -3,6 +3,7 @@ import { Select } from 'antd';
 import { styles } from '../../utils/constants';
 import { SelectValue } from "antd/lib/select";
 import { Indicator } from "../../utils/constantsTypes";
+import TooltipHandler from './TooltipHandler';
 
 
 interface Child {
@@ -17,14 +18,16 @@ interface Props {
 }
 
 interface State {
-    children: Array<Child>;
+    children: Array<Child>,
+    showTooltip: boolean
 }
 
 class Indicators extends Component<Props, State> {
     constructor(props: Props) {
         super(props);
         this.state = {
-            children: []
+            children: [],
+            showTooltip: false
         }
     }
 
@@ -49,6 +52,10 @@ class Indicators extends Component<Props, State> {
         this.setState({children})
     }
 
+    handleTooltipClick = () => {
+        this.setState({showTooltip: !this.state.showTooltip})
+    }
+
     handleChange = (e: SelectValue) => {
         const item = this.props.indicators.filter(indicator => indicator.key === e)[0];
         this.props.onIndicatorClick(item);
@@ -58,7 +65,22 @@ class Indicators extends Component<Props, State> {
         const {indicator} = this.props;
         return (
             <div>
-                <div className="param-header">INDICATOR</div>
+                <div className="param-header">INDICATOR    
+                    <TooltipHandler
+                        showTooltip={this.state.showTooltip}
+                        onClick={this.handleTooltipClick}
+                        >
+                        <div className="tooltip">&nbsp;&#9432;
+                            {this.state.showTooltip &&
+                            <span className="tooltip-text">
+                                Indicators are calculated after accounting for the 
+                                appropriate time delays and probabilities of 
+                                transitioning into a given state 
+                                (e.g., initial infection to hospitalization).
+                            </span> }
+                        </div>
+                    </TooltipHandler>
+                </div>
                 <Select
                     // re-render every time indicator key changes
                     key={indicator.key}

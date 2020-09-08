@@ -97,8 +97,8 @@ class Sliders extends Component {
                         <div className="tooltip">&nbsp;&#9432;
                             {this.state.showTooltipThreshold &&
                             <span className="tooltip-text">
-                                Indicator Threshold slider is disabled when Confidence
-                                Bounds Mode is active. 
+                            This is the Threshold value used for the display in “Threshold Exceedance” mode. 
+                            You will not be able to modify this slider when in “Confidence Bounds” mode.
                             </span> }
                         </div>
                     </TooltipHandler>
@@ -138,8 +138,8 @@ class Sliders extends Component {
                         <div className="tooltip">&nbsp;&#9432;
                             {this.state.showTooltipDateThreshold &&
                             <span className="tooltip-text">
-                                Date Threshold slider is disabled when Confidence
-                                Bounds Mode is active. 
+                            This is the Date Threshold used for the display in “Threshold Exceedance” mod
+                            You will not be able to modify this slider when in “Confidence Bounds” mode.
                             </span> }
                         </div>
                     </TooltipHandler>

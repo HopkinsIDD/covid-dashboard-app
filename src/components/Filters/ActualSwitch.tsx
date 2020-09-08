@@ -43,7 +43,7 @@ class ActualSwitch extends Component<Props, State> {
                     onChange={this.props.onChange}
                     disabled={isDisabled}
                     size="small"/>
-                <div className="upload-toggle">ACTUAL DATA
+                <div className="upload-toggle">REPORTED DATA
                     <TooltipHandler
                         showTooltip={this.state.showTooltip}
                         onClick={this.handleTooltipClick}
@@ -51,9 +51,8 @@ class ActualSwitch extends Component<Props, State> {
                         <div className="tooltip">&nbsp;&#9432;
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
-                                If toggle is disabled, then ground truth data is 
-                                unavailable for the selected indicator.
-                                Source: USA Facts.
+                                Daily reported confirmed cases and deaths are from USA Facts. 
+                                If the toggle is disabled, then data is unavailable for the selected indicator.
                             </span> }
                         </div>
                     </TooltipHandler>

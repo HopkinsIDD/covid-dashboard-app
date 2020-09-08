@@ -36,16 +36,16 @@ class ModeToggle extends Component<Props, State> {
                         <div className="tooltip">&nbsp;&#9432;
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
-                                The Confidence Bounds mode displays the 10%, 50%,
-                                and 90% confidence intervals based on all
-                                model simulations.<br />
-                                The Threshold Exceedence mode allows you to interact
-                                with the model simulation curves by sliding the
-                                threshold sliders below to determine
-                                how likely an indicator will exceed a certain number
-                                by a certain date. Simulation curves that exceed the
-                                designated threshold will appear red, while the
-                                rest of the curves will be green. 
+                                In “Confidence Bounds” mode, you can see a time-averaged 
+                                median line and 10-90% prediction interval ribbon for all 
+                                model simulations overlaid in green on top of the individual simulations. 
+                                <br /><br />
+                                In “Threshold Exceedance” mode, you can use the Threshold and Date 
+                                Threshold sliders to change values and dates to determine how likely 
+                                a given indicator will exceed a certain threshold number by 
+                                a given threshold date. Simulation curves that exceed the 
+                                designated threshold will appear red, while the rest 
+                                of the curves will be green.
                             </span> }
                         </div>
                     </TooltipHandler>
@@ -64,7 +64,7 @@ class ModeToggle extends Component<Props, State> {
                         key="exceedence"
                         style={styles.Radio}
                         value="exceedence">
-                        Threshold Exceedence
+                        Threshold Exceedance
                     </Radio.Button>
                 </Radio.Group>
             </Fragment>

@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { getReadableDate } from '../../utils/utils';
 import { timeDay }  from 'd3-time';
+import TooltipHandler from '../Filters/TooltipHandler';
 
 class DateSlider extends Component {
   constructor(props) {
     super(props)
     this.state = {
       marks: {},
+      showTooltip: false,
       dateIndex: ''
     }
   }
@@ -31,11 +33,29 @@ class DateSlider extends Component {
     return `${value}: ${getReadableDate(this.props.dates[value])}`
   }
   
+  handleTooltipClick = () => {
+    this.setState({showTooltip: !this.state.showTooltip})
+  }
+
   render() {
     const { dates, currentDateIndex } = this.props;
     return (
         <div>
-          <div className="param-header">DATE SELECTOR</div>
+          <div className="param-header">DATE SELECTOR
+              <TooltipHandler
+                showTooltip={this.state.showTooltip}
+                onClick={this.handleTooltipClick}
+                >
+                <div className="tooltip">&nbsp;&#9432;
+                  {this.state.showTooltip &&
+                  <span className="tooltip-text">
+                  Indicators are calculated after accounting for the appropriate 
+                  time delays and probabilities of transitioning into a given state 
+                  (e.g., initial infection to hospitalization). 
+                  </span> }
+                </div>
+              </TooltipHandler>
+          </div>
           <div className="filter-label">
               <span className='callout'>
                 {getReadableDate(dates[currentDateIndex])}

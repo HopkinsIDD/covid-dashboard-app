@@ -1,8 +1,20 @@
 import React, { Component } from 'react';
 import { DatePicker } from 'antd';
 import { styles } from '../../utils/constants';
+import TooltipHandler from '../Filters/TooltipHandler';
 
 class Chart extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showTooltip: false
+        }
+    }
+
+    handleTooltipClick = () => {
+        this.setState({showTooltip: !this.state.showTooltip})
+    }
+
     handleChange = (dates) => {
 
         let start;
@@ -36,7 +48,19 @@ class Chart extends Component {
         // but both render as the value for summaryEnd in the DatePicker
         return (
             <div>
-                <div className="param-header">DATE RANGE</div>
+                <div className="param-header">DATE RANGE
+                    <TooltipHandler
+                        showTooltip={this.state.showTooltip}
+                        onClick={this.handleTooltipClick}
+                        >
+                        <div className="tooltip">&nbsp;&#9432;
+                            {this.state.showTooltip &&
+                            <span className="tooltip-text">
+                            Choose a date range across which to calculate and display aggregate statistics. 
+                            </span> }
+                        </div>
+                    </TooltipHandler>
+                </div>
                 <RangePicker
                     disabledDate={this.disabledDate} 
                     style={styles.Selector}

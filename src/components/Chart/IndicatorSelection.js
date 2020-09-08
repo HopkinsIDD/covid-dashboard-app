@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
 import { styles } from '../../utils/constants';
+import TooltipHandler from '../Filters/TooltipHandler';
 
 class IndicatorSelection extends Component {
     constructor(props) {
         super(props);
         this.state = {
             indicatorsForChart: [],
+            showTooltip: false,
             children: []
         }
     }
@@ -96,6 +98,10 @@ class IndicatorSelection extends Component {
       }
     }
 
+    handleTooltipClick = () => {
+        this.setState({showTooltip: !this.state.showTooltip})
+    }
+
     handleChange = (event) => {
         // prevent user from deselecting all scenarios
         if (event.length === 1) { return };
@@ -105,7 +111,21 @@ class IndicatorSelection extends Component {
     render() {
         return (
             <div>
-                <div className="param-header">INDICATORS</div>
+                <div className="param-header">INDICATORS
+                    <TooltipHandler
+                        showTooltip={this.state.showTooltip}
+                        onClick={this.handleTooltipClick}
+                        >
+                        <div className="tooltip">&nbsp;&#9432;
+                            {this.state.showTooltip &&
+                            <span className="tooltip-text">
+                            Indicators are calculated after accounting for the 
+                            appropriate time delays and probabilities of transitioning 
+                            into a given state (e.g., initial infection to hospitalization). 
+                            </span> }
+                        </div>
+                    </TooltipHandler>
+                </div>
                 <Select
                     mode="multiple"
                     style={styles.Selector}
