@@ -124,7 +124,6 @@ class MainChart extends Component {
         if(this.scrollElemChart.current && this.state.firstModalVisit && 
             (document.body.scrollTop > this.scrollElemChart.current.offsetTop - 60 && 
                 document.body.scrollTop < this.scrollElemChart.current.offsetTop)) {
-            console.log('interactive chart in view')
             this.setState({
                 modalVisible: true,
             });

@@ -1,4 +1,4 @@
-import { s3BucketUrl } from '../utils/constants';
+import { s3BucketUrl } from '../store/config';
 import { USE_LOCAL_GEOID, LOCAL_GEOID, USE_LOCAL_ACTUALS, LOCAL_ACTUALS,
     CONFIGS } from '../store/config.tsx';
 

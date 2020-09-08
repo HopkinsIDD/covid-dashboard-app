@@ -1,7 +1,12 @@
 // config file used for testing local data files
 // config and data files to test must exist in the store dir
-// set file type to test to use_local = true and add update file_name value
 
+// s3 bucket location of 3147 county geoid jsons
+export const s3BucketUrl = process.env.NODE_ENV === 'development' ?
+            'https://idd-dashboard-runs-staging.s3.amazonaws.com/json-files/'
+            : 'json-files/'; // key prefix of relative bucket 
+
+// set file type to test to use_local = true and add update file_name value
 export const USE_LOCAL_GEOID = false
 export const LOCAL_GEOID = ''
 
