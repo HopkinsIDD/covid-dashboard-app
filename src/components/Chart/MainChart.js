@@ -139,20 +139,23 @@ class MainChart extends Component {
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
                             <ViewModal 
-                                modalTitle="A time-based tool you can customize"
+                                modalTitle="Interpreting the aggregate statistics graph"
                                 modalVisible={this.state.modalVisible}
                                 onCancel={this.handleModalCancel}
                                 modalContainer="#exploration"
                                 modalText={
                                     <div>
-                                        Use this tool to explore expected infections, hospitalizations,
-                                        ICU cases, ventilators needed, and deaths in your municipality.
-                                        For example, if you would like to know how many people will 
-                                        be hospitalized in 6 weeks, select hospitalizations  
-                                        from the indicator dropdown, today as the start date, and 6 weeks out
-                                        as the end date. Then, compare expected hospitalization 
-                                        numbers across all 
-                                        intervention scenarios at varying degrees of severity.
+                                        <p>This graph shows the distribution of a projected indicator 
+                                        (e.g., confirmed cases, hospitalizations, deaths) 
+                                        across model simulations in your state or county for 
+                                        different scenarios over a specific period of time.</p>
+                                        <p>Use the control panel on the right side to:</p>
+                                        <ol>
+                                            <li>Select scenarios for comparison</li>
+                                            <li>Select indicators of interest</li>
+                                            <li>Narrow the date range of interest</li>
+                                            <li>Change the transformation applied to the y-axis scale</li>
+                                        </ol>
                                         <div className="mobile-alert">
                                             &#9888; Please use a desktop to access the full feature set, 
                                             including selecting indicators and date range.

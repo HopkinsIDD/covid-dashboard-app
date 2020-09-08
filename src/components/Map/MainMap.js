@@ -47,7 +47,7 @@ class MainMap extends Component {
             });
             this.initializeMap(dataset)
         } catch (e) {
-            console.log('Fetch was problematic: ' + e.message)
+            console.log('Map fetch was problematic: ' + e.message)
         } 
         finally {
             // loading finishes if call is successful or fails
@@ -142,16 +142,18 @@ class MainMap extends Component {
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container" style={styles.MapContainer}>
                             <ViewModal 
-                                modalTitle="A daily look at regional context"
+                                modalTitle="Interpreting the map view"
                                 modalVisible={this.state.modalVisible}
                                 onCancel={this.handleModalCancel}
                                 modalContainer="#geographic-map"
                                 modalText={
                                     <div>
-                                        Hover over individual counties for more information
-                                        for each indicator. Slide over the date selector to 
-                                        view specific dates on the map. Use the right and
-                                        left arrow keys to increase or decrease by day.
+                                        <p>This map displays the projected mean point estimate mean value 
+                                        (e.g., confirmed cases, hospitalizations, deaths) 
+                                        per 10,000 population by county on a specific date.</p>
+                                        <p>Use the control panel on the right to select a scenario and date for display in the map. 
+                                        Hover over individual counties with your cursor for additional information. 
+                                        Use the right and left arrow keys to increase or decrease by day.</p>
                                         <div className="mobile-alert">
                                             &#9888; Please use a desktop to access the full feature set.
                                         </div>
