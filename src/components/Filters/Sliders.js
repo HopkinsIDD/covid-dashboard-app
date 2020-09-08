@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import TooltipHandler from '../Filters/TooltipHandler';
 import { addCommas } from '../../utils/utils.js';
 import { timeFormat } from 'd3-time-format';
 import { timeDay }  from 'd3-time';
@@ -12,6 +13,8 @@ class Sliders extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            showTooltipThreshold: false,
+            showTooltipDateThreshold: false,
             dateIdx: "150",
             val: addCommas(this.props.indicatorThreshold.toString())
         }
@@ -62,13 +65,44 @@ class Sliders extends Component {
         this.props.onSliderMouseEvent(e.type, 'date', 'graph')
     }
 
+    handleTooltipClickThresh = () => {
+        this.setState({showTooltipThreshold: !this.state.showTooltipThreshold})
+    }
+
+    handleTooltipClickDate = () => {
+        this.setState({showTooltipDateThreshold: !this.state.showTooltipDateThreshold})
+    }
+
+    getStepValue = (seriesMax) => {
+        if (seriesMax <= 50) {
+            return 1
+        } else if (seriesMax <= 1000) {
+            return 10
+        } else {
+            return 100
+        }
+    }
+
     render() {
         const { indicator, indicatorThreshold, seriesMax, selectedDates, dateRange, dateThreshold, dateThresholdIdx } = this.props;
         const isDisabled = this.props.showConfBounds ? "disabled" : "";
         return (
-            <div className={`slider-menu ${isDisabled}`}>
+            <div className={`slider-menu`}>
                 {/* Indicator Threshold */}
-                <div className="param-header">THRESHOLD</div>
+                <div className="param-header">THRESHOLD
+                    <TooltipHandler
+                        showTooltip={this.state.showTooltipThreshold}
+                        onClick={this.handleTooltipClickThresh}
+                        >
+                        <div className="tooltip">&nbsp;&#9432;
+                            {this.state.showTooltipThreshold &&
+                            <span className="tooltip-text">
+                                Indicator Threshold slider is disabled when Confidence
+                                Bounds Mode is active. 
+                            </span> }
+                        </div>
+                    </TooltipHandler>
+                </div>
                 <div className="filter-label">
                     <span className='callout'>
                         {this.state.val}&nbsp;{indicator.name}
@@ -96,7 +130,20 @@ class Sliders extends Component {
                 </div>
 
                 {/* Date Threshold */}
-                <div className="param-header" style={{ marginTop: '0.5rem'}}>DATE THRESHOLD</div>
+                <div className="param-header" style={{ marginTop: '0.5rem'}}>DATE THRESHOLD
+                    <TooltipHandler
+                        showTooltip={this.state.showTooltipDateThreshold}
+                        onClick={this.handleTooltipClickDate}
+                        >
+                        <div className="tooltip">&nbsp;&#9432;
+                            {this.state.showTooltipDateThreshold &&
+                            <span className="tooltip-text">
+                                Date Threshold slider is disabled when Confidence
+                                Bounds Mode is active. 
+                            </span> }
+                        </div>
+                    </TooltipHandler>
+                </div>
                 <div className="filter-label">
                     <span className='callout'>{getDate(dateThreshold)}</span>
                 </div>
