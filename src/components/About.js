@@ -12,29 +12,30 @@ class About extends Component {
                     <div className="content-section">
                         <div className="methods-header">About</div> 
                         <div>     
-                            COVID-19 has caused worldwide strain on health systems 
-                            due to its high mortality rate and the large portion of 
-                            cases requiring critical care and mechanical ventilation. 
-                            During these uncertain times, public health decision makers, 
-                            from city health departments to federal agencies, sought 
-                            the use of epidemiological models for decision support in 
-                            allocating resources, developing non-pharmaceutical 
-                            interventions, and characterizing the dynamics of COVID-19 
-                            in their jurisdictions. In response, the COVID-19 Scenario 
-                            Modeling Pipeline Working Group developed a flexible 
-                            scenario modeling pipeline that could quickly tailor 
-                            models for decision makers seeking to compare projections 
-                            of epidemic trajectories and healthcare impacts from 
-                            multiple intervention scenarios in different locations. 
+                            COVID-19 has caused worldwide strain on health systems due 
+                            to its high mortality rate and the large portion of cases 
+                            requiring critical care and mechanical ventilation. 
+                            Public health decision makers, from city health departments 
+                            to federal agencies, sought the use of epidemiological models 
+                            for decision support in allocating resources, developing 
+                            non-pharmaceutical interventions, and characterizing the 
+                            dynamics of COVID-19 in their jurisdictions. In response, 
+                            the JHU ID Dynamics COVID-19 Working Group developed a 
+                            flexible scenario modeling pipeline that could quickly 
+                            tailor models for decision makers seeking to compare projections 
+                            of epidemic trajectories and healthcare impacts from multiple 
+                            intervention scenarios in different locations.
                             <br /><br />
-                            The original research on the scenario modeling pipeline
-                            for COVID-19 emergency planning can be found&nbsp;
+                            The methods paper on the COVID Scenario Pipeline for scenario 
+                            planning has not yet been peer-reviewed and can be found 
+                            on a preprint server&nbsp;
                             <a className="customLink"
                             href="https://www.medrxiv.org/content/10.1101/2020.06.11.20127894v1.full.pdf">
-                            here</a>.
+                            here</a>. An additional paper on the inference 
+                            framework of our model is forthcoming.
                         </div>
                             
-                        <div className="methods-header">The Model</div> 
+                        <div className="methods-header">Model</div> 
                         <div>     
                             The scenario modeling pipeline is open-source under the
                             GNU General Public License v3 and <a className="customLink"
@@ -49,10 +50,11 @@ class About extends Component {
                         </div>
                     </div>
 
-                    <div className="methods-header">The Team</div> 
+                    <div className="methods-header">Team</div> 
                     <div className="content-section">
-                        This work would not be possible without the efforts of 
-                        the COVID-19 Scenario Modeling Pipeline Working Group.
+                        This work was developed by the&nbsp;
+                        <a className="customLink" href="http://www.iddynamics.jhsph.edu/">
+                        Johns Hopkins ID Dynamics</a> COVID-19 Working Group.
                     </div>
                 </Col>
 
@@ -60,21 +62,21 @@ class About extends Component {
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row" span={10} offset={2}>
                             <div className="content-section">
-                                <div><b>EPFL</b></div>
+                                <div><b>Ecole Polytechnique Fédérale de Lausanne</b></div>
                                 <ul>
                                     <li>Joseph C. Lemaitre</li>
                                 </ul>
 
                                 <div><b>Johns Hopkins Infectious Disease Dynamics</b></div>
                                 <ul>
-                                    <li>Qifang Bi</li>
-                                    <li>Jacob Fiksel</li>
                                     <li>Kyra H. Grantz</li>
+                                    <li>Juan Dent Hulse</li>
                                     <li>Joshua Kaminsky</li>
                                     <li>Stephen A. Lauer</li>
                                     <li>Elizabeth C. Lee</li>
                                     <li>Justin Lessler</li>
                                     <li>Hannah R. Meredith</li>
+                                    <li>Javier Perez-Saez</li>
                                     <li>Shaun A. Truelove</li>
                                 </ul>
         
@@ -88,7 +90,6 @@ class About extends Component {
                             <div className="content-section">
                                 <div><b>Developers Without Affiliation</b></div>
                                 <ul>
-                                    <li>Ian Chamberlain</li>
                                     <li>Kathryn Kaminsky</li>
                                     <li>Sam Shah</li>
                                     <li>Josh Wills</li>                            
@@ -115,10 +116,26 @@ class About extends Component {
 
                 <Col className="gutter-row container">
                     <div className="content-section">
+                        <div className="methods-header">Acknowledgements</div> 
+                        <div>
+                        This project was supported by the State of California, 
+                        the U.S. Department of Homeland Security, 
+                        the U.S. Department of Health and Human Services, 
+                        the Johns Hopkins Health System, Amazon Web Services, 
+                        the Office of the Dean at the Johns Hopkins Bloomberg School of Public Health, 
+                        the Swiss National Science Foundation, 
+                        the U.S. Office of Foreign Disaster Assistance, 
+                        and the U.S. Centers for Disease Control and Prevention.
+                        </div>
+                    </div>
+                </Col>
+
+                <Col className="gutter-row container">
+                    <div className="content-section">
                         <div className="methods-header">Contact</div> 
                         <div>
                             Questions? Comments? Issues? 
-                            Email us at email [@] jhu.com 
+                            Email us at iddynam [@] jhu.com 
                         </div>
                     </div>
                 </Col>
