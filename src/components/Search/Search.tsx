@@ -61,7 +61,7 @@ class Search extends Component<Props, State> {
                             for locations in the United States. 
                             Scroll down and use this dashboard to:
                         </div>
-                        <ul>
+                        <ul className="search-bullets">
                             <li>
                                 <span>
                                     <GraphLogo

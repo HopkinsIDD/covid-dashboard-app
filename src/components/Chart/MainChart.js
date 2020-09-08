@@ -150,12 +150,12 @@ class MainChart extends Component {
                                         across model simulations in your state or county for 
                                         different scenarios over a specific period of time.</p>
                                         <p>Use the control panel on the right side to:</p>
-                                        <ol>
+                                        <ul>
                                             <li>Select scenarios for comparison</li>
                                             <li>Select indicators of interest</li>
                                             <li>Narrow the date range of interest</li>
                                             <li>Change the transformation applied to the y-axis scale</li>
-                                        </ol>
+                                        </ul>
                                         <div className="mobile-alert">
                                             &#9888; Please use a desktop to access the full feature set, 
                                             including selecting indicators and date range.

@@ -452,13 +452,13 @@ class MainGraph extends Component {
                                         Note that not all simulation curves are displayed at once, 
                                         for visualization purposes.</p>
                                         <p>Use the control panel on the right side to:</p>
-                                        <ol>
+                                        <ul>
                                             <li>Choose one or more scenarios to compare (e.g., model forecasts made on two different dates)</li> 
                                             <li>Change the displayed indicator (e.g., confirmed cases)</li>
                                             <li>Compare scenarios with different severity assumptions (e.g., high infection fatality ratio)</li>
                                             <li>Filter simulations within a specific range of the baseline reproduction number </li>
                                             <li>Toggle the display of reported ground truth data, when available</li>
-                                        </ol>
+                                        </ul>
                                         <p>Drag, lengthen, or shorten the grey area in the miniature simulation 
                                         image below the main display graph in order to capture the time period of interest.</p>
                                         <p>Typically, we interpret all of the simulation outputs from a single model run collectively and probabilistically. 
