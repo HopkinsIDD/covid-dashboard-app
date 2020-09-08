@@ -133,6 +133,16 @@ export function filterR0(
   return seriesListForBrush
 }
 
+export function getStepValue(seriesMax) {
+  if (seriesMax <= 50) {
+      return 1
+  } else if (seriesMax <= 1000) {
+      return 10
+  } else {
+      return 100
+  }
+}
+
 export function addCommas(x) {
   var parts = x.toString().split(".");
   parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
