@@ -1,0 +1,136 @@
+import os
+import json
+from datetime import datetime
+
+def validate_scenario(scenario: str):
+    ''' 
+    Validate scenario name does not contain illegal chars and has formatted run date
+    e.g. '20200718-inference', '2020-07-18-inference', '2020-07-19-21-44-47-inference'
+    '''
+    illegal_chars = ['.', ',', ';', ':']
+    if any(char in scenario for char in illegal_chars):
+        raise Exception("Scenario name {} contains at least one illegal character from {}."
+            .format(scenario, illegal_chars))
+
+    # use scenario as run_date if scenario is not hyphenated
+    run_date = '-'.join(scenario.split('-')[:-1]) if '-' in scenario else scenario
+
+    try:
+        format1, format2 = '%Y%m%d', '%Y%m%d%H%M%S'
+        datetime.strptime(run_date, format1) or datetime.strptime(run_date, format2)
+    except:
+        raise Exception("Unexpected run date format. Does not match {} or {}"
+            .format(format1, format2))
+
+
+def check_dates_in_death_rates(scenario: str, death_rates: list):
+    ''' Validate dates key is included in data '''
+    if 'dates' not in death_rates:
+        raise Exception("Dates is missing from scenario {}".format(scenario))
+
+
+def validate_rate(scenario: str, rate: str):
+    ''' Validate given death rate is one of the expected death rates '''
+    expected_death_rates = ['low', 'med', 'high']
+    if rate not in expected_death_rates:
+        raise Exception("Scenario {}'s death rate {} is not an expected death rate"
+            .format(scenario, rate))
+
+
+def validate_indicators(scenario: str, rate: str, indicators: list):
+    ''' Validate given indicator is one of the expected indicators '''
+    expected_indicators = [value['key'] for value in outcomes.values()]
+
+    if set(indicators) != set(expected_indicators):
+        raise Exception("{}, {} includes an unexpected indicator. Expected are {}."
+            .format(scenario, rate, expected_indicators))
+
+
+def validate_sim_keys(scenario: str, rate: str, indicator: str, sim_obj: dict, expected_days: int):
+    ''' Validate simulation object contains expected keys and length of values'''
+    expected_keys = ['max', 'name', 'over', 'r0', 'vals'] 
+    for i in range(len(sim_obj)):
+        if sorted(list(sim_obj[i].keys())) != expected_keys:
+            raise Exception("{}, {}, {}, object {} is missing one of the following keys: {}"
+                .format(scenario, rate, indicator, i, expected_keys))
+
+        days = len(sim_obj[i]['vals'])
+        if days != expected_days:
+            raise Exception("{}, {}, {}, object {} length of values {} is not equal to the length of dates {}"
+                .format(scenario, rate, indicator, i, days, expected_days))
+
+
+def validate_geoid(obj: dict, outcomes: dict):
+    ''' Validate one county geoid dict object '''
+    
+    scenarios = list(obj.keys())
+    for scenario in scenarios:
+
+        death_rates = list(obj[scenario].keys())
+        expected_days = len(obj[scenario]['dates'])
+
+        validate_scenario(scenario)
+        check_dates_in_death_rates(scenario, death_rates)
+        death_rates.remove('dates')
+
+        for rate in death_rates:
+            indicators = list(obj[scenario][rate].keys())
+
+            validate_rate(scenario, rate)
+            validate_indicators(scenario, rate, indicators)
+
+            for indicator in indicators:
+                sim_obj = obj[scenario][rate][indicator]
+                validate_sim_keys(scenario, rate, indicator, sim_obj, expected_days)
+
+
+def validate_stats_for_map(stats: dict, expected_states: list, expected_counties: list):
+
+    states = sorted(list(stats.keys()))
+    for state in expected_states[:57]:
+        if state not in states:
+            raise Exception("statsForMap.json is missing state {}".format(state))
+
+
+    print('hi!')
+
+
+if __name__ == "__main__":
+    ''' 
+    config dir contains expected outcomes, counties, states 
+    json_output dir contains model files to be validated
+    '''
+    file_dir = 'json_output'
+
+    with open('config/outcomes.json') as o, open('config/counties.json') as c, \
+        open('config/states.json') as s, open(file_dir + '/statsForMap.json') as sfm:
+        outcomes = json.load(o)
+        expected_counties = sorted(list(json.load(c).keys()))
+        expected_states = sorted(list(json.load(s).keys()))
+
+        ### STATS FOR MAP ###
+        stats_for_map = json.load(sfm)
+        validate_stats_for_map(stats_for_map, expected_states, expected_counties)
+
+        ### COUNTY-LEVEL GEOID ###
+        counties = [f.strip('.json') for f in os.listdir(file_dir) if not f.startswith('.')]
+        for county in expected_counties:
+            print(county)
+            if county not in counties:
+                raise Exception("{} is missing county file {}.json".format(file_dir, county))
+
+            with open('{}/{}.json'.format(file_dir, county)) as f:
+                obj = json.load(f)
+                validate_geoid(obj, outcomes)
+
+        ### STATE-LEVEL GEOID ###
+        states = [f.strip('.json') for f in os.listdir(file_dir) if not f.startswith('.')]
+        for state in expected_states:
+            if state not in states:
+                raise Exception("{} is missing state file {}.json".format(file_dir, state))
+
+            with open('{}/{}.json'.format(file_dir, county)) as f:
+                obj = json.load(f)
+                validate_geoid(obj, outcomes)
+
+    print('Validation succeeded!')
