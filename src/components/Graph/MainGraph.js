@@ -596,9 +596,9 @@ class MainGraph extends Component {
                             message="Data Unavailable"
                             description={
                                 <div>
-                                    Simulation data for county {this.props.geoid} in
+                                    Simulation data for county {this.props.geoid} is
                                     unavailable or in an unexpected format. <br />
-                                    Please select a different county. <br />
+                                    Please select a different county or state. <br />
                                     Contact the IDD Working Group to run data files through the validator script. <br />
                                     {this.props.fetchErrors}
                                 </div>
