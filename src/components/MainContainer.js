@@ -22,7 +22,8 @@ class MainContainer extends Component {
             graphW: 0,
             graphH: 0,
             mapContainerW: 0,
-            mapContainerH: 0
+            mapContainerH: 0,
+            fetchErrors: ''
         };
     };
 
@@ -42,7 +43,7 @@ class MainContainer extends Component {
 
             this.setState({dataset, actuals, indicators});
         } catch (e) {
-            console.log('Fetch was problematic: ' + e.message)
+            this.setState({fetchErrors: e.message});
         } finally {
             this.setState({dataLoaded: true});
         }
@@ -82,10 +83,12 @@ class MainContainer extends Component {
         try {
             const dataset = await fetchDataset(geoid);
             const actuals = await fetchActuals(geoid);
+            const outcomes = await fetchConfig('outcomes');
+            const indicators = Object.keys(outcomes).map((obj) => outcomes[obj]);
 
-            this.setState({ dataset, geoid, actuals });
+            this.setState({ dataset, geoid, actuals, indicators });
         } catch (e) {
-            console.log('Fetch was problematic: ' + e.message)
+            this.setState({fetchErrors: e.message});
         }
     };
 
@@ -110,6 +113,7 @@ class MainContainer extends Component {
                     actuals={this.state.actuals}
                     width={this.state.graphW}
                     height={this.state.graphH}
+                    fetchErrors={this.state.fetchErrors}
                 />}
 
                 {this.state.dataLoaded &&

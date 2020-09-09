@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Layout, Row, Col } from 'antd';
+import { Layout, Row, Col, Spin, Alert } from 'antd';
 import { PlusCircleTwoTone } from '@ant-design/icons';
 import ChartContainer from './ChartContainer';
 import Scenarios from '../Filters/Scenarios.tsx';
@@ -18,6 +18,7 @@ class MainChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            dataLoaded: false,
             datasetChart: {},
             dates: [],
             SCENARIOS: [],
@@ -28,7 +29,6 @@ class MainChart extends Component {
             start: new Date(),
             end: new Date(),
             scale: 'power', // TS migration: ScaleTypeEnum
-            dataLoaded: false,
             modalVisible: false,
             firstModalVisit: true,
         };
@@ -54,30 +54,31 @@ class MainChart extends Component {
     };
 
     initializeChart(dataset) {
-        // instantiate scenarios, initial default indicators
-        const SCENARIOS = buildScenarios(dataset);  
-        const scenarioList = SCENARIOS.map(s => s.name);
-        const scenarioMap = buildScenarioMap(dataset);
-        const statList = this.props.indicators.slice(0,2)
+        if (Object.keys(dataset).length > 0) {
+            // instantiate scenarios, initial default indicators
+            const SCENARIOS = buildScenarios(dataset);  
+            const scenarioList = SCENARIOS.map(s => s.name);
+            const scenarioMap = buildScenarioMap(dataset);
+            const statList = this.props.indicators.slice(0,2)
 
-        // instantiate start and end date (past 2 weeks) for summary indicators
-        const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
-        const start = new Date(); 
-        start.setDate(start.getDate() - 14); 
+            // instantiate start and end date (past 2 weeks) for summary indicators
+            const dates = dataset[SCENARIOS[0].key].dates.map( d => parseDate(d));
+            const start = new Date(); 
+            start.setDate(start.getDate() - 14); 
 
-        // dataset needs to be set to state at the same time as other props
-        // otherwise, children updates will occur at different times
-        this.setState({
-            datasetChart: dataset, 
-            dates,
-            SCENARIOS,
-            scenarioList,
-            scenarioMap,
-            statList,
-            start,
-        }, () => {
-            this.setState({dataLoaded: true});
-        })
+            // dataset needs to be set to state at the same time as other props
+            // otherwise, children updates will occur at different times
+            this.setState({
+                datasetChart: dataset, 
+                dates,
+                SCENARIOS,
+                scenarioList,
+                scenarioMap,
+                statList,
+                start,
+                dataLoaded: true
+            });
+        }
     }
 
     handleScenarioClickChart = (items) => {
@@ -132,9 +133,13 @@ class MainChart extends Component {
 
     render() {
         const { Content } = Layout;
+        const datasetLen = Object.keys(this.props.dataset).length;
+
         return (
             <div ref={this.scrollElemChart}>
                 <Content id="exploration" style={styles.ContainerWhite}>
+                    {/* Loaded Chart, dataset has been fetched successfully */}
+                    {this.state.dataLoaded && datasetLen > 0 &&
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
                             <ViewModal 
@@ -163,7 +168,6 @@ class MainChart extends Component {
                                 }
                             />
                             <div className="map-container">
-                                {this.state.dataLoaded &&
                                 <ChartContainer
                                     geoid={this.props.geoid}
                                     width={this.props.width}
@@ -178,7 +182,6 @@ class MainChart extends Component {
                                     scale={this.state.scale}
                                     datePickerActive={this.state.datePickerActive}
                                 />
-                                }
                             </div>
                         </Col>
 
@@ -222,7 +225,23 @@ class MainChart extends Component {
                                 />
                             </Fragment>
                         </Col>
-                    </Row>
+                    </Row>}
+                    {/* Loaded Chart,but dataset is undefined */}
+                    {datasetLen === 0 && 
+                    <div className="error-container">
+                        <Spin spinning={false}>
+                            <Alert
+                            message="Data Unavailable"
+                            description={
+                                <div>
+                                    Aggregate data for county {this.props.geoid} is
+                                    unavailable or in an unexpected format.
+                                </div>
+                            }
+                            type="info"
+                            />
+                        </Spin>
+                    </div>}
                 </Content>
             </div>
         )

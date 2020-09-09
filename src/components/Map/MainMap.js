@@ -18,6 +18,7 @@ class MainMap extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            dataLoaded: false,
             datasetMap: {},
             dates: [],
             SCENARIOS: [],
@@ -26,10 +27,9 @@ class MainMap extends Component {
             countyBoundaries: {},
             indicatorsForCounty: {},
             currentDateIndex: 0,
-            dataLoaded: false,
-            isLoading: true,
             modalVisible: false,
             firstModalVisit: true,
+            fetchErrors: ''
         };
         this.scrollElemMap = React.createRef();
     };
@@ -37,7 +37,6 @@ class MainMap extends Component {
     async componentDidMount() {
         const { dataset } = this.props;
         try {
-            this.setState({isLoading: true});
             const indicatorsForMap = await fetchConfig('statsForMap');
             const stateBoundaries = await fetchConfig('countyBoundaries');
 
@@ -47,11 +46,10 @@ class MainMap extends Component {
             });
             this.initializeMap(dataset)
         } catch (e) {
-            console.log('Map fetch was problematic: ' + e.message)
+            this.setState({fetchErrors: e.message})
         } 
         finally {
-            // loading finishes if call is successful or fails
-            this.setState({isLoading: false});
+            this.setState({dataLoaded: true});
         }
         window.addEventListener("scroll", this.handleScroll, true);
     };
@@ -72,25 +70,33 @@ class MainMap extends Component {
         const { indicatorsForMap, stateBoundaries } = this.state;
         const state = geoid.slice(0, 2);
 
-        // instantiate scenarios and dates
-        const SCENARIOS = buildScenarios(dataset);  
-        const scenario = SCENARIOS[0].key;       
-        const dates = dataset[scenario].dates.map( d => parseDate(d));
-        
-        const currentDateIndex = dates
-            .findIndex(date => formatDate(date) === formatDate(new Date()));
+        if (Object.keys(dataset).length > 0 &&
+            Object.keys(indicatorsForMap).length > 0 &&
+            Object.keys(stateBoundaries).length > 0 
+        ) {
+            // instantiate scenarios and dates
+            const SCENARIOS = buildScenarios(dataset);
+            const scenario = SCENARIOS[0].key;       
+            const dates = dataset[scenario].dates.map( d => parseDate(d));
+            
+            const currentDateIndex = dates
+                .findIndex(date => formatDate(date) === formatDate(new Date()));
 
-        this.setState({
-            datasetMap: dataset, 
-            dates,
-            SCENARIOS,
-            scenario,
-            indicatorsForCounty: indicatorsForMap[state],
-            countyBoundaries: stateBoundaries[state],
-            currentDateIndex,
-        }, () => {
-            this.setState({dataLoaded: true});
-        })
+            this.setState({
+                datasetMap: dataset, 
+                dates,
+                SCENARIOS,
+                scenario,
+                indicatorsForCounty: indicatorsForMap[state],
+                countyBoundaries: stateBoundaries[state],
+                currentDateIndex,
+                dataLoaded: true
+            });
+        } else {
+            if (Object.keys(dataset).length === 0) console.log('Map Error: Dataset is empty');
+            if (Object.keys(indicatorsForMap).length === 0) console.log('Map Error: indicatorsForMap is empty');
+            if (Object.keys(stateBoundaries).length === 0) console.log('Map Error: stateBoundaries is empty');
+        }
     }
 
     handleScenarioClick = (item) => {this.setState({scenario: item})};
@@ -123,7 +129,6 @@ class MainMap extends Component {
         if(this.scrollElemMap.current && this.state.firstModalVisit && 
             (document.body.scrollTop > this.scrollElemMap.current.offsetTop - 60 && 
                 document.body.scrollTop < this.scrollElemMap.current.offsetTop)) {
-            console.log('interactive map in view')
             this.setState({
                 modalVisible: true,
             });
@@ -133,12 +138,14 @@ class MainMap extends Component {
     render() {
         const { Content } = Layout;
         const { dates, currentDateIndex, SCENARIOS } = this.state;
-        const { isLoading, dataLoaded, indicatorsForCounty } = this.state;
+        const { dataLoaded, indicatorsForCounty } = this.state;
         const indicatorsLen = Object.keys(indicatorsForCounty).length;
 
         return (
             <div ref={this.scrollElemMap}>
                 <Content id="geographic-map" style={styles.ContainerGray}>
+                    {/* Loaded Map, indicatorsForCounty has been fetched */}
+                    {dataLoaded && indicatorsLen > 0 &&
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container" style={styles.MapContainer}>
                             <ViewModal 
@@ -161,8 +168,6 @@ class MainMap extends Component {
                                 }
                             />
                             <div className="map-container">
-                                {/* Loaded Map, indicatorsForCounty has been fetched */}
-                                {dataLoaded && indicatorsLen > 0 &&
                                 <MapContainer
                                     geoid={this.props.geoid}
                                     dataset={this.state.datasetMap}
@@ -175,16 +180,7 @@ class MainMap extends Component {
                                     countyBoundaries={this.state.countyBoundaries}
                                     indicatorsForCounty={indicatorsForCounty}
                                     dateSliderActive={this.state.dateSliderActive}
-                                />}
-                                {/* Loading finished but indicatorsForCounty is undefined */}
-                                {!isLoading && indicatorsLen === 0 && 
-                                    <Spin tip="Loading...">
-                                        <Alert
-                                        message="Data Unavailable"
-                                        description="Geographic data is unavailable for selected county."
-                                        type="info"
-                                        />
-                                    </Spin>}
+                                />
                             </div>
                         </Col>
 
@@ -212,7 +208,23 @@ class MainMap extends Component {
                             </Fragment>
                             }
                         </Col>
-                    </Row>
+                    </Row>}
+                    {/* Loading finished but indicatorsForCounty is undefined */}
+                    {indicatorsLen === 0 && 
+                    <div className="error-container">
+                        <Spin spinning={false}>
+                            <Alert
+                            message="Data Unavailable"
+                            description={
+                                <div>
+                                    Geographic data is unavailable for county {this.props.geoid}. <br />
+                                    {this.state.fetchErrors}
+                                </div>
+                            }
+                            type="info"
+                            />
+                        </Spin>
+                    </div>}
                 </Content>
             </div>
         )
