@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Layout, Row, Col } from 'antd';
+import { Layout, Row, Col, Spin, Alert } from 'antd';
 import { PlusCircleTwoTone } from '@ant-design/icons';
 import _ from 'lodash';
 import GraphContainer from './GraphContainer';
@@ -57,7 +57,7 @@ class MainGraph extends Component {
             animateTransition: true,
             scenarioClickCounter: 0,
             modalVisible: false,
-            firstModalVisit: true,
+            firstModalVisit: true
         };
         this.scrollElem = React.createRef();
     };
@@ -83,87 +83,99 @@ class MainGraph extends Component {
 
         const { indicators, actuals } = this.props;
 
-        // SCENARIOS: various scenario variables used for a given geoid
-        const SCENARIOS = buildScenarios(dataset);  
-        const scenarioMap = buildScenarioMap(dataset);
-        const firstScenario = SCENARIOS[0];
-        const firstIndicator = indicators[0];
-        const firstSeverity = scenarioMap[firstScenario.key][0];
-        // '2020-07-19-21-44-47-inference'
-        const dateString = firstScenario.key.substring(0,10)
-        const dateThreshold = parseDate(dateString)
+        if (Object.keys(indicators).length === 0) {
+            console.log('MainGraph Error: indicators is empty.')
+        }
 
-        // firstSeverity need to be designated in case not all death rate LEVELS exist
-        const dates = dataset[firstScenario.key].dates.map( d => parseDate(d));
-        const series = dataset[firstScenario.key][firstSeverity][firstIndicator.key]
-            .slice(0, numDisplaySims);
-        const severityList = buildSeverities(scenarioMap, [], firstScenario.key);
-        const sevList = _.cloneDeep(severityList);
-        sevList[0].scenario = firstScenario.key;
+        if (Object.keys(actuals).length === 0) {
+            console.log('MainGraph Error: actuals is empty.')
+        }
 
-        // allSims used for R0 histogram
-        const allSims = dataset[firstScenario.key][firstSeverity][firstIndicator.key];
+        if (Object.keys(dataset).length > 0) {
+            // SCENARIOS: various scenario variables used for a given geoid
+            const SCENARIOS = buildScenarios(dataset);  
+            const scenarioMap = buildScenarioMap(dataset);
+            const firstScenario = SCENARIOS[0];
+            const firstIndicator = indicators[0];
+            const firstSeverity = scenarioMap[firstScenario.key][0];
+            // '2020-07-19-21-44-47-inference'
+            const dateString = firstScenario.key.substring(0,10)
+            const dateThreshold = parseDate(dateString)
 
-        // set dateRange to a default based on equal padding around date of scenario run
-        const currIdx = dates.findIndex(date => formatDate(date) === formatDate(dateThreshold))
-        const datePadding = dates.length - currIdx
-        const startIdx = dates.length - 1 - (datePadding * 2)
-        
-        // have a multiple of ten pad each side of the dateRange - alternative way
-        // const numDates = dates.length
-        // const dateMargin =  Math.ceil(Math.ceil(numDates / 10) / 10) * 10
-        const dateRange = [dates[startIdx], dates[dates.length - 1]]
+            // firstSeverity need to be designated in case not all death rate LEVELS exist
+            const dates = dataset[firstScenario.key].dates.map( d => parseDate(d));
+            const series = dataset[firstScenario.key][firstSeverity][firstIndicator.key]
+                .slice(0, numDisplaySims);
+            const severityList = buildSeverities(scenarioMap, [], firstScenario.key);
+            const sevList = _.cloneDeep(severityList);
+            sevList[0].scenario = firstScenario.key;
 
-        // initialize Threshold and slider ranges
-        const idxMin = timeDay.count(dates[0], dateRange[0]);
-        const idxMax = timeDay.count(dates[0], dateRange[1]);
-        const [indicatorThreshold, seriesMin, seriesMax] = getindicatorThreshold(
-            [firstScenario], [series], idxMin, idxMax);
-        const simsOver = flagSims(
-            series, indicatorThreshold, dates, dateThreshold)        
-        const newSelectedDates = Array.from(dates).slice(idxMin, idxMax);
-        const filteredSeries = filterByDate(series, idxMin, idxMax)
+            // allSims used for R0 histogram
+            const allSims = dataset[firstScenario.key][firstSeverity][firstIndicator.key];
 
-        const confBoundsList = getConfBounds(
-            dataset, [firstScenario], severityList, firstIndicator, dates, idxMin, idxMax)
+            // set dateRange to a default based on equal padding around date of scenario run
+            const currIdx = dates.findIndex(date => formatDate(date) === formatDate(dateThreshold))
+            const datePadding = dates.length - currIdx
+            const startIdx = dates.length - 1 - (datePadding * 2)
+            
+            // have a multiple of ten pad each side of the dateRange - alternative way
+            // const numDates = dates.length
+            // const dateMargin =  Math.ceil(Math.ceil(numDates / 10) / 10) * 10
+            const dateRange = [dates[startIdx], dates[dates.length - 1]]
 
-        const actualList = getActuals(actuals, firstIndicator, [firstScenario]);
+            // initialize Threshold and slider ranges
+            const idxMin = timeDay.count(dates[0], dateRange[0]);
+            const idxMax = timeDay.count(dates[0], dateRange[1]);
+            const [indicatorThreshold, seriesMin, seriesMax] = getindicatorThreshold(
+                [firstScenario], [series], idxMin, idxMax);
+            const simsOver = flagSims(
+                series, indicatorThreshold, dates, dateThreshold)        
+            const newSelectedDates = Array.from(dates).slice(idxMin, idxMax);
+            const filteredSeries = filterByDate(series, idxMin, idxMax)
 
-        const r0full = getR0range(dataset, firstScenario, sevList[0], firstIndicator);
-        // seriesListForBrush used by handleBrush to initialize instead of R0 filtering 
-        // series is updated and set to state in scenario, sev, indicator, r0 change handlers
-        const seriesListForBrush = filterR0(
-            r0full, [firstScenario], sevList, firstIndicator, dataset, numDisplaySims);
+            const confBoundsList = getConfBounds(
+                dataset, [firstScenario], severityList, firstIndicator, dates, idxMin, idxMax)
 
-        this.setState({
-            SCENARIOS,
-            scenarioList: [firstScenario],
-            scenarioMap,
-            indicator: indicators[0],
-            selectedDates: newSelectedDates,
-            dateRange,
-            dateThreshold,
-            runDate: dateThreshold,
-            dates: Array.from(dates),                  // dates for brush
-            allDatesSeries: Array.from(series),        // series for brush
-            allSims,
-            seriesList: [filteredSeries],
-            severityList: sevList,
-            severity: firstSeverity,
-            seriesMax,
-            seriesMin,
-            indicatorThreshold,
-            percExceedenceList: [simsOver / series.length],
-            confBoundsList,
-            showConfBounds: true,
-            actualList,
-            showActual: false,
-            r0full,
-            r0selected: r0full, 
-            seriesListForBrush 
-        }, () => {
-            this.setState({dataLoaded: true});
-        });
+            const actualList = getActuals(actuals, firstIndicator, [firstScenario]);
+
+            const r0full = getR0range(dataset, firstScenario, sevList[0], firstIndicator);
+            // seriesListForBrush used by handleBrush to initialize instead of R0 filtering 
+            // series is updated and set to state in scenario, sev, indicator, r0 change handlers
+            const seriesListForBrush = filterR0(
+                r0full, [firstScenario], sevList, firstIndicator, dataset, numDisplaySims);
+
+            this.setState({
+                SCENARIOS,
+                scenarioList: [firstScenario],
+                scenarioMap,
+                indicator: indicators[0],
+                selectedDates: newSelectedDates,
+                dateRange,
+                dateThreshold,
+                runDate: dateThreshold,
+                dates: Array.from(dates),                  // dates for brush
+                allDatesSeries: Array.from(series),        // series for brush
+                allSims,
+                seriesList: [filteredSeries],
+                severityList: sevList,
+                severity: firstSeverity,
+                seriesMax,
+                seriesMin,
+                indicatorThreshold,
+                percExceedenceList: [simsOver / series.length],
+                confBoundsList,
+                showConfBounds: true,
+                actualList,
+                showActual: false,
+                r0full,
+                r0selected: r0full, 
+                seriesListForBrush 
+            }, () => {
+                this.setState({dataLoaded: true});
+            });
+        } else {
+            console.log('MainGraph Error: dataset is empty.')
+        }
     }
 
     update = (seriesList, scenarioList, indicator, severityList, dateRange) => {
@@ -427,14 +439,16 @@ class MainGraph extends Component {
             });
         }
       }
-      
 
     render() {
         const { Content } = Layout;
+        const datasetLen = Object.keys(this.props.dataset).length;
+
         return (
             <div ref={this.scrollElem}>
                 <Content id="interactive-graph" style={styles.ContainerGray} > 
-                    {this.state.dataLoaded &&
+                    {/* Loaded Graph, dataset has been fetched successfully */}
+                    {this.state.dataLoaded && datasetLen > 0 &&
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
                             <ViewModal 
@@ -580,6 +594,25 @@ class MainGraph extends Component {
                                 onSliderMouseEvent={this.handleSliderMouseEvent} />
                         </Col>
                     </Row>}
+                    {/* Loaded Graph,but dataset is undefined */}
+                    {datasetLen === 0 && 
+                    <div className="error-container">
+                        <Spin spinning={false}>
+                            <Alert
+                            message="Data Unavailable"
+                            description={
+                                <div>
+                                    Simulation data for county {this.props.geoid} in
+                                    unavailable or in an unexpected format. <br />
+                                    Please select a different county. <br />
+                                    Contact the IDD Working Group to run data files through the validator script. <br />
+                                    {this.props.fetchErrors}
+                                </div>
+                            }
+                            type="info"
+                            />
+                        </Spin>
+                    </div>}
                 </Content>
             </div>
         )
@@ -587,3 +620,4 @@ class MainGraph extends Component {
 }
 
 export default MainGraph;
+
