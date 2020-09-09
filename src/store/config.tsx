@@ -8,23 +8,23 @@ export const s3BucketUrl = process.env.NODE_ENV === 'development' ?
 
 // set file type to test to use_local = true and add update file_name value
 export const USE_LOCAL_GEOID = false
-export const LOCAL_GEOID = ''
+export const LOCAL_GEOID = '' // '06085.json'
 
 export const USE_LOCAL_ACTUALS = false
-export const LOCAL_ACTUALS = ''
+export const LOCAL_ACTUALS = '' // '06085_actuals.json'
 
 // static files
 export const CONFIGS = {
     'outcomes': {
         'use_local': false,
-        'file_name': ''
+        'file_name': '' // 'outcomes.json'
     },
     'statsForMap': {
         'use_local': false,
-        'file_name': ''
+        'file_name': '' // 'statsForMap.json'
     },
     'countyBoundaries': {
         'use_local': false,
-        'file_name': ''
+        'file_name': '' // 'countyBoundaries.json'
     }
 }
