@@ -80,18 +80,11 @@ class MainGraph extends Component {
 
     initialize = (dataset) => {
         // initialize() trigged on mount and Dataset change
-
         const { indicators, actuals } = this.props;
 
-        if (Object.keys(indicators).length === 0) {
-            console.log('MainGraph Error: indicators is empty.')
-        }
-
-        if (Object.keys(actuals).length === 0) {
-            console.log('MainGraph Error: actuals is empty.')
-        }
-
-        if (Object.keys(dataset).length > 0) {
+        if (Object.keys(dataset).length > 0 && 
+            Object.keys(actuals).length > 0 && 
+            Object.keys(indicators).length > 0) {
             // SCENARIOS: various scenario variables used for a given geoid
             const SCENARIOS = buildScenarios(dataset);  
             const scenarioMap = buildScenarioMap(dataset);
@@ -174,7 +167,9 @@ class MainGraph extends Component {
                 this.setState({dataLoaded: true});
             });
         } else {
-            console.log('MainGraph Error: dataset is empty.')
+            if (Object.keys(dataset).length === 0) console.log('Graph Error: Dataset is empty');
+            if (Object.keys(actuals).length === 0) console.log('Graph Error: Actuals is empty');
+            if (Object.keys(indicators).length === 0) console.log('Graph Error: Indicators is empty');
         }
     }
 

@@ -72,16 +72,11 @@ class MainMap extends Component {
         const { geoid } = this.props;
         const { indicatorsForMap, stateBoundaries } = this.state;
         const state = geoid.slice(0, 2);
-        
-        if (Object.keys(indicatorsForMap).length === 0) {
-            console.log('MainMap Error: indicatorsForMap is empty.')
-        }
 
-        if (Object.keys(stateBoundaries).length === 0) {
-            console.log('MainMap Error: stateBoundaries is empty.')
-        }
-
-        if (Object.keys(dataset).length > 0) {
+        if (Object.keys(dataset).length > 0 &&
+            Object.keys(indicatorsForMap).length > 0 &&
+            Object.keys(stateBoundaries).length > 0 
+        ) {
             // instantiate scenarios and dates
             const SCENARIOS = buildScenarios(dataset);
             const scenario = SCENARIOS[0].key;       
@@ -102,7 +97,9 @@ class MainMap extends Component {
                 this.setState({dataLoaded: true});
             })
         } else {
-            console.log('MainMap Error: dataset is empty.')
+            if (Object.keys(dataset).length === 0) console.log('Map Error: Dataset is empty');
+            if (Object.keys(indicatorsForMap).length === 0) console.log('Map Error: indicatorsForMap is empty');
+            if (Object.keys(stateBoundaries).length === 0) console.log('Map Error: stateBoundaries is empty');
         }
     }
 
