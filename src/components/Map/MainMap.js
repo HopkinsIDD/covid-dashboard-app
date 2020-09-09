@@ -30,6 +30,7 @@ class MainMap extends Component {
             isLoading: true,
             modalVisible: false,
             firstModalVisit: true,
+            fetchErrors: ''
         };
         this.scrollElemMap = React.createRef();
     };
@@ -47,7 +48,7 @@ class MainMap extends Component {
             });
             this.initializeMap(dataset)
         } catch (e) {
-            console.log('Map fetch was problematic: ' + e.message)
+            this.setState({fetchErrors: e.message})
         } 
         finally {
             // loading finishes if call is successful or fails
@@ -71,26 +72,38 @@ class MainMap extends Component {
         const { geoid } = this.props;
         const { indicatorsForMap, stateBoundaries } = this.state;
         const state = geoid.slice(0, 2);
-
-        // instantiate scenarios and dates
-        const SCENARIOS = buildScenarios(dataset);  
-        const scenario = SCENARIOS[0].key;       
-        const dates = dataset[scenario].dates.map( d => parseDate(d));
         
-        const currentDateIndex = dates
-            .findIndex(date => formatDate(date) === formatDate(new Date()));
+        if (Object.keys(indicatorsForMap).length === 0) {
+            console.log('MainMap Error: indicatorsForMap is empty.')
+        }
 
-        this.setState({
-            datasetMap: dataset, 
-            dates,
-            SCENARIOS,
-            scenario,
-            indicatorsForCounty: indicatorsForMap[state],
-            countyBoundaries: stateBoundaries[state],
-            currentDateIndex,
-        }, () => {
-            this.setState({dataLoaded: true});
-        })
+        if (Object.keys(stateBoundaries).length === 0) {
+            console.log('MainMap Error: stateBoundaries is empty.')
+        }
+
+        if (Object.keys(dataset).length > 0) {
+            // instantiate scenarios and dates
+            const SCENARIOS = buildScenarios(dataset);
+            const scenario = SCENARIOS[0].key;       
+            const dates = dataset[scenario].dates.map( d => parseDate(d));
+            
+            const currentDateIndex = dates
+                .findIndex(date => formatDate(date) === formatDate(new Date()));
+
+            this.setState({
+                datasetMap: dataset, 
+                dates,
+                SCENARIOS,
+                scenario,
+                indicatorsForCounty: indicatorsForMap[state],
+                countyBoundaries: stateBoundaries[state],
+                currentDateIndex,
+            }, () => {
+                this.setState({dataLoaded: true});
+            })
+        } else {
+            console.log('MainMap Error: dataset is empty.')
+        }
     }
 
     handleScenarioClick = (item) => {this.setState({scenario: item})};
@@ -123,7 +136,6 @@ class MainMap extends Component {
         if(this.scrollElemMap.current && this.state.firstModalVisit && 
             (document.body.scrollTop > this.scrollElemMap.current.offsetTop - 60 && 
                 document.body.scrollTop < this.scrollElemMap.current.offsetTop)) {
-            console.log('interactive map in view')
             this.setState({
                 modalVisible: true,
             });
@@ -139,6 +151,8 @@ class MainMap extends Component {
         return (
             <div ref={this.scrollElemMap}>
                 <Content id="geographic-map" style={styles.ContainerGray}>
+                    {/* Loaded Map, indicatorsForCounty has been fetched */}
+                    {dataLoaded && indicatorsLen > 0 &&
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container" style={styles.MapContainer}>
                             <ViewModal 
@@ -161,8 +175,6 @@ class MainMap extends Component {
                                 }
                             />
                             <div className="map-container">
-                                {/* Loaded Map, indicatorsForCounty has been fetched */}
-                                {dataLoaded && indicatorsLen > 0 &&
                                 <MapContainer
                                     geoid={this.props.geoid}
                                     dataset={this.state.datasetMap}
@@ -175,16 +187,7 @@ class MainMap extends Component {
                                     countyBoundaries={this.state.countyBoundaries}
                                     indicatorsForCounty={indicatorsForCounty}
                                     dateSliderActive={this.state.dateSliderActive}
-                                />}
-                                {/* Loading finished but indicatorsForCounty is undefined */}
-                                {!isLoading && indicatorsLen === 0 && 
-                                    <Spin tip="Loading...">
-                                        <Alert
-                                        message="Data Unavailable"
-                                        description="Geographic data is unavailable for selected county."
-                                        type="info"
-                                        />
-                                    </Spin>}
+                                />
                             </div>
                         </Col>
 
@@ -212,7 +215,23 @@ class MainMap extends Component {
                             </Fragment>
                             }
                         </Col>
-                    </Row>
+                    </Row>}
+                    {/* Loading finished but indicatorsForCounty is undefined */}
+                    {!isLoading && indicatorsLen === 0 && 
+                    <div className="error-container">
+                        <Spin spinning={false}>
+                            <Alert
+                            message="Data Unavailable"
+                            description={
+                                <div>
+                                    Geographic data is unavailable for county {this.props.geoid}. <br />
+                                    {this.state.fetchErrors}
+                                </div>
+                            }
+                            type="info"
+                            />
+                        </Spin>
+                    </div>}
                 </Content>
             </div>
         )
