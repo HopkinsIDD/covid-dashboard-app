@@ -185,11 +185,11 @@ if __name__ == "__main__":
     config dir contains expected outcomes, counties, states 
     json_output dir contains model files to be validated
     '''
-    fdir = 'json_output'
+    fdir = 'json_output/'
 
-    with open(fdir + '/outcomes.json') as o, open(fdir + '/counties.json') as c, \
-        open(fdir + '/states.json') as s, open(fdir + '/statsForMap.json') as m, \
-        open(fdir + '/countyBoundaries.json') as b:
+    with open(fdir + 'outcomes.json') as o, open(fdir + 'counties.json') as c, \
+        open(fdir + 'states.json') as s, open(fdir + 'statsForMap.json') as m, \
+        open(fdir + 'countyBoundaries.json') as b:
         outcomes = json.load(o)
         expected_counties = sorted(list(json.load(c).keys()))
         expected_states = sorted(list(json.load(s).keys()))
@@ -201,7 +201,7 @@ if __name__ == "__main__":
 
         ### COUNTY-LEVEL GEOID ###
         counties = [f.strip('.json') for f in os.listdir(fdir) if not f.startswith('.')]
-        for i, county in enumerate(expected_counties[3000:]):
+        for i, county in enumerate(expected_counties):
             if i%100==0: print(i, county)
             if county not in counties:
                 raise Exception("{} is missing county file {}.json".format(fdir, county))
@@ -229,7 +229,7 @@ if __name__ == "__main__":
         validate_actuals(actuals, expected_states, expected_counties)
 
         # just checking one file for reported indicators
-        with open(fdir + '/01001' + suffix) as a:
+        with open(fdir + '01001' + suffix) as a:
             obj = json.load(a)
             validate_reported_indicators(obj)
 
