@@ -234,7 +234,7 @@ class MainChart extends Component {
                             message="Data Unavailable"
                             description={
                                 <div>
-                                    Simulation data for county {this.props.geoid} is
+                                    Aggregate data for county {this.props.geoid} is
                                     unavailable or in an unexpected format.
                                 </div>
                             }
