@@ -158,7 +158,7 @@ def validate_actuals(actuals: list, expected_states: list, expected_counties: li
 def validate_reported_indicators(actual_obj: dict):
     ''' 
     Validate actual file includes expected reported indicators 
-    Confirm date format and value type are '%Y-%m%d' and int, respectively
+    Confirm date format and value type are '%Y-%m-%d' and int, respectively
     '''
     reported_indicators = {'incidC', 'incidD'}
     if set(actual_obj.keys()) != reported_indicators:
