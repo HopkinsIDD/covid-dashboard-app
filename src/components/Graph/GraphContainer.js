@@ -6,7 +6,7 @@ import { scaleLinear, scaleUtc } from 'd3-scale';
 import { max, extent } from 'd3-array';
 import { formatTitle } from '../../utils/utils';
 import { margin } from '../../utils/constants';
-import { COUNTIES } from '../../utils/geoids.tsx';
+import { GEOIDS } from '../../utils/geoids.tsx';
 
 class GraphContainer extends Component {
   constructor(props) {
@@ -131,8 +131,8 @@ class GraphContainer extends Component {
 
   render() {
       const { children } = this.state;
-      const { scenarioList, scenarioHovered, width, indicator } = this.props;
-      const countyName = `${COUNTIES[this.props.geoid]}`;
+      const { geoid, scenarioList, scenarioHovered, width, indicator } = this.props;
+      const geoidName = `${GEOIDS[geoid]}`;
       const dimensions = { width: margin.yAxis + margin.left, height: 40};
 
       return (
@@ -148,12 +148,12 @@ class GraphContainer extends Component {
                     const isActive = scenario.name === scenarioHovered ? ' title-active' : '';
                     return (scenarioList && scenarioList.length > 1) ?
                             <div key={scenario.key} style={{ width: width - margin.right}}>
-                                <div className={"scenario-title titleNarrow"}>{countyName}</div>
+                                <div className={"scenario-title titleNarrow"}>{geoidName}</div>
                                 <div className={"scenario-title" + isActive}>{scenarioTitle}</div>
                             </div>
                          :
                             <div key={scenario.key} style={{ width: width - margin.right}}>
-                                <div className="scenario-title titleNarrow">{countyName}</div>
+                                <div className="scenario-title titleNarrow">{geoidName}</div>
                                 <div className="scenario-title">{scenarioTitle}</div>
                             </div>
                 } )}
