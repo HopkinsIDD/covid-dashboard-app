@@ -430,6 +430,11 @@ li {
   margin-bottom: 10rem;
 }
 
+.error-container {
+  text-align: center;
+  padding: 2rem 12rem; 
+}
+
 .map-container {
   text-align: center;
   /* padding: 2rem; */
