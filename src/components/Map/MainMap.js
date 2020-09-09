@@ -18,6 +18,7 @@ class MainMap extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            dataLoaded: false,
             datasetMap: {},
             dates: [],
             SCENARIOS: [],
@@ -26,8 +27,6 @@ class MainMap extends Component {
             countyBoundaries: {},
             indicatorsForCounty: {},
             currentDateIndex: 0,
-            dataLoaded: false,
-            isLoading: true,
             modalVisible: false,
             firstModalVisit: true,
             fetchErrors: ''
@@ -38,7 +37,6 @@ class MainMap extends Component {
     async componentDidMount() {
         const { dataset } = this.props;
         try {
-            this.setState({isLoading: true});
             const indicatorsForMap = await fetchConfig('statsForMap');
             const stateBoundaries = await fetchConfig('countyBoundaries');
 
@@ -51,8 +49,7 @@ class MainMap extends Component {
             this.setState({fetchErrors: e.message})
         } 
         finally {
-            // loading finishes if call is successful or fails
-            this.setState({isLoading: false});
+            this.setState({dataLoaded: true});
         }
         window.addEventListener("scroll", this.handleScroll, true);
     };
@@ -93,9 +90,8 @@ class MainMap extends Component {
                 indicatorsForCounty: indicatorsForMap[state],
                 countyBoundaries: stateBoundaries[state],
                 currentDateIndex,
-            }, () => {
-                this.setState({dataLoaded: true});
-            })
+                dataLoaded: true
+            });
         } else {
             if (Object.keys(dataset).length === 0) console.log('Map Error: Dataset is empty');
             if (Object.keys(indicatorsForMap).length === 0) console.log('Map Error: indicatorsForMap is empty');
@@ -142,7 +138,7 @@ class MainMap extends Component {
     render() {
         const { Content } = Layout;
         const { dates, currentDateIndex, SCENARIOS } = this.state;
-        const { isLoading, dataLoaded, indicatorsForCounty } = this.state;
+        const { dataLoaded, indicatorsForCounty } = this.state;
         const indicatorsLen = Object.keys(indicatorsForCounty).length;
 
         return (
@@ -214,7 +210,7 @@ class MainMap extends Component {
                         </Col>
                     </Row>}
                     {/* Loading finished but indicatorsForCounty is undefined */}
-                    {!isLoading && indicatorsLen === 0 && 
+                    {indicatorsLen === 0 && 
                     <div className="error-container">
                         <Spin spinning={false}>
                             <Alert

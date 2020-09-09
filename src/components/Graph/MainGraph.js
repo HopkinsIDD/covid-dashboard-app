@@ -162,9 +162,8 @@ class MainGraph extends Component {
                 showActual: false,
                 r0full,
                 r0selected: r0full, 
-                seriesListForBrush 
-            }, () => {
-                this.setState({dataLoaded: true});
+                seriesListForBrush,
+                dataLoaded: true
             });
         } else {
             if (Object.keys(dataset).length === 0) console.log('Graph Error: Dataset is empty');

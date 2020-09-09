@@ -18,6 +18,7 @@ class MainChart extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            dataLoaded: false,
             datasetChart: {},
             dates: [],
             SCENARIOS: [],
@@ -28,7 +29,6 @@ class MainChart extends Component {
             start: new Date(),
             end: new Date(),
             scale: 'power', // TS migration: ScaleTypeEnum
-            dataLoaded: false,
             modalVisible: false,
             firstModalVisit: true,
         };
@@ -76,9 +76,8 @@ class MainChart extends Component {
                 scenarioMap,
                 statList,
                 start,
-            }, () => {
-                this.setState({dataLoaded: true});
-            })
+                dataLoaded: true
+            });
         }
     }
 
