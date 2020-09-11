@@ -1,6 +1,8 @@
 import os
 import json
+import click
 from datetime import datetime
+
 
 def validate_scenario(scenario: str):
     ''' 
@@ -37,7 +39,7 @@ def validate_rate(scenario: str, rate: str):
             .format(scenario, rate))
 
 
-def validate_indicators(scenario: str, rate: str, indicators: list):
+def validate_indicators(scenario: str, rate: str, indicators: list, outcomes: dict):
     ''' Validate given indicator is one of the expected indicators '''
     expected_indicators = [value['key'] for value in outcomes.values()]
 
@@ -76,7 +78,7 @@ def validate_geoid(obj: dict, outcomes: dict):
             indicators = list(obj[scenario][rate].keys())
 
             validate_rate(scenario, rate)
-            validate_indicators(scenario, rate, indicators)
+            validate_indicators(scenario, rate, indicators, outcomes)
 
             for indicator in indicators:
                 sim_obj = obj[scenario][rate][indicator]
@@ -158,7 +160,7 @@ def validate_actuals(actuals: list, expected_states: list, expected_counties: li
 def validate_reported_indicators(actual_obj: dict):
     ''' 
     Validate actual file includes expected reported indicators 
-    Confirm date format and value type are '%Y-%m-%d' and int, respectively
+    Confirm date format and value type are '%Y-%m%d' and int, respectively
     '''
     reported_indicators = {'incidC', 'incidD'}
     if set(actual_obj.keys()) != reported_indicators:
@@ -180,13 +182,8 @@ def validate_reported_indicators(actual_obj: dict):
                 raise Exception("Actual.json value {} should be type int"
                     .format(value))
 
-if __name__ == "__main__":
-    ''' 
-    config dir contains expected outcomes, counties, states 
-    json_output dir contains model files to be validated
-    '''
-    fdir = 'json_output/'
-
+def validate_dir(fdir: str):
+    # TODO what if these files don't exist? raise Exception
     with open(fdir + 'outcomes.json') as o, open(fdir + 'counties.json') as c, \
         open(fdir + 'states.json') as s, open(fdir + 'statsForMap.json') as m, \
         open(fdir + 'countyBoundaries.json') as b:
@@ -233,11 +230,33 @@ if __name__ == "__main__":
             obj = json.load(a)
             validate_reported_indicators(obj)
 
-    print('----***---- VALIDATION COMPLETE ----***----')
+@click.command()
+@click.option("-p", "--path", "path", type=click.Path(exists=True), default='json_output/',
+              help="Enter absolute or relative path of directory or individual file to validate, \
+              e.g. 'json_output/' for entire directory or 'json_output/06085.json' for an individual file \
+              Individual file validator only supports state-level or county-level geoid jsons.")
+def validate(path: str):
 
-# Missing geoids -->
-# "02158": "Kusilvak Census Area, AK",
-# "17157": "Randolph County, IL",
-# "46102": "Oglala Lakota County, SD",
-# "55033": "Dunn County, WI",
-# All of PR 72
+    # strip base directory out of path
+    file_dir = '/'.join(path.split('/')[:-1]) + '/'
+
+    if os.path.isdir(path):
+        validate_dir(path)
+
+        print('--***-- VALIDATION COMPLETE: {} --***--'.format(path))
+
+    elif os.path.isfile(path):
+
+        with open(path) as f, open(file_dir + 'outcomes.json') as o:
+            obj, outcomes = json.load(f), json.load(o)
+            validate_geoid(obj, outcomes)
+
+        print('--***-- VALIDATION COMPLETE: {} --***--'.format(path))
+
+    else:
+        print('Cannot read {} for validation'.format(path))
+
+
+if __name__ == "__main__":
+
+    validate()
