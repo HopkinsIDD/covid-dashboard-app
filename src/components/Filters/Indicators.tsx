@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import { styles } from '../../utils/constants';
 import { SelectValue } from "antd/lib/select";
 import { Indicator } from "../../utils/constantsTypes";
@@ -70,7 +71,8 @@ class Indicators extends Component<Props, State> {
                         showTooltip={this.state.showTooltip}
                         onClick={this.handleTooltipClick}
                         >
-                        <div className="tooltip">&nbsp;&#9432;
+                        <div className="tooltip">
+                            &nbsp;<InfoCircleTwoTone />
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
                                 Indicators are calculated after accounting for the 

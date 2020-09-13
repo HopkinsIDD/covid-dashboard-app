@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import TooltipHandler from '../Filters/TooltipHandler';
 import { addCommas } from '../../utils/utils.js';
 import { timeFormat } from 'd3-time-format';
@@ -94,7 +95,8 @@ class Sliders extends Component {
                         showTooltip={this.state.showTooltipThreshold}
                         onClick={this.handleTooltipClickThresh}
                         >
-                        <div className="tooltip">&nbsp;&#9432;
+                        <div className="tooltip">
+                            &nbsp;<InfoCircleTwoTone />
                             {this.state.showTooltipThreshold &&
                             <span className="tooltip-text">
                             This is the Threshold value used for the display in “Threshold Exceedance” mode. 
@@ -135,7 +137,8 @@ class Sliders extends Component {
                         showTooltip={this.state.showTooltipDateThreshold}
                         onClick={this.handleTooltipClickDate}
                         >
-                        <div className="tooltip">&nbsp;&#9432;
+                        <div className="tooltip">
+                            &nbsp;<InfoCircleTwoTone />
                             {this.state.showTooltipDateThreshold &&
                             <span className="tooltip-text">
                             This is the Date Threshold used for the display in “Threshold Exceedance” mod

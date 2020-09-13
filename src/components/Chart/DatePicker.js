@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { DatePicker } from 'antd';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import { styles } from '../../utils/constants';
 import TooltipHandler from '../Filters/TooltipHandler';
 
@@ -53,7 +54,8 @@ class Chart extends Component {
                         showTooltip={this.state.showTooltip}
                         onClick={this.handleTooltipClick}
                         >
-                        <div className="tooltip">&nbsp;&#9432;
+                        <div className="tooltip">
+                            &nbsp;<InfoCircleTwoTone />
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
                             Choose a date range across which to calculate and display aggregate statistics. 

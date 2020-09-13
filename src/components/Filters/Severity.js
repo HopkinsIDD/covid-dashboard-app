@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Radio } from 'antd';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import TooltipHandler from '../Filters/TooltipHandler';
 import _ from 'lodash';
 import { LEVELS, styles } from '../../utils/constants.js';
@@ -77,7 +78,8 @@ class Severity extends Component {
                         showTooltip={this.state.showTooltip}
                         onClick={this.handleTooltipClick}
                         >
-                        <div className="tooltip">&nbsp;&#9432;
+                        <div className="tooltip">
+                            &nbsp;<InfoCircleTwoTone />
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
                             The high, medium, and low severity labels correspond 

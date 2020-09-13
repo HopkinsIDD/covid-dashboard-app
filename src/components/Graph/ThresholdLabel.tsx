@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import TooltipHandler from '../Filters/TooltipHandler';
 import { addCommas, getReadableDate, getStepValue } from '../../utils/utils';
 import { getClassForActiveState, LabelClassName, LabelClassNameEnum } from "../../utils/typeUtils";
@@ -83,7 +84,8 @@ class ThresholdLabel extends Component<Props, State> {
                     showTooltip={this.state.showTooltip}
                     onClick={this.handleTooltipClick}
                     >
-                    <div className="tooltip">&nbsp;&#9432;
+                    <div className="tooltip">
+                        &nbsp;<InfoCircleTwoTone />
                         {this.state.showTooltip &&
                         <span className="tooltip-text">
                             This percentage is calculated only for model simulations that 

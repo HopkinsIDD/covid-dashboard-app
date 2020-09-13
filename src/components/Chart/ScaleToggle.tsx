@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Radio } from 'antd';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import { styles } from '../../utils/constants';
 import { RadioChangeEvent } from "antd/lib/radio";
 import TooltipHandler from '../Filters/TooltipHandler';
@@ -44,7 +45,8 @@ class ScaleToggle extends Component<Props, State> {
                         showTooltip={this.state.showTooltip}
                         onClick={this.handleTooltipClick}
                         >
-                        <div className="tooltip">&nbsp;&#9432;
+                        <div className="tooltip">
+                            &nbsp;<InfoCircleTwoTone />
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
                             Toggle between a linear scale or a power scale, 
