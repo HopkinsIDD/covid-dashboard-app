@@ -205,6 +205,16 @@ li a {
   font-size: 1.8rem;
 }
 
+.section-title {
+  color: #2c98fe;
+  font-weight: 500;
+  font-size: 18px;
+  margin: 1rem 0 0.1rem;
+  text-transform: uppercase;
+  text-align: left;
+  /* margin-left: 97px;
+}
+
 .customLink {
   color: #4ddaba;
   font-weight: bold;

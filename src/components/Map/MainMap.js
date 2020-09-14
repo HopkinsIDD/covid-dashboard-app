@@ -148,6 +148,7 @@ class MainMap extends Component {
                     {dataLoaded && indicatorsLen > 0 &&
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container" style={styles.MapContainer}>
+                            <div className="section-title">Map View</div>
                             <ViewModal 
                                 modalTitle="Interpreting the map view"
                                 modalVisible={this.state.modalVisible}

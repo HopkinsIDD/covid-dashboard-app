@@ -445,6 +445,7 @@ class MainGraph extends Component {
                     {this.state.dataLoaded && datasetLen > 0 &&
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
+                            <div className="section-title">Simulations Graph</div>
                             <ViewModal 
                                 modalTitle="Interpreting the daily projections graph"
                                 modalVisible={this.state.modalVisible}
