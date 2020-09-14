@@ -48,6 +48,7 @@ class MainGraph extends Component {
             actualList: [],
             r0full: [0, 4],               // full range of r0
             r0selected: [0, 4],           // used selected range of r0
+            resampleClicks: 0,
             seriesListForBrush: [],       // used by Brush in handler
             percExceedenceList: [],
             confBounds: {},
@@ -181,17 +182,18 @@ class MainGraph extends Component {
         const idxMax = timeDay.count(dates[0], dateRange[1]);
 
         const newSelectedDates = Array.from(dates).slice(idxMin, idxMax);
+        const reducedSeriesList = seriesList.map(series => series.slice(0, numDisplaySims));
 
         const dateThreshold = getDateThreshold(dates, idxMin, idxMax);
         const [indicatorThreshold, seriesMin, seriesMax] = getindicatorThreshold(
-            scenarioList, seriesList, idxMin, idxMax);
+            scenarioList, reducedSeriesList, idxMin, idxMax);
 
         const [flaggedSeriesList, simsOverList] = flagSimsOverThreshold(
-            scenarioList, seriesList, dates, idxMin, idxMax, 
+            scenarioList, reducedSeriesList, dates, idxMin, idxMax, 
             indicatorThreshold, dateThreshold)
 
         const percExceedenceList = getExceedences(
-            scenarioList, seriesList, simsOverList);
+            scenarioList, reducedSeriesList, simsOverList);
 
         const confBoundsList = getConfBounds(
             dataset, scenarioList, severityList, indicator, dates, idxMin, idxMax)
@@ -285,6 +287,7 @@ class MainGraph extends Component {
         
         this.setState({
             r0selected,
+            resampleClicks: 0,
             seriesListForBrush: seriesList,
             animateTransition: true
         })
@@ -293,13 +296,13 @@ class MainGraph extends Component {
 
     handleR0Resample = () => {
         const { dataset } = this.props;
-        const { scenarioList, severityList, indicator, r0selected, dateRange } = this.state;
+        const { scenarioList, severityList, indicator, r0selected, resampleClicks, dateRange } = this.state;
 
         const seriesList = filterR0(
-            r0selected, scenarioList, severityList, indicator, dataset, numDisplaySims);
-        
+            r0selected, scenarioList, severityList, indicator, dataset, numDisplaySims, resampleClicks);
         this.setState({
             r0selected,
+            resampleClicks: resampleClicks + 1,
             seriesListForBrush: seriesList,
             animateTransition: true
         })

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Map from '../Map/Map';
 import { getDateIdx, getReadableDate, formatTitle } from '../../utils/utils';
-import { COUNTIES } from '../../utils/geoids.tsx';
+import { GEOIDS } from '../../utils/geoids.tsx';
 import { mapHighColorPalette, mapLowColorPalette } from '../../utils/colors';
 import { scalePow } from 'd3-scale';
 import { select } from 'd3-selection';
@@ -98,11 +98,12 @@ class MapContainer extends Component {
     }
 
     render() {
-        const scenarioTitle = formatTitle(this.props.scenario);
-        const countyName = `${COUNTIES[this.props.geoid]}`;
+        const { geoid, scenario } = this.props;
+        const scenarioTitle = formatTitle(scenario);
+        const geoidName = `${GEOIDS[geoid]}`;
         return (
             <div>
-                <div className="scenario-title titleNarrow">{countyName}</div>
+                <div className="scenario-title titleNarrow">{geoidName}</div>
                 <div className="scenario-title">{scenarioTitle}</div>
                 <div className="filter-label threshold-label callout callout-row">
                     {`Snapshot on `}
