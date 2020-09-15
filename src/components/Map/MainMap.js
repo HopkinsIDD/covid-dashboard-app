@@ -78,9 +78,13 @@ class MainMap extends Component {
             const SCENARIOS = buildScenarios(dataset);
             const scenario = SCENARIOS[0].key;       
             const dates = dataset[scenario].dates.map( d => parseDate(d));
-            
+          
+            // '2020-07-19-21-44-47-inference'
+            const dateString = scenario.substring(0,10)
+            const dateThreshold = parseDate(dateString)
+
             const currentDateIndex = dates
-                .findIndex(date => formatDate(date) === formatDate(new Date()));
+                .findIndex(date => formatDate(date) === formatDate(dateThreshold));
 
             this.setState({
                 datasetMap: dataset, 
