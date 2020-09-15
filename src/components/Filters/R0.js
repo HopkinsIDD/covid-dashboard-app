@@ -3,6 +3,7 @@ import TooltipHandler from '../Filters/TooltipHandler';
 import Histogram from '../Filters/Histogram';
 import { min, max } from 'd3-array';
 import { Button, Slider } from 'antd';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import { styles } from '../../utils/constants';
 
 
@@ -56,7 +57,8 @@ class R0 extends Component {
                         showTooltip={this.state.showTooltip}
                         onClick={this.handleTooltipClick}
                         >
-                        <div className="tooltip">&nbsp;&#9432;
+                        <div className="tooltip">
+                            &nbsp;<InfoCircleTwoTone />
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
                                 The reproduction number, or R<sub>0</sub>, indicates

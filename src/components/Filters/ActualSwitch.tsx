@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Switch } from 'antd';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import TooltipHandler from './TooltipHandler';
 import { styles } from '../../utils/constants';
 
@@ -48,7 +49,8 @@ class ActualSwitch extends Component<Props, State> {
                         showTooltip={this.state.showTooltip}
                         onClick={this.handleTooltipClick}
                         >
-                        <div className="tooltip">&nbsp;&#9432;
+                        <div className="tooltip">
+                            &nbsp;<InfoCircleTwoTone />
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
                                 Daily reported confirmed cases and deaths are from USA Facts. 

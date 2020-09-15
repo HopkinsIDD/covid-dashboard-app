@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Radio } from 'antd';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import TooltipHandler from './TooltipHandler';
 import { styles } from '../../utils/constants';
 
@@ -33,7 +34,8 @@ class ModeToggle extends Component<Props, State> {
                         showTooltip={this.state.showTooltip}
                         onClick={this.handleTooltipClick}
                         >
-                        <div className="tooltip">&nbsp;&#9432;
+                        <div className="tooltip">
+                            &nbsp;<InfoCircleTwoTone />
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
                                 In “Confidence Bounds” mode, you can see a time-averaged 

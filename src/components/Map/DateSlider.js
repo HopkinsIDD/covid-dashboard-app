@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import { getReadableDate } from '../../utils/utils';
 import { timeDay }  from 'd3-time';
 import TooltipHandler from '../Filters/TooltipHandler';
@@ -46,7 +47,8 @@ class DateSlider extends Component {
                 showTooltip={this.state.showTooltip}
                 onClick={this.handleTooltipClick}
                 >
-                <div className="tooltip">&nbsp;&#9432;
+                <div className="tooltip">
+                  &nbsp;<InfoCircleTwoTone />
                   {this.state.showTooltip &&
                   <span className="tooltip-text">
                   Indicators are calculated after accounting for the appropriate 

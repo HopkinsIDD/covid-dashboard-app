@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
+import { InfoCircleTwoTone } from '@ant-design/icons';
 import { formatTitle } from '../../utils/utils';
 import { styles } from '../../utils/constants';
 import { Scenario } from "../../utils/constantsTypes";
@@ -205,7 +206,8 @@ class Scenarios extends Component<Props, State> {
                         showTooltip={this.state.showTooltip}
                         onClick={this.handleTooltipClick}
                         >
-                        <div className="tooltip">&nbsp;&#9432;
+                        <div className="tooltip">
+                            &nbsp;<InfoCircleTwoTone />
                             {this.state.showTooltip &&
                             <span className="tooltip-text">
                                 Scenarios are named for the model run date. 
