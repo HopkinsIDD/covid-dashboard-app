@@ -34,7 +34,7 @@ class ThresholdLabel extends Component<Props, State> {
         this.state = {
             showTooltip: false,
             chance: Math.round(100 * props.percExceedence),
-            val: addCommas(Math.ceil(props.indicatorThreshold / 100) * 100),
+            val: addCommas(Math.ceil(props.indicatorThreshold / getStepValue(props.seriesMax)) * getStepValue(props.seriesMax)),
             date: getReadableDate(props.dateThreshold),
             activeClass: LabelClassNameEnum.boldUnderline,
             statClass: LabelClassNameEnum.boldUnderline,
