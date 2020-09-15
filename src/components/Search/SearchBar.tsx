@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Select } from 'antd';
-import { COUNTIES } from '../../utils/geoids';
+import { GEOIDS } from '../../utils/geoids';
 import { SelectValue } from "antd/lib/select";
 import * as CSS from 'csstype';
 
@@ -16,7 +16,7 @@ interface Props {
 
 interface State {
     fileName: string,
-    countyName: string,
+    geoidName: string,
     children: Array<Child>
 }
 
@@ -26,7 +26,7 @@ class SearchBar extends Component<Props, State> {
         super(props);
         this.state = {
             fileName: '',
-            countyName: '',
+            geoidName: '',
             children: []
         }
     }
@@ -35,7 +35,7 @@ class SearchBar extends Component<Props, State> {
         const children = [];
         const { Option } = Select;
 
-        for (const [key, value] of Object.entries(COUNTIES).sort((a,b) => parseInt(a[0]) - parseInt(b[0]))) {
+        for (const [key, value] of Object.entries(GEOIDS).sort((a,b) => parseInt(a[0]) - parseInt(b[0]))) {
             const child = {
                 key: `${key}-county`,
                 button: []
@@ -56,7 +56,7 @@ class SearchBar extends Component<Props, State> {
     handleCountySelect = (event: SelectValue) => {
         this.props.onCountySelect(event);
         if (typeof event === 'string') {
-            this.setState({ countyName: COUNTIES[event] })
+            this.setState({ geoidName: GEOIDS[event] })
         } else {
             console.log(`handleCountySelect(): unexpected event=${event.toString()}`)
         }

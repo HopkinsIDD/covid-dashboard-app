@@ -121,9 +121,15 @@ The AWS secret keys stored in this repo should belong to the owner of the s3 buc
 
 Additional information can be found in the [aws docs](https://aws.amazon.com/premiumsupport/knowledge-center/s3-troubleshoot-403/). 
 
-### ***Fetch was Problematic: HTTP error for 060851. Status: 403***
+### Data Unavailable Error Message
 
-Confirm that `060851.json` exists in s3 bucket `idd-dashboard-runs-staging`
+![](src/assets/data_unavailable.png)
+
+This message will occur if the selected county does not exists or if the file isn't formatted in a structure that the web app exists. 
+
+1. Confirm that `060852.json` does exist in s3 bucket `idd-dashboard-runs-staging`
+2. Try to select a different county or state from the dropdown. It's possible the one county selected is unavailable while other counties are available.
+3. If all counties you are interested in are unavailable, contact the Hopkins IDD Working Group to ensure your county files exist in the s3 bucket and that the data files have all been run through the validator script.
 
 ### ***Fetch was Problematic***
 

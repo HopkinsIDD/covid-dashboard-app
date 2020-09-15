@@ -89,29 +89,8 @@ export function getR0range(dataset, scenario, severity, indicator) {
   return r0full
 }
 
-function shuffle(array, numDisplaySims) {
-  // returns randomly shuffled array of elements based on numDisplaySims
-  let currIdx = array.length;
-  let tempVal = array.length;
-  let randomIdx = array.length;
-  // if array is less than desired num of sims to display, shuffle whole array
-  const stopIdx = numDisplaySims > array.length ? 0 : (array.length - numDisplaySims);
-
-  // shuffle only indices required by numDisplaySims
-  while (stopIdx !== currIdx) {
-    // randomly select another element to swap with current element
-    randomIdx = Math.floor(Math.random() * currIdx); 
-    currIdx -= 1; 
-
-    tempVal = array[currIdx];
-    array[currIdx] = array[randomIdx]; 
-    array[randomIdx] = tempVal; 
-  }
-  return array.slice(stopIdx, array.length);
-}
-
 export function filterR0(
-  r0selected, scenarioList, severityList, indicator, dataset, numDisplaySims) {
+  r0selected, scenarioList, severityList, indicator, dataset, numDisplaySims, resampleClicks=0) {
   // return series filtered on R0 range and numDisplaySims
   const seriesListForBrush = []
 
@@ -124,9 +103,13 @@ export function filterR0(
     if (r0min !== r0max) {
       filtered = series.filter(s => s.r0 > r0min && s.r0 < r0max);
     } 
-    // filter on numDisplaySims
-    const displaySims = shuffle(filtered.map(s => s.name), numDisplaySims); 
-    const seriesForBrush = filtered.filter(s => displaySims.includes(s.name));
+    // slice on next range based on numDisplaySims
+    // using sliding window to resample rather than shuffle because its much faster
+    const startIdx = numDisplaySims * resampleClicks + numDisplaySims;
+    const endIdx = startIdx + numDisplaySims;
+    const seriesForBrush = endIdx <= filtered.length ?
+      filtered.slice(startIdx, startIdx + numDisplaySims) :
+      filtered.slice(0, numDisplaySims);
 
     seriesListForBrush.push(seriesForBrush)
   }

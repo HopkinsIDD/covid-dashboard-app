@@ -3,7 +3,7 @@ import { Row, Col } from 'antd';
 import Chart from '../Chart/Chart';
 import CalloutLabel from '../Chart/CalloutLabel';
 import ChartLegend from '../Chart/ChartLegend';
-import { COUNTIES } from '../../utils/geoids.tsx';
+import { GEOIDS } from '../../utils/geoids.tsx';
 import { getReadableDate, formatTitle } from '../../utils/utils';
 
 class ChartContainer extends Component {
@@ -91,12 +91,12 @@ class ChartContainer extends Component {
     render() {
         const { hoveredScenarioIdx } = this.state;
         const { geoid, scenarios, datePickerActive } = this.props;
-        const countyName = `${COUNTIES[geoid]}`;
+        const geoidName = `${GEOIDS[geoid]}`;
         return (
             <Fragment>
                 <Row>
                     <Col span={24}>
-                        <div className="scenario-title titleNarrow">{countyName}</div>
+                        <div className="scenario-title titleNarrow">{geoidName}</div>
                         <div className="filter-label threshold-label callout callout-row">
                             {`Snapshot from `}
                             {/*TS migration: Use getClassForActiveState(datePickerActive)*/}
