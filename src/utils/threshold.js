@@ -60,7 +60,7 @@ export function getindicatorThreshold(scenarioList, seriesList, idxMin, idxMax) 
     // MUTATION: flags which sims in a series are above indicator and date threshold 
     const dateIndex = dates.findIndex(
       date => formatDate(date) === formatDate(dateThreshold));
-    
+
     let simsOver = 0;
     Object.values(series).forEach((sim) => {
       let simOver = false;
