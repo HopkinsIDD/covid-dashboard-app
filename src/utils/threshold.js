@@ -99,6 +99,7 @@ export function getindicatorThreshold(scenarioList, seriesList, idxMin, idxMax) 
   export function getRange(seriesPeaks) {
     // return range [min, max] of all peaks of sims given a series
     const seriesPeakExtent = extent(seriesPeaks)
+    if (typeof seriesPeakExtent[1] == 'undefined') return [0, 0];
     let roundingVal;
     if (seriesPeakExtent[1].toString().length < 2) {
       roundingVal = 1
