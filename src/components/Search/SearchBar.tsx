@@ -66,7 +66,7 @@ class SearchBar extends Component<Props, State> {
         return (
             <Select
                 showSearch
-                placeholder="Search for your county"
+                placeholder="Search for your state or county"
                 optionFilterProp="children"
                 style={this.props.style}
                 size={"large"}
