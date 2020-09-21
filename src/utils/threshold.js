@@ -38,18 +38,20 @@ export function getindicatorThreshold(scenarioList, seriesList, idxMin, idxMax) 
     return [indicatorThresholds[0], sliderMin, sliderMax]; 
   }
   
-  export function flagSimsOverThreshold(scenarioList, seriesList, allTimeDates, 
+  export function flagSimsOverThreshold(scenarioList, seriesList, selectedDates, 
     idxMin, idxMax, indicatorThreshold, dateThreshold) {
     // return series with sims flagged above or below thresholds
     const filteredSeriesList = [];
     const simsOverList = [];
   
     for (let i = 0; i < scenarioList.length; i++) {
-      // mutate seriesList to flag which sims are above/below thresholds
-      const simsOver = flagSims(seriesList[i], indicatorThreshold, allTimeDates, dateThreshold);
       // filter mutated seriesList by dates
       const filteredSeries = filterByDate(seriesList[i], idxMin, idxMax)
-  
+      // mutate filtered seriesList to flag which sims are above/below thresholds
+      // flagSims uses filtered dates and filtered series (what is shown on graph)
+      // so that threshold sliders correctly display which sims are over/under threshold
+      const simsOver = flagSims(filteredSeries, indicatorThreshold, selectedDates, dateThreshold);
+        
       filteredSeriesList.push(filteredSeries)
       simsOverList.push(simsOver)
     }
@@ -60,7 +62,6 @@ export function getindicatorThreshold(scenarioList, seriesList, idxMin, idxMax) 
     // MUTATION: flags which sims in a series are above indicator and date threshold 
     const dateIndex = dates.findIndex(
       date => formatDate(date) === formatDate(dateThreshold));
-
     let simsOver = 0;
     Object.values(series).forEach((sim) => {
       let simOver = false;
@@ -99,6 +100,7 @@ export function getindicatorThreshold(scenarioList, seriesList, idxMin, idxMax) 
   export function getRange(seriesPeaks) {
     // return range [min, max] of all peaks of sims given a series
     const seriesPeakExtent = extent(seriesPeaks)
+    if (typeof seriesPeakExtent[1] == 'undefined') return [0, 0];
     let roundingVal;
     if (seriesPeakExtent[1].toString().length < 2) {
       roundingVal = 1

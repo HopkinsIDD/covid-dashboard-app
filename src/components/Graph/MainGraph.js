@@ -122,13 +122,16 @@ class MainGraph extends Component {
             const idxMax = timeDay.count(dates[0], dateRange[1]);
             const [indicatorThreshold, seriesMin, seriesMax] = getindicatorThreshold(
                 [firstScenario], [series], idxMin, idxMax);
-            const simsOver = flagSims(
-                series, indicatorThreshold, dates, dateThreshold)        
+            
+            // flagSims uses filtered dates and series so that threshold slider
+            // shows over/under based on selected date range
             const newSelectedDates = Array.from(dates).slice(idxMin, idxMax);
-            const filteredSeries = filterByDate(series, idxMin, idxMax)
-
+            const filteredSeries = filterByDate(series, idxMin, idxMax);
+            const simsOver = flagSims(
+                filteredSeries, indicatorThreshold, newSelectedDates, dateThreshold);       
+            
             const confBoundsList = getConfBounds(
-                dataset, [firstScenario], severityList, firstIndicator, dates, idxMin, idxMax)
+                dataset, [firstScenario], severityList, firstIndicator, dates, idxMin, idxMax);
 
             const actualList = getActuals(actuals, firstIndicator, [firstScenario]);
 
@@ -189,7 +192,7 @@ class MainGraph extends Component {
             scenarioList, reducedSeriesList, idxMin, idxMax);
 
         const [flaggedSeriesList, simsOverList] = flagSimsOverThreshold(
-            scenarioList, reducedSeriesList, dates, idxMin, idxMax, 
+            scenarioList, reducedSeriesList, newSelectedDates, idxMin, idxMax, 
             indicatorThreshold, dateThreshold)
 
         const percExceedenceList = getExceedences(
@@ -334,6 +337,7 @@ class MainGraph extends Component {
             animateTransition: false
         });
     };
+
 
     handleDateSliderChange = (thresh) => {
         const { indicatorThreshold, selectedDates, dates } = this.state;
