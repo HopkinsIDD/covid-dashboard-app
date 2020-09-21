@@ -328,7 +328,6 @@ class MainGraph extends Component {
             const simsOver = flagSims(seriesList[i], thresh, selectedDates, dateThreshold);
             const percExceedence = simsOver / seriesList[i].length;
             percExceedenceList.push(percExceedence);
-            console.log(seriesList)
         }
         this.setState({
             seriesList,
