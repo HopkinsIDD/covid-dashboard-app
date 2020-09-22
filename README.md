@@ -67,7 +67,7 @@ Currently, on each `merge` into `master`, the GitHub Actions workflow defined in
 1. This workflow builds the website static artifacts 
 2. The workflow also syncs the build files into the staging s3 bucket
 3. The data files listed in the table below are expected to be present in the `json-files` key prefix of the staging s3 bucket
-4. The IDD Working Group will run the validator (a copy lives in `scripts/validate.py`) to ensure all JSON files abide by the expected data format. Once validation is complete, these JSON files will be pushed into the staging bucket `json_output` key. 
+4. The IDD Working Group will run the validator (the source of truth lives in `scripts/validate.py`) to ensure all JSON files abide by the expected data format. Once validation is complete, these JSON files will be pushed into the staging bucket `json_output` key. 
 5. Once the staging website has been user tested and QA-ed, the IDD Working Group will push the contents of the staging bucket into the production bucket via `aws s3 cp --recursive s3://idd-dashboard-runs-staging s3://idd-dashboard-runs`
 
 #### Data Files Expected in S3 Bucket

@@ -3,6 +3,7 @@ import json
 import click
 from datetime import datetime
 
+SIZE_LIMIT = 15000000 # 15 mb
 
 def validate_scenario(scenario: str):
     ''' 
@@ -203,7 +204,12 @@ def validate_dir(fdir: str):
             if county not in counties:
                 raise Exception("{} is missing county file {}.json".format(fdir, county))
 
-            with open('{}/{}.json'.format(fdir, county)) as f:
+            path = '{}/{}.json'.format(fdir, county)
+            if os.path.getsize(path) > SIZE_LIMIT:
+                raise Exception("{} is larger than {} bytes and may suffer performance issues"
+                    .format(path, SIZE_LIMIT))
+ 
+            with open(path) as f:
                 obj = json.load(f)
                 validate_geoid(obj, outcomes)
 
@@ -216,7 +222,12 @@ def validate_dir(fdir: str):
             if state not in states:
                 raise Exception("{} is missing state file {}.json".format(fdir, state))
 
-            with open('{}/{}.json'.format(fdir, county)) as f:
+            path = '{}/{}.json'.format(fdir, county)
+            if os.path.getsize(path) > SIZE_LIMIT:
+                raise Exception("{} is larger than {} bytes and may suffer performance issues"
+                    .format(path, SIZE_LIMIT))
+
+            with open(path) as f:
                 obj = json.load(f)
                 validate_geoid(obj, outcomes)
 
@@ -248,6 +259,9 @@ def validate(path: str):
     elif os.path.isfile(path):
 
         with open(path) as f, open(file_dir + 'outcomes.json') as o:
+            if os.path.getsize(path) > SIZE_LIMIT:
+                raise Exception("{} is larger than {} bytes and may suffer performance issues"
+                    .format(path, SIZE_LIMIT))
             obj, outcomes = json.load(f), json.load(o)
             validate_geoid(obj, outcomes)
 
