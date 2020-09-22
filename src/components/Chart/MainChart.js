@@ -142,7 +142,9 @@ class MainChart extends Component {
                     {this.state.dataLoaded && datasetLen > 0 &&
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
-                            <div className="section-title">Aggregate Stats Graph</div>
+                            <div className="graph-title-row">
+                                <div className="section-title">Aggregate Stats Graph</div>
+                            </div>
                             <ViewModal 
                                 modalTitle="Interpreting the aggregate statistics graph"
                                 modalVisible={this.state.modalVisible}
