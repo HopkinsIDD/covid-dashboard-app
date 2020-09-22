@@ -445,6 +445,7 @@ class MainGraph extends Component {
     render() {
         const { Content } = Layout;
         const datasetLen = Object.keys(this.props.dataset).length;
+        const dimensions = { width: margin.yAxis + margin.left, height: 40};
 
         return (
             <div ref={this.scrollElem}>
@@ -453,7 +454,10 @@ class MainGraph extends Component {
                     {this.state.dataLoaded && datasetLen > 0 &&
                     <Row gutter={styles.gutter}>
                         <Col className="gutter-row container">
-                            <div className="section-title">Simulations Graph</div>
+                            <div className="graph-title-row">
+                                <div style={dimensions}></div>
+                                <div className="section-title">Simulations Graph</div>
+                            </div>
                             <ViewModal 
                                 modalTitle="Interpreting the daily projections graph"
                                 modalVisible={this.state.modalVisible}
